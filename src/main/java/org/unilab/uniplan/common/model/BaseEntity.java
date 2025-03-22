@@ -2,12 +2,14 @@ package org.unilab.uniplan.common.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
+
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
@@ -17,6 +19,7 @@ import java.util.UUID;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @Getter
+@Setter
 public abstract class BaseEntity {
 
     @Id
@@ -29,6 +32,10 @@ public abstract class BaseEntity {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    private UUID getId() {
+        return id;
+    }
 
     @PrePersist
     protected void onCreate() {
@@ -52,7 +59,6 @@ public abstract class BaseEntity {
         BaseEntity baseEntity = (BaseEntity) o;
         return getId() != null && Objects.equals(getId(), baseEntity.getId());
     }
-
     @Override
     public final int hashCode() {
         return (this instanceof HibernateProxy proxy)

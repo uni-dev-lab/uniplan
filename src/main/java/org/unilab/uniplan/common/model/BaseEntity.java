@@ -13,7 +13,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.UUID;
 
 @MappedSuperclass
@@ -46,18 +45,19 @@ public abstract class BaseEntity {
 
     @Override
     public final boolean equals(Object o) {
-        if (this.getClass() != o.getClass()) return false;
         if (this == o) return true;
-        if (o == null) return false;
-        Class<?> oEffectiveClass = (o instanceof HibernateProxy proxy)
-            ? proxy.getHibernateLazyInitializer().getPersistentClass()
-            : o.getClass();
+        if (o == null || this.getClass() != o.getClass()) return false;
         Class<?> thisEffectiveClass = (this instanceof HibernateProxy proxy)
             ? proxy.getHibernateLazyInitializer().getPersistentClass()
             : this.getClass();
-        if (thisEffectiveClass != oEffectiveClass) return false;
-        BaseEntity baseEntity = (BaseEntity) o;
-        return getId() != null && Objects.equals(getId(), baseEntity.getId());
+
+        Class<?> otherEffectiveClass = (o instanceof HibernateProxy proxy)
+            ? proxy.getHibernateLazyInitializer().getPersistentClass()
+            : o.getClass();
+        if (!thisEffectiveClass.equals(otherEffectiveClass)) return false;
+        BaseEntity other = (BaseEntity) o;
+
+        return getId() != null && getId().equals(other.getId());
     }
     @Override
     public final int hashCode() {

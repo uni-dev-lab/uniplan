@@ -20,10 +20,10 @@ import org.unilab.uniplan.programdiscipline.ProgramDiscipline;
 @Table(name = "DISCIPLINE")
 public class Discipline extends BaseEntity {
 
-    @Column(name = "DISCIPLINE_NAME", nullable = false)
+    @Column(name = "DISCIPLINE_NAME", nullable = false, length = 100)
     private String name;
 
-    @Column(name = "MAIN_LECTOR", nullable = false)
+    @Column(name = "MAIN_LECTOR", nullable = false, length = 200)
     private String mainLector;
 
     @OneToMany(mappedBy = "discipline")

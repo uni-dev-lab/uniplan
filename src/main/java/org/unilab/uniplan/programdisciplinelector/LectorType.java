@@ -1,4 +1,4 @@
-package org.unilab.uniplan.lector;
+package org.unilab.uniplan.programdisciplinelector;
 
 public enum LectorType {
     LECTURE,

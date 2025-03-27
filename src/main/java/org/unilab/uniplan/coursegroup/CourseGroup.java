@@ -18,7 +18,7 @@ import org.unilab.uniplan.course.Course;
 @Entity
 @Table(name = "COURSE_GROUP")
 public class CourseGroup extends BaseEntity {
-
+  
     @ManyToOne
     @JoinColumn(name = "COURSE_ID", nullable = false)
     private Course course;

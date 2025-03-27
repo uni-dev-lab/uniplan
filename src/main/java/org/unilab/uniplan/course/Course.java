@@ -21,7 +21,7 @@ import org.unilab.uniplan.major.Major;
 @Entity
 @Table(name = "COURSE")
 public class Course extends BaseEntity {
-
+    
     @ManyToOne
     @JoinColumn(name = "MAJOR_ID", nullable = false)
     private Major major;

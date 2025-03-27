@@ -16,9 +16,9 @@ import org.unilab.uniplan.common.model.BaseEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Category extends BaseEntity {
-    
-    @Column(name = "ROOM_TYPE", nullable = false)
+
+    @Column(name = "ROOM_TYPE", nullable = false, length = 50)
     private String roomType;
     @Column(name = "CAPACITY", nullable = false)
-    private int capacity;
+    private short capacity;
 }

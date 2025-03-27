@@ -1,6 +1,5 @@
 package org.unilab.uniplan.studentgroup;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -14,12 +13,12 @@ import org.unilab.uniplan.common.model.BaseEntity;
 import org.unilab.uniplan.coursegroup.CourseGroup;
 import org.unilab.uniplan.student.Student;
 
+@Entity
+@Table(name = "STUDENT_GROUP")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "STUDENT_GROUP")
 public class StudentGroup extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,10 +28,4 @@ public class StudentGroup extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "GROUP_ID")
     private CourseGroup courseGroup;
-
-    @Column(name = "GROUP_NAME", nullable = false, length = 200)
-    private String groupName;
-
-    @Column(name = "MAX_GROUP", nullable = false)
-    private short maxGroup;
 }

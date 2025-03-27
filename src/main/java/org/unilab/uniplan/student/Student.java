@@ -1,4 +1,4 @@
-package org.unilab.uniplan.lector;
+package org.unilab.uniplan.student;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,21 +11,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.unilab.uniplan.common.model.Person;
-import org.unilab.uniplan.faculty.Faculty;
+import org.unilab.uniplan.course.Course;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "LECTOR")
-public class Lector extends Person {
-
-    @Column(name = "EMAIL", nullable = false, length = 250)
-    private String email;
+@Table(name = "Student")
+public class Student extends Person {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FACULTY_ID", referencedColumnName = "ID", nullable = false)
-    private Faculty faculty;
-}
+    @JoinColumn(name = "course_id", nullable = false)
+    private Course course;
 
+    @Column(name = "student_name", nullable = false, length = 200)
+    private String studentName;
+
+    @Column(name = "faculty_number", unique = true, nullable = false, length = 100)
+    private String facultyNumber;
+}

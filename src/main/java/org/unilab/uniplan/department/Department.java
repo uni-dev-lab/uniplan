@@ -19,9 +19,10 @@ import org.unilab.uniplan.faculty.Faculty;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Department extends BaseEntity {
+
     @ManyToOne
     @JoinColumn(name = "FACULTY_ID", referencedColumnName = "ID", nullable = false)
     private Faculty faculty;
-    @Column(name = "DEPARTMENT_NAME", nullable = false)
+    @Column(name = "DEPARTMENT_NAME", nullable = false, length = 200)
     private String departmentName;
 }

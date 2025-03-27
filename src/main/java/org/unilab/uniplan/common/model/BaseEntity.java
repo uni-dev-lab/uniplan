@@ -6,7 +6,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -18,19 +17,11 @@ import java.util.UUID;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @Getter
-@Setter
-public abstract class BaseEntity {
+public abstract class BaseEntity extends AuditableEntity{
 
     @Id
     @Column(columnDefinition = "UUID", updatable = false, nullable = false)
     private UUID id;
-
-    @CreatedDate
-    @Column(nullable = false,updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
 
     private UUID getId() {
         return id;

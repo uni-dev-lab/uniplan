@@ -1,5 +1,6 @@
 package org.unilab.uniplan.studentgroup;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -21,4 +22,10 @@ public class StudentGroup extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "GROUP_ID")
     private CourseGroup courseGroup;
+
+    @Column(name = "GROUP_NAME", nullable = false)
+    private String groupName;
+
+    @Column(name = "MAX_GROUP", nullable = false)
+    private int maxGroup;
 }

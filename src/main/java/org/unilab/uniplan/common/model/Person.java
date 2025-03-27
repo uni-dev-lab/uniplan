@@ -14,9 +14,9 @@ import lombok.Setter;
 @MappedSuperclass
 public abstract class Person extends BaseEntity {
 
-    @Column(name = "FIRST_NAME", nullable = false)
+    @Column(name = "FIRST_NAME", nullable = false, length = 100)
     private String firstName;
 
-    @Column(name = "LAST_NAME", nullable = false)
+    @Column(name = "LAST_NAME", nullable = false, length = 100)
     private String lastName;
 }

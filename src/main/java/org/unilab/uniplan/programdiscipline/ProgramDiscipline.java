@@ -25,21 +25,21 @@ import org.unilab.uniplan.program.Program;
 public class ProgramDiscipline extends BaseEntity {
 
     @Column(name = "HOURS_LECTURE", nullable = false)
-    private int hoursLecture;
+    private short hoursLecture;
 
     @Column(name = "HOURS_EXERCISES", nullable = false)
-    private int hoursExercises;
+    private short hoursExercises;
 
     @Column(name = "SEMESTER_COUNT", nullable = false)
     @Min(value = 1, message = "Semester count must be between 1 and 12")
     @Max(value = 12, message = "Semester count must be between 1 and 12")
-    private int semesterCount;
+    private byte semesterCount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "DISCIPLINE_ID", nullable = false)
+    @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID", nullable = false)
     private Discipline discipline;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PROGRAM_ID", nullable = false)
+    @JoinColumn(name = "PROGRAM_ID", referencedColumnName = "ID", nullable = false)
     private Program program;
 }

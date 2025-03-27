@@ -15,7 +15,6 @@ import lombok.Setter;
 import org.unilab.uniplan.common.model.BaseEntity;
 import org.unilab.uniplan.discipline.Discipline;
 import org.unilab.uniplan.lector.Lector;
-import org.unilab.uniplan.lector.LectorType;
 import org.unilab.uniplan.program.Program;
 
 @Getter
@@ -23,22 +22,22 @@ import org.unilab.uniplan.program.Program;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "PROGRAM_DISCIPLINE_LECTOR")
+@Table(name = "LECTOR_PROGRAM")
 public class ProgramDisciplineLector extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "LECTOR_TYPE", nullable = false)
+    @Column(name = "LECTOR_TYPE", nullable = false, length = 100)
     private LectorType lectorType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "LECTOR_ID", nullable = false)
+    @JoinColumn(name = "LECTOR_ID", referencedColumnName = "ID", nullable = false)
     private Lector lector;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PROGRAM_ID", nullable = false)
+    @JoinColumn(name = "PROGRAM_ID", referencedColumnName = "ID", nullable = false)
     private Program program;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "DISCIPLINE_ID", nullable = false)
+    @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID", nullable = false)
     private Discipline discipline;
 }

@@ -15,15 +15,15 @@ import org.unilab.uniplan.common.model.BaseEntity;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class University extends BaseEntity { 
-    
-    @Column(name = "UNI_NAME", nullable = false) 
+public class University extends BaseEntity {
+
+    @Column(name = "UNI_NAME", nullable = false)
     private String uniName;
     @Column(name = "LOCATION", length = 500)
     private String location;
     @Column(name = "ESTABLISHED_YEAR")
-    private int establishedYear;
-    @Column(name = "ACCREDITATION")
+    private short establishedYear;
+    @Column(name = "ACCREDITATION", length = 200)
     private String accreditation;
     @Column(name = "WEBSITE", length = 2048)
     private String website;

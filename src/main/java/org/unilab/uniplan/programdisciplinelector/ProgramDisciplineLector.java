@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.unilab.uniplan.common.model.AuditableEntity;
 import org.unilab.uniplan.discipline.Discipline;
 import org.unilab.uniplan.lector.Lector;
 import org.unilab.uniplan.program.Program;
@@ -23,7 +24,7 @@ import org.unilab.uniplan.program.Program;
 @AllArgsConstructor
 @Entity
 @Table(name = "LECTOR_PROGRAM")
-public class ProgramDisciplineLector {
+public class ProgramDisciplineLector extends AuditableEntity {
 
     @EmbeddedId
     private ProgramDisciplineLectorId id;

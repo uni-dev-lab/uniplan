@@ -30,15 +30,15 @@ public class ProgramDisciplineLector extends AuditableEntity {
     private ProgramDisciplineLectorId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "LECTOR_ID", referencedColumnName = "ID", nullable = false)
+    @JoinColumn(name = "LECTOR_ID", referencedColumnName = "ID", nullable = false, insertable = false, updatable = false)
     private Lector lector;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PROGRAM_ID", referencedColumnName = "ID", nullable = false)
+    @JoinColumn(name = "PROGRAM_ID", referencedColumnName = "ID", nullable = false, insertable = false, updatable = false)
     private Program program;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID", nullable = false)
+    @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID", nullable = false, insertable = false, updatable = false)
     private Discipline discipline;
 
     @Enumerated(EnumType.STRING)

@@ -29,11 +29,11 @@ public class ProgramDiscipline extends AuditableEntity {
     private ProgramDisciplineId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID", nullable = false)
+    @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID", nullable = false, insertable = false, updatable = false)
     private Discipline discipline;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PROGRAM_ID", referencedColumnName = "ID", nullable = false)
+    @JoinColumn(name = "PROGRAM_ID", referencedColumnName = "ID", nullable = false, insertable = false, updatable = false)
     private Program program;
 
     @Column(name = "HOURS_LECTURE", nullable = false)

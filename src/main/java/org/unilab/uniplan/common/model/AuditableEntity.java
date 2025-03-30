@@ -23,5 +23,4 @@ public abstract class AuditableEntity {
     public void setCreatedAt() {
         this.createdAt = LocalDateTime.now();
     }
-    
 }

@@ -31,6 +31,7 @@ import org.unilab.uniplan.programdisciplinelector.ProgramDisciplineLectorReposit
 import org.unilab.uniplan.room.Room;
 import org.unilab.uniplan.room.RoomRepository;
 import org.unilab.uniplan.roomcategory.RoomCategory;
+import org.unilab.uniplan.roomcategory.RoomCategoryId;
 import org.unilab.uniplan.roomcategory.RoomCategoryRepository;
 import org.unilab.uniplan.student.Student;
 import org.unilab.uniplan.student.StudentRepository;
@@ -117,7 +118,7 @@ public class PostConstructMethodService {
         roomCat.setCreatedAt();
         categoryRepository.save(roomCat);
         
-        RoomCategory roomOneCategory = new RoomCategory(roomOne, roomCat);
+        RoomCategory roomOneCategory = new RoomCategory(new RoomCategoryId(roomOne.getId(), roomCat.getId()), roomOne, roomCat);
         roomOneCategory.setCreatedAt();
         roomCategoryRepository.save(roomOneCategory);
 

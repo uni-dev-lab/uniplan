@@ -1,5 +1,6 @@
 package org.unilab.uniplan.studentgroup;
 
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -21,11 +22,14 @@ import org.unilab.uniplan.student.Student;
 @AllArgsConstructor
 public class StudentGroup extends BaseEntity {
 
+    @EmbeddedId
+    private StudentGroupId id;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "STUDENT_ID", nullable = false)
+    @JoinColumn(name = "STUDENT_ID", nullable = false, insertable = false , updatable = false)
     private Student student;
 
     @ManyToOne
-    @JoinColumn(name = "GROUP_ID")
+    @JoinColumn(name = "GROUP_ID", nullable = false, insertable = false , updatable = false)
     private CourseGroup courseGroup;
 }

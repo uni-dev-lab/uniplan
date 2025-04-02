@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.unilab.uniplan.common.model.AuditableEntity;
 import org.unilab.uniplan.common.model.BaseEntity;
 import org.unilab.uniplan.coursegroup.CourseGroup;
 import org.unilab.uniplan.student.Student;
@@ -20,7 +21,7 @@ import org.unilab.uniplan.student.Student;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentGroup extends BaseEntity {
+public class StudentGroup extends AuditableEntity {
 
     @EmbeddedId
     private StudentGroupId id;
@@ -29,7 +30,7 @@ public class StudentGroup extends BaseEntity {
     @JoinColumn(name = "STUDENT_ID", nullable = false, insertable = false , updatable = false)
     private Student student;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "GROUP_ID", nullable = false, insertable = false , updatable = false)
     private CourseGroup courseGroup;
 }

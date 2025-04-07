@@ -3,7 +3,6 @@ package org.unilab.uniplan.lector;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.unilab.uniplan.faculty.FacultyRepository;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,7 +10,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class LectorService {
     private final LectorRepository lectorRepository;
-    private final FacultyRepository facultyRepository;
 
     public Lector createLector(Lector lector) {
         if (lectorRepository.existsById(lector.getId())) {
@@ -33,7 +31,7 @@ public class LectorService {
         Lector existingLector = getLectorById(id);
         if (!existingLector.getId().equals(updatedLector.getId()) &&
             lectorRepository.existsById(updatedLector.getId())) {
-            throw new IllegalArgumentException("Email already in use.");
+            throw new IllegalArgumentException("Id already in use.");
         }
         existingLector.setFaculty(updatedLector.getFaculty());
         existingLector.setEmail(updatedLector.getEmail());

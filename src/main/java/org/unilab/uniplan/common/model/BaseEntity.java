@@ -19,7 +19,7 @@ public abstract class BaseEntity extends AuditableEntity {
     @Column(columnDefinition = "UUID", updatable = false, nullable = false)
     private UUID id;
 
-    private UUID getId() {
+    public UUID getId() {
         return id;
     }
 

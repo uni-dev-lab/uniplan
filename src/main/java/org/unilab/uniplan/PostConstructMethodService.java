@@ -36,29 +36,28 @@ import org.unilab.uniplan.roomcategory.RoomCategoryRepository;
 import org.unilab.uniplan.student.Student;
 import org.unilab.uniplan.student.StudentRepository;
 import org.unilab.uniplan.studentgroup.StudentGroup;
-import org.unilab.uniplan.studentgroup.StudentGroupId;
 import org.unilab.uniplan.studentgroup.StudentGroupRepository;
 import org.unilab.uniplan.university.University;
 import org.unilab.uniplan.university.UniversityRepository;
 
 @Service
 public class PostConstructMethodService {
-    private UniversityRepository universityRepository;
-    private FacultyRepository facultyRepository;
-    private DepartmentRepository departmentRepository;
-    private RoomRepository roomRepository;
-    private CategoryRepository categoryRepository;
-    private RoomCategoryRepository roomCategoryRepository;
-    private MajorRepository majorRepository;
-    private CourseRepository courseRepository;
-    private LectorRepository lectorRepository;
-    private StudentRepository studentRepository;
-    private CourseGroupRepository courseGroupRepository;
-    private StudentGroupRepository studentGroupRepository;
-    private ProgramRepository programRepository;
-    private DisciplineRepository disciplineRepository;
-    private ProgramDisciplineRepository programDisciplineRepository;
-    private ProgramDisciplineLectorRepository programDisciplineLectorRepository;
+    private final UniversityRepository universityRepository;
+    private final FacultyRepository facultyRepository;
+    private final DepartmentRepository departmentRepository;
+    private final RoomRepository roomRepository;
+    private final CategoryRepository categoryRepository;
+    private final RoomCategoryRepository roomCategoryRepository;
+    private final MajorRepository majorRepository;
+    private final CourseRepository courseRepository;
+    private final LectorRepository lectorRepository;
+    private final StudentRepository studentRepository;
+    private final CourseGroupRepository courseGroupRepository;
+    private final StudentGroupRepository studentGroupRepository;
+    private final ProgramRepository programRepository;
+    private final DisciplineRepository disciplineRepository;
+    private final ProgramDisciplineRepository programDisciplineRepository;
+    private final ProgramDisciplineLectorRepository programDisciplineLectorRepository;
 
 
     @Autowired
@@ -98,75 +97,124 @@ public class PostConstructMethodService {
 
     @PostConstruct
     public void populateDatabase() {
+        University plovdivUniversity = createUniversity();
+        Faculty fmi = createFaculty(plovdivUniversity);
+        Department computerSystems = createDepartment(fmi);
+        Room roomOne = createRoom(fmi);
+        Category roomCat = createCategory();
+        RoomCategory roomOneCategory = createRoomCategory(roomOne, roomCat);
+        Major informatics = createMajor(fmi);
+        Course secondCourse = createCourse(informatics);
+        Lector lector = createLector(fmi);
+        Student student = createStudent(secondCourse);
+        Discipline discipline = createDiscipline();       
+        Program program = createProgram(secondCourse);
+        CourseGroup courseGroup = createCourseGroup(secondCourse);
+        StudentGroup studentGroup = createStudentGroup(student, courseGroup);
+        ProgramDiscipline programDiscipline = createProgramDiscipline(discipline, program);
+        ProgramDisciplineLector programDisciplineLector = createProgramDisciplineLector(lector, discipline ,program); 
+    }
+    
+    private University createUniversity() {
         University plovdivUniversity = new University("Plovdiv University \"Paisii Hilendarski\"", "TsentarPlovdiv Center, King Asen St 24, 4000 Plovdiv",
-                                                      (short) 1961 , "no-info" , "https://uni-plovdiv.bg/en/pages/index/10/");
+                                                          (short) 1961 , "no-info" , "https://uni-plovdiv.bg/en/pages/index/10/");
         plovdivUniversity.setCreatedAt();
-        universityRepository.save(plovdivUniversity);
-        
-        Faculty fmi = new Faculty(plovdivUniversity, "fmi" , "Severen, Bulgaria Blvd 236А, 4027 Plovdiv");
+        return universityRepository.save(plovdivUniversity);
+    }
+    
+    private Faculty createFaculty(University university) {
+        Faculty fmi = new Faculty(university, "fmi" , "Severen, Bulgaria Blvd 236А, 4027 Plovdiv");
         fmi.setCreatedAt();
-        facultyRepository.save(fmi);
-        
-        Department computerSystems = new Department( fmi, "Computer Systems");
+        return facultyRepository.save(fmi);
+    }
+    
+    private Department createDepartment(Faculty faculty) {
+        Department computerSystems = new Department( faculty, "Computer Systems");
         computerSystems.setCreatedAt();
-        departmentRepository.save(computerSystems);
-        
-        Room roomOne = new Room(fmi, "547");
+        return departmentRepository.save(computerSystems);
+    }
+    
+    private Room createRoom(Faculty faculty) {
+        Room roomOne = new Room(faculty, "547");
         roomOne.setCreatedAt();
-        roomRepository.save(roomOne);
-        
+        return roomRepository.save(roomOne);
+    }
+    
+    private Category createCategory() {
         Category roomCat = new Category("Computer hall" , (short) 30);
         roomCat.setCreatedAt();
-        categoryRepository.save(roomCat);
-        
-        RoomCategory roomOneCategory = new RoomCategory(new RoomCategoryId(roomOne.getId(), roomCat.getId()), roomOne, roomCat);
+        return categoryRepository.save(roomCat);
+    }
+    
+    private RoomCategory createRoomCategory(Room room, Category category) {
+        RoomCategory roomOneCategory = new RoomCategory(new RoomCategoryId(room.getId(), category.getId()), room, category);
         roomOneCategory.setCreatedAt();
-        roomCategoryRepository.save(roomOneCategory);
-
-        Major informatics = new Major(fmi, "Informatics");
+        return roomCategoryRepository.save(roomOneCategory);
+    }
+    
+    private Major createMajor(Faculty faculty) {
+        Major informatics = new Major(faculty, "Informatics");
         informatics.setCreatedAt();
-        majorRepository.save(informatics);
-
-        Course secondCourse = new Course(informatics, (byte)2, "bachelor" , "regular education");
+        return majorRepository.save(informatics);
+    }
+    
+    private Course createCourse(Major major) {
+        Course secondCourse = new Course(major, (byte)2, "bachelor" , "regular education");
         secondCourse.setCreatedAt();
-        courseRepository.save(secondCourse);
-
-        Lector lector = new Lector("kiril@uni-plovdiv.bg" , fmi);
+        return courseRepository.save(secondCourse);
+    }
+    
+    private Lector createLector(Faculty faculty) {
+        Lector lector = new Lector("kiril@uni-plovdiv.bg" , faculty);
         lector.setFirstName("Kiril");
         lector.setLastName("Ivanov");
         lector.setCreatedAt();
-        lectorRepository.save(lector);
-
-        Student student = new Student(secondCourse, "2301261015");
+        return lectorRepository.save(lector);
+    }
+    
+    private Student createStudent(Course course) {
+        Student student = new Student(course, "2301261015");
         student.setFirstName("Dimitar");
         student.setLastName("Petrov");
         student.setCreatedAt();
-        studentRepository.save(student);
-
+        return studentRepository.save(student);
+    }
+    
+    private Discipline createDiscipline() {
         Discipline discipline = new Discipline("Java OOP" , "Petko" , null);
         discipline.setCreatedAt();
-        disciplineRepository.save(discipline);
-        
-        Program program = new Program(secondCourse, null);
+        return disciplineRepository.save(discipline);
+    }
+    
+    private Program createProgram(Course course) {
+        Program program = new Program(course, null);
         program.setCreatedAt();
-        programRepository.save(program);
-
-        CourseGroup courseGroup = new CourseGroup(secondCourse, "1a" , 30);
+        return programRepository.save(program);
+    }
+    
+    private CourseGroup createCourseGroup(Course course) {
+        CourseGroup courseGroup = new CourseGroup(course, "1a" , 30);
         courseGroup.setCreatedAt();
-        courseGroupRepository.save(courseGroup);
-        
-        StudentGroup studentGroup = new StudentGroup(new StudentGroupId(student.getId(), courseGroup.getId()), student, courseGroup);
+        return courseGroupRepository.save(courseGroup);
+    }
+    
+    private StudentGroup createStudentGroup(Student student, CourseGroup courseGroup) {
+        StudentGroup studentGroup = new StudentGroup(student, courseGroup);
         studentGroup.setCreatedAt();
-        studentGroupRepository.save(studentGroup);
-
-        ProgramDiscipline programDiscipline = new ProgramDiscipline(new ProgramDisciplineId(discipline.getId(), program.getId()), 
+        return studentGroupRepository.save(studentGroup);
+    }
+    
+    private ProgramDiscipline createProgramDiscipline(Discipline discipline, Program program) {
+        ProgramDiscipline programDiscipline = new ProgramDiscipline(new ProgramDisciplineId(discipline.getId(), program.getId()),
                                                                     discipline, program , (short)40, (short)30, (byte)1);
         programDiscipline.setCreatedAt();
-        programDisciplineRepository.save(programDiscipline);
-
+        return programDisciplineRepository.save(programDiscipline);
+    }
+    
+    private ProgramDisciplineLector createProgramDisciplineLector(Lector lector, Discipline discipline, Program program) {
         ProgramDisciplineLector programDisciplineLector = new ProgramDisciplineLector(new ProgramDisciplineLectorId(lector.getId(), program.getId(), discipline.getId()) ,
-                                                                                      lector , program , discipline , LectorType.LECTURE);
+                                    lector , program , discipline , LectorType.LECTURE);
         programDisciplineLector.setCreatedAt();
-        programDisciplineLectorRepository.save(programDisciplineLector); 
+        return programDisciplineLectorRepository.save(programDisciplineLector);
     }
 }

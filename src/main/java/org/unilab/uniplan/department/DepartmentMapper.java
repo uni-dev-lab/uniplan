@@ -9,6 +9,5 @@ public interface DepartmentMapper {
     @Mapping(source = "faculty.id", target = "facultyId")
     DepartmentDto toDto(Department department);
 
-    @Mapping(source = "facultyId", target = "faculty.id")
     Department toEntity(DepartmentDto departmentDto);
 }

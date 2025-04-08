@@ -9,6 +9,5 @@ public interface FacultyMapper {
     @Mapping(source = "university.id", target = "universityId")
     FacultyDto toDto(Faculty faculty);
 
-    @Mapping(source = "universityId", target = "university")
     Faculty toEntity(FacultyDto facultyDto);
 }

@@ -36,6 +36,7 @@ import org.unilab.uniplan.roomcategory.RoomCategoryRepository;
 import org.unilab.uniplan.student.Student;
 import org.unilab.uniplan.student.StudentRepository;
 import org.unilab.uniplan.studentgroup.StudentGroup;
+import org.unilab.uniplan.studentgroup.StudentGroupId;
 import org.unilab.uniplan.studentgroup.StudentGroupRepository;
 import org.unilab.uniplan.university.University;
 import org.unilab.uniplan.university.UniversityRepository;
@@ -199,7 +200,7 @@ public class PostConstructMethodService {
     }
     
     private StudentGroup createStudentGroup(Student student, CourseGroup courseGroup) {
-        StudentGroup studentGroup = new StudentGroup(student, courseGroup);
+        StudentGroup studentGroup = new StudentGroup(new StudentGroupId(student.getId(), courseGroup.getId()), student, courseGroup);
         studentGroup.setCreatedAt();
         return studentGroupRepository.save(studentGroup);
     }

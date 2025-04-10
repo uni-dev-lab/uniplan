@@ -19,6 +19,10 @@ public abstract class BaseEntity extends AuditableEntity {
     @Column(columnDefinition = "UUID", updatable = false, nullable = false)
     private UUID id;
 
+    public UUID getId() {
+        return id;
+    }
+
     @PrePersist
     protected void onCreate() {
         if (this.id == null) {

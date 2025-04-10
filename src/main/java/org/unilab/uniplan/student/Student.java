@@ -25,9 +25,6 @@ public class Student extends Person {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    @Column(name = "student_name", nullable = false, length = 200)
-    private String studentName;
-
     @Column(name = "faculty_number", unique = true, nullable = false, length = 100)
     private String facultyNumber;
 }

@@ -25,7 +25,7 @@ public class FacultyController {
         this.facultyService = facultyService;
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public FacultyDto createFaculty(@RequestBody FacultyDto facultyDto) {
         return facultyService.createFaculty(facultyDto);
     }

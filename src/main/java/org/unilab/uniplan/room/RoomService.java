@@ -71,4 +71,9 @@ public class RoomService {
         }
         return false;
     }
+
+    public Room getRoomEntity(UUID id) {
+        return roomRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(
+            "Room not found"));
+    }
 }

@@ -26,7 +26,7 @@ public class UniversityController {
         this.universityService = universityService;
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public UniversityDto createUniversity(@RequestBody UniversityDto universityDto) {
         return universityService.createUniversity(universityDto);
     }

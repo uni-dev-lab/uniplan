@@ -63,4 +63,10 @@ public class CategoryService {
         }
         return false;
     }
+
+    public Category getCategoryEntity(UUID id) {
+        return categoryRepository.findById(id)
+                                 .orElseThrow(() -> new IllegalArgumentException(
+                                     "Category not found"));
+    }
 }

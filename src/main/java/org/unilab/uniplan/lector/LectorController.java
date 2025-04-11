@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -25,17 +24,17 @@ public class LectorController {
     private final LectorService lectorService;
 
     @PostMapping
-    public ResponseEntity<LectorDto> createLector(@Valid @RequestBody LectorDto lectorDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(lectorService.createLector(lectorDto));
+    public ResponseEntity<Lector> createLector(@Valid @RequestBody Lector lector) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(lectorService.createLector(lector));
     }
 
     @GetMapping
-    public ResponseEntity<List<LectorDto>> getAllLectors() {
+    public ResponseEntity<List<Lector>> getAllLectors() {
         return ResponseEntity.ok(lectorService.getAllLectors());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<LectorDto>> getLectorById(@PathVariable UUID id) {
+    public ResponseEntity<Lector> getLectorById(@PathVariable UUID id) {
         return ResponseEntity.ok(lectorService.getLectorById(id));
     }
 

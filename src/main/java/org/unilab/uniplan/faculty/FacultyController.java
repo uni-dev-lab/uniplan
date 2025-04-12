@@ -1,8 +1,12 @@
 package org.unilab.uniplan.faculty;
 
+import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,44 +18,50 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/faculties")
+@RequiredArgsConstructor
 public class FacultyController {
-
-    private static final String FACULTY_NOT_FOUND = "The faculty is not found.";
 
     private final FacultyService facultyService;
 
-    @Autowired
-    public FacultyController(FacultyService facultyService) {
-        this.facultyService = facultyService;
-    }
-
-    @PostMapping("/create")
-    public FacultyDto createFaculty(@RequestBody FacultyDto facultyDto) {
-        return facultyService.createFaculty(facultyDto);
+    @PostMapping
+    public ResponseEntity<FacultyDto> createFaculty(@Valid @RequestBody final FacultyDto facultyDto) {
+        final Optional<FacultyDto> createdFaculty = facultyService.createFaculty(facultyDto);
+        return createdFaculty
+            .map(dto -> new ResponseEntity<>(dto, HttpStatus.CREATED))
+            .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 
     @GetMapping
-    public List<FacultyDto> getAllFaculties() {
-        return facultyService.getAllFaculties();
+    public ResponseEntity<List<FacultyDto>> getAllFaculties() {
+        final List<FacultyDto> faculties = facultyService.getAllFaculties();
+        return faculties.isEmpty()
+            ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+            : new ResponseEntity<>(faculties, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public FacultyDto getFacultyById(@PathVariable UUID id) {
-        return facultyService.getFacultyById(id)
-                             .orElseThrow(() -> new IllegalArgumentException(FACULTY_NOT_FOUND));
+    public ResponseEntity<FacultyDto> getFacultyById(@PathVariable final UUID id) {
+        final Optional<FacultyDto> faculty = facultyService.getFacultyById(id);
+        return faculty
+            .map(dto -> new ResponseEntity<>(dto, HttpStatus.OK))
+            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PutMapping("/{id}")
-    public FacultyDto updateFaculty(@PathVariable UUID id, @RequestBody FacultyDto facultyDto) {
-        return facultyService.updateFaculty(id, facultyDto)
-                             .orElseThrow(() -> new IllegalArgumentException(FACULTY_NOT_FOUND));
+    public ResponseEntity<FacultyDto> updateFaculty(@PathVariable final UUID id,
+                                                    @Valid @RequestBody final FacultyDto facultyDto) {
+        final Optional<FacultyDto> updated = facultyService.updateFaculty(id, facultyDto);
+        return updated
+            .map(dto -> new ResponseEntity<>(dto, HttpStatus.OK))
+            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteFaculty(@PathVariable UUID id) {
-        boolean isDeleted = facultyService.deleteFaculty(id);
-        if (!isDeleted) {
-            throw new IllegalArgumentException(FACULTY_NOT_FOUND);
-        }
+    public ResponseEntity<FacultyDto> deleteFaculty(@PathVariable final UUID id) {
+        final Optional<FacultyDto> deleteFaculty = facultyService.deleteFaculty(id);
+
+        return deleteFaculty
+            .map(dto -> new ResponseEntity<>(dto, HttpStatus.OK))
+            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }

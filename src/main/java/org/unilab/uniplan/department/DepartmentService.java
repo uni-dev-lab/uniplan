@@ -3,80 +3,65 @@ package org.unilab.uniplan.department;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.unilab.uniplan.faculty.Faculty;
-import org.unilab.uniplan.faculty.FacultyService;
 
 @Service
+@RequiredArgsConstructor
 public class DepartmentService {
 
     private final DepartmentRepository departmentRepository;
-    private final FacultyService facultyService;
     private final DepartmentMapper departmentMapper;
 
-    @Autowired
-    public DepartmentService(DepartmentRepository departmentRepository,
-                             FacultyService facultyService,
-                             DepartmentMapper departmentMapper) {
-        this.departmentRepository = departmentRepository;
-        this.facultyService = facultyService;
-        this.departmentMapper = departmentMapper;
-    }
-
     @Transactional
-    public DepartmentDto createDepartment(DepartmentDto departmentDto) {
-        Faculty faculty = facultyService.getFaculty(departmentDto.facultyId())
-                                        .orElseThrow(() -> new IllegalArgumentException(
-                                            "Faculty not found"));
+    public Optional<DepartmentDto> createDepartment(final DepartmentDto departmentDto) {
+        final Department department = departmentMapper.toEntity(departmentDto);
 
-        Department department = departmentMapper.toEntity(departmentDto);
-        department.setDepartmentName(departmentDto.departmentName());
-        department.setFaculty(faculty);
-        department = departmentRepository.save(department);
+        if (department.getDepartmentName() == null || department.getFaculty() == null) {
+            return Optional.empty();
+        }
 
-        return departmentMapper.toDto(department);
+        final Department savedDepartment = departmentRepository.save(department);
+        return Optional.of(departmentMapper.toDto(savedDepartment));
     }
 
     public List<DepartmentDto> getAllDepartments() {
-        List<Department> departments = departmentRepository.findAll();
-        return departments.stream()
-                          .map(departmentMapper::toDto)
-                          .toList();
+        final List<Department> departments = departmentRepository.findAll();
+        return departmentMapper.toDtoList(departments);
     }
 
-    public Optional<DepartmentDto> getDepartmentById(UUID id) {
-        Optional<Department> department = departmentRepository.findById(id);
+    public Optional<DepartmentDto> getDepartmentById(final UUID id) {
+        final Optional<Department> department = departmentRepository.findById(id);
         return department.map(departmentMapper::toDto);
     }
 
     @Transactional
-    public Optional<DepartmentDto> updateDepartment(UUID id, DepartmentDto departmentDto) {
-        Optional<Department> existingDepartment = departmentRepository.findById(id);
+    public Optional<DepartmentDto> updateDepartment(final UUID id,
+                                                    final DepartmentDto departmentDto) {
+        final Optional<Department> existingDepartment = departmentRepository.findById(id);
 
         if (existingDepartment.isPresent()) {
-            Faculty faculty = facultyService.getFaculty(departmentDto.facultyId())
-                                            .orElseThrow(() -> new IllegalArgumentException(
-                                                "Faculty not found"));
+            final Department department = existingDepartment.get();
+            departmentMapper.updateEntityFromDto(departmentDto, department);
 
-            Department department = existingDepartment.get();
-            department.setDepartmentName(departmentDto.departmentName());
-            department.setFaculty(faculty);
-
-            department = departmentRepository.save(department);
-            return Optional.of(departmentMapper.toDto(department));
+            final Department savedDepartment = departmentRepository.save(department);
+            return Optional.of(departmentMapper.toDto(savedDepartment));
         }
 
         return Optional.empty();
     }
 
     @Transactional
-    public boolean deleteDepartment(UUID id) {
-        if (departmentRepository.existsById(id)) {
-            departmentRepository.deleteById(id);
-            return true;
+    public Optional<DepartmentDto> deleteDepartment(final UUID id) {
+        final Optional<Department> departmentOpt = departmentRepository.findById(id);
+
+        if (departmentOpt.isPresent()) {
+            final Department department = departmentOpt.get();
+            departmentRepository.delete(department);
+            return Optional.of(departmentMapper.toDto(department));
         }
-        return false;
+
+        return Optional.empty();
     }
 }

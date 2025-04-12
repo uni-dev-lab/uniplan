@@ -19,7 +19,6 @@ public class LectorService {
 
     private final FacultyService facultyService;
 
-    @Transient
     public LectorDto createLector(LectorDto lectorDto) {
         if (lectorRepository.existsById(lectorDto.id())) {
             throw new IllegalArgumentException("Id already in use.");
@@ -29,14 +28,13 @@ public class LectorService {
                                         "University not found"));
         Lector lector = lectorMapper.toEntity(lectorDto);
         lector.setFaculty(faculty);
-        lector.setEmail(lectorDto.email());
         lector = lectorRepository.save(lector);
         return lectorMapper.toDto(lector);
     }
 
     public List<LectorDto> getAllLectors() {
         List<Lector> lectors = lectorRepository.findAll();
-        return lectors.stream().map(lectorMapper::toDto).toList();
+        return lectorMapper.toDtos(lectors);
     }
 
     public Optional<LectorDto> getLectorById(UUID id) {
@@ -44,17 +42,16 @@ public class LectorService {
         return lector.map(lectorMapper::toDto);
     }
 
-    public Lector updateLector(UUID id, Lector updatedLector) {
+    public Lector updateLector(UUID id, LectorDto updatedLector) {
         Lector existingLector = lectorRepository.findById(id)
                                                 .orElseThrow(() -> new EntityNotFoundException("Lector not found with id: " + id));
 
-        if (!id.equals(updatedLector.getId()) &&
-            lectorRepository.existsById(updatedLector.getId())) {
+        if (!id.equals(updatedLector.id()) &&
+            lectorRepository.existsById(updatedLector.id())) {
             throw new IllegalArgumentException("Id already in use.");
         }
 
-        existingLector.setFaculty(updatedLector.getFaculty());
-        existingLector.setEmail(updatedLector.getEmail());
+        lectorMapper.updateEntity(updatedLector, existingLector);
 
         return lectorRepository.save(existingLector);
     }

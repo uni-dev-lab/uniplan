@@ -40,7 +40,7 @@ public class LectorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Lector> updateLector(@PathVariable UUID id, @Valid @RequestBody LectorDto lector) {
+    public ResponseEntity<LectorDto> updateLector(@PathVariable UUID id, @Valid @RequestBody LectorDto lector) {
         return ResponseEntity.ok(lectorService.updateLector(id, lector));
     }
 

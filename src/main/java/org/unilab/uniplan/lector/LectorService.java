@@ -41,7 +41,7 @@ public class LectorService {
         return lector.map(lectorMapper::toDto);
     }
 
-    public Lector updateLector(UUID id, LectorDto updatedLector) {
+    public LectorDto updateLector(UUID id, LectorDto updatedLector) {
         Lector existingLector = lectorRepository.findById(id)
                                                 .orElseThrow(() -> new EntityNotFoundException("Lector not found with id: " + id));
 
@@ -52,7 +52,8 @@ public class LectorService {
 
         lectorMapper.updateEntity(updatedLector, existingLector);
 
-        return lectorRepository.save(existingLector);
+        Lector savedLector = lectorRepository.save(existingLector);
+        return lectorMapper.toDto(savedLector);
     }
 
     public void deleteLector(UUID id) {

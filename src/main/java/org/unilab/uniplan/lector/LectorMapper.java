@@ -18,4 +18,6 @@ public interface LectorMapper {
     void updateEntity(LectorDto dto, @MappingTarget Lector entity);
 
     List<LectorDto> toDtos(List<Lector> lectors);
+
+
 }

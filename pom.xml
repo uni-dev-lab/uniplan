@@ -115,6 +115,14 @@
               <version>0.2.0</version>
             </path>
           </annotationProcessorPaths>
+          <compilerArgs>
+            <arg>
+              -Amapstruct.defaultComponentModel=spring
+            </arg>
+            <arg>
+              -Amapstruct.defaultInjectionStrategy=constructor
+            </arg>
+          </compilerArgs>
         </configuration>
       </plugin>
     </plugins>

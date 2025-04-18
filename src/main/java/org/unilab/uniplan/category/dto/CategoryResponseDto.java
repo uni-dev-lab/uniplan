@@ -1,10 +1,10 @@
-package org.unilab.uniplan.category;
+package org.unilab.uniplan.category.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.UUID;
 
-public record CategoryDto(
+public record CategoryResponseDto(
 
     UUID id,
 

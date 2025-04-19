@@ -47,7 +47,7 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CategoryResponseDto> getCategoryById(@NotNull @PathVariable final UUID id) {
-        CategoryDto categoryDto = categoryService.getCategoryById(id)
+        final CategoryDto categoryDto = categoryService.getCategoryById(id)
                                                  .orElseThrow(() -> new ResponseStatusException(
                                                      HttpStatus.NOT_FOUND,
                                                      MessageFormat.format(CATEGORY_NOT_FOUND, id)
@@ -62,7 +62,7 @@ public class CategoryController {
         @PathVariable final UUID id,
         @Valid @NotNull @RequestBody final CategoryRequestDto categoryRequestDto) {
 
-        CategoryDto internalDto = categoryMapper.toInternalDto(categoryRequestDto);
+        final CategoryDto internalDto = categoryMapper.toInternalDto(categoryRequestDto);
 
         return categoryService.updateCategory(id, internalDto)
                               .map(categoryMapper::toResponseDto)

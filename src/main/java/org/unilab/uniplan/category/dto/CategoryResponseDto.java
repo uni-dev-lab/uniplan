@@ -1,6 +1,7 @@
 package org.unilab.uniplan.category.dto;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import java.util.UUID;
 
@@ -13,6 +14,7 @@ public record CategoryResponseDto(
     String roomType,
 
     @NotNull(message = "Capacity cannot be null")
+    @Positive
     short capacity
 ) {
 

@@ -4,20 +4,27 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.unilab.uniplan.category.dto.CategoryDto;
 import org.unilab.uniplan.category.dto.CategoryRequestDto;
 import org.unilab.uniplan.category.dto.CategoryResponseDto;
 
 @Mapper
 public interface CategoryMapper {
 
-    Category toEntity(final CategoryRequestDto categoryRequestDto);
+    Category toEntity(final CategoryDto categoryDto);
 
-    CategoryResponseDto toDto(final Category category);
+    CategoryDto toDto(final Category category);
 
-    List<CategoryResponseDto> toDtoList(final List<Category> categories);
+    CategoryDto toInternalDto(final CategoryRequestDto categoryRequestDto);
 
-    @Mapping(target = "roomType", source = "categoryRequestDto.roomType")
-    @Mapping(target = "capacity", source = "categoryRequestDto.capacity")
-    void updateEntityFromDto(final CategoryRequestDto categoryRequestDto,
+    CategoryResponseDto toResponseDto(final CategoryDto categoryDto);
+
+    List<CategoryDto> toDtoList(final List<Category> categories);
+
+    List<CategoryResponseDto> toResponseDtoList(final List<CategoryDto> categories);
+
+    @Mapping(target = "roomType", source = "categoryDto.roomType")
+    @Mapping(target = "capacity", source = "categoryDto.capacity")
+    void updateEntityFromDto(final CategoryDto categoryDto,
                              @MappingTarget final Category category);
 }

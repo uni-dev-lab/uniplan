@@ -1,37 +1,28 @@
 package org.unilab.uniplan.student;
 
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.unilab.uniplan.course.Course;
+import org.unilab.uniplan.course.CourseNotFoundException;
 import org.unilab.uniplan.course.CourseService;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class StudentService {
 
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
     private final CourseService courseService;
-
-    @Autowired
-    public StudentService (final StudentRepository studentRepository,
-                           final StudentMapper studentMapper,
-                           final CourseService courseService) {
-        this.studentRepository = studentRepository;
-        this.studentMapper = studentMapper;
-        this.courseService = courseService;
-    }
     
     @Transactional
     public StudentDTO createStudent(final StudentDTO studentDTO) {
         Course course = courseService.findById(studentDTO.courseId())
-                                     .orElseThrow(() ->new RuntimeException("Course with id " + studentDTO.courseId() + " doesn't exists"));
-        Student student = new Student(course, studentDTO.facultyNumber());
-        student.setFirstName(studentDTO.firstName());
-        student.setLastName(studentDTO.lastName());
+                                     .orElseThrow(() ->new CourseNotFoundException(studentDTO.courseId()));
+        Student student = studentMapper.toEntity(studentDTO);
         student.setCreatedAt();
         return studentMapper.toDTO(studentRepository.save(student));
     }
@@ -52,13 +43,10 @@ public class StudentService {
     @Transactional
     public StudentDTO updateStudent(final UUID id, final StudentDTO studentDTO) {
         Student student = studentRepository.findById(id)
-                                           .orElseThrow(()->new RuntimeException("Student with id " + studentDTO.id() + " doesn't exists"));
+                                           .orElseThrow(()->new StudentNotFoundException(id));
         Course course = courseService.findById(studentDTO.courseId())
-                                     .orElseThrow(()->new RuntimeException("Course with id " + studentDTO.courseId() + " doesn't exists"));
-        student.setFirstName(studentDTO.firstName());
-        student.setLastName(studentDTO.lastName());
-        student.setFacultyNumber(studentDTO.facultyNumber());
-        student.setCourse(course);
+                                     .orElseThrow(()->new StudentNotFoundException(studentDTO.courseId()));
+        studentMapper.updateEntityFromDTO(studentDTO, student);
         student.setUpdatedAt();
         return studentMapper.toDTO(studentRepository.save(student));
     }

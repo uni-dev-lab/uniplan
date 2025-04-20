@@ -1,6 +1,9 @@
 package org.unilab.uniplan.student;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,38 +18,41 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/students")
+@RequiredArgsConstructor
 public class StudentController {
     private final StudentService studentService;
-
-    @Autowired
-    public StudentController(final StudentService studentService) {
-        this.studentService = studentService;
-    }
-
+    
     @PostMapping
-    public ResponseEntity<StudentDTO> createStudent(@RequestBody final StudentDTO studentDTO) {
-        return ResponseEntity.ok(studentService.createStudent(studentDTO));
+    public ResponseEntity<StudentDTO> createStudent(@RequestBody @NotNull
+                                                        @Valid final StudentDTO studentDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                             .body(studentService.createStudent(studentDTO));
     }
     @GetMapping("/{id}")
-    public ResponseEntity<StudentDTO> getStudent(@PathVariable final UUID studentId) {
+    public ResponseEntity<StudentDTO> getStudent(@PathVariable
+                                                     @NotNull final UUID studentId) {
         return ResponseEntity.ok(studentService.findStudentById(studentId)
-                                               .orElseThrow(()-> new RuntimeException("Student not found")));
+                                               .orElseThrow(()-> new StudentNotFoundException(studentId)));
     }
     
     @GetMapping
-    public ResponseEntity<List<StudentDTO>> getAllStudents() {
-        return ResponseEntity.ok(studentService.findAll());
+    public List<StudentDTO> getAllStudents() {
+        return studentService.findAll();
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<StudentDTO> updateStudent(@PathVariable final UUID studentId, @RequestBody final StudentDTO studentDTO) {
+    public ResponseEntity<StudentDTO> updateStudent(@PathVariable
+                                                        @NotNull final UUID studentId, 
+                                                    @RequestBody
+                                                        @NotNull @Valid final StudentDTO studentDTO) {
         return ResponseEntity.ok(studentService.updateStudent(studentId, studentDTO));
     }
     
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStudent(@PathVariable final UUID studentId) {
+    public ResponseEntity<Void> deleteStudent(@PathVariable
+                                                  @NotNull final UUID studentId) {
         if(studentService.deleteStudent(studentId)){
-            return ResponseEntity.ok().build();
+            return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
     }

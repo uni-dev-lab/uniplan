@@ -3,7 +3,6 @@ package org.unilab.uniplan.lector;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.unilab.uniplan.faculty.Faculty;
 import org.unilab.uniplan.faculty.FacultyService;
 import java.util.List;
 import java.util.Optional;
@@ -19,14 +18,7 @@ public class LectorService {
     private final FacultyService facultyService;
 
     public LectorDto createLector(LectorDto lectorDto) {
-        if (lectorRepository.existsById(lectorDto.id())) {
-            throw new IllegalArgumentException("Id already in use.");
-        }
-        Faculty faculty = facultyService.getFaculty(lectorDto.facultyId())
-                                        .orElseThrow(() -> new IllegalArgumentException(
-                                        "Faculty not found"));
         Lector lector = lectorMapper.toEntity(lectorDto);
-        //lector.setFaculty(faculty);
         lector = lectorRepository.save(lector);
         return lectorMapper.toDto(lector);
     }

@@ -13,7 +13,7 @@ public interface LectorMapper {
     @Mapping(source = "faculty.id", target = "facultyId")
     LectorDto toDto(Lector lector);
 
-    @Mapping(source = "facultyId", target = "faculty")
+    @Mapping(source = "facultyId", target = "faculty.id")
     Lector toEntity(LectorDto lectorDto);
 
     @Mapping(source = "facultyId", target = "faculty")

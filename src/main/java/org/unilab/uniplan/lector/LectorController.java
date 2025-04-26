@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,8 +37,13 @@ public class LectorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<LectorDto>> getLectorById(@PathVariable UUID id) {
-        return ResponseEntity.ok(lectorService.getLectorById(id));
+    public ResponseEntity<LectorDto> getLectorById(@PathVariable UUID id) {
+        final LectorDto lectorDto = lectorService.getLectorById(id)
+                                                       .orElseThrow(() -> new ResponseStatusException(
+                                                           HttpStatus.NOT_FOUND,
+                                                           MessageFormat.format("LECTOR_NOT_FOUND", id)
+                                                       ));
+        return ResponseEntity.ok(lectorDto);
     }
 
     @PutMapping("/{id}")

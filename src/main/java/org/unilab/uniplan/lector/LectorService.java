@@ -26,7 +26,7 @@ public class LectorService {
                                         .orElseThrow(() -> new IllegalArgumentException(
                                         "Faculty not found"));
         Lector lector = lectorMapper.toEntity(lectorDto);
-        lector.setFaculty(faculty);
+        //lector.setFaculty(faculty);
         lector = lectorRepository.save(lector);
         return lectorMapper.toDto(lector);
     }

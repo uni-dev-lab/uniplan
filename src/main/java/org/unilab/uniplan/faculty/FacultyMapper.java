@@ -18,6 +18,7 @@ public interface FacultyMapper {
     FacultyDto toDto(Faculty faculty);
 
     @Mapping(target = "universityId", source = "universityId")
+    @Mapping(target = "id", ignore = true)
     FacultyDto toInternalDto(FacultyRequestDto facultyRequestDto);
 
     @Mapping(target = "universityId", source = "universityId")

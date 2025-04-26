@@ -15,6 +15,7 @@ public interface UniversityMapper {
 
     UniversityDto toDto(final University university);
 
+    @Mapping(target = "id", ignore = true)
     UniversityDto toInternalDto(final UniversityRequestDto universityRequestDto);
 
     UniversityResponseDto toResponseDto(final UniversityDto universityDto);

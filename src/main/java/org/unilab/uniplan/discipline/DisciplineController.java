@@ -1,48 +1,71 @@
 package org.unilab.uniplan.discipline;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.server.ResponseStatusException;
+import org.unilab.uniplan.discipline.dto.DisciplineDto;
+import org.unilab.uniplan.discipline.dto.DisciplineRequestDto;
+import org.unilab.uniplan.discipline.dto.DisciplineResponseDto;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/disciplines")
 public class DisciplineController {
 
+    public static final String DISCIPLINE_NOT_FOUND = "Discipline with ID {0} not found.";
+    private final DisciplineMapper disciplineMapper;
     private final DisciplineService disciplineService;
 
-    public DisciplineController(DisciplineService disciplineService) {
-        this.disciplineService = disciplineService;
-    }
-
     @PostMapping
-    public ResponseEntity<DisciplineDto> create(@Valid @RequestBody DisciplineDto dto) {
-        DisciplineDto created = disciplineService.createDiscipline(dto);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    public ResponseEntity<DisciplineResponseDto> create(@Valid @NotNull @RequestBody final DisciplineRequestDto disciplineRequestDto) {
+        final DisciplineDto disciplineDto = disciplineService.createDiscipline(
+            disciplineMapper.toInternalDto(
+                disciplineRequestDto));
+        return new ResponseEntity<>(disciplineMapper.toResponseDto(disciplineDto), HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<DisciplineDto>> getAll() {
-        return ResponseEntity.ok(disciplineService.getAllDisciplines());
+    public List<DisciplineResponseDto> getAllDisciplines() {
+        return disciplineMapper.toResponseDtoList(disciplineService.getAllDisciplines());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DisciplineDto> getById(@PathVariable UUID id) {
-        return ResponseEntity.ok(disciplineService.getDisciplineById(id));
+    public ResponseEntity<DisciplineResponseDto> getDisciplineById(@NotNull @PathVariable final UUID id) {
+        final DisciplineDto disciplineDto = disciplineService.getDisciplineById(id)
+                                                             .orElseThrow(() -> new ResponseStatusException(
+                                                                 HttpStatus.NOT_FOUND,
+                                                                 MessageFormat.format(
+                                                                     DISCIPLINE_NOT_FOUND,
+                                                                     id)));
+        return ResponseEntity.ok(disciplineMapper.toResponseDto(disciplineDto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DisciplineDto> update(@PathVariable UUID id, @Valid @RequestBody DisciplineDto dto) {
-        DisciplineDto updated = disciplineService.updateDiscipline(id, dto);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<DisciplineResponseDto> update(@NotNull @PathVariable UUID id, @Valid @NotNull @RequestBody DisciplineRequestDto disciplineRequestDto) {
+       final DisciplineDto internalDto =disciplineMapper.toInternalDto(disciplineRequestDto);
+
+       return disciplineService.updateDiscipline(id, internalDto)
+                               .map(disciplineMapper::toResponseDto)
+                               .map(ResponseEntity::ok)
+                               .orElseThrow(() -> new ResponseStatusException(
+                                   HttpStatus.NOT_FOUND,
+                                   MessageFormat.format(
+                                       DISCIPLINE_NOT_FOUND,
+                                       id)
+                               ));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteDiscipline(@NotNull @PathVariable UUID id) {
         disciplineService.deleteDiscipline(id);
+
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,16 +1,12 @@
-package org.unilab.uniplan.discipline;
+package org.unilab.uniplan.discipline.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.unilab.uniplan.programdiscipline.ProgramDiscipline;
 import java.util.List;
-import java.util.UUID;
 
-public record DisciplineDto(
-
-    UUID id,
-
+public record DisciplineRequestDto(
     @NotBlank(message = "Discipline name must not be blank")
     @Size(max = 100, message = "Discipline name must be at most 255 characters")
     String name,

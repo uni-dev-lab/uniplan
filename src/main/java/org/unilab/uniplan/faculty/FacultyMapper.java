@@ -29,8 +29,6 @@ public interface FacultyMapper {
     List<FacultyResponseDto> toResponseDtoList(List<FacultyDto> faculties);
 
     @Mapping(target = "university.id", source = "facultyDto.universityId")
-    @Mapping(target = "facultyName", source = "facultyDto.facultyName")
-    @Mapping(target = "location", source = "facultyDto.location")
     @Mapping(target = "id", ignore = true)
     void updateEntityFromDto(FacultyDto facultyDto, @MappingTarget Faculty faculty);
 }

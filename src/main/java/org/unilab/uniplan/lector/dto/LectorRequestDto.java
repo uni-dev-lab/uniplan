@@ -1,4 +1,4 @@
-package org.unilab.uniplan.lector;
+package org.unilab.uniplan.lector.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -6,9 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.UUID;
 
-public record LectorDto(
-
-    UUID id,
+public record LectorRequestDto(
 
     @NotNull(message = "Faculty ID cannot be null")
     UUID facultyId,

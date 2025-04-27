@@ -23,12 +23,8 @@ public interface UniversityMapper {
     List<UniversityDto> toDtoList(final List<University> universities);
 
     List<UniversityResponseDto> toResponseDtoList(final List<UniversityDto> universities);
-
-    @Mapping(target = "uniName", source = "universityDto.uniName")
-    @Mapping(target = "location", source = "universityDto.location")
-    @Mapping(target = "accreditation", source = "universityDto.accreditation")
-    @Mapping(target = "website", source = "universityDto.website")
+  
     @Mapping(target = "id", ignore = true)
-    void updateEntityFromDto(final UniversityDto universityDto,
+    void updateEntityFromDto(final UniversityDto universityDto, 
                              @MappingTarget final University university);
 }

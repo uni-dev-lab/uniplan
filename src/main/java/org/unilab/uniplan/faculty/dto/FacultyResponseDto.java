@@ -1,10 +1,10 @@
-package org.unilab.uniplan.faculty;
+package org.unilab.uniplan.faculty.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.UUID;
 
-public record FacultyDto(
+public record FacultyResponseDto(
 
     UUID id,
 

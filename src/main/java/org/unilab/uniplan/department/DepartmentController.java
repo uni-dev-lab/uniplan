@@ -1,9 +1,13 @@
 package org.unilab.uniplan.department;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import java.text.MessageFormat;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,42 +16,68 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+import org.unilab.uniplan.department.dto.DepartmentDto;
+import org.unilab.uniplan.department.dto.DepartmentRequestDto;
+import org.unilab.uniplan.department.dto.DepartmentResponseDto;
 
 @RestController
-@RequestMapping("/api/departments")
+@RequestMapping("/departments")
+@RequiredArgsConstructor
 public class DepartmentController {
 
-    private final DepartmentService departmentService;
+    public static final String DEPARTMENT_NOT_FOUND = "Department with ID {0} not found.";
 
-    @Autowired
-    public DepartmentController(DepartmentService departmentService) {
-        this.departmentService = departmentService;
-    }
+    private final DepartmentService departmentService;
+    private final DepartmentMapper departmentMapper;
 
     @PostMapping
-    public DepartmentDto createDepartment(@RequestBody DepartmentDto departmentDto) {
-        return departmentService.createDepartment(departmentDto);
+    public ResponseEntity<DepartmentResponseDto> createDepartment(
+        @Valid @NotNull @RequestBody final DepartmentRequestDto departmentRequestDto) {
+
+        final DepartmentDto departmentDto = departmentService.createDepartment(departmentMapper.toInternalDto(
+            departmentRequestDto));
+
+        return new ResponseEntity<>(departmentMapper.toResponseDto(departmentDto),
+                                    HttpStatus.CREATED);
     }
 
     @GetMapping
-    public List<DepartmentDto> getAllDepartments() {
-        return departmentService.getAllDepartments();
+    public List<DepartmentResponseDto> getAllDepartments() {
+        return departmentMapper.toResponseDtoList(departmentService.getAllDepartments());
     }
 
     @GetMapping("/{id}")
-    public Optional<DepartmentDto> getDepartmentById(@PathVariable UUID id) {
-        return departmentService.getDepartmentById(id);
+    public ResponseEntity<DepartmentResponseDto> getDepartmentById(@NotNull @PathVariable final UUID id) {
+        final DepartmentDto departmentDto = departmentService.getDepartmentById(id)
+                                                             .orElseThrow(() -> new ResponseStatusException(
+                                                                 HttpStatus.NOT_FOUND,
+                                                                 MessageFormat.format(
+                                                                     DEPARTMENT_NOT_FOUND,
+                                                                     id)
+                                                             ));
+        return ResponseEntity.ok(departmentMapper.toResponseDto(departmentDto));
     }
 
     @PutMapping("/{id}")
-    public Optional<DepartmentDto> updateDepartment(
-        @PathVariable UUID id,
-        @RequestBody DepartmentDto departmentDto) {
-        return departmentService.updateDepartment(id, departmentDto);
+    public ResponseEntity<DepartmentResponseDto> updateDepartment(
+        @PathVariable final UUID id,
+        @Valid @NotNull @RequestBody final DepartmentRequestDto departmentRequestDto) {
+
+        final DepartmentDto departmentDto = departmentMapper.toInternalDto(departmentRequestDto);
+
+        return departmentService.updateDepartment(id, departmentDto)
+                                .map(departmentMapper::toResponseDto)
+                                .map(ResponseEntity::ok)
+                                .orElseThrow(() -> new ResponseStatusException(
+                                    HttpStatus.NOT_FOUND,
+                                    MessageFormat.format(DEPARTMENT_NOT_FOUND, id)
+                                ));
     }
 
     @DeleteMapping("/{id}")
-    public boolean deleteDepartment(@PathVariable UUID id) {
-        return departmentService.deleteDepartment(id);
+    public ResponseEntity<Void> deleteDepartment(@PathVariable final UUID id) {
+        departmentService.deleteDepartment(id);
+        return ResponseEntity.noContent().build();
     }
 }

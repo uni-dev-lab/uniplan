@@ -15,6 +15,7 @@ public interface UniversityMapper {
 
     UniversityDto toDto(final University university);
 
+    @Mapping(target = "id", ignore = true)
     UniversityDto toInternalDto(final UniversityRequestDto universityRequestDto);
 
     UniversityResponseDto toResponseDto(final UniversityDto universityDto);
@@ -22,8 +23,8 @@ public interface UniversityMapper {
     List<UniversityDto> toDtoList(final List<University> universities);
 
     List<UniversityResponseDto> toResponseDtoList(final List<UniversityDto> universities);
-
+  
     @Mapping(target = "id", ignore = true)
-    void updateEntityFromDto(final UniversityDto universityDto,
+    void updateEntityFromDto(final UniversityDto universityDto, 
                              @MappingTarget final University university);
 }

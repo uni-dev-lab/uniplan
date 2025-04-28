@@ -1,80 +1,56 @@
 package org.unilab.uniplan.faculty;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.unilab.uniplan.university.University;
-import org.unilab.uniplan.university.UniversityService;
+import org.unilab.uniplan.faculty.dto.FacultyDto;
 
 @Service
+@RequiredArgsConstructor
 public class FacultyService {
 
+    public static final String FACULTY_NOT_FOUND = "Faculty with ID {0} not found.";
+
     private final FacultyRepository facultyRepository;
-    private final UniversityService universityService;
     private final FacultyMapper facultyMapper;
 
-    @Autowired
-    public FacultyService(FacultyRepository facultyRepository,
-                          UniversityService universityService,
-                          FacultyMapper facultyMapper) {
-        this.facultyRepository = facultyRepository;
-        this.universityService = universityService;
-        this.facultyMapper = facultyMapper;
-    }
-
     @Transactional
-    public FacultyDto createFaculty(FacultyDto facultyDto) {
-        University university = universityService.getUniversity(facultyDto.universityId())
-                                                 .orElseThrow(() -> new IllegalArgumentException(
-                                                     "University not found"));
-        Faculty faculty = facultyMapper.toEntity(facultyDto);
-        faculty.setFacultyName(facultyDto.facultyName());
-        faculty.setLocation(facultyDto.location());
-        faculty.setUniversity(university);
-        faculty = facultyRepository.save(faculty);
-        return facultyMapper.toDto(faculty);
+    public FacultyDto createFaculty(final FacultyDto facultyDto) {
+        final Faculty faculty = facultyMapper.toEntity(facultyDto);
+
+        return facultyMapper.toDto(facultyRepository.save(faculty));
     }
 
     public List<FacultyDto> getAllFaculties() {
-        List<Faculty> faculties = facultyRepository.findAll();
-        return faculties.stream().map(facultyMapper::toDto).toList();
+        final List<Faculty> faculties = facultyRepository.findAll();
+        return facultyMapper.toDtoList(faculties);
     }
 
-    public Optional<FacultyDto> getFacultyById(UUID id) {
-        Optional<Faculty> faculty = facultyRepository.findById(id);
-        return faculty.map(facultyMapper::toDto);
-    }
-
-    public Optional<Faculty> getFaculty(UUID id) {
-        return facultyRepository.findById(id);
+    public Optional<FacultyDto> getFacultyById(final UUID id) {
+        return facultyRepository.findById(id)
+                                .map(facultyMapper::toDto);
     }
 
     @Transactional
-    public Optional<FacultyDto> updateFaculty(UUID id, FacultyDto facultyDto) {
-        Optional<Faculty> existingFaculty = facultyRepository.findById(id);
-        if (existingFaculty.isPresent()) {
-            University university = universityService.getUniversity(facultyDto.universityId())
-                                                     .orElseThrow(() -> new IllegalArgumentException(
-                                                         "University not found"));
-            Faculty faculty = existingFaculty.get();
-            faculty.setFacultyName(facultyDto.facultyName());
-            faculty.setLocation(facultyDto.location());
-            faculty.setUniversity(university);
-            faculty = facultyRepository.save(faculty);
-            return Optional.of(facultyMapper.toDto(faculty));
-        }
-        return Optional.empty();
+    public Optional<FacultyDto> updateFaculty(final UUID id, final FacultyDto facultyDto) {
+        return facultyRepository.findById(id)
+                                .map(existingFaculty -> {
+                                    facultyMapper.updateEntityFromDto(facultyDto, existingFaculty);
+
+                                    return facultyMapper.toDto(facultyRepository.save(
+                                        existingFaculty));
+                                });
     }
 
     @Transactional
-    public boolean deleteFaculty(UUID id) {
-        if (facultyRepository.existsById(id)) {
-            facultyRepository.deleteById(id);
-            return true;
-        }
-        return false;
+    public void deleteFaculty(final UUID id) {
+        final Faculty faculty = facultyRepository.findById(id)
+                                                 .orElseThrow(() -> new RuntimeException(
+                                                     MessageFormat.format(FACULTY_NOT_FOUND, id)));
+        facultyRepository.delete(faculty);
     }
 }

@@ -1,74 +1,61 @@
 package org.unilab.uniplan.university;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.unilab.uniplan.university.dto.UniversityDto;
 
 @Service
+@RequiredArgsConstructor
 public class UniversityService {
+
+    public static final String UNIVERSITY_NOT_FOUND = "University with ID {0} not found.";
 
     private final UniversityRepository universityRepository;
     private final UniversityMapper universityMapper;
 
-    @Autowired
-    public UniversityService(UniversityRepository universityRepository,
-                             UniversityMapper universityMapper) {
-        this.universityRepository = universityRepository;
-        this.universityMapper = universityMapper;
-    }
-
     @Transactional
-    public UniversityDto createUniversity(UniversityDto universityDto) {
-        University university = universityMapper.toEntity(universityDto);
-        university.setUniName(universityDto.uniName());
-        university.setLocation(universityDto.location());
-        university.setEstablishedYear(universityDto.establishedYear());
-        university.setAccreditation(universityDto.accreditation());
-        university.setWebsite(universityDto.website());
-        university = universityRepository.save(university);
-        return universityMapper.toDto(university);
+    public UniversityDto createUniversity(final UniversityDto universityDto) {
+        final University university = universityMapper.toEntity(universityDto);
+
+        return universityMapper.toDto(universityRepository.save(university));
     }
 
     public List<UniversityDto> getAllUniversities() {
-        List<University> universities = universityRepository.findAll();
-        return universities.stream().map(universityMapper::toDto).toList();
+        final List<University> universities = universityRepository.findAll();
+
+        return universityMapper.toDtoList(universities);
     }
 
-    public Optional<UniversityDto> getUniversityById(UUID id) {
-        Optional<University> university = universityRepository.findById(id);
-        return university.map(universityMapper::toDto);
-    }
-
-    public Optional<University> getUniversity(UUID id) {
-        return universityRepository.findById(id);
+    public Optional<UniversityDto> getUniversityById(final UUID id) {
+        return universityRepository.findById(id)
+                                   .map(universityMapper::toDto);
     }
 
     @Transactional
-    public Optional<UniversityDto> updateUniversity(UUID id, UniversityDto universityDto) {
-        Optional<University> existingUniversity = universityRepository.findById(id);
-        if (existingUniversity.isPresent()) {
-            University university = existingUniversity.get();
-            university.setUniName(universityDto.uniName());
-            university.setLocation(universityDto.location());
-            university.setEstablishedYear(universityDto.establishedYear());
-            university.setAccreditation(universityDto.accreditation());
-            university.setWebsite(universityDto.website());
-            university = universityRepository.save(university);
-            return Optional.of(universityMapper.toDto(university));
-        }
-        return Optional.empty();
+    public Optional<UniversityDto> updateUniversity(final UUID id,
+                                                    final UniversityDto universityDto) {
+        return universityRepository.findById(id)
+                                   .map(existingUniversity -> {
+                                       universityMapper.updateEntityFromDto(universityDto,
+                                                                            existingUniversity);
+
+                                       return universityMapper.toDto(universityRepository.save(
+                                           existingUniversity));
+                                   });
     }
 
     @Transactional
-    public boolean deleteUniversity(UUID id) {
-        Optional<University> university = universityRepository.findById(id);
-        if (university.isPresent()) {
-            universityRepository.deleteById(id);
-            return true;
-        }
-        return false;
+    public void deleteUniversity(final UUID id) {
+        final University university = universityRepository.findById(id)
+                                                          .orElseThrow(() -> new RuntimeException(
+                                                              MessageFormat.format(
+                                                                  UNIVERSITY_NOT_FOUND,
+                                                                  id)));
+        universityRepository.delete(university);
     }
 }

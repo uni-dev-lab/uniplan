@@ -13,7 +13,7 @@ import org.unilab.uniplan.room.dto.RoomDto;
 @RequiredArgsConstructor
 public class RoomService {
 
-    public static final String ROOM_NOT_FOUND = "Room with ID {0} not found.";
+    private static final String ROOM_NOT_FOUND = "Room with ID {0} not found.";
 
     private final RoomRepository roomRepository;
     private final RoomMapper roomMapper;

@@ -26,7 +26,7 @@ import org.unilab.uniplan.room.dto.RoomResponseDto;
 @RequiredArgsConstructor
 public class RoomController {
 
-    public static final String ROOM_NOT_FOUND = "Room with ID {0} not found.";
+    private static final String ROOM_NOT_FOUND = "Room with ID {0} not found.";
 
     private final RoomService roomService;
     private final RoomMapper roomMapper;
@@ -69,7 +69,7 @@ public class RoomController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRoom(@PathVariable final UUID id) {
         roomService.deleteRoom(id);
-        
+
         return ResponseEntity.noContent().build();
     }
 }

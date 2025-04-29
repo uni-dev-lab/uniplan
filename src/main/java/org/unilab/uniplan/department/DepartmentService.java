@@ -13,7 +13,7 @@ import org.unilab.uniplan.department.dto.DepartmentDto;
 @RequiredArgsConstructor
 public class DepartmentService {
 
-    public static final String DEPARTMENT_NOT_FOUND = "Department with ID {0} not found.";
+    private static final String DEPARTMENT_NOT_FOUND = "Department with ID {0} not found.";
 
     private final DepartmentRepository departmentRepository;
     private final DepartmentMapper departmentMapper;

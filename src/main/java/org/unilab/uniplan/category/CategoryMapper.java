@@ -15,6 +15,7 @@ public interface CategoryMapper {
 
     CategoryDto toDto(final Category category);
 
+    @Mapping(target = "id", ignore = true)
     CategoryDto toInternalDto(final CategoryRequestDto categoryRequestDto);
 
     CategoryResponseDto toResponseDto(final CategoryDto categoryDto);
@@ -23,8 +24,7 @@ public interface CategoryMapper {
 
     List<CategoryResponseDto> toResponseDtoList(final List<CategoryDto> categories);
 
-    @Mapping(target = "roomType", source = "categoryDto.roomType")
-    @Mapping(target = "capacity", source = "categoryDto.capacity")
+    @Mapping(target = "id", ignore = true)
     void updateEntityFromDto(final CategoryDto categoryDto,
                              @MappingTarget final Category category);
 }

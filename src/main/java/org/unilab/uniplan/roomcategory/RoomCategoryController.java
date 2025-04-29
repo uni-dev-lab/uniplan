@@ -25,7 +25,7 @@ import org.unilab.uniplan.roomcategory.dto.RoomCategoryResponseDto;
 @RequiredArgsConstructor
 public class RoomCategoryController {
 
-    public static final String ROOM_CATEGORY_NOT_FOUND = "Room Category with Room ID {0} and Category ID {1} not found.";
+    private static final String ROOM_CATEGORY_NOT_FOUND = "Room Category with Room ID {0} and Category ID {1} not found.";
 
     private final RoomCategoryService roomCategoryService;
     private final RoomCategoryMapper roomCategoryMapper;

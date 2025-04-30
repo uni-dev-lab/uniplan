@@ -4,8 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.UUID;
 
-public record MajorDTO(
-    UUID id,
+public record MajorRequestDTO(
     @NotNull
     UUID facultyId,
     @NotNull

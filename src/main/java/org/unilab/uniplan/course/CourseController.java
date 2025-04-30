@@ -1,11 +1,15 @@
 package org.unilab.uniplan.course;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,33 +18,36 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/courses")
+@RequiredArgsConstructor
 public class CourseController {
 
     private final CourseService courseService;
-
-    @Autowired
-    public CourseController(final CourseService courseService) {
-        this.courseService = courseService;
-    }
+    private final CourseMapper courseMapper;
+    
     @PostMapping
-    public ResponseEntity<CourseDTO> addCourse(@RequestBody final CourseDTO courseDTO) {
-        return ResponseEntity.ok(courseService.createCourse(courseDTO));
+    public ResponseEntity<CourseResponseDTO> addCourse(@RequestBody @NotNull
+                                                           @Valid final CourseRequestDTO courseRequestDTO) {
+        final CourseDTO courseDTO = courseMapper.toInnerDTO(courseRequestDTO);     
+        return ResponseEntity.status(HttpStatus.CREATED)
+                             .body(courseMapper.toResponseDTO(courseService.createCourse(courseDTO)));
     }
     @GetMapping("/{id}")
-    public ResponseEntity<CourseDTO> getMajorById(@PathVariable final UUID id) {
-        return ResponseEntity.ok(courseService.findCourseById(id)
-                                              .orElseThrow(()->new RuntimeException("Course with id " + id + " doesn't exists")));
+    public ResponseEntity<CourseResponseDTO> getMajorById(@PathVariable @NotNull final UUID id) {
+        return ResponseEntity.ok(courseMapper.toResponseDTO(courseService.findCourseById(id)
+                                              .orElseThrow(()->new CourseNotFoundException(id))));
     }
     @GetMapping
-    public ResponseEntity<List<CourseDTO>> getAllCourses() {
-        return ResponseEntity.ok(courseService.findAll());
+    public List<CourseResponseDTO> getAllCourses() {
+        return courseMapper.toResponseDTOList(courseService.findAll());
     }
-    @PostMapping("/{id}")
-    public ResponseEntity<CourseDTO> updateCourse(@PathVariable final UUID id, @RequestBody final CourseDTO courseDTO) {
-        return ResponseEntity.ok(courseService.updateCourse(id, courseDTO));
+    @PutMapping("/{id}")
+    public ResponseEntity<CourseResponseDTO> updateCourse(@PathVariable @NotNull final UUID id,
+                                                          @RequestBody @NotNull @Valid final CourseRequestDTO courseRequestDTO) {
+        final CourseDTO courseDTO = courseMapper.toInnerDTO(courseRequestDTO);
+        return ResponseEntity.ok(courseMapper.toResponseDTO(courseService.updateCourse(id, courseDTO)));
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCourse(@PathVariable final UUID id) {
+    public ResponseEntity<Void> deleteCourse(@PathVariable @NotNull final UUID id) {
         if(courseService.deleteCourse(id)){
             return ResponseEntity.noContent().build();
         }

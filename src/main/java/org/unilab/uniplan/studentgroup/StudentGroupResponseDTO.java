@@ -3,7 +3,7 @@ package org.unilab.uniplan.studentgroup;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
-public record StudentGroupDTO(
+public record StudentGroupResponseDTO(
     UUID id,
     @NotNull
     UUID studentId,

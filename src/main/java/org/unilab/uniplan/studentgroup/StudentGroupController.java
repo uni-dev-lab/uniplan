@@ -1,47 +1,54 @@
 package org.unilab.uniplan.studentgroup;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.unilab.uniplan.student.StudentNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/studentGroups")
+@RequiredArgsConstructor
 public class StudentGroupController {
     
     private final StudentGroupService studentGroupService;
-
-    @Autowired
-    public StudentGroupController(final StudentGroupService studentGroupService) {
-        this.studentGroupService = studentGroupService;
-    }
+    private final StudentGroupMapper studentGroupMapper;
 
     @PostMapping
-    public ResponseEntity<StudentGroupDTO> addStudentGroup(@RequestBody final StudentGroupDTO studentGroupDTO) {
-        return ResponseEntity.ok(studentGroupService.createStudentGroup(studentGroupDTO));
+    public ResponseEntity<StudentGroupResponseDTO> addStudentGroup(@RequestBody @NotNull @Valid final StudentGroupRequestDTO studentGroupRequestDTO) {
+        final StudentGroupDTO studentGroupDTO = studentGroupMapper.toInnerDTO(studentGroupRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                             .body(studentGroupMapper.toResponseDTO(studentGroupService.createStudentGroup(studentGroupDTO)));
     }
     @GetMapping("/{id}")
-    public ResponseEntity<StudentGroupDTO> getStudentGroupById(@PathVariable final UUID id) {
-        return ResponseEntity.ok(studentGroupService.findStudentGroupById(id)
-                                                    .orElseThrow(()->new RuntimeException("Student group not found")));
+    public ResponseEntity<StudentGroupResponseDTO> getStudentGroupById(@PathVariable @NotNull final UUID id) {
+        return ResponseEntity.ok(studentGroupMapper.toResponseDTO(studentGroupService.findStudentGroupById(id)
+                                                    .orElseThrow(()->new StudentNotFoundException(id))));
     }
     @GetMapping
-    public ResponseEntity<List<StudentGroupDTO>> getAllStudentGroups() {
-        return ResponseEntity.ok(studentGroupService.findAll());
+    public List<StudentGroupResponseDTO> getAllStudentGroups() {
+        return studentGroupMapper.toResponseDTOList(studentGroupService.findAll());
     }
-    @PostMapping("/{id}")
-    public ResponseEntity<StudentGroupDTO> updateStudentGroup(@PathVariable final UUID id, @RequestBody final StudentGroupDTO studentGroupDTO) {
-        return ResponseEntity.ok(studentGroupService.updateStudentGroup(id, studentGroupDTO));
+    @PutMapping("/{id}")
+    public ResponseEntity<StudentGroupResponseDTO> updateStudentGroup(@PathVariable @NotNull final UUID id,
+                                                                      @RequestBody @NotNull @Valid final StudentGroupRequestDTO studentGroupRequestDTO) {
+        final StudentGroupDTO studentGroupDTO = studentGroupMapper.toInnerDTO(studentGroupRequestDTO);
+        return ResponseEntity.ok(studentGroupMapper
+                                     .toResponseDTO(studentGroupService.updateStudentGroup(id, studentGroupDTO)));
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStudentGroup(@PathVariable final UUID id) {
+    public ResponseEntity<Void> deleteStudentGroup(@PathVariable @NotNull final UUID id) {
         if(studentGroupService.deleteStudentGroup(id)){
             return ResponseEntity.noContent().build();
         }

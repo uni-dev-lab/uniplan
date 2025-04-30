@@ -1,57 +1,31 @@
 package org.unilab.uniplan.studentgroup;
 
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.unilab.uniplan.coursegroup.CourseGroup;
-import org.unilab.uniplan.coursegroup.CourseGroupService;
-import org.unilab.uniplan.student.Student;
-import org.unilab.uniplan.student.StudentService;
+import org.unilab.uniplan.student.StudentNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class StudentGroupService {
     private final StudentGroupRepository studentGroupRepository;
-    private final StudentService studentService;
-    private final CourseGroupService courseGroupService;
     private final StudentGroupMapper studentGroupMapper;
-
-    @Autowired
-    public StudentGroupService(final StudentGroupRepository studentGroupRepository,
-                                final StudentService studentService,
-                                final CourseGroupService courseGroupService,
-                                final StudentGroupMapper studentGroupMapper) {
-        this.studentGroupRepository = studentGroupRepository;
-        this.studentService = studentService;
-        this.courseGroupService = courseGroupService;
-        this.studentGroupMapper = studentGroupMapper;
-    }
     
     @Transactional
     public StudentGroupDTO createStudentGroup(final StudentGroupDTO studentGroupDTO) {
-        Student student = studentService.findById(studentGroupDTO.studentId())
-                                        .orElseThrow(() -> new RuntimeException("Student with id " + studentGroupDTO.studentId() + " doesn't exists"));
-        CourseGroup courseGroup = courseGroupService.findById(studentGroupDTO.courseGroupId())
-                                                    .orElseThrow(() -> new RuntimeException("CourseGroup with id " + studentGroupDTO.courseGroupId() + " doesn't exists"));
-        StudentGroup studentGroup = new StudentGroup(new StudentGroupId(studentGroupDTO.studentId(),
-                                                                        studentGroupDTO.courseGroupId()), student, courseGroup);
+        StudentGroup studentGroup = studentGroupMapper.toEntity(studentGroupDTO);
         studentGroup.setCreatedAt();
         return studentGroupMapper.toDTO(studentGroupRepository.save(studentGroup));
     }
     
     @Transactional
     public StudentGroupDTO updateStudentGroup(final UUID id, final StudentGroupDTO studentGroupDTO) {
-        Student student = studentService.findById(studentGroupDTO.studentId())
-                                        .orElseThrow(() -> new RuntimeException("Student with id " + studentGroupDTO.studentId() + " doesn't exists"));
-        CourseGroup courseGroup = courseGroupService.findById(studentGroupDTO.courseGroupId())
-                                                    .orElseThrow(() -> new RuntimeException("CourseGroup with id " + studentGroupDTO.courseGroupId() + " doesn't exists"));
-        StudentGroup studentGroup = studentGroupRepository.findById(id)
-                                                          .orElseThrow(() -> new RuntimeException("StudentGroup with id " + id + " doesn't exists"));
-        studentGroup.setId(new StudentGroupId(studentGroupDTO.studentId(), studentGroupDTO.courseGroupId()));
-        studentGroup.setStudent(student);
-        studentGroup.setCourseGroup(courseGroup);
+        final StudentGroup studentGroup = studentGroupRepository.findById(id)
+                                                          .orElseThrow(() -> new StudentNotFoundException(id));
+        studentGroupMapper.updateEntityFromDTO(studentGroupDTO, studentGroup);
         studentGroup.setUpdatedAt();
         return studentGroupMapper.toDTO(studentGroupRepository.save(studentGroup));
     }

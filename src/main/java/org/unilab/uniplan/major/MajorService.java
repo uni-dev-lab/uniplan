@@ -1,34 +1,21 @@
 package org.unilab.uniplan.major;
 
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.unilab.uniplan.faculty.Faculty;
-import org.unilab.uniplan.faculty.FacultyService;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class MajorService {
     private final MajorRepository majorRepository;
-    private final FacultyService facultyService;
     private final MajorMapper majorMapper;
-
-    @Autowired
-    public MajorService(final MajorRepository majorRepository,
-                        final FacultyService facultyService,
-                        final MajorMapper majorMapper) {
-        this.majorRepository = majorRepository;
-        this.facultyService = facultyService;
-        this.majorMapper = majorMapper;
-    }
-
+    
     @Transactional
     public MajorDTO createMajor(final MajorDTO majorDTO) {
-        Faculty faculty = facultyService.getFaculty(majorDTO.facultyId())
-                                        .orElseThrow(() ->new RuntimeException("Faculty with id" + majorDTO.facultyId() + "doesn't exists"));
-        Major major = new Major(faculty, majorDTO.majorName());
+        final Major major = majorMapper.toEntity(majorDTO);
         major.setCreatedAt();
         return majorMapper.toDTO(majorRepository.save(major));
     }
@@ -47,12 +34,9 @@ public class MajorService {
     }
     @Transactional
     public MajorDTO updateMajor (final UUID id, final MajorDTO majorDTO) {
-        Major major = majorRepository.findById(id)
-                                  .orElseThrow(()->new RuntimeException("Major with id " + id + " doesn't exists"));
-       Faculty faculty = facultyService.getFaculty(majorDTO.facultyId())
-                                       .orElseThrow(() ->new RuntimeException("Faculty with id" + majorDTO.facultyId() + "doesn't exists"));
-        major.setFaculty(faculty);
-        major.setMajorName(majorDTO.majorName());
+        final Major major = majorRepository.findById(id)
+                                  .orElseThrow(()->new MajorNotFoundException(id));
+        majorMapper.updateEntityFromDTO(majorDTO, major);
         major.setUpdatedAt();
         return majorMapper.toDTO(majorRepository.save(major));
     }

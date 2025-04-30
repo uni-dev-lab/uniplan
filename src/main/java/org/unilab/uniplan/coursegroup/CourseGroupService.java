@@ -1,35 +1,22 @@
 package org.unilab.uniplan.coursegroup;
 
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.unilab.uniplan.course.Course;
-import org.unilab.uniplan.course.CourseService;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class CourseGroupService {
     
     private final CourseGroupRepository courseGroupRepository;
-    private final CourseService courseService;
     private final CourseGroupMapper courseGroupMapper;
-
-    @Autowired
-    public CourseGroupService(final CourseGroupRepository courseGroupRepository,
-                               final CourseService courseService,
-                               final CourseGroupMapper courseGroupMapper) {
-        this.courseGroupRepository = courseGroupRepository;
-        this.courseService = courseService;
-        this.courseGroupMapper = courseGroupMapper;
-    }
-
+    
     @Transactional
     public CourseGroupDTO createCourseGroup(final CourseGroupDTO courseGroupDTO) {
-        Course course = courseService.findById(courseGroupDTO.courseId())
-                                     .orElseThrow(() ->new RuntimeException("Course with id " + courseGroupDTO.courseId() + " doesn't exists"));
-        CourseGroup courseGroup = new CourseGroup(course, courseGroupDTO.groupName(), courseGroupDTO.maxGroup());
+        final CourseGroup courseGroup = courseGroupMapper.toEntity(courseGroupDTO);
         courseGroup.setCreatedAt();
         return courseGroupMapper.toDTO(courseGroupRepository.save(courseGroup));
     }
@@ -49,13 +36,9 @@ public class CourseGroupService {
     }
     @Transactional
     public CourseGroupDTO updateCourseGroup(final UUID id, final CourseGroupDTO courseGroupDTO) {
-        CourseGroup courseGroup  = courseGroupRepository.findById(id)
-                                         .orElseThrow(()->new RuntimeException("CourseGroup with id " + id + " doesn't exists"));
-        Course course = courseService.findById(courseGroupDTO.courseId())
-                                     .orElseThrow(() ->new RuntimeException("Course with id " + courseGroupDTO.courseId() + " doesn't exists"));
-        courseGroup.setCourse(course);
-        courseGroup.setGroupName(courseGroupDTO.groupName());
-        courseGroup.setMaxGroup(courseGroupDTO.maxGroup());
+        final CourseGroup courseGroup  = courseGroupRepository.findById(id)
+                                         .orElseThrow(()->new CourseGroupNotFoundException(id));
+        courseGroupMapper.updateEntityFromDTO(courseGroupDTO, courseGroup);
         courseGroup.setUpdatedAt();
         return courseGroupMapper.toDTO(courseGroupRepository.save(courseGroup));
     }

@@ -1,11 +1,15 @@
 package org.unilab.uniplan.coursegroup;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,34 +18,36 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/courseGroups")
+@RequiredArgsConstructor
 public class CourseGroupController {
 
     private final CourseGroupService courseGroupService;
-
-    @Autowired
-    public CourseGroupController(final CourseGroupService courseGroupService) {
-        this.courseGroupService = courseGroupService;
-    }
-
+    private final CourseGroupMapper courseGroupMapper;
+    
     @PostMapping
-    public ResponseEntity<CourseGroupDTO> addCourseGroup(@RequestBody final CourseGroupDTO courseGroupDTO) {
-        return ResponseEntity.ok(courseGroupService.createCourseGroup(courseGroupDTO));
+    public ResponseEntity<CourseGroupResponseDTO> addCourseGroup(@RequestBody
+                                                                     @Valid @NotNull final CourseGroupRequestDTO courseGroupRequestDTO) {
+        final CourseGroupDTO courseGroupDTO = courseGroupMapper.toInnerDTO(courseGroupRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                             .body(courseGroupMapper.toResponseDTO(courseGroupService.createCourseGroup(courseGroupDTO)));
     }
     @GetMapping("/{id}")
-    public ResponseEntity<CourseGroupDTO> getCourseGroup(@PathVariable final UUID id) {
-        return ResponseEntity.ok(courseGroupService.findCourseGroupById(id)
-                                                   .orElseThrow(()->new RuntimeException("CourseGroup not found")));
+    public ResponseEntity<CourseGroupResponseDTO> getCourseGroup(@PathVariable @NotNull final UUID id) {
+        return ResponseEntity.ok(courseGroupMapper.toResponseDTO(courseGroupService.findCourseGroupById(id)
+                                                   .orElseThrow(()->new CourseGroupNotFoundException(id))));
     }
     @GetMapping
-    public ResponseEntity<List<CourseGroupDTO>> getAllCourseGroups() {
-        return ResponseEntity.ok(courseGroupService.findAll());
+    public List<CourseGroupResponseDTO> getAllCourseGroups() {
+        return courseGroupMapper.toResponseDTOList(courseGroupService.findAll());
     }
-    @PostMapping("/{id}")
-    public ResponseEntity<CourseGroupDTO> updateCourseGroup(@PathVariable final UUID id, @RequestBody final CourseGroupDTO courseGroupDTO) {
-        return ResponseEntity.ok(courseGroupService.updateCourseGroup(id, courseGroupDTO));
+    @PutMapping("/{id}")
+    public ResponseEntity<CourseGroupResponseDTO> updateCourseGroup(@PathVariable @NotNull final UUID id,
+                                                                    @RequestBody @NotNull @Valid final CourseGroupRequestDTO courseGroupRequestDTO) {
+        final CourseGroupDTO courseGroupDTO = courseGroupMapper.toInnerDTO(courseGroupRequestDTO);
+        return ResponseEntity.ok(courseGroupMapper.toResponseDTO(courseGroupService.updateCourseGroup(id, courseGroupDTO)));
     } 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCourseGroup(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteCourseGroup(@PathVariable @NotNull UUID id) {
         if(courseGroupService.deleteCourseGroup(id)){
             return ResponseEntity.noContent().build();
         }

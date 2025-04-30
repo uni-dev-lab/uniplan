@@ -1,11 +1,15 @@
 package org.unilab.uniplan.major;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,34 +18,36 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/majors")
+@RequiredArgsConstructor
 public class MajorController {
     
     private final MajorService majorService;
-
-    @Autowired
-    public MajorController(final MajorService majorService) {
-        this.majorService = majorService;
-    }
-
+    private final MajorMapper majorMapper;
+    
     @PostMapping
-    public ResponseEntity<MajorDTO> addMajor(@RequestBody final MajorDTO majorDTO) {
-        return ResponseEntity.ok(majorService.createMajor(majorDTO));
+    public ResponseEntity<MajorResponseDTO> addMajor(@RequestBody @NotNull
+                                                         @Valid final MajorRequestDTO majorRequestDTO) {
+        final MajorDTO majorDTO = majorMapper.toInnerDTO(majorRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                             .body(majorMapper.toResponseDTO(majorService.createMajor(majorDTO)));
     }
     @GetMapping("/{id}")
-    public ResponseEntity<MajorDTO> getMajorById(@PathVariable final UUID id) {
-        return ResponseEntity.ok(majorService.findMajorById(id)
-                                             .orElseThrow(()->new RuntimeException("Major with id " + id + " not found")));
+    public ResponseEntity<MajorResponseDTO> getMajorById(@PathVariable @NotNull final UUID id) {
+        return ResponseEntity.ok(majorMapper.toResponseDTO(majorService.findMajorById(id)
+                                       .orElseThrow(()->new RuntimeException("Major with id " + id + " not found"))));
     }
     @GetMapping
-    public ResponseEntity<List<MajorDTO>> getAllMajors() {
-        return ResponseEntity.ok(majorService.findAll());
+    public List<MajorResponseDTO> getAllMajors() {
+        return majorMapper.toResponseDTOList(majorService.findAll());
     }
-    @PostMapping("/{id}")
-    public ResponseEntity<MajorDTO> updateMajor(@PathVariable final UUID id, @RequestBody MajorDTO majorDTO) {
-        return ResponseEntity.ok(majorService.updateMajor(id, majorDTO));
+    @PutMapping("/{id}")
+    public ResponseEntity<MajorResponseDTO> updateMajor(@PathVariable @NotNull final UUID id,
+                                                        @RequestBody @NotNull @Valid MajorRequestDTO majorRequestDTO) {
+        final MajorDTO majorDTO = majorMapper.toInnerDTO(majorRequestDTO);
+        return ResponseEntity.ok(majorMapper.toResponseDTO(majorService.updateMajor(id, majorDTO)));
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMajor(@PathVariable final UUID id) {
+    public ResponseEntity<Void> deleteMajor(@PathVariable @NotNull final UUID id) {
         if (majorService.deleteMajor(id)) {
             return ResponseEntity.noContent().build();
         }

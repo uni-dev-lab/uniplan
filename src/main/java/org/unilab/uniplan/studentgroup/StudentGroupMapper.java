@@ -2,7 +2,9 @@ package org.unilab.uniplan.studentgroup;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface StudentGroupMapper {
@@ -18,4 +20,14 @@ public interface StudentGroupMapper {
     default StudentGroupId toStudentGroupId(StudentGroupDTO dto) {
         return new StudentGroupId(dto.studentId(), dto.courseGroupId());
     }
+
+    @Mapping(target = "id", source = ".", qualifiedByName = "toStudentGroupId")
+    void updateEntityFromDTO(StudentGroupDTO studentGroupDTO,@MappingTarget StudentGroup studentGroup);
+
+    @Mapping(target = "id", ignore = true)
+    StudentGroupDTO toInnerDTO(StudentGroupRequestDTO studentGroupRequestDTO);
+    @Mapping(source = "studentId", target = "studentId")
+    @Mapping(source = "courseGroupId", target = "courseGroupId")
+    StudentGroupResponseDTO toResponseDTO(StudentGroupDTO studentGroupDTO);
+    List<StudentGroupResponseDTO> toResponseDTOList(List<StudentGroupDTO> studentGroups);
 }

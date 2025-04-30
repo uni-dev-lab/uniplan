@@ -21,37 +21,44 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class StudentController {
     private final StudentService studentService;
+    private final StudentMapper studentMapper;
     
     @PostMapping
-    public ResponseEntity<StudentDTO> createStudent(@RequestBody @NotNull
-                                                        @Valid final StudentDTO studentDTO) {
+    public ResponseEntity<StudentResponseDTO> createStudent(@RequestBody @NotNull
+                                                        @Valid final StudentRequestDTO studentRequestDTO) {
+        final StudentDTO studentDTO = studentMapper.toInternalDTO(studentRequestDTO);
+        studentService.createStudent(studentDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
-                             .body(studentService.createStudent(studentDTO));
+                             .body(studentMapper.toResponseDTO(studentDTO));
     }
+    
     @GetMapping("/{id}")
-    public ResponseEntity<StudentDTO> getStudent(@PathVariable
-                                                     @NotNull final UUID studentId) {
-        return ResponseEntity.ok(studentService.findStudentById(studentId)
-                                               .orElseThrow(()-> new StudentNotFoundException(studentId)));
+    public ResponseEntity<StudentResponseDTO> getStudent(@PathVariable
+                                                     @NotNull final UUID id) {
+       final StudentResponseDTO studentResponseDTO = studentMapper.toResponseDTO(studentService.findStudentById(id)
+                     .orElseThrow(()-> new StudentNotFoundException(id)));
+        return ResponseEntity.ok(studentResponseDTO);
     }
     
     @GetMapping
-    public List<StudentDTO> getAllStudents() {
-        return studentService.findAll();
+    public List<StudentResponseDTO> getAllStudents() {
+        return studentMapper.toResponseDTOList(studentService.findAll());
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<StudentDTO> updateStudent(@PathVariable
-                                                        @NotNull final UUID studentId, 
+    public ResponseEntity<StudentResponseDTO> updateStudent(@PathVariable
+                                                        @NotNull final UUID id, 
                                                     @RequestBody
-                                                        @NotNull @Valid final StudentDTO studentDTO) {
-        return ResponseEntity.ok(studentService.updateStudent(studentId, studentDTO));
+                                                        @NotNull @Valid final StudentRequestDTO studentRequestDTO) {
+        final StudentDTO studentDTO = studentMapper.toInternalDTO(studentRequestDTO);
+        studentService.updateStudent(id, studentDTO);
+        return ResponseEntity.ok(studentMapper.toResponseDTO(studentDTO));
     }
     
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStudent(@PathVariable
-                                                  @NotNull final UUID studentId) {
-        if(studentService.deleteStudent(studentId)){
+                                                  @NotNull final UUID id) {
+        if(studentService.deleteStudent(id)){
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();

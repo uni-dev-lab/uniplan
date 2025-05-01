@@ -1,12 +1,10 @@
-package org.unilab.uniplan.department;
+package org.unilab.uniplan.department.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.UUID;
 
-public record DepartmentDto(
-
-    UUID id,
+public record DepartmentRequestDto(
 
     @NotNull(message = "Faculty ID cannot be null")
     UUID facultyId,

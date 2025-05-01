@@ -17,11 +17,9 @@ public interface RoomMapper {
     @Mapping(source = "facultyId", target = "faculty.id")
     Room toEntity(final RoomDto roomDto);
 
-    @Mapping(source = "facultyId", target = "facultyId")
     @Mapping(target = "id", ignore = true)
     RoomDto toInternalDto(final RoomRequestDto roomRequestDto);
 
-    @Mapping(source = "facultyId", target = "facultyId")
     RoomResponseDto toResponseDto(final RoomDto roomDto);
 
     List<RoomDto> toDtoList(final List<Room> rooms);

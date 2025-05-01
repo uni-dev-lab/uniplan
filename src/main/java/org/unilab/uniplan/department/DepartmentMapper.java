@@ -1,13 +1,33 @@
 package org.unilab.uniplan.department;
 
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.unilab.uniplan.department.dto.DepartmentDto;
+import org.unilab.uniplan.department.dto.DepartmentRequestDto;
+import org.unilab.uniplan.department.dto.DepartmentResponseDto;
 
-@Mapper(componentModel = "spring")
+@Mapper
 public interface DepartmentMapper {
 
-    @Mapping(source = "faculty.id", target = "facultyId")
-    DepartmentDto toDto(Department department);
+    @Mapping(target = "faculty.id", source = "facultyId")
+    Department toEntity(final DepartmentDto departmentDto);
 
-    Department toEntity(DepartmentDto departmentDto);
+    @Mapping(target = "facultyId", source = "faculty.id")
+    DepartmentDto toDto(final Department department);
+
+    @Mapping(target = "id", ignore = true)
+    DepartmentDto toInternalDto(final DepartmentRequestDto departmentRequestDto);
+
+    DepartmentResponseDto toResponseDto(final DepartmentDto departmentDto);
+
+    List<DepartmentDto> toDtoList(final List<Department> departments);
+
+    List<DepartmentResponseDto> toResponseDtoList(final List<DepartmentDto> departments);
+
+    @Mapping(target = "faculty.id", source = "departmentDto.facultyId")
+    @Mapping(target = "id", ignore = true)
+    void updateEntityFromDto(final DepartmentDto departmentDto,
+                             @MappingTarget final Department department);
 }

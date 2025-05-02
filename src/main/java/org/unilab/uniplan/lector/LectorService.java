@@ -1,48 +1,63 @@
 package org.unilab.uniplan.lector;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.unilab.uniplan.faculty.FacultyService;
+import org.unilab.uniplan.lector.dto.LectorDto;
+import java.text.MessageFormat;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class LectorService {
+    public static final String LECTOR_NOT_FOUND = "Lector with ID {0} not found.";
+
     private final LectorRepository lectorRepository;
 
-    public Lector createLector(Lector lector) {
-        if (lectorRepository.existsById(lector.getId())) {
-            throw new IllegalArgumentException("Id already in use.");
-        }
-        return lectorRepository.save(lector);
+    private final LectorMapper lectorMapper;
+
+    private final FacultyService facultyService;
+
+    @Transactional
+    public LectorDto createLector(LectorDto lectorDto) {
+        final Lector lector = lectorMapper.toEntity(lectorDto);
+
+        return lectorMapper.toDto(lectorRepository.save(lector));
     }
 
-    public List<Lector> getAllLectors() {
-        return lectorRepository.findAll();
+    public List<LectorDto> getAllLectors() {
+        final List<Lector> lectors = lectorRepository.findAll();
+        return lectorMapper.toDtos(lectors);
     }
 
-    public Lector getLectorById(UUID id) {
+    public Optional<LectorDto> getLectorById(UUID id) {
+        return lectorRepository.findById(id).map(lectorMapper::toDto);
+    }
+
+    @Transactional
+    public Optional<LectorDto> updateLector(UUID id, LectorDto lectorDto) {
         return lectorRepository.findById(id)
-                               .orElseThrow(() -> new EntityNotFoundException("Lector not found."));
-    }
+                                 .map(existingLector -> {
+                                     lectorMapper.updateEntityFromDto(lectorDto,
+                                                                        existingLector);
 
-    public Lector updateLector(UUID id, Lector updatedLector) {
-        Lector existingLector = getLectorById(id);
-        if (!existingLector.getId().equals(updatedLector.getId()) &&
-            lectorRepository.existsById(updatedLector.getId())) {
-            throw new IllegalArgumentException("Id already in use.");
-        }
-        existingLector.setFaculty(updatedLector.getFaculty());
-        existingLector.setEmail(updatedLector.getEmail());
-        return lectorRepository.save(existingLector);
+                                     return lectorMapper.toDto(lectorRepository.save(
+                                         existingLector));
+                                 });
     }
 
     public void deleteLector(UUID id) {
-        if (!lectorRepository.existsById(id)) {
-            throw new EntityNotFoundException("Lector not found.");
-        }
-        lectorRepository.deleteById(id);
+       final Lector lector =lectorRepository.findById(id)
+                                            .orElseThrow(() -> new RuntimeException(
+                                               MessageFormat.format(
+                                                   LECTOR_NOT_FOUND,
+                                                   id
+                                               )
+                                           ));
+       lectorRepository.delete(lector);
     }
 }
 

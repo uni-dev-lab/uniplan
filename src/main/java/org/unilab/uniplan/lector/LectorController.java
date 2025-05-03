@@ -1,9 +1,8 @@
 package org.unilab.uniplan.lector;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,6 +13,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+import org.unilab.uniplan.lector.dto.LectorDto;
+import org.unilab.uniplan.lector.dto.LectorRequestDto;
+import org.unilab.uniplan.lector.dto.LectorResponseDto;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,37 +25,50 @@ import java.util.UUID;
 @RequestMapping("/api/lectors")
 @RequiredArgsConstructor
 public class LectorController {
+
+    public static final String LECTOR_NOT_FOUND = "Lector with ID {0} not found.";
     private final LectorService lectorService;
+    private final LectorMapper lectorMapper;
 
     @PostMapping
-    public ResponseEntity<Lector> createLector(@Valid @RequestBody Lector lector) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(lectorService.createLector(lector));
+    public ResponseEntity<LectorResponseDto> createLector(@Valid @NotNull @RequestBody final LectorRequestDto lectorRequestDto) {
+        final LectorDto lectorDto = lectorService.createLector(lectorMapper.toInternalDto(lectorRequestDto));
+
+        return new ResponseEntity<>(lectorMapper.toResponseDto(lectorDto), HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<Lector>> getAllLectors() {
-        return ResponseEntity.ok(lectorService.getAllLectors());
+    public List<LectorResponseDto> getAllLectors() {
+        return lectorMapper.toResponseDtoList(lectorService.getAllLectors());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Lector> getLectorById(@PathVariable UUID id) {
-        return ResponseEntity.ok(lectorService.getLectorById(id));
+    public ResponseEntity<LectorResponseDto> getLectorById(@NotNull @PathVariable UUID id) {
+        final LectorDto lectorDto = lectorService.getLectorById(id)
+                                                       .orElseThrow(() -> new ResponseStatusException(
+                                                           HttpStatus.NOT_FOUND,
+                                                           MessageFormat.format(LECTOR_NOT_FOUND, id)
+                                                       ));
+        return ResponseEntity.ok(lectorMapper.toResponseDto(lectorDto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Lector> updateLector(@PathVariable UUID id, @Valid @RequestBody Lector lector) {
-        return ResponseEntity.ok(lectorService.updateLector(id, lector));
+    public ResponseEntity<LectorResponseDto> updateLector(@NotNull @PathVariable UUID id, @Valid @NotNull @RequestBody LectorRequestDto lectorRequestDto) {
+        final LectorDto lectorDto =lectorMapper.toInternalDto(lectorRequestDto);
+
+        return lectorService.updateLector(id, lectorDto)
+                            .map(lectorMapper::toResponseDto)
+                            .map(ResponseEntity::ok)
+                            .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                MessageFormat.format(LECTOR_NOT_FOUND,id)
+                            ));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLector(@PathVariable UUID id) {
-        try {
-            lectorService.deleteLector(id);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (DataIntegrityViolationException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+    public ResponseEntity<Void> deleteLector(@NotNull @PathVariable UUID id) {
+        lectorService.deleteLector(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

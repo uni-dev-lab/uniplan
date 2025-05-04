@@ -26,7 +26,7 @@ import org.unilab.uniplan.university.dto.UniversityResponseDto;
 @RequiredArgsConstructor
 public class UniversityController {
 
-    public static final String UNIVERSITY_NOT_FOUND = "University with ID {0} not found.";
+    private static final String UNIVERSITY_NOT_FOUND = "University with ID {0} not found.";
 
     private final UniversityService universityService;
     private final UniversityMapper universityMapper;

@@ -13,7 +13,7 @@ import org.unilab.uniplan.university.dto.UniversityDto;
 @RequiredArgsConstructor
 public class UniversityService {
 
-    public static final String UNIVERSITY_NOT_FOUND = "University with ID {0} not found.";
+    private static final String UNIVERSITY_NOT_FOUND = "University with ID {0} not found.";
 
     private final UniversityRepository universityRepository;
     private final UniversityMapper universityMapper;

@@ -26,7 +26,7 @@ import org.unilab.uniplan.faculty.dto.FacultyResponseDto;
 @RequiredArgsConstructor
 public class FacultyController {
 
-    public static final String FACULTY_NOT_FOUND = "Faculty with ID {0} not found.";
+    private static final String FACULTY_NOT_FOUND = "Faculty with ID {0} not found.";
 
     private final FacultyService facultyService;
     private final FacultyMapper facultyMapper;

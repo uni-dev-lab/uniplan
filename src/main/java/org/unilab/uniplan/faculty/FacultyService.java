@@ -13,7 +13,7 @@ import org.unilab.uniplan.faculty.dto.FacultyDto;
 @RequiredArgsConstructor
 public class FacultyService {
 
-    public static final String FACULTY_NOT_FOUND = "Faculty with ID {0} not found.";
+    private static final String FACULTY_NOT_FOUND = "Faculty with ID {0} not found.";
 
     private final FacultyRepository facultyRepository;
     private final FacultyMapper facultyMapper;

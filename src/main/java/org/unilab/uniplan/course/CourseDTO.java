@@ -3,6 +3,7 @@ package org.unilab.uniplan.course;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import java.util.UUID;
 
@@ -10,7 +11,7 @@ public record CourseDTO(
     UUID id,
     @NotNull
     UUID majorId,
-    @NotNull
+    @Positive
     @Min(1)
     @Max(20)
     byte courseYear,

@@ -17,7 +17,6 @@ public class CourseGroupService {
     @Transactional
     public CourseGroupDTO createCourseGroup(final CourseGroupDTO courseGroupDTO) {
         final CourseGroup courseGroup = courseGroupMapper.toEntity(courseGroupDTO);
-        courseGroup.setCreatedAt();
         return courseGroupMapper.toDTO(courseGroupRepository.save(courseGroup));
     }
 
@@ -39,7 +38,6 @@ public class CourseGroupService {
         final CourseGroup courseGroup  = courseGroupRepository.findById(id)
                                          .orElseThrow(()->new CourseGroupNotFoundException(id));
         courseGroupMapper.updateEntityFromDTO(courseGroupDTO, courseGroup);
-        courseGroup.setUpdatedAt();
         return courseGroupMapper.toDTO(courseGroupRepository.save(courseGroup));
     }
     @Transactional

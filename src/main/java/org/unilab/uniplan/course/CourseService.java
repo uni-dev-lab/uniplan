@@ -16,7 +16,6 @@ public class CourseService {
     @Transactional
     public CourseDTO createCourse(final CourseDTO courseDTO) {
         final Course course = courseMapper.toEntity(courseDTO);
-        course.setCreatedAt();
         return courseMapper.toDTO(courseRepository.save(course));
     }
     
@@ -38,7 +37,6 @@ public class CourseService {
         final Course course  = courseRepository.findById(id)
                                            .orElseThrow(()->new CourseNotFoundException(id));
         courseMapper.updateEntityFromDTO(courseDTO, course);
-        course.setUpdatedAt();
         return courseMapper.toDTO(courseRepository.save(course));
     }
     @Transactional

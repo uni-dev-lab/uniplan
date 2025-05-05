@@ -17,7 +17,6 @@ public class StudentService {
     @Transactional
     public StudentDTO createStudent(final StudentDTO studentDTO) {
         final Student student = studentMapper.toEntity(studentDTO);
-        student.setCreatedAt();
         return studentMapper.toDTO(studentRepository.save(student));
     }
     
@@ -39,7 +38,6 @@ public class StudentService {
         final Student student = studentRepository.findById(id)
                                            .orElseThrow(()->new StudentNotFoundException(id));
         studentMapper.updateEntityFromDTO(studentDTO, student);
-        student.setUpdatedAt();
         return studentMapper.toDTO(studentRepository.save(student));
     }
     @Transactional

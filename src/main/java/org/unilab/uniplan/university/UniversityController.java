@@ -1,9 +1,13 @@
 package org.unilab.uniplan.university;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import java.text.MessageFormat;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,48 +16,69 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+import org.unilab.uniplan.university.dto.UniversityDto;
+import org.unilab.uniplan.university.dto.UniversityRequestDto;
+import org.unilab.uniplan.university.dto.UniversityResponseDto;
 
 @RestController
 @RequestMapping("/universities")
+@RequiredArgsConstructor
 public class UniversityController {
 
-    private static final String UNIVERSITY_NOT_FOUND = "University not found.";
+    private static final String UNIVERSITY_NOT_FOUND = "University with ID {0} not found.";
 
     private final UniversityService universityService;
+    private final UniversityMapper universityMapper;
 
-    @Autowired
-    public UniversityController(UniversityService universityService) {
-        this.universityService = universityService;
-    }
+    @PostMapping
+    public ResponseEntity<UniversityResponseDto> createUniversity(
+        @Valid @NotNull @RequestBody final UniversityRequestDto universityRequestDto) {
 
-    @PostMapping("/create")
-    public UniversityDto createUniversity(@RequestBody UniversityDto universityDto) {
-        return universityService.createUniversity(universityDto);
+        UniversityDto universityDto = universityService.createUniversity(
+            universityMapper.toInternalDto(universityRequestDto));
+
+        return new ResponseEntity<>(
+            universityMapper.toResponseDto(universityDto),
+            HttpStatus.CREATED
+        );
     }
 
     @GetMapping
-    public List<UniversityDto> getAllUniversities() {
-        return universityService.getAllUniversities();
+    public List<UniversityResponseDto> getAllUniversities() {
+        return universityMapper.toResponseDtoList(universityService.getAllUniversities());
     }
 
     @GetMapping("/{id}")
-    public UniversityDto getUniversityById(@PathVariable UUID id) {
-        Optional<UniversityDto> university = universityService.getUniversityById(id);
-        return university.orElseThrow(() -> new IllegalArgumentException(UNIVERSITY_NOT_FOUND));
+    public ResponseEntity<UniversityResponseDto> getUniversityById(@NotNull @PathVariable final UUID id) {
+        var universityDto = universityService.getUniversityById(id)
+                                             .orElseThrow(() -> new ResponseStatusException(
+                                                 HttpStatus.NOT_FOUND,
+                                                 MessageFormat.format(UNIVERSITY_NOT_FOUND, id)
+                                             ));
+
+        return ResponseEntity.ok(universityMapper.toResponseDto(universityDto));
     }
 
     @PutMapping("/{id}")
-    public UniversityDto updateUniversity(@PathVariable UUID id,
-                                          @RequestBody UniversityDto universityDto) {
+    public ResponseEntity<UniversityResponseDto> updateUniversity(
+        @PathVariable final UUID id,
+        @Valid @NotNull @RequestBody final UniversityRequestDto universityRequestDto) {
+
+        UniversityDto universityDto = universityMapper.toInternalDto(universityRequestDto);
+
         return universityService.updateUniversity(id, universityDto)
-                                .orElseThrow(() -> new IllegalArgumentException(UNIVERSITY_NOT_FOUND));
+                                .map(universityMapper::toResponseDto)
+                                .map(ResponseEntity::ok)
+                                .orElseThrow(() -> new ResponseStatusException(
+                                    HttpStatus.NOT_FOUND,
+                                    MessageFormat.format(UNIVERSITY_NOT_FOUND, id)
+                                ));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUniversity(@PathVariable UUID id) {
-        boolean isDeleted = universityService.deleteUniversity(id);
-        if (!isDeleted) {
-            throw new IllegalArgumentException(UNIVERSITY_NOT_FOUND);
-        }
+    public ResponseEntity<Void> deleteUniversity(@PathVariable final UUID id) {
+        universityService.deleteUniversity(id);
+        return ResponseEntity.noContent().build();
     }
 }

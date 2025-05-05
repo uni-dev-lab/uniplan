@@ -1,10 +1,11 @@
-package org.unilab.uniplan.university;
+package org.unilab.uniplan.university.dto;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import java.util.UUID;
 
-public record UniversityDto(
+public record UniversityResponseDto(
 
     UUID id,
 
@@ -16,7 +17,7 @@ public record UniversityDto(
     @Size(max = 500, message = "Location must be less than or equal to 500 characters")
     String location,
 
-    @NotNull(message = "Established year cannot be null")
+    @Positive
     short establishedYear,
 
     @NotNull(message = "Accreditation cannot be null")

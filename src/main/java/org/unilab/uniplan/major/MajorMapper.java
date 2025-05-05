@@ -1,11 +1,9 @@
 package org.unilab.uniplan.major;
 
-import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import java.util.List;
 
-@Mapper(componentModel = "spring")
 public interface MajorMapper {
     @Mapping(source = "facultyId", target = "faculty.id")
     Major toEntity (MajorDTO majorDTO);

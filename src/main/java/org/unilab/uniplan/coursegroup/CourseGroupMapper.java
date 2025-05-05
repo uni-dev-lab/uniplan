@@ -1,9 +1,11 @@
 package org.unilab.uniplan.coursegroup;
 
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import java.util.List;
 
+@Mapper
 public interface CourseGroupMapper {
     @Mapping(source = "course.id", target = "courseId")
     CourseGroupDTO toDTO (CourseGroup courseGroup);

@@ -1,10 +1,12 @@
 package org.unilab.uniplan.studentgroup;
 
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import java.util.List;
 
+@Mapper
 public interface StudentGroupMapper {
     @Mapping(source = "id.studentId", target = "studentId")
     @Mapping(source = "id.courseGroupId", target = "courseGroupId")

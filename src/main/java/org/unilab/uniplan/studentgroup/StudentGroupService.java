@@ -17,7 +17,6 @@ public class StudentGroupService {
     @Transactional
     public StudentGroupDTO createStudentGroup(final StudentGroupDTO studentGroupDTO) {
         StudentGroup studentGroup = studentGroupMapper.toEntity(studentGroupDTO);
-        studentGroup.setCreatedAt();
         return studentGroupMapper.toDTO(studentGroupRepository.save(studentGroup));
     }
     
@@ -26,7 +25,6 @@ public class StudentGroupService {
         final StudentGroup studentGroup = studentGroupRepository.findById(id)
                                                           .orElseThrow(() -> new StudentNotFoundException(id));
         studentGroupMapper.updateEntityFromDTO(studentGroupDTO, studentGroup);
-        studentGroup.setUpdatedAt();
         return studentGroupMapper.toDTO(studentGroupRepository.save(studentGroup));
     }
     

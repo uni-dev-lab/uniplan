@@ -16,7 +16,6 @@ public class MajorService {
     @Transactional
     public MajorDTO createMajor(final MajorDTO majorDTO) {
         final Major major = majorMapper.toEntity(majorDTO);
-        major.setCreatedAt();
         return majorMapper.toDTO(majorRepository.save(major));
     }
 
@@ -37,7 +36,6 @@ public class MajorService {
         final Major major = majorRepository.findById(id)
                                   .orElseThrow(()->new MajorNotFoundException(id));
         majorMapper.updateEntityFromDTO(majorDTO, major);
-        major.setUpdatedAt();
         return majorMapper.toDTO(majorRepository.save(major));
     }
     @Transactional

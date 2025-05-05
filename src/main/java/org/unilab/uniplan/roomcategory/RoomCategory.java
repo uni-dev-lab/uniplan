@@ -5,7 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,15 +21,15 @@ import org.unilab.uniplan.room.Room;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoomCategory extends AuditableEntity {
-    
+
     @EmbeddedId
     private RoomCategoryId id;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ROOM_ID", referencedColumnName = "ID", updatable = false, insertable = false, nullable = false)
     private Room room;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CATEGORY_ID", referencedColumnName = "ID",  updatable = false,  insertable = false, nullable = false)
+    @JoinColumn(name = "CATEGORY_ID", referencedColumnName = "ID", updatable = false, insertable = false, nullable = false)
     private Category category;
 }

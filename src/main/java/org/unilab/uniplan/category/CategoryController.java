@@ -27,7 +27,7 @@ import org.unilab.uniplan.category.dto.CategoryResponseDto;
 @RequiredArgsConstructor
 public class CategoryController {
 
-    public static final String CATEGORY_NOT_FOUND = "Category with ID {0} not found.";
+    private static final String CATEGORY_NOT_FOUND = "Category with ID {0} not found.";
 
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;

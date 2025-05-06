@@ -27,7 +27,7 @@ import org.unilab.uniplan.category.dto.CategoryResponseDto;
 @RequiredArgsConstructor
 public class CategoryController {
 
-    public static final String CATEGORY_NOT_FOUND = "Category with ID {0} not found.";
+    private static final String CATEGORY_NOT_FOUND = "Category with ID {0} not found.";
 
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
@@ -48,10 +48,11 @@ public class CategoryController {
     @GetMapping("/{id}")
     public ResponseEntity<CategoryResponseDto> getCategoryById(@NotNull @PathVariable final UUID id) {
         final CategoryDto categoryDto = categoryService.getCategoryById(id)
-                                                 .orElseThrow(() -> new ResponseStatusException(
-                                                     HttpStatus.NOT_FOUND,
-                                                     MessageFormat.format(CATEGORY_NOT_FOUND, id)
-                                                 ));
+                                                       .orElseThrow(() -> new ResponseStatusException(
+                                                           HttpStatus.NOT_FOUND,
+                                                           MessageFormat.format(CATEGORY_NOT_FOUND,
+                                                                                id)
+                                                       ));
 
         return ResponseEntity.ok(categoryMapper.toResponseDto(categoryDto));
     }
@@ -72,7 +73,7 @@ public class CategoryController {
                                   MessageFormat.format(CATEGORY_NOT_FOUND, id)
                               ));
     }
-    
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable final UUID id) {
         categoryService.deleteCategory(id);

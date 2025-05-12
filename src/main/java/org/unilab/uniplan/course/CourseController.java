@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,7 +36,9 @@ public class CourseController {
     @GetMapping("/{id}")
     public ResponseEntity<CourseResponseDTO> getMajorById(@PathVariable @NotNull final UUID id) {
         return ResponseEntity.ok(courseMapper.toResponseDTO(courseService.findCourseById(id)
-                                              .orElseThrow(()->new CourseNotFoundException(id))));
+                                              .orElseThrow(()->new ResponseStatusException(
+                                                  HttpStatus.NOT_FOUND,
+                                                  MessageFormat.format("COURSE_NOT_FOUND", id)))));
     }
     @GetMapping
     public List<CourseResponseDTO> getAllCourses() {

@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,7 +38,9 @@ public class StudentController {
     public ResponseEntity<StudentResponseDTO> getStudent(@PathVariable
                                                      @NotNull final UUID id) {
        final StudentResponseDTO studentResponseDTO = studentMapper.toResponseDTO(studentService.findStudentById(id)
-                     .orElseThrow(()-> new StudentNotFoundException(id)));
+                                            .orElseThrow(()->new ResponseStatusException(
+                                                HttpStatus.NOT_FOUND,
+                                                MessageFormat.format("STUDENT_NOT_FOUND", id))));
         return ResponseEntity.ok(studentResponseDTO);
     }
     

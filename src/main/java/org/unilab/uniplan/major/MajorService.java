@@ -23,10 +23,7 @@ public class MajorService {
         return majorRepository.findById(id)
                                .map(majorMapper::toDTO);
     }
-
-    public Optional<Major> findById (final UUID id) {
-        return majorRepository.findById(id);
-    }
+    
     public List<MajorDTO> findAll () {
         return majorRepository.findAll()
             .stream().map(majorMapper::toDTO).toList();

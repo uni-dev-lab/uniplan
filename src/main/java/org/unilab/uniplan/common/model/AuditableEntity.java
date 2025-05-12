@@ -19,12 +19,7 @@ public abstract class AuditableEntity {
     @LastModifiedDate
     private LocalDateTime updatedAt;
     
-    
     public void setCreatedAt() {
         this.createdAt = LocalDateTime.now();
-    }
-    
-    public void setUpdatedAt() {
-        this.updatedAt = LocalDateTime.now();
     }
 }

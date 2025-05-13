@@ -1,15 +1,15 @@
 package org.unilab.uniplan.program.dto;
 
 import jakarta.validation.constraints.NotNull;
-import org.unilab.uniplan.course.Course;
-import org.unilab.uniplan.programdiscipline.ProgramDiscipline;
+import org.unilab.uniplan.programdiscipline.ProgramDisciplineId;
 import java.util.List;
+import java.util.UUID;
 
 public record ProgramRequestDto(
     @NotNull(message = "Course cannot be null")
-    Course course,
+    UUID courseId,
     @NotNull
-    List<ProgramDiscipline> programDisciplines
+    List<ProgramDisciplineId> programDisciplinesId
 ) {
 
 }

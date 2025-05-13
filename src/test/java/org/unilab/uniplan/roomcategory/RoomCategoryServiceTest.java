@@ -99,6 +99,7 @@ class RoomCategoryServiceTest {
     @Test
     void testDeleteRoomCategoryShouldDeleteIfFound() {
         RoomCategoryId id = new RoomCategoryId(roomId, categoryId);
+
         when(roomCategoryMapper.toRoomCategoryId(roomId, categoryId)).thenReturn(id);
         when(roomCategoryRepository.findById(id)).thenReturn(Optional.of(entity));
         doNothing().when(roomCategoryRepository).delete(entity);

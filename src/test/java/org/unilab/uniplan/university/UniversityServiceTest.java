@@ -61,13 +61,8 @@ class UniversityServiceTest {
 
     @Test
     void testGetAllUniversitiesShouldReturnListOfUniversityDtos() {
-        List<University> entities = List.of(new University());
-        List<UniversityDto> dtos = List.of(new UniversityDto(UUID.randomUUID(),
-                                                             "Technical University",
-                                                             "Plovdiv",
-                                                             (short) 1962,
-                                                             "Good",
-                                                             "www.tu-plovdiv.bg"));
+        List<University> entities = List.of(entity);
+        List<UniversityDto> dtos = List.of(dto);
 
         when(universityRepository.findAll()).thenReturn(entities);
         when(universityMapper.toDtoList(entities)).thenReturn(dtos);
@@ -112,16 +107,9 @@ class UniversityServiceTest {
 
     @Test
     void testUpdateUniversityShouldReturnEmptyOptionalIfNotFound() {
-        UniversityDto updatedDto = new UniversityDto(id,
-                                                     "Plovdiv University",
-                                                     "Plovdiv",
-                                                     (short) 1961,
-                                                     "Good",
-                                                     "www.uni-plovdiv.bg");
-
         when(universityRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<UniversityDto> result = universityService.updateUniversity(id, updatedDto);
+        Optional<UniversityDto> result = universityService.updateUniversity(id, dto);
 
         assertTrue(result.isEmpty());
     }

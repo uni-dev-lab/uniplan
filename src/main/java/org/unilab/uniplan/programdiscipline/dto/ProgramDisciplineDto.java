@@ -3,18 +3,17 @@ package org.unilab.uniplan.programdiscipline.dto;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import org.unilab.uniplan.discipline.Discipline;
-import org.unilab.uniplan.program.Program;
 import org.unilab.uniplan.programdiscipline.ProgramDisciplineId;
+import java.util.UUID;
 
 public record ProgramDisciplineDto(
     ProgramDisciplineId id,
 
     @NotNull
-    Discipline discipline,
+    UUID disciplineId,
 
     @NotNull
-    Program program,
+    UUID programId,
 
     short hoursLecture,
 

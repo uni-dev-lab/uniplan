@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,30 +32,32 @@ class CategoryServiceTest {
     @InjectMocks
     private CategoryService categoryService;
 
+    private UUID id;
+    private Category entity;
+    private CategoryDto dto;
+
+    @BeforeEach
+    void setUp() {
+        id = UUID.randomUUID();
+        dto = new CategoryDto(id, "Lecture Hall", (short) 50);
+        entity = new Category();
+    }
+
     @Test
     void testCreateCategoryShouldSaveAndReturnDto() {
-        UUID id = UUID.randomUUID();
-        String roomType = "Lecture Hall";
-        short roomCapacity = 50;
-
-        CategoryDto dto = new CategoryDto(id, roomType, roomCapacity);
-        Category entity = new Category();
-        Category saved = new Category();
-        CategoryDto savedDto = new CategoryDto(id, roomType, roomCapacity);
-
         when(categoryMapper.toEntity(dto)).thenReturn(entity);
-        when(categoryRepository.save(entity)).thenReturn(saved);
-        when(categoryMapper.toDto(saved)).thenReturn(savedDto);
+        when(categoryRepository.save(entity)).thenReturn(entity);
+        when(categoryMapper.toDto(entity)).thenReturn(dto);
 
         CategoryDto result = categoryService.createCategory(dto);
 
-        assertEquals(savedDto, result);
+        assertEquals(dto, result);
     }
 
     @Test
     void testAllCategoriesShouldReturnListOfCategoryDtos() {
-        List<Category> entities = List.of(new Category());
-        List<CategoryDto> dtos = List.of(new CategoryDto(UUID.randomUUID(), "Lab", (short) 30));
+        List<Category> entities = List.of(entity);
+        List<CategoryDto> dtos = List.of(dto);
 
         when(categoryRepository.findAll()).thenReturn(entities);
         when(categoryMapper.toDtoList(entities)).thenReturn(dtos);
@@ -66,10 +69,6 @@ class CategoryServiceTest {
 
     @Test
     void testFindCategoryByIdShouldReturnCategoryDtoIfFound() {
-        UUID id = UUID.randomUUID();
-        Category entity = new Category();
-        CategoryDto dto = new CategoryDto(id, "Seminar Room", (short) 20);
-
         when(categoryRepository.findById(id)).thenReturn(Optional.of(entity));
         when(categoryMapper.toDto(entity)).thenReturn(dto);
 
@@ -81,8 +80,6 @@ class CategoryServiceTest {
 
     @Test
     void testFindCategoryByIdShouldReturnEmptyOptionalIfCategoryNotFound() {
-        UUID id = UUID.randomUUID();
-
         when(categoryRepository.findById(id)).thenReturn(Optional.empty());
 
         Optional<CategoryDto> result = categoryService.getCategoryById(id);
@@ -92,31 +89,19 @@ class CategoryServiceTest {
 
     @Test
     void testUpdateCategoryShouldUpdateAndReturnDtoIfFound() {
-        UUID id = UUID.randomUUID();
-        String roomType = "Updated Room";
-        short roomCapacity = 30;
-
-        CategoryDto dto = new CategoryDto(id, roomType, roomCapacity);
-        Category existing = new Category();
-        Category updated = new Category();
-        CategoryDto updatedDto = new CategoryDto(id, roomType, roomCapacity);
-
-        when(categoryRepository.findById(id)).thenReturn(Optional.of(existing));
-        doAnswer(invocation -> null).when(categoryMapper).updateEntityFromDto(dto, existing);
-        when(categoryRepository.save(existing)).thenReturn(updated);
-        when(categoryMapper.toDto(updated)).thenReturn(updatedDto);
+        when(categoryRepository.findById(id)).thenReturn(Optional.of(entity));
+        doAnswer(invocation -> null).when(categoryMapper).updateEntityFromDto(dto, entity);
+        when(categoryRepository.save(entity)).thenReturn(entity);
+        when(categoryMapper.toDto(entity)).thenReturn(dto);
 
         Optional<CategoryDto> result = categoryService.updateCategory(id, dto);
 
         assertTrue(result.isPresent());
-        assertEquals(updatedDto, result.get());
+        assertEquals(dto, result.get());
     }
 
     @Test
     void testUpdateCategoryShouldReturnEmptyOptionalIfNotFound() {
-        UUID id = UUID.randomUUID();
-        CategoryDto dto = new CategoryDto(id, "Room", (short) 10);
-
         when(categoryRepository.findById(id)).thenReturn(Optional.empty());
 
         Optional<CategoryDto> result = categoryService.updateCategory(id, dto);
@@ -126,9 +111,6 @@ class CategoryServiceTest {
 
     @Test
     void testDeleteCategoryShouldDeleteCategoryIfFound() {
-        UUID id = UUID.randomUUID();
-        Category entity = new Category();
-
         when(categoryRepository.findById(id)).thenReturn(Optional.of(entity));
         doNothing().when(categoryRepository).delete(entity);
 
@@ -138,8 +120,6 @@ class CategoryServiceTest {
 
     @Test
     void testDeleteCategoryShouldThrowIfNotFound() {
-        UUID id = UUID.randomUUID();
-
         when(categoryRepository.findById(id)).thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(RuntimeException.class, () ->

@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,45 +32,42 @@ class UniversityServiceTest {
     @InjectMocks
     private UniversityService universityService;
 
+    private UUID id;
+    private University entity;
+    private UniversityDto dto;
+
+    @BeforeEach
+    void setUp() {
+        id = UUID.randomUUID();
+        entity = new University();
+        dto = new UniversityDto(id,
+                                "University of Sofia",
+                                "Sofia",
+                                (short) 1888,
+                                "Excellent",
+                                "www.uni-sofia.bg");
+    }
+
     @Test
     void testCreateUniversityShouldSaveAndReturnDto() {
-        UUID id = UUID.randomUUID();
-        String uniName = "University of Sofia";
-        String location = "Sofia";
-        short establishedYear = 1888;
-        String accreditation = "Excellent";
-        String website = "www.uni-sofia.bg";
-
-        UniversityDto dto = new UniversityDto(id,
-                                              uniName,
-                                              location,
-                                              establishedYear,
-                                              accreditation,
-                                              website);
-        University entity = new University();
-        University saved = new University();
-        UniversityDto savedDto = new UniversityDto(id,
-                                                   uniName,
-                                                   location,
-                                                   establishedYear,
-                                                   accreditation,
-                                                   website);
-
         when(universityMapper.toEntity(dto)).thenReturn(entity);
-        when(universityRepository.save(entity)).thenReturn(saved);
-        when(universityMapper.toDto(saved)).thenReturn(savedDto);
+        when(universityRepository.save(entity)).thenReturn(entity);
+        when(universityMapper.toDto(entity)).thenReturn(dto);
 
         UniversityDto result = universityService.createUniversity(dto);
 
-        assertEquals(savedDto, result);
+        assertEquals(dto, result);
     }
 
     @Test
     void testGetAllUniversitiesShouldReturnListOfUniversityDtos() {
         List<University> entities = List.of(new University());
-        List<UniversityDto> dtos = List.of(
-            new UniversityDto(UUID.randomUUID(), "Technical University",
-                              "Plovdiv", (short) 1962, "Good", "www.tu-plovdiv.bg"));
+        List<UniversityDto> dtos = List.of(new UniversityDto(UUID.randomUUID(),
+                                                             "Technical University",
+                                                             "Plovdiv",
+                                                             (short) 1962,
+                                                             "Good",
+                                                             "www.tu-plovdiv.bg"));
 
         when(universityRepository.findAll()).thenReturn(entities);
         when(universityMapper.toDtoList(entities)).thenReturn(dtos);
@@ -81,11 +79,6 @@ class UniversityServiceTest {
 
     @Test
     void testGetUniversityByIdShouldReturnUniversityDtoIfFound() {
-        UUID id = UUID.randomUUID();
-        University entity = new University();
-        UniversityDto dto = new UniversityDto(id, "New Bulgarian University",
-                                              "Sofia", (short) 1991, "Very Good", "www.nbu.bg");
-
         when(universityRepository.findById(id)).thenReturn(Optional.of(entity));
         when(universityMapper.toDto(entity)).thenReturn(dto);
 
@@ -97,8 +90,6 @@ class UniversityServiceTest {
 
     @Test
     void testGetUniversityByIdShouldReturnEmptyOptionalIfUniversityNotFound() {
-        UUID id = UUID.randomUUID();
-
         when(universityRepository.findById(id)).thenReturn(Optional.empty());
 
         Optional<UniversityDto> result = universityService.getUniversityById(id);
@@ -108,61 +99,35 @@ class UniversityServiceTest {
 
     @Test
     void testUpdateUniversityShouldUpdateAndReturnDtoIfFound() {
-        UUID id = UUID.randomUUID();
-        String updatedName = "American University in Bulgaria";
-        String updatedLocation = "Blagoevgrad";
-        short updatedEstablishedYear = 1991;
-        String updatedAccreditation = "Excellent";
-        String updatedWebsite = "www.aubg.edu";
-
-        UniversityDto dto = new UniversityDto(id,
-                                              updatedName,
-                                              updatedLocation,
-                                              updatedEstablishedYear,
-                                              updatedAccreditation,
-                                              updatedWebsite);
-        University existing = new University();
-        University updated = new University();
-        UniversityDto updatedDto = new UniversityDto(id,
-                                                     updatedName,
-                                                     updatedLocation,
-                                                     updatedEstablishedYear,
-                                                     updatedAccreditation,
-                                                     updatedWebsite);
-
-        when(universityRepository.findById(id)).thenReturn(Optional.of(existing));
-        doAnswer(invocation -> null).when(universityMapper).updateEntityFromDto(dto, existing);
-        when(universityRepository.save(existing)).thenReturn(updated);
-        when(universityMapper.toDto(updated)).thenReturn(updatedDto);
+        when(universityRepository.findById(id)).thenReturn(Optional.of(entity));
+        doAnswer(invocation -> null).when(universityMapper).updateEntityFromDto(dto, entity);
+        when(universityRepository.save(entity)).thenReturn(entity);
+        when(universityMapper.toDto(entity)).thenReturn(dto);
 
         Optional<UniversityDto> result = universityService.updateUniversity(id, dto);
 
         assertTrue(result.isPresent());
-        assertEquals(updatedDto, result.get());
+        assertEquals(dto, result.get());
     }
 
     @Test
     void testUpdateUniversityShouldReturnEmptyOptionalIfNotFound() {
-        UUID id = UUID.randomUUID();
-        UniversityDto dto = new UniversityDto(id,
-                                              "Plovdiv University",
-                                              "Plovdiv",
-                                              (short) 1961,
-                                              "Good",
-                                              "www.uni-plovdiv.bg");
+        UniversityDto updatedDto = new UniversityDto(id,
+                                                     "Plovdiv University",
+                                                     "Plovdiv",
+                                                     (short) 1961,
+                                                     "Good",
+                                                     "www.uni-plovdiv.bg");
 
         when(universityRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<UniversityDto> result = universityService.updateUniversity(id, dto);
+        Optional<UniversityDto> result = universityService.updateUniversity(id, updatedDto);
 
         assertTrue(result.isEmpty());
     }
 
     @Test
     void testDeleteUniversityShouldDeleteUniversityIfFound() {
-        UUID id = UUID.randomUUID();
-        University entity = new University();
-
         when(universityRepository.findById(id)).thenReturn(Optional.of(entity));
         doNothing().when(universityRepository).delete(entity);
 
@@ -172,12 +137,10 @@ class UniversityServiceTest {
 
     @Test
     void testDeleteUniversityShouldThrowIfNotFound() {
-        UUID id = UUID.randomUUID();
-
         when(universityRepository.findById(id)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
-            universityService.deleteUniversity(id));
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                                                  () -> universityService.deleteUniversity(id));
 
         assertTrue(exception.getMessage().contains(id.toString()));
     }

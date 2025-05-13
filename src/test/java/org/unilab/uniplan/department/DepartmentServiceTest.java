@@ -1,6 +1,5 @@
 package org.unilab.uniplan.department;
 
-
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -13,6 +12,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,32 +32,34 @@ class DepartmentServiceTest {
     @InjectMocks
     private DepartmentService departmentService;
 
+    private UUID id;
+    private UUID facultyId;
+    private DepartmentDto dto;
+    private Department entity;
+
+    @BeforeEach
+    void setUp() {
+        id = UUID.randomUUID();
+        facultyId = UUID.randomUUID();
+        dto = new DepartmentDto(id, facultyId, "Engineering");
+        entity = new Department();
+    }
+
     @Test
     void testCreateDepartmentShouldSaveAndReturnDepartmentDto() {
-        UUID id = UUID.randomUUID();
-        UUID facultyId = UUID.randomUUID();
-        String departmentName = "Engineering";
-
-        DepartmentDto dto = new DepartmentDto(id, facultyId, departmentName);
-        Department entity = new Department();
-        Department saved = new Department();
-        DepartmentDto savedDto = new DepartmentDto(id, facultyId, departmentName);
-
         when(departmentMapper.toEntity(dto)).thenReturn(entity);
-        when(departmentRepository.save(entity)).thenReturn(saved);
-        when(departmentMapper.toDto(saved)).thenReturn(savedDto);
+        when(departmentRepository.save(entity)).thenReturn(entity);
+        when(departmentMapper.toDto(entity)).thenReturn(dto);
 
         DepartmentDto result = departmentService.createDepartment(dto);
 
-        assertEquals(savedDto, result);
+        assertEquals(dto, result);
     }
 
     @Test
     void testAllDepartmentsShouldReturnListOfAllDepartmentDtos() {
-        List<Department> departments = List.of(new Department());
-        List<DepartmentDto> dtos = List.of(new DepartmentDto(UUID.randomUUID(),
-                                                             UUID.randomUUID(),
-                                                             "Math"));
+        List<Department> departments = List.of(entity);
+        List<DepartmentDto> dtos = List.of(dto);
 
         when(departmentRepository.findAll()).thenReturn(departments);
         when(departmentMapper.toDtoList(departments)).thenReturn(dtos);
@@ -69,12 +71,8 @@ class DepartmentServiceTest {
 
     @Test
     void testFindDepartmentByIdShouldReturnDepartmentDtoIfFound() {
-        UUID id = UUID.randomUUID();
-        Department department = new Department();
-        DepartmentDto dto = new DepartmentDto(id, null, "History");
-
-        when(departmentRepository.findById(id)).thenReturn(Optional.of(department));
-        when(departmentMapper.toDto(department)).thenReturn(dto);
+        when(departmentRepository.findById(id)).thenReturn(Optional.of(entity));
+        when(departmentMapper.toDto(entity)).thenReturn(dto);
 
         Optional<DepartmentDto> result = departmentService.getDepartmentById(id);
 
@@ -84,8 +82,6 @@ class DepartmentServiceTest {
 
     @Test
     void testFindDepartmentByIdShouldReturnEmptyOptionalIfDepartmentNotFound() {
-        UUID id = UUID.randomUUID();
-
         when(departmentRepository.findById(id)).thenReturn(Optional.empty());
 
         Optional<DepartmentDto> result = departmentService.getDepartmentById(id);
@@ -95,31 +91,19 @@ class DepartmentServiceTest {
 
     @Test
     void testUpdateDepartmentShouldUpdateAndReturnDepartmentDtoIfFound() {
-        UUID id = UUID.randomUUID();
-        UUID facultyId = UUID.randomUUID();
-        String departmentName = "Science";
-
-        DepartmentDto dto = new DepartmentDto(id, facultyId, departmentName);
-        Department existing = new Department();
-        Department updated = new Department();
-        DepartmentDto updatedDto = new DepartmentDto(id, facultyId, departmentName);
-
-        when(departmentRepository.findById(id)).thenReturn(Optional.of(existing));
-        doNothing().when(departmentMapper).updateEntityFromDto(dto, existing);
-        when(departmentRepository.save(existing)).thenReturn(updated);
-        when(departmentMapper.toDto(updated)).thenReturn(updatedDto);
+        when(departmentRepository.findById(id)).thenReturn(Optional.of(entity));
+        doNothing().when(departmentMapper).updateEntityFromDto(dto, entity);
+        when(departmentRepository.save(entity)).thenReturn(entity);
+        when(departmentMapper.toDto(entity)).thenReturn(dto);
 
         Optional<DepartmentDto> result = departmentService.updateDepartment(id, dto);
 
         assertTrue(result.isPresent());
-        assertEquals(updatedDto, result.get());
+        assertEquals(dto, result.get());
     }
 
     @Test
     void testUpdateDepartmentShouldReturnEmptyOptionalIfDepartmentNotFound() {
-        UUID id = UUID.randomUUID();
-        DepartmentDto dto = new DepartmentDto(id, null, "Science");
-
         when(departmentRepository.findById(id)).thenReturn(Optional.empty());
 
         Optional<DepartmentDto> result = departmentService.updateDepartment(id, dto);
@@ -129,25 +113,21 @@ class DepartmentServiceTest {
 
     @Test
     void testDeleteDepartmentShouldDeleteDepartmentIfFound() {
-        UUID id = UUID.randomUUID();
-        Department department = new Department();
-
-        when(departmentRepository.findById(id)).thenReturn(Optional.of(department));
-        doNothing().when(departmentRepository).delete(department);
+        when(departmentRepository.findById(id)).thenReturn(Optional.of(entity));
+        doNothing().when(departmentRepository).delete(entity);
 
         assertDoesNotThrow(() -> departmentService.deleteDepartment(id));
-        verify(departmentRepository).delete(department);
+        verify(departmentRepository).delete(entity);
     }
 
     @Test
     void testDeleteDepartmentShouldThrowIfNotFound() {
-        UUID id = UUID.randomUUID();
-
         when(departmentRepository.findById(id)).thenReturn(Optional.empty());
 
-        RuntimeException thrown = assertThrows(RuntimeException.class,
-                                               () -> departmentService.deleteDepartment(id));
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                                                  () -> departmentService.deleteDepartment(id));
 
-        assertTrue(thrown.getMessage().contains("Department with ID"));
+        assertTrue(exception.getMessage().contains(id.toString()));
+
     }
 }

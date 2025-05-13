@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,6 +11,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,32 +31,34 @@ class FacultyServiceTest {
     @InjectMocks
     private FacultyService facultyService;
 
+    private UUID id;
+    private UUID universityId;
+    private FacultyDto dto;
+    private Faculty entity;
+
+    @BeforeEach
+    void setUp() {
+        id = UUID.randomUUID();
+        universityId = UUID.randomUUID();
+        dto = new FacultyDto(id, universityId, "Faculty of Science", "Sofia");
+        entity = new Faculty();
+    }
+
     @Test
     void testCreateFacultyShouldSaveAndReturnDto() {
-        UUID id = UUID.randomUUID();
-        UUID universityId = UUID.randomUUID();
-        String facultyName = "Faculty of Science";
-        String location = "Sofia";
-
-        FacultyDto dto = new FacultyDto(id, universityId, facultyName, location);
-        Faculty entity = new Faculty();
-        Faculty saved = new Faculty();
-        FacultyDto savedDto = new FacultyDto(id, universityId, facultyName, location);
-
         when(facultyMapper.toEntity(dto)).thenReturn(entity);
-        when(facultyRepository.save(entity)).thenReturn(saved);
-        when(facultyMapper.toDto(saved)).thenReturn(savedDto);
+        when(facultyRepository.save(entity)).thenReturn(entity);
+        when(facultyMapper.toDto(entity)).thenReturn(dto);
 
         FacultyDto result = facultyService.createFaculty(dto);
 
-        assertEquals(savedDto, result);
+        assertEquals(dto, result);
     }
 
     @Test
     void testGetAllFacultiesShouldReturnListOfFacultyDtos() {
-        List<Faculty> entities = List.of(new Faculty());
-        List<FacultyDto> dtos = List.of(
-            new FacultyDto(UUID.randomUUID(), UUID.randomUUID(), "Arts", "Plovdiv"));
+        List<Faculty> entities = List.of(entity);
+        List<FacultyDto> dtos = List.of(dto);
 
         when(facultyRepository.findAll()).thenReturn(entities);
         when(facultyMapper.toDtoList(entities)).thenReturn(dtos);
@@ -68,11 +70,6 @@ class FacultyServiceTest {
 
     @Test
     void testGetFacultyByIdShouldReturnFacultyDtoIfFound() {
-        UUID id = UUID.randomUUID();
-        UUID universityId = UUID.randomUUID();
-        Faculty entity = new Faculty();
-        FacultyDto dto = new FacultyDto(id, universityId, "Engineering", "Varna");
-
         when(facultyRepository.findById(id)).thenReturn(Optional.of(entity));
         when(facultyMapper.toDto(entity)).thenReturn(dto);
 
@@ -84,8 +81,6 @@ class FacultyServiceTest {
 
     @Test
     void testGetFacultyByIdShouldReturnEmptyOptionalIfFacultyNotFound() {
-        UUID id = UUID.randomUUID();
-
         when(facultyRepository.findById(id)).thenReturn(Optional.empty());
 
         Optional<FacultyDto> result = facultyService.getFacultyById(id);
@@ -95,33 +90,19 @@ class FacultyServiceTest {
 
     @Test
     void testUpdateFacultyShouldUpdateAndReturnDtoIfFound() {
-        UUID id = UUID.randomUUID();
-        UUID universityId = UUID.randomUUID();
-        String updatedName = "Faculty of Medicine";
-        String updatedLocation = "Pleven";
-
-        FacultyDto dto = new FacultyDto(id, universityId, updatedName, updatedLocation);
-        Faculty existing = new Faculty();
-        Faculty updated = new Faculty();
-        FacultyDto updatedDto = new FacultyDto(id, universityId, updatedName, updatedLocation);
-
-        when(facultyRepository.findById(id)).thenReturn(Optional.of(existing));
-        doAnswer(invocation -> null).when(facultyMapper).updateEntityFromDto(dto, existing);
-        when(facultyRepository.save(existing)).thenReturn(updated);
-        when(facultyMapper.toDto(updated)).thenReturn(updatedDto);
+        when(facultyRepository.findById(id)).thenReturn(Optional.of(entity));
+        doNothing().when(facultyMapper).updateEntityFromDto(dto, entity);
+        when(facultyRepository.save(entity)).thenReturn(entity);
+        when(facultyMapper.toDto(entity)).thenReturn(dto);
 
         Optional<FacultyDto> result = facultyService.updateFaculty(id, dto);
 
         assertTrue(result.isPresent());
-        assertEquals(updatedDto, result.get());
+        assertEquals(dto, result.get());
     }
 
     @Test
     void testUpdateFacultyShouldReturnEmptyOptionalIfNotFound() {
-        UUID id = UUID.randomUUID();
-        UUID universityId = UUID.randomUUID();
-        FacultyDto dto = new FacultyDto(id, universityId, "Law", "Burgas");
-
         when(facultyRepository.findById(id)).thenReturn(Optional.empty());
 
         Optional<FacultyDto> result = facultyService.updateFaculty(id, dto);
@@ -131,9 +112,6 @@ class FacultyServiceTest {
 
     @Test
     void testDeleteFacultyShouldDeleteFacultyIfFound() {
-        UUID id = UUID.randomUUID();
-        Faculty entity = new Faculty();
-
         when(facultyRepository.findById(id)).thenReturn(Optional.of(entity));
         doNothing().when(facultyRepository).delete(entity);
 
@@ -143,12 +121,10 @@ class FacultyServiceTest {
 
     @Test
     void testDeleteFacultyShouldThrowIfNotFound() {
-        UUID id = UUID.randomUUID();
-
         when(facultyRepository.findById(id)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
-            facultyService.deleteFaculty(id));
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                                                  () -> facultyService.deleteFaculty(id));
 
         assertTrue(exception.getMessage().contains(id.toString()));
     }

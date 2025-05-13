@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,29 +31,34 @@ class RoomCategoryServiceTest {
     @InjectMocks
     private RoomCategoryService roomCategoryService;
 
+    private UUID roomId;
+    private UUID categoryId;
+    private RoomCategoryDto dto;
+    private RoomCategory entity;
+
+    @BeforeEach
+    void setUp() {
+        roomId = UUID.randomUUID();
+        categoryId = UUID.randomUUID();
+        dto = new RoomCategoryDto(roomId, categoryId);
+        entity = new RoomCategory();
+    }
+
     @Test
     void testCreateRoomCategoryShouldSaveAndReturnDto() {
-        UUID roomId = UUID.randomUUID();
-        UUID categoryId = UUID.randomUUID();
-        RoomCategoryDto dto = new RoomCategoryDto(roomId, categoryId);
-        RoomCategory entity = new RoomCategory();
-        RoomCategory saved = new RoomCategory();
-        RoomCategoryDto savedDto = new RoomCategoryDto(roomId, categoryId);
-
         when(roomCategoryMapper.toEntity(dto)).thenReturn(entity);
-        when(roomCategoryRepository.save(entity)).thenReturn(saved);
-        when(roomCategoryMapper.toDto(saved)).thenReturn(savedDto);
+        when(roomCategoryRepository.save(entity)).thenReturn(entity);
+        when(roomCategoryMapper.toDto(entity)).thenReturn(dto);
 
         RoomCategoryDto result = roomCategoryService.createRoomCategory(dto);
 
-        assertEquals(savedDto, result);
+        assertEquals(dto, result);
     }
 
     @Test
     void testGetAllRoomCategoriesShouldReturnListOfRoomCategoryDtos() {
-        List<RoomCategory> entities = List.of(new RoomCategory());
-        List<RoomCategoryDto> dtos = List.of(new RoomCategoryDto(UUID.randomUUID(),
-                                                                 UUID.randomUUID()));
+        List<RoomCategory> entities = List.of(entity);
+        List<RoomCategoryDto> dtos = List.of(dto);
 
         when(roomCategoryRepository.findAll()).thenReturn(entities);
         when(roomCategoryMapper.toDtoList(entities)).thenReturn(dtos);
@@ -64,11 +70,7 @@ class RoomCategoryServiceTest {
 
     @Test
     void testGetRoomCategoryByIdShouldReturnRoomCategoryDtoIfFound() {
-        UUID roomId = UUID.randomUUID();
-        UUID categoryId = UUID.randomUUID();
         RoomCategoryId id = new RoomCategoryId(roomId, categoryId);
-        RoomCategory entity = new RoomCategory();
-        RoomCategoryDto dto = new RoomCategoryDto(roomId, categoryId);
 
         when(roomCategoryMapper.toRoomCategoryId(roomId, categoryId)).thenReturn(id);
         when(roomCategoryRepository.findById(id)).thenReturn(Optional.of(entity));
@@ -83,8 +85,6 @@ class RoomCategoryServiceTest {
 
     @Test
     void testGetRoomCategoryByIdShouldReturnEmptyOptionalIfNotFound() {
-        UUID roomId = UUID.randomUUID();
-        UUID categoryId = UUID.randomUUID();
         RoomCategoryId id = new RoomCategoryId(roomId, categoryId);
 
         when(roomCategoryMapper.toRoomCategoryId(roomId, categoryId)).thenReturn(id);
@@ -98,11 +98,7 @@ class RoomCategoryServiceTest {
 
     @Test
     void testDeleteRoomCategoryShouldDeleteIfFound() {
-        UUID roomId = UUID.randomUUID();
-        UUID categoryId = UUID.randomUUID();
         RoomCategoryId id = new RoomCategoryId(roomId, categoryId);
-        RoomCategory entity = new RoomCategory();
-
         when(roomCategoryMapper.toRoomCategoryId(roomId, categoryId)).thenReturn(id);
         when(roomCategoryRepository.findById(id)).thenReturn(Optional.of(entity));
         doNothing().when(roomCategoryRepository).delete(entity);
@@ -113,8 +109,6 @@ class RoomCategoryServiceTest {
 
     @Test
     void testDeleteRoomCategoryShouldThrowIfNotFound() {
-        UUID roomId = UUID.randomUUID();
-        UUID categoryId = UUID.randomUUID();
         RoomCategoryId id = new RoomCategoryId(roomId, categoryId);
 
         when(roomCategoryMapper.toRoomCategoryId(roomId, categoryId)).thenReturn(id);

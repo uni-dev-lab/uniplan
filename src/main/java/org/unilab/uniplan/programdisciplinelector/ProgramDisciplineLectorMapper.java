@@ -1,6 +1,5 @@
 package org.unilab.uniplan.programdisciplinelector;
 
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -12,10 +11,14 @@ import java.util.List;
 @Mapper
 public interface ProgramDisciplineLectorMapper {
 
-    @Mapping(target = "lectorRequestDto", source = "lector")
+    @Mapping(target = "disciplineId", source = "discipline.id")
+    @Mapping(target = "lectorId", source = "lector.id")
+    @Mapping(target = "programId", source = "program.id")
     ProgramDisciplineLectorDto toDto(ProgramDisciplineLector programDisciplineLector);
 
-    @Mapping(target = "lector", source = "lectorRequestDto")
+    @Mapping(target = "discipline.id", source = "disciplineId")
+    @Mapping(target = "lector.id", source = "lectorId")
+    @Mapping(target = "program.id", source = "programId")
     ProgramDisciplineLector toEntity(ProgramDisciplineLectorDto programDisciplineLectorDto);
 
     @Mapping(target = "id", ignore = true)
@@ -27,6 +30,8 @@ public interface ProgramDisciplineLectorMapper {
 
     List<ProgramDisciplineLectorResponseDto> toResponseDtoList(List<ProgramDisciplineLectorDto> programDisciplineLectorDtoList);
 
-    @Mapping(target = "lector", source = "lectorRequestDto")
+    @Mapping(target = "lector.id", source = "dto.lectorId")
+    @Mapping(target = "discipline.id", source = "dto.disciplineId")
+    @Mapping(target = "program.id", source = "dto.programId")
     void updateEntityFromDto(final ProgramDisciplineLectorDto dto, @MappingTarget final ProgramDisciplineLector entity);
 }

@@ -1,18 +1,16 @@
 package org.unilab.uniplan.programdisciplinelector.dto;
 
 import jakarta.validation.constraints.NotNull;
-import org.unilab.uniplan.discipline.Discipline;
-import org.unilab.uniplan.lector.dto.LectorRequestDto;
-import org.unilab.uniplan.program.Program;
 import org.unilab.uniplan.programdisciplinelector.LectorType;
+import java.util.UUID;
 
 public record ProgramDisciplineLectorRequestDto(
     @NotNull
-    LectorRequestDto lectorRequestDto,
+    UUID lectorId,
     @NotNull
-    Program program,
+    UUID programId,
     @NotNull
-    Discipline discipline,
+    UUID disciplineId,
     @NotNull
     LectorType lectorType
 ) {

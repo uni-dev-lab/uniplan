@@ -36,7 +36,7 @@ public class StudentService {
     @Transactional
     public StudentDTO updateStudent(final UUID id, final StudentDTO studentDTO) {
         final Student student = studentRepository.findById(id)
-                                           .orElseThrow(()->new StudentNotFoundException(id));
+                                           .orElseThrow(() -> new StudentNotFoundException(id));
         studentMapper.updateEntityFromDTO(studentDTO, student);
         return studentMapper.toDTO(studentRepository.save(student));
     }

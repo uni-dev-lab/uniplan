@@ -35,7 +35,7 @@ public class StudentGroupController {
     @GetMapping("/{id}")
     public ResponseEntity<StudentGroupResponseDTO> getStudentGroupById(@PathVariable @NotNull final UUID id) {
         return ResponseEntity.ok(studentGroupMapper.toResponseDTO(studentGroupService.findStudentGroupById(id)
-                                                    .orElseThrow(()->new ResponseStatusException(
+                                                    .orElseThrow(() -> new ResponseStatusException(
                                                         HttpStatus.NOT_FOUND,
                                                         MessageFormat.format("STUDENTGROUP_NOT_FOUND", id)))));
     }

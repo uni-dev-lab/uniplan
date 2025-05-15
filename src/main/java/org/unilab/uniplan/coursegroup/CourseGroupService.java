@@ -36,7 +36,7 @@ public class CourseGroupService {
     @Transactional
     public CourseGroupDTO updateCourseGroup(final UUID id, final CourseGroupDTO courseGroupDTO) {
         final CourseGroup courseGroup  = courseGroupRepository.findById(id)
-                                         .orElseThrow(()->new CourseGroupNotFoundException(id));
+                                         .orElseThrow(() -> new CourseGroupNotFoundException(id));
         courseGroupMapper.updateEntityFromDTO(courseGroupDTO, courseGroup);
         return courseGroupMapper.toDTO(courseGroupRepository.save(courseGroup));
     }

@@ -35,7 +35,7 @@ public class CourseService {
     @Transactional
     public CourseDTO updateCourse(final UUID id, final CourseDTO courseDTO) {
         final Course course  = courseRepository.findById(id)
-                                           .orElseThrow(()->new CourseNotFoundException(id));
+                                           .orElseThrow(() -> new CourseNotFoundException(id));
         courseMapper.updateEntityFromDTO(courseDTO, course);
         return courseMapper.toDTO(courseRepository.save(course));
     }

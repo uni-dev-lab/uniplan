@@ -38,7 +38,7 @@ public class StudentController {
     public ResponseEntity<StudentResponseDTO> getStudent(@PathVariable
                                                      @NotNull final UUID id) {
        final StudentResponseDTO studentResponseDTO = studentMapper.toResponseDTO(studentService.findStudentById(id)
-                                            .orElseThrow(()->new ResponseStatusException(
+                                            .orElseThrow(() -> new ResponseStatusException(
                                                 HttpStatus.NOT_FOUND,
                                                 MessageFormat.format("STUDENT_NOT_FOUND", id))));
         return ResponseEntity.ok(studentResponseDTO);

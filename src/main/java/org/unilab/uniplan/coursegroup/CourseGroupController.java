@@ -28,7 +28,7 @@ public class CourseGroupController {
     
     @PostMapping
     public ResponseEntity<CourseGroupResponseDTO> addCourseGroup(@RequestBody
-                                                                     @Valid @NotNull final CourseGroupRequestDTO courseGroupRequestDTO) {
+                                                                 @Valid @NotNull final CourseGroupRequestDTO courseGroupRequestDTO) {
         final CourseGroupDTO courseGroupDTO = courseGroupMapper.toInnerDTO(courseGroupRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
                              .body(courseGroupMapper.toResponseDTO(courseGroupService.createCourseGroup(courseGroupDTO)));
@@ -36,7 +36,7 @@ public class CourseGroupController {
     @GetMapping("/{id}")
     public ResponseEntity<CourseGroupResponseDTO> getCourseGroup(@PathVariable @NotNull final UUID id) {
         return ResponseEntity.ok(courseGroupMapper.toResponseDTO(courseGroupService.findCourseGroupById(id)
-                                                   .orElseThrow(()->new ResponseStatusException(
+                                                   .orElseThrow(() -> new ResponseStatusException(
                                                    HttpStatus.NOT_FOUND,
                                                    MessageFormat.format("COURSEGROUP_NOT_FOUND", id)))));
     }

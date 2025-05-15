@@ -27,8 +27,8 @@ public class CourseController {
     private final CourseMapper courseMapper;
     
     @PostMapping
-    public ResponseEntity<CourseResponseDTO> addCourse(@RequestBody @NotNull
-                                                           @Valid final CourseRequestDTO courseRequestDTO) {
+    public ResponseEntity<CourseResponseDTO> addCourse(@RequestBody @NotNull 
+                                                       @Valid final CourseRequestDTO courseRequestDTO) {
         final CourseDTO courseDTO = courseMapper.toInnerDTO(courseRequestDTO);     
         return ResponseEntity.status(HttpStatus.CREATED)
                              .body(courseMapper.toResponseDTO(courseService.createCourse(courseDTO)));
@@ -36,7 +36,7 @@ public class CourseController {
     @GetMapping("/{id}")
     public ResponseEntity<CourseResponseDTO> getMajorById(@PathVariable @NotNull final UUID id) {
         return ResponseEntity.ok(courseMapper.toResponseDTO(courseService.findCourseById(id)
-                                              .orElseThrow(()->new ResponseStatusException(
+                                              .orElseThrow(() -> new ResponseStatusException(
                                                   HttpStatus.NOT_FOUND,
                                                   MessageFormat.format("COURSE_NOT_FOUND", id)))));
     }

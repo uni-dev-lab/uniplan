@@ -28,7 +28,7 @@ public class MajorController {
     
     @PostMapping
     public ResponseEntity<MajorResponseDTO> addMajor(@RequestBody @NotNull
-                                                         @Valid final MajorRequestDTO majorRequestDTO) {
+                                                     @Valid final MajorRequestDTO majorRequestDTO) {
         final MajorDTO majorDTO = majorMapper.toInnerDTO(majorRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
                              .body(majorMapper.toResponseDTO(majorService.createMajor(majorDTO)));
@@ -36,7 +36,7 @@ public class MajorController {
     @GetMapping("/{id}")
     public ResponseEntity<MajorResponseDTO> getMajorById(@PathVariable @NotNull final UUID id) {
         return ResponseEntity.ok(majorMapper.toResponseDTO(majorService.findMajorById(id)
-                                       .orElseThrow(()->new ResponseStatusException(
+                                       .orElseThrow(() -> new ResponseStatusException(
                                           HttpStatus.NOT_FOUND,
                                           MessageFormat.format("MAJOR_NOT_FOUND", id)))));
     }

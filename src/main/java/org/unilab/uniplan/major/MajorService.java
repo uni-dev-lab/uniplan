@@ -31,7 +31,7 @@ public class MajorService {
     @Transactional
     public MajorDTO updateMajor (final UUID id, final MajorDTO majorDTO) {
         final Major major = majorRepository.findById(id)
-                                  .orElseThrow(()->new MajorNotFoundException(id));
+                                  .orElseThrow(() -> new MajorNotFoundException(id));
         majorMapper.updateEntityFromDTO(majorDTO, major);
         return majorMapper.toDTO(majorRepository.save(major));
     }

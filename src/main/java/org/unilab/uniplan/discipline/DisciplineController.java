@@ -19,7 +19,7 @@ import java.util.UUID;
 @RequestMapping("/api/disciplines")
 public class DisciplineController {
 
-    public static final String DISCIPLINE_NOT_FOUND = "Discipline with ID {0} not found.";
+    private static final String DISCIPLINE_NOT_FOUND = "Discipline with ID {0} not found.";
     private final DisciplineMapper disciplineMapper;
     private final DisciplineService disciplineService;
 

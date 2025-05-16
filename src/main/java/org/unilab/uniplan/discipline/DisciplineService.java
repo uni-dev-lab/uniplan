@@ -16,7 +16,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class DisciplineService {
 
-    public static final String DISCIPLINE_NOT_FOUND = "Discipline with ID {0} not found.";
+    private static final String DISCIPLINE_NOT_FOUND = "Discipline with ID {0} not found.";
     private final DisciplineRepository disciplineRepository;
     private final DisciplineMapper disciplineMapper;
 

@@ -31,12 +31,13 @@ public class ProgramDisciplineLectorService {
     }
 
     public Optional<ProgramDisciplineLectorDto> getProgramDisciplineLectorById(ProgramDisciplineLectorId id){
-        return programDisciplineLectorRepository.findByProgramDisciplineLectorId(id).map(programDisciplineLectorMapper::toDto);
+        return programDisciplineLectorRepository.findById(id)
+                                                .map(programDisciplineLectorMapper::toDto);
     }
 
     @Transactional
     public Optional<ProgramDisciplineLectorDto> updateProgramDisciplineLector(ProgramDisciplineLectorId id, ProgramDisciplineLectorDto programDisciplineLectorDto){
-        return programDisciplineLectorRepository.findByProgramDisciplineLectorId(id)
+        return programDisciplineLectorRepository.findById(id)
                                                 .map(existingProgramDisciplineLector ->{
                                                     programDisciplineLectorMapper
                                                         .updateEntityFromDto(programDisciplineLectorDto,
@@ -49,7 +50,7 @@ public class ProgramDisciplineLectorService {
 
     public void deleteProgramDisciplineLector(ProgramDisciplineLectorId id){
         final ProgramDisciplineLector programDisciplineLector = programDisciplineLectorRepository
-            .findByProgramDisciplineLectorId(id)
+            .findById(id)
                 .orElseThrow(() -> new RuntimeException(
                     MessageFormat
                         .format(PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND,id)

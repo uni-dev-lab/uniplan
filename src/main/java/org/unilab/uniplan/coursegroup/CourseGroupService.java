@@ -48,13 +48,14 @@ public class CourseGroupService {
         courseGroupMapper.updateEntityFromDTO(courseGroupDTO, courseGroup);
         return courseGroupMapper.toDTO(courseGroupRepository.save(courseGroup));
     }
-    
+
     @Transactional
-    public boolean deleteCourseGroup(final UUID id) {
-        if (courseGroupRepository.existsById(id)) {
-            courseGroupRepository.deleteById(id);
-            return true;
-        }
-        return false;
+    public void deleteCourseGroup(final UUID id) {
+        final CourseGroup courseGroup = courseGroupRepository.findById(id)
+                                                             .orElseThrow(() -> new RuntimeException(
+                                                                 MessageFormat.format(
+                                                                     COURSEGROUP_NOT_FOUND,
+                                                                     id)));
+        courseGroupRepository.delete(courseGroup);
     }
 }

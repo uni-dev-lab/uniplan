@@ -63,9 +63,7 @@ public class StudentGroupController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStudentGroup(@PathVariable @NotNull final UUID id) {
-        if (studentGroupService.deleteStudentGroup(id)) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        studentGroupService.deleteStudentGroup(id);
+        return ResponseEntity.noContent().build();
     }
 }

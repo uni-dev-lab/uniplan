@@ -48,7 +48,7 @@ public class StudentController {
                                                                                                         MessageFormat.format(
                                                                                                             STUDENT_NOT_FOUND,
                                                                                                             id))));
-       
+
         return ResponseEntity.ok(studentResponseDTO);
     }
 
@@ -70,9 +70,7 @@ public class StudentController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStudent(@PathVariable
                                               @NotNull final UUID id) {
-        if (studentService.deleteStudent(id)) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        studentService.deleteStudent(id);
+        return ResponseEntity.noContent().build();
     }
 }

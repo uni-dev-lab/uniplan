@@ -38,17 +38,16 @@ public class MajorService {
         final Major major = majorRepository.findById(id)
                                            .orElseThrow(() -> new RuntimeException(
                                                MessageFormat.format(MAJOR_NOT_FOUND, id)));
-        
+
         majorMapper.updateEntityFromDTO(majorDTO, major);
         return majorMapper.toDTO(majorRepository.save(major));
     }
 
     @Transactional
-    public boolean deleteMajor(final UUID id) {
-        if (majorRepository.existsById(id)) {
-            majorRepository.deleteById(id);
-            return true;
-        }
-        return false;
+    public void deleteMajor(final UUID id) {
+        final Major major = majorRepository.findById(id)
+                                           .orElseThrow(() -> new RuntimeException(
+                                               MessageFormat.format(MAJOR_NOT_FOUND, id)));
+        majorRepository.delete(major);
     }
 }

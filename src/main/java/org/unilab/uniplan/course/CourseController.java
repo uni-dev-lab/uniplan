@@ -2,6 +2,9 @@ package org.unilab.uniplan.course;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,45 +17,51 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/courses")
 @RequiredArgsConstructor
 public class CourseController {
 
+    private static final String COURSE_NOT_FOUND = "Course with ID {0} not found.";
+
     private final CourseService courseService;
     private final CourseMapper courseMapper;
-    
+
     @PostMapping
-    public ResponseEntity<CourseResponseDTO> addCourse(@RequestBody @NotNull 
+    public ResponseEntity<CourseResponseDTO> addCourse(@RequestBody @NotNull
                                                        @Valid final CourseRequestDTO courseRequestDTO) {
-        final CourseDTO courseDTO = courseMapper.toInnerDTO(courseRequestDTO);     
+        final CourseDTO courseDTO = courseMapper.toInnerDTO(courseRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
                              .body(courseMapper.toResponseDTO(courseService.createCourse(courseDTO)));
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<CourseResponseDTO> getMajorById(@PathVariable @NotNull final UUID id) {
         return ResponseEntity.ok(courseMapper.toResponseDTO(courseService.findCourseById(id)
-                                              .orElseThrow(() -> new ResponseStatusException(
-                                                  HttpStatus.NOT_FOUND,
-                                                  MessageFormat.format("COURSE_NOT_FOUND", id)))));
+                                                                         .orElseThrow(() -> new ResponseStatusException(
+                                                                             HttpStatus.NOT_FOUND,
+                                                                             MessageFormat.format(
+                                                                                 COURSE_NOT_FOUND,
+                                                                                 id)))));
     }
+
     @GetMapping
     public List<CourseResponseDTO> getAllCourses() {
         return courseMapper.toResponseDTOList(courseService.findAll());
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<CourseResponseDTO> updateCourse(@PathVariable @NotNull final UUID id,
                                                           @RequestBody @NotNull @Valid final CourseRequestDTO courseRequestDTO) {
         final CourseDTO courseDTO = courseMapper.toInnerDTO(courseRequestDTO);
-        return ResponseEntity.ok(courseMapper.toResponseDTO(courseService.updateCourse(id, courseDTO)));
+        return ResponseEntity.ok(courseMapper.toResponseDTO(courseService.updateCourse(id,
+                                                                                       courseDTO)));
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCourse(@PathVariable @NotNull final UUID id) {
-        if(courseService.deleteCourse(id)){
+        if (courseService.deleteCourse(id)) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();

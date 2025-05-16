@@ -1,33 +1,42 @@
 package org.unilab.uniplan.studentgroup;
 
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.unilab.uniplan.student.StudentNotFoundException;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class StudentGroupService {
+
+    private static final String STUDENTGROUP_NOT_FOUND = "StudentGroup with ID {0} not found.";
+
     private final StudentGroupRepository studentGroupRepository;
     private final StudentGroupMapper studentGroupMapper;
-    
+
     @Transactional
     public StudentGroupDTO createStudentGroup(final StudentGroupDTO studentGroupDTO) {
         StudentGroup studentGroup = studentGroupMapper.toEntity(studentGroupDTO);
         return studentGroupMapper.toDTO(studentGroupRepository.save(studentGroup));
     }
-    
+
     @Transactional
-    public StudentGroupDTO updateStudentGroup(final UUID id, final StudentGroupDTO studentGroupDTO) {
+    public StudentGroupDTO updateStudentGroup(final UUID id,
+                                              final StudentGroupDTO studentGroupDTO) {
         final StudentGroup studentGroup = studentGroupRepository.findById(id)
-                                                          .orElseThrow(() -> new StudentNotFoundException(id));
+                                                                .orElseThrow(() -> new RuntimeException(
+                                                                    MessageFormat.format(
+                                                                        STUDENTGROUP_NOT_FOUND,
+                                                                        id)
+                                                                ));
+        
         studentGroupMapper.updateEntityFromDTO(studentGroupDTO, studentGroup);
         return studentGroupMapper.toDTO(studentGroupRepository.save(studentGroup));
     }
-    
+
     @Transactional
     public boolean deleteStudentGroup(final UUID studentGroupId) {
         if (studentGroupRepository.existsById(studentGroupId)) {
@@ -36,18 +45,18 @@ public class StudentGroupService {
         }
         return false;
     }
-    
+
     public Optional<StudentGroupDTO> findStudentGroupById(final UUID id) {
         return studentGroupRepository.findById(id)
                                      .map(studentGroupMapper::toDTO);
     }
-    
+
     public Optional<StudentGroup> findById(final UUID id) {
         return studentGroupRepository.findById(id);
     }
-    
+
     public List<StudentGroupDTO> findAll() {
         return studentGroupRepository.findAll()
-            .stream().map(studentGroupMapper::toDTO).toList();
+                                     .stream().map(studentGroupMapper::toDTO).toList();
     }
 }

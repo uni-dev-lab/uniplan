@@ -11,7 +11,6 @@ public interface StudentGroupMapper {
 
     @Mapping(source = "id.studentId", target = "studentId")
     @Mapping(source = "id.courseGroupId", target = "courseGroupId")
-    @Mapping(target = "id", ignore = true)
     StudentGroupDTO toDTO(StudentGroup studentGroup);
 
     @Mapping(target = "id", source = ".", qualifiedByName = "toStudentGroupId")
@@ -25,8 +24,7 @@ public interface StudentGroupMapper {
     @Mapping(target = "id", source = ".", qualifiedByName = "toStudentGroupId")
     void updateEntityFromDTO(StudentGroupDTO studentGroupDTO,
                              @MappingTarget StudentGroup studentGroup);
-
-    @Mapping(target = "id", ignore = true)
+    
     StudentGroupDTO toInnerDTO(StudentGroupRequestDTO studentGroupRequestDTO);
 
     @Mapping(source = "studentId", target = "studentId")

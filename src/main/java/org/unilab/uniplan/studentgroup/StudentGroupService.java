@@ -24,8 +24,11 @@ public class StudentGroupService {
     }
 
     @Transactional
-    public Optional<StudentGroupDTO> updateStudentGroup(final UUID id,
+    public Optional<StudentGroupDTO> updateStudentGroup(final UUID studentId,
+                                                        final UUID courseGroupId,
                                                         final StudentGroupDTO studentGroupDTO) {
+        final StudentGroupId id = new StudentGroupId(studentId, courseGroupId);
+        
         return studentGroupRepository.findById(id).map(
             existingStudentGroup -> {
                 studentGroupMapper.updateEntityFromDTO(studentGroupDTO, existingStudentGroup);
@@ -35,7 +38,8 @@ public class StudentGroupService {
     }
 
     @Transactional
-    public void deleteStudentGroup(final UUID id) {
+    public void deleteStudentGroup(final UUID studentId, final UUID courseGroupId) {
+        final StudentGroupId id = new StudentGroupId(studentId, courseGroupId);
         final StudentGroup studentGroup = studentGroupRepository.findById(id)
                                                                 .orElseThrow(() -> new RuntimeException(
                                                                     MessageFormat.format(
@@ -44,13 +48,12 @@ public class StudentGroupService {
         studentGroupRepository.delete(studentGroup);
     }
 
-    public Optional<StudentGroupDTO> findStudentGroupById(final UUID id) {
+    public Optional<StudentGroupDTO> findStudentGroupById(final UUID studentId,
+                                                          final UUID courseGroupId) {
+        final StudentGroupId id = new StudentGroupId(studentId, courseGroupId);
+
         return studentGroupRepository.findById(id)
                                      .map(studentGroupMapper::toDTO);
-    }
-
-    public Optional<StudentGroup> findById(final UUID id) {
-        return studentGroupRepository.findById(id);
     }
 
     public List<StudentGroupDTO> findAll() {

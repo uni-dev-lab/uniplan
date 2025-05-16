@@ -4,9 +4,10 @@ import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
 public record StudentGroupResponseDTO(
-    UUID id,
     @NotNull
     UUID studentId,
     @NotNull
     UUID courseGroupId
-) {}
+) {
+
+}

@@ -23,7 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class StudentGroupController {
 
-    private static final String STUDENTGROUP_NOT_FOUND = "StudentGroup with ID {0} not found.";
+    private static final String STUDENTGROUP_NOT_FOUND = "StudentGroup with StudentID {0} and CourseGroupId {1} not found.";
 
     private final StudentGroupService studentGroupService;
     private final StudentGroupMapper studentGroupMapper;
@@ -36,15 +36,20 @@ public class StudentGroupController {
                                  studentGroupDTO)));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<StudentGroupResponseDTO> getStudentGroupById(@PathVariable @NotNull final UUID id) {
-        return ResponseEntity.ok(studentGroupMapper.toResponseDTO(studentGroupService.findStudentGroupById(
-                                                                                         id)
-                                                                                     .orElseThrow(() -> new ResponseStatusException(
-                                                                                         HttpStatus.NOT_FOUND,
-                                                                                         MessageFormat.format(
-                                                                                             STUDENTGROUP_NOT_FOUND,
-                                                                                             id)))));
+    @GetMapping("/{studentId}/{courseGroupId}")
+    public ResponseEntity<StudentGroupResponseDTO> getStudentGroupById(@PathVariable @NotNull final UUID studentId,
+                                                                       @PathVariable @NotNull final UUID courseGroupId) {
+
+        return ResponseEntity.ok(studentGroupMapper.toResponseDTO(studentGroupService
+                                                                      .findStudentGroupById(
+                                                                          studentId,
+                                                                          courseGroupId)
+                                                                      .orElseThrow(() -> new ResponseStatusException(
+                                                                          HttpStatus.NOT_FOUND,
+                                                                          MessageFormat.format(
+                                                                              STUDENTGROUP_NOT_FOUND,
+                                                                              studentId,
+                                                                              courseGroupId)))));
     }
 
     @GetMapping
@@ -53,22 +58,26 @@ public class StudentGroupController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StudentGroupResponseDTO> updateStudentGroup(@PathVariable @NotNull final UUID id,
+    public ResponseEntity<StudentGroupResponseDTO> updateStudentGroup(@PathVariable @NotNull final UUID studentId,
+                                                                      @PathVariable @NotNull final UUID courseGroupId,
                                                                       @RequestBody @NotNull @Valid final StudentGroupRequestDTO studentGroupRequestDTO) {
         final StudentGroupDTO studentGroupDTO = studentGroupMapper.toInnerDTO(studentGroupRequestDTO);
         return ResponseEntity.ok(studentGroupMapper
-                                     .toResponseDTO(studentGroupService.updateStudentGroup(id,
+                                     .toResponseDTO(studentGroupService.updateStudentGroup(studentId,
+                                                                                           courseGroupId,
                                                                                            studentGroupDTO)
                                                                        .orElseThrow(() -> new ResponseStatusException(
                                                                            HttpStatus.NOT_FOUND,
                                                                            MessageFormat.format(
                                                                                STUDENTGROUP_NOT_FOUND,
-                                                                               id)))));
+                                                                               studentId,
+                                                                               courseGroupId)))));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStudentGroup(@PathVariable @NotNull final UUID id) {
-        studentGroupService.deleteStudentGroup(id);
+    @DeleteMapping("/{studentId}/{courseGroupId}")
+    public ResponseEntity<Void> deleteStudentGroup(@PathVariable @NotNull final UUID studentId,
+                                                   @PathVariable @NotNull final UUID courseGropId) {
+        studentGroupService.deleteStudentGroup(studentId, courseGropId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -56,7 +56,12 @@ public class CourseController {
                                                           @RequestBody @NotNull @Valid final CourseRequestDTO courseRequestDTO) {
         final CourseDTO courseDTO = courseMapper.toInnerDTO(courseRequestDTO);
         return ResponseEntity.ok(courseMapper.toResponseDTO(courseService.updateCourse(id,
-                                                                                       courseDTO)));
+                                                                                       courseDTO)
+                                                                         .orElseThrow(() -> new ResponseStatusException(
+                                                                             HttpStatus.NOT_FOUND,
+                                                                             MessageFormat.format(
+                                                                                 COURSE_NOT_FOUND,
+                                                                                 id)))));
     }
 
     @DeleteMapping("/{id}")

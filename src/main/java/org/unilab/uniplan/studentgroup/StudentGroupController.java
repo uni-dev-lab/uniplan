@@ -57,7 +57,7 @@ public class StudentGroupController {
         return studentGroupMapper.toResponseDTOList(studentGroupService.findAll());
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{studentId}/{courseGroupId}")
     public ResponseEntity<StudentGroupResponseDTO> updateStudentGroup(@PathVariable @NotNull final UUID studentId,
                                                                       @PathVariable @NotNull final UUID courseGroupId,
                                                                       @RequestBody @NotNull @Valid final StudentGroupRequestDTO studentGroupRequestDTO) {
@@ -76,8 +76,8 @@ public class StudentGroupController {
 
     @DeleteMapping("/{studentId}/{courseGroupId}")
     public ResponseEntity<Void> deleteStudentGroup(@PathVariable @NotNull final UUID studentId,
-                                                   @PathVariable @NotNull final UUID courseGropId) {
-        studentGroupService.deleteStudentGroup(studentId, courseGropId);
+                                                   @PathVariable @NotNull final UUID courseGroupId) {
+        studentGroupService.deleteStudentGroup(studentId, courseGroupId);
         return ResponseEntity.noContent().build();
     }
 }

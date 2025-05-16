@@ -45,7 +45,7 @@ class StudentServiceTest {
     }
 
     @Test
-    void createStudentShouldReturnSaveAndReturnDTO() {
+    void createStudentShouldReturnSaveAndReturnStudentDTO() {
         when(studentMapper.toEntity(studentDTO)).thenReturn(student);
         when(studentRepository.save(student)).thenReturn(student);
         when(studentMapper.toDTO(student)).thenReturn(studentDTO);

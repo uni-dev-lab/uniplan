@@ -46,7 +46,7 @@ class CourseGroupServiceTest {
     }
 
     @Test
-    void createCourseGroupShouldReturnSavedCourseGroupDTO() {
+    void createCourseGroupShouldReturnAndSavedCourseGroupDTO() {
         when(courseGroupMapper.toEntity(courseGroupDTO)).thenReturn(courseGroup);
         when(courseGroupRepository.save(courseGroup)).thenReturn(courseGroup);
         when(courseGroupMapper.toDTO(courseGroup)).thenReturn(courseGroupDTO);

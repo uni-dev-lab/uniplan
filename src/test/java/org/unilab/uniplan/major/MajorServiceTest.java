@@ -47,7 +47,7 @@ class MajorServiceTest {
     }
 
     @Test
-    void createMajorShouldReturnSavedMajorDTO() {
+    void createMajorShouldReturnAndSavedMajorDTO() {
         when(majorMapper.toEntity(majorDTO)).thenReturn(major);
         when(majorRepository.save(major)).thenReturn(major);
         when(majorMapper.toDTO(major)).thenReturn(majorDTO);

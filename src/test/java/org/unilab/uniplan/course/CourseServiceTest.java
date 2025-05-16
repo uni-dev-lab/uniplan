@@ -45,7 +45,7 @@ class CourseServiceTest {
     }
 
     @Test
-    void createCourseShouldReturnSavedCourseDTO() {
+    void createCourseShouldReturnAndSavedCourseDTO() {
         when(courseMapper.toEntity(courseDTO)).thenReturn(course);
         when(courseRepository.save(course)).thenReturn(course);
         when(courseMapper.toDTO(course)).thenReturn(courseDTO);
@@ -55,7 +55,7 @@ class CourseServiceTest {
         assertEquals(courseDTO, result);
         verify(courseRepository).save(course);
     }
-    
+
     @Test
     void findCourseByIdShouldReturnEmptyIfNotFound() {
         when(courseRepository.findById(courseId)).thenReturn(Optional.empty());

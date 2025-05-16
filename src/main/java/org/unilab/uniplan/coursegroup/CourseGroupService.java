@@ -1,47 +1,56 @@
 package org.unilab.uniplan.coursegroup;
 
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class CourseGroupService {
-    
+
+    private static final String COURSEGROUP_NOT_FOUND = "CourseGroup with ID {0} not found.";
+
     private final CourseGroupRepository courseGroupRepository;
     private final CourseGroupMapper courseGroupMapper;
-    
+
     @Transactional
     public CourseGroupDTO createCourseGroup(final CourseGroupDTO courseGroupDTO) {
         final CourseGroup courseGroup = courseGroupMapper.toEntity(courseGroupDTO);
         return courseGroupMapper.toDTO(courseGroupRepository.save(courseGroup));
     }
 
-    public Optional<CourseGroupDTO> findCourseGroupById (final UUID id) {
+    public Optional<CourseGroupDTO> findCourseGroupById(final UUID id) {
         return courseGroupRepository.findById(id)
-                               .map(courseGroupMapper::toDTO);
+                                    .map(courseGroupMapper::toDTO);
     }
 
-    public Optional<CourseGroup> findById (final UUID id) {
+    public Optional<CourseGroup> findById(final UUID id) {
         return courseGroupRepository.findById(id);
     }
 
-    public List<CourseGroupDTO> findAll () {
+    public List<CourseGroupDTO> findAll() {
         return courseGroupRepository.findAll()
-            .stream().map(courseGroupMapper::toDTO).toList();
+                                    .stream().map(courseGroupMapper::toDTO).toList();
     }
+
     @Transactional
     public CourseGroupDTO updateCourseGroup(final UUID id, final CourseGroupDTO courseGroupDTO) {
-        final CourseGroup courseGroup  = courseGroupRepository.findById(id)
-                                         .orElseThrow(() -> new CourseGroupNotFoundException(id));
+        final CourseGroup courseGroup = courseGroupRepository.findById(id)
+                                                             .orElseThrow(() -> new RuntimeException(
+                                                                 MessageFormat.format(
+                                                                     COURSEGROUP_NOT_FOUND,
+                                                                     id)));
+
         courseGroupMapper.updateEntityFromDTO(courseGroupDTO, courseGroup);
         return courseGroupMapper.toDTO(courseGroupRepository.save(courseGroup));
     }
+    
     @Transactional
-    public boolean deleteCourseGroup(final UUID id){
+    public boolean deleteCourseGroup(final UUID id) {
         if (courseGroupRepository.existsById(id)) {
             courseGroupRepository.deleteById(id);
             return true;

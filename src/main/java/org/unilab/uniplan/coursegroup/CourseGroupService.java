@@ -28,11 +28,6 @@ public class CourseGroupService {
                                     .map(courseGroupMapper::toDTO);
     }
 
-    public Optional<CourseGroupDTO> findById(final UUID id) {
-        return courseGroupRepository.findById(id)
-                                    .map(courseGroupMapper::toDTO);
-    }
-
     public List<CourseGroupDTO> findAll() {
         return courseGroupRepository.findAll()
                                     .stream().map(courseGroupMapper::toDTO).toList();

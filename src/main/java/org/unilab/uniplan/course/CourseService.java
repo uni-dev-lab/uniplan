@@ -28,10 +28,6 @@ public class CourseService {
                                .map(courseMapper::toDTO);
     }
 
-    public Optional<Course> findById(final UUID id) {
-        return courseRepository.findById(id);
-    }
-
     public List<CourseDTO> findAll() {
         return courseRepository.findAll()
                                .stream().map(courseMapper::toDTO).toList();

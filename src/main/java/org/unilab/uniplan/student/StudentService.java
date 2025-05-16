@@ -28,10 +28,6 @@ public class StudentService {
                                 .map(studentMapper::toDTO);
     }
 
-    public Optional<Student> findById(final UUID id) {
-        return studentRepository.findById(id);
-    }
-
     public List<StudentDTO> findAll() {
         return studentRepository.findAll()
                                 .stream().map(studentMapper::toDTO).toList();

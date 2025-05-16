@@ -39,12 +39,12 @@ public class CourseService {
 
     @Transactional
     public Optional<CourseDTO> updateCourse(final UUID id, final CourseDTO courseDTO) {
-        final Course course = courseRepository.findById(id)
-                                              .orElseThrow(() -> new RuntimeException(
-                                                  MessageFormat.format(COURSE_NOT_FOUND, id)));
+        return courseRepository.findById(id).map(
+            existingCourse -> {
+                courseMapper.updateEntityFromDTO(courseDTO, existingCourse);
 
-        courseMapper.updateEntityFromDTO(courseDTO, course);
-        return Optional.ofNullable(courseMapper.toDTO(courseRepository.save(course)));
+                return courseMapper.toDTO(courseRepository.save(existingCourse));
+            });
     }
 
     @Transactional

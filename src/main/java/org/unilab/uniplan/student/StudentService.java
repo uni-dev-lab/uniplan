@@ -39,12 +39,13 @@ public class StudentService {
 
     @Transactional
     public Optional<StudentDTO> updateStudent(final UUID id, final StudentDTO studentDTO) {
-        final Student student = studentRepository.findById(id)
-                                                 .orElseThrow(() -> new RuntimeException(
-                                                     MessageFormat.format(STUDENT_NOT_FOUND, id)));
+        return studentRepository.findById(id)
+                                .map(existingStudent -> {
+                                    studentMapper.updateEntityFromDTO(studentDTO, existingStudent);
 
-        studentMapper.updateEntityFromDTO(studentDTO, student);
-        return Optional.ofNullable(studentMapper.toDTO(studentRepository.save(student)));
+                                    return studentMapper.toDTO(studentRepository.save(
+                                        existingStudent));
+                                });
     }
 
     @Transactional

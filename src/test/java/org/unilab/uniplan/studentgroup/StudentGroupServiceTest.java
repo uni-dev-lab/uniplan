@@ -52,7 +52,7 @@ class StudentGroupServiceTest {
     }
 
     @Test
-    void createStudentGroupShouldReturnSavedStudentGroupDTO() {
+    void createStudentGroupShouldReturnAndSavedStudentGroupDTO() {
         when(studentGroupMapper.toEntity(studentGroupDTO)).thenReturn(studentGroup);
         when(studentGroupRepository.save(studentGroup)).thenReturn(studentGroup);
         when(studentGroupMapper.toDTO(studentGroup)).thenReturn(studentGroupDTO);

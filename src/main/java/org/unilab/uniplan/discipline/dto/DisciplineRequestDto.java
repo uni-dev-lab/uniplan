@@ -3,7 +3,7 @@ package org.unilab.uniplan.discipline.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.unilab.uniplan.programdiscipline.ProgramDiscipline;
+import org.unilab.uniplan.programdiscipline.ProgramDisciplineId;
 import java.util.List;
 
 public record DisciplineRequestDto(
@@ -17,7 +17,7 @@ public record DisciplineRequestDto(
 
     @NotNull(message = "Program disciplines must not be null")
     @Size(min = 1, message = "At least one program discipline is required")
-    List<ProgramDiscipline> programDisciplineList
+    List<ProgramDisciplineId> programDisciplinesIds
 ) {
 
 }

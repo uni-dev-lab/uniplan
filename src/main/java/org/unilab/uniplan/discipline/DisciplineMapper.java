@@ -11,12 +11,13 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface DisciplineMapper {
 
-    @Mapping(target = "programDisciplineList", source = "programDisciplines")
+    @Mapping(target = "programDisciplinesIds", source = "programDisciplines")
     DisciplineDto toDto(final Discipline discipline);
 
-    @Mapping(target = "programDisciplines", source = "programDisciplineList")
+    @Mapping(target = "programDisciplines", source = "programDisciplinesIds")
     Discipline toEntity(final DisciplineDto disciplineDto);
 
+    @Mapping(target = "id", ignore = true)
     DisciplineDto toInternalDto(final DisciplineRequestDto disciplineRequestDto);
 
     DisciplineResponseDto toResponseDto(final DisciplineDto disciplineDto);
@@ -25,8 +26,9 @@ public interface DisciplineMapper {
 
     List<DisciplineResponseDto> toResponseDtoList(final List<DisciplineDto> disciplineDtos);
 
-    @Mapping(target = "name", source = "categoryDto.name")
-    @Mapping(target = "mainLector", source = "categoryDto.mainLector")
+    @Mapping(target = "name", source = "disciplineDto.name")
+    @Mapping(target = "mainLector", source = "disciplineDto.mainLector")
+    @Mapping(target = "programDisciplines", source = "disciplineDto.programDisciplinesIds")
     void updateEntityFromDto(final DisciplineDto disciplineDto,
                              @MappingTarget final Discipline discipline);
 }

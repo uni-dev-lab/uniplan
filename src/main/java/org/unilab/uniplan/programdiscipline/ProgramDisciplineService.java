@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineDto;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,23 +30,27 @@ public class ProgramDisciplineService {
     }
 
     public Optional<ProgramDisciplineDto> getProgramDisciplineById(ProgramDisciplineId id){
-        ProgramDiscipline programDiscipline = programDisciplineRepository.findByProgramId(id);
-        return Optional.ofNullable(programDisciplineMapper.toDto(programDiscipline));
+        return programDisciplineRepository.findById(id)
+                                          .map(programDisciplineMapper::toDto);
     }
 
     @Transactional
     public Optional<ProgramDisciplineDto> updateProgramDiscipline(ProgramDisciplineId id, ProgramDisciplineDto programDisciplineDto){
-       return Optional.ofNullable(programDisciplineRepository.findByProgramId(id))
-                                                                .map(existingProgramDiscipline ->{
-                                                                   programDisciplineMapper.updateEntityFromDto(programDisciplineDto,
-                                                                                                           existingProgramDiscipline);
-                                                                   return programDisciplineMapper.toDto(programDisciplineRepository.save(
-                                                                       existingProgramDiscipline));
-                                                                });
+        return programDisciplineRepository.findById(id).map(existingProgramDiscipline -> {
+            programDisciplineMapper.updateEntityFromDto(programDisciplineDto,
+                                                        existingProgramDiscipline);
+            return programDisciplineMapper.toDto(programDisciplineRepository.save(
+                existingProgramDiscipline));
+        });
     }
 
+    @Transactional
     public void deleteProgramDiscipline(ProgramDisciplineId id){
-        final ProgramDiscipline programDiscipline = programDisciplineRepository.findByProgramId(id);
+        final ProgramDiscipline programDiscipline = programDisciplineRepository.findById(id)
+                                                                               .orElseThrow(() -> new RuntimeException(
+                                                                                   MessageFormat.format(
+                                                                                       PROGRAM_DISCIPLINE_NOT_FOUND,
+                                                                                       id)));
         programDisciplineRepository.delete(programDiscipline);
     }
 }

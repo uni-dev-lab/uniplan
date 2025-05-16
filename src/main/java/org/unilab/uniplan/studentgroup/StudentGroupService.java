@@ -30,20 +30,20 @@ public class StudentGroupService {
                                                                 .orElseThrow(() -> new RuntimeException(
                                                                     MessageFormat.format(
                                                                         STUDENTGROUP_NOT_FOUND,
-                                                                        id)
-                                                                ));
-        
+                                                                        id)));
+
         studentGroupMapper.updateEntityFromDTO(studentGroupDTO, studentGroup);
         return studentGroupMapper.toDTO(studentGroupRepository.save(studentGroup));
     }
 
     @Transactional
-    public boolean deleteStudentGroup(final UUID studentGroupId) {
-        if (studentGroupRepository.existsById(studentGroupId)) {
-            studentGroupRepository.deleteById(studentGroupId);
-            return true;
-        }
-        return false;
+    public void deleteStudentGroup(final UUID id) {
+        final StudentGroup studentGroup = studentGroupRepository.findById(id)
+                                                                .orElseThrow(() -> new RuntimeException(
+                                                                    MessageFormat.format(
+                                                                        STUDENTGROUP_NOT_FOUND,
+                                                                        id)));
+        studentGroupRepository.delete(studentGroup);
     }
 
     public Optional<StudentGroupDTO> findStudentGroupById(final UUID id) {

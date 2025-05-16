@@ -36,7 +36,7 @@ public class StudentService {
         return studentRepository.findAll()
                                 .stream().map(studentMapper::toDTO).toList();
     }
-    
+
     @Transactional
     public StudentDTO updateStudent(final UUID id, final StudentDTO studentDTO) {
         final Student student = studentRepository.findById(id)
@@ -48,11 +48,10 @@ public class StudentService {
     }
 
     @Transactional
-    public boolean deleteStudent(final UUID studentId) {
-        if (studentRepository.existsById(studentId)) {
-            studentRepository.deleteById(studentId);
-            return true;
-        }
-        return false;
+    public void deleteStudent(final UUID id) {
+        final Student student = studentRepository.findById(id)
+                                                 .orElseThrow(() -> new RuntimeException(
+                                                     MessageFormat.format(STUDENT_NOT_FOUND, id)));
+        studentRepository.delete(student);
     }
 }

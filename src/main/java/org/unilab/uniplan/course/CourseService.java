@@ -48,11 +48,10 @@ public class CourseService {
     }
 
     @Transactional
-    public boolean deleteCourse(final UUID id) {
-        if (courseRepository.existsById(id)) {
-            courseRepository.deleteById(id);
-            return true;
-        }
-        return false;
+    public void deleteCourse(final UUID id) {
+        final Course course = courseRepository.findById(id)
+                                              .orElseThrow(() -> new RuntimeException(
+                                                  MessageFormat.format(COURSE_NOT_FOUND, id)));
+        courseRepository.delete(course);
     }
 }

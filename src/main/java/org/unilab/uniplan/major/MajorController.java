@@ -60,10 +60,7 @@ public class MajorController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMajor(@PathVariable @NotNull final UUID id) {
-        if (majorService.deleteMajor(id)) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        majorService.deleteMajor(id);
+        return ResponseEntity.noContent().build();
     }
-
 }

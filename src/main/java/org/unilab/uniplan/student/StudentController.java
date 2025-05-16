@@ -63,7 +63,12 @@ public class StudentController {
                                                             @RequestBody
                                                             @NotNull @Valid final StudentRequestDTO studentRequestDTO) {
         final StudentDTO studentDTO = studentMapper.toInternalDTO(studentRequestDTO);
-        studentService.updateStudent(id, studentDTO);
+        studentService.updateStudent(id, studentDTO).orElseThrow(
+            () -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                MessageFormat.format(
+                    STUDENT_NOT_FOUND,
+                    id)));
         return ResponseEntity.ok(studentMapper.toResponseDTO(studentDTO));
     }
 

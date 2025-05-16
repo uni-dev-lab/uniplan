@@ -55,7 +55,12 @@ public class MajorController {
     public ResponseEntity<MajorResponseDTO> updateMajor(@PathVariable @NotNull final UUID id,
                                                         @RequestBody @NotNull @Valid MajorRequestDTO majorRequestDTO) {
         final MajorDTO majorDTO = majorMapper.toInnerDTO(majorRequestDTO);
-        return ResponseEntity.ok(majorMapper.toResponseDTO(majorService.updateMajor(id, majorDTO)));
+        return ResponseEntity.ok(majorMapper.toResponseDTO(majorService.updateMajor(id, majorDTO)
+                                                                       .orElseThrow(() -> new ResponseStatusException(
+                                                                           HttpStatus.NOT_FOUND,
+                                                                           MessageFormat.format(
+                                                                               MAJOR_NOT_FOUND,
+                                                                               id)))));
     }
 
     @DeleteMapping("/{id}")

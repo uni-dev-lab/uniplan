@@ -58,7 +58,12 @@ public class StudentGroupController {
         final StudentGroupDTO studentGroupDTO = studentGroupMapper.toInnerDTO(studentGroupRequestDTO);
         return ResponseEntity.ok(studentGroupMapper
                                      .toResponseDTO(studentGroupService.updateStudentGroup(id,
-                                                                                           studentGroupDTO)));
+                                                                                           studentGroupDTO)
+                                                                       .orElseThrow(() -> new ResponseStatusException(
+                                                                           HttpStatus.NOT_FOUND,
+                                                                           MessageFormat.format(
+                                                                               STUDENTGROUP_NOT_FOUND,
+                                                                               id)))));
     }
 
     @DeleteMapping("/{id}")

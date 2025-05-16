@@ -24,8 +24,8 @@ public class StudentGroupService {
     }
 
     @Transactional
-    public StudentGroupDTO updateStudentGroup(final UUID id,
-                                              final StudentGroupDTO studentGroupDTO) {
+    public Optional<StudentGroupDTO> updateStudentGroup(final UUID id,
+                                                        final StudentGroupDTO studentGroupDTO) {
         final StudentGroup studentGroup = studentGroupRepository.findById(id)
                                                                 .orElseThrow(() -> new RuntimeException(
                                                                     MessageFormat.format(
@@ -33,7 +33,7 @@ public class StudentGroupService {
                                                                         id)));
 
         studentGroupMapper.updateEntityFromDTO(studentGroupDTO, studentGroup);
-        return studentGroupMapper.toDTO(studentGroupRepository.save(studentGroup));
+        return Optional.ofNullable(studentGroupMapper.toDTO(studentGroupRepository.save(studentGroup)));
     }
 
     @Transactional

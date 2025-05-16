@@ -38,7 +38,8 @@ public class CourseGroupService {
     }
 
     @Transactional
-    public CourseGroupDTO updateCourseGroup(final UUID id, final CourseGroupDTO courseGroupDTO) {
+    public Optional<CourseGroupDTO> updateCourseGroup(final UUID id,
+                                                      final CourseGroupDTO courseGroupDTO) {
         final CourseGroup courseGroup = courseGroupRepository.findById(id)
                                                              .orElseThrow(() -> new RuntimeException(
                                                                  MessageFormat.format(
@@ -46,7 +47,7 @@ public class CourseGroupService {
                                                                      id)));
 
         courseGroupMapper.updateEntityFromDTO(courseGroupDTO, courseGroup);
-        return courseGroupMapper.toDTO(courseGroupRepository.save(courseGroup));
+        return Optional.ofNullable(courseGroupMapper.toDTO(courseGroupRepository.save(courseGroup)));
     }
 
     @Transactional

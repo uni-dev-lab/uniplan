@@ -58,8 +58,13 @@ public class CourseGroupController {
                                                                     @RequestBody @NotNull @Valid final CourseGroupRequestDTO courseGroupRequestDTO) {
         final CourseGroupDTO courseGroupDTO = courseGroupMapper.toInnerDTO(courseGroupRequestDTO);
         return ResponseEntity.ok(courseGroupMapper.toResponseDTO(courseGroupService.updateCourseGroup(
-            id,
-            courseGroupDTO)));
+                                                                                       id,
+                                                                                       courseGroupDTO)
+                                                                                   .orElseThrow(() -> new ResponseStatusException(
+                                                                                       HttpStatus.NOT_FOUND,
+                                                                                       MessageFormat.format(
+                                                                                           COURSEGROUP_NOT_FOUND,
+                                                                                           id)))));
     }
 
     @DeleteMapping("/{id}")

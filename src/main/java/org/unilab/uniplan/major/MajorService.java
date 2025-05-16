@@ -34,13 +34,13 @@ public class MajorService {
     }
 
     @Transactional
-    public MajorDTO updateMajor(final UUID id, final MajorDTO majorDTO) {
+    public Optional<MajorDTO> updateMajor(final UUID id, final MajorDTO majorDTO) {
         final Major major = majorRepository.findById(id)
                                            .orElseThrow(() -> new RuntimeException(
                                                MessageFormat.format(MAJOR_NOT_FOUND, id)));
 
         majorMapper.updateEntityFromDTO(majorDTO, major);
-        return majorMapper.toDTO(majorRepository.save(major));
+        return Optional.ofNullable(majorMapper.toDTO(majorRepository.save(major)));
     }
 
     @Transactional

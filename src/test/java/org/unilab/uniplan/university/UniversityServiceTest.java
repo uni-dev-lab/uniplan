@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -117,7 +116,7 @@ class UniversityServiceTest {
     @Test
     void testDeleteUniversityShouldDeleteUniversityIfFound() {
         when(universityRepository.findById(id)).thenReturn(Optional.of(entity));
-        doNothing().when(universityRepository).delete(entity);
+        doAnswer(invocation -> null).when(universityRepository).delete(entity);
 
         assertDoesNotThrow(() -> universityService.deleteUniversity(id));
         verify(universityRepository).delete(entity);

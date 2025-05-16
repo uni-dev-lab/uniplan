@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -92,7 +92,7 @@ class DepartmentServiceTest {
     @Test
     void testUpdateDepartmentShouldUpdateAndReturnDepartmentDtoIfFound() {
         when(departmentRepository.findById(id)).thenReturn(Optional.of(entity));
-        doNothing().when(departmentMapper).updateEntityFromDto(dto, entity);
+        doAnswer(invocation -> null).when(departmentMapper).updateEntityFromDto(dto, entity);
         when(departmentRepository.save(entity)).thenReturn(entity);
         when(departmentMapper.toDto(entity)).thenReturn(dto);
 
@@ -114,7 +114,7 @@ class DepartmentServiceTest {
     @Test
     void testDeleteDepartmentShouldDeleteDepartmentIfFound() {
         when(departmentRepository.findById(id)).thenReturn(Optional.of(entity));
-        doNothing().when(departmentRepository).delete(entity);
+        doAnswer(invocation -> null).when(departmentRepository).delete(entity);
 
         assertDoesNotThrow(() -> departmentService.deleteDepartment(id));
         verify(departmentRepository).delete(entity);

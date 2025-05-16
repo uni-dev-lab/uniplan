@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -112,7 +111,7 @@ class CategoryServiceTest {
     @Test
     void testDeleteCategoryShouldDeleteCategoryIfFound() {
         when(categoryRepository.findById(id)).thenReturn(Optional.of(entity));
-        doNothing().when(categoryRepository).delete(entity);
+        doAnswer(invocation -> null).when(categoryRepository).delete(entity);
 
         assertDoesNotThrow(() -> categoryService.deleteCategory(id));
         verify(categoryRepository).delete(entity);

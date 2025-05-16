@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -91,7 +91,7 @@ class FacultyServiceTest {
     @Test
     void testUpdateFacultyShouldUpdateAndReturnDtoIfFound() {
         when(facultyRepository.findById(id)).thenReturn(Optional.of(entity));
-        doNothing().when(facultyMapper).updateEntityFromDto(dto, entity);
+        doAnswer(invocation -> null).when(facultyMapper).updateEntityFromDto(dto, entity);
         when(facultyRepository.save(entity)).thenReturn(entity);
         when(facultyMapper.toDto(entity)).thenReturn(dto);
 
@@ -113,7 +113,7 @@ class FacultyServiceTest {
     @Test
     void testDeleteFacultyShouldDeleteFacultyIfFound() {
         when(facultyRepository.findById(id)).thenReturn(Optional.of(entity));
-        doNothing().when(facultyRepository).delete(entity);
+        doAnswer(invocation -> null).when(facultyRepository).delete(entity);
 
         assertDoesNotThrow(() -> facultyService.deleteFaculty(id));
         verify(facultyRepository).delete(entity);

@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -102,7 +102,7 @@ class RoomCategoryServiceTest {
 
         when(roomCategoryMapper.toRoomCategoryId(roomId, categoryId)).thenReturn(id);
         when(roomCategoryRepository.findById(id)).thenReturn(Optional.of(entity));
-        doNothing().when(roomCategoryRepository).delete(entity);
+        doAnswer(invocation -> null).when(roomCategoryRepository).delete(entity);
 
         assertDoesNotThrow(() -> roomCategoryService.deleteRoomCategory(roomId, categoryId));
         verify(roomCategoryRepository).delete(entity);

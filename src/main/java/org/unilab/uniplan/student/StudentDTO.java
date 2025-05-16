@@ -12,7 +12,7 @@ public record StudentDTO(
     @NotNull
     @Size(max = 100)
     String lastName,
-    @Size(max = 20)
+    @Size(max = 40)
     String facultyNumber,
     @NotNull
     UUID courseId

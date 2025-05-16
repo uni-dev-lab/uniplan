@@ -24,7 +24,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProgramController {
 
-    public static final String PROGRAM_NOT_FOUND = "Program with ID {0} not found.";
+    private static final String PROGRAM_NOT_FOUND = "Program with ID {0} not found.";
 
     private final ProgramService programService;
     private final ProgramMapper programMapper;

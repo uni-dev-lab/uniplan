@@ -8,7 +8,7 @@ import org.unilab.uniplan.lector.dto.LectorRequestDto;
 import org.unilab.uniplan.lector.dto.LectorResponseDto;
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper
 public interface LectorMapper {
 
     @Mapping(source = "faculty.id", target = "facultyId")

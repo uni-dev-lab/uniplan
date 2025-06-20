@@ -63,7 +63,7 @@ class LectorServiceTest {
     }
 
     @Test
-    void testGetAllLectorsShouldReturnListOfRoomDtos() {
+    void testGetAllLectorsShouldReturnListOfLectorDtos() {
         List<Lector> entities = List.of(lector);
         List<LectorDto> dtos = List.of(lectorDto);
 
@@ -76,7 +76,7 @@ class LectorServiceTest {
     }
 
     @Test
-    void testGetRoomByIdShouldReturnRoomDtoIfFound() {
+    void testGetLectorByIdShouldReturnLectorDtoIfFound() {
         when(lectorRepository.findById(id)).thenReturn(Optional.of(lector));
         when(lectorMapper.toDto(lector)).thenReturn(lectorDto);
 
@@ -87,7 +87,7 @@ class LectorServiceTest {
     }
 
     @Test
-    void testGetRoomByIdShouldReturnEmptyOptionalIfRoomNotFound() {
+    void testGetLectorByIdShouldReturnEmptyOptionalIfLectorNotFound() {
         when(lectorRepository.findById(id)).thenReturn(Optional.empty());
 
         Optional<LectorDto> result = lectorService.getLectorById(id);
@@ -96,7 +96,7 @@ class LectorServiceTest {
     }
 
     @Test
-    void testUpdateRoomShouldUpdateAndReturnDtoIfFound() {
+    void testUpdateLectorShouldUpdateAndReturnDtoIfFound() {
         when(lectorRepository.findById(id)).thenReturn(Optional.of(lector));
         doAnswer(invocation -> null).when(lectorMapper).updateEntityFromDto(lectorDto, lector);
         when(lectorRepository.save(lector)).thenReturn(lector);
@@ -109,7 +109,7 @@ class LectorServiceTest {
     }
 
     @Test
-    void testUpdateRoomShouldReturnEmptyOptionalIfNotFound() {
+    void testUpdateLectorShouldReturnEmptyOptionalIfNotFound() {
         when(lectorRepository.findById(id)).thenReturn(Optional.empty());
 
         Optional<LectorDto> result = lectorService.updateLector(id, lectorDto);
@@ -118,7 +118,7 @@ class LectorServiceTest {
     }
 
     @Test
-    void testDeleteRoomShouldDeleteRoomIfFound() {
+    void testDeleteLectorShouldDeleteLectorIfFound() {
         when(lectorRepository.findById(id)).thenReturn(Optional.of(lector));
         doAnswer(invocation -> null).when(lectorRepository).delete(lector);
 
@@ -127,7 +127,7 @@ class LectorServiceTest {
     }
 
     @Test
-    void testDeleteRoomShouldThrowIfNotFound() {
+    void testDeleteLectorShouldThrowIfNotFound() {
         when(lectorRepository.findById(id)).thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(RuntimeException.class, () ->

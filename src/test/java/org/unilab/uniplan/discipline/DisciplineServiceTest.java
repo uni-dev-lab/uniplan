@@ -54,7 +54,7 @@ class DisciplineServiceTest {
     }
 
     @Test
-    void testCreateLectorShouldSaveAndReturnDto() {
+    void testCreateDisciplineShouldSaveAndReturnDto() {
         when(disciplineMapper.toEntity(disciplineDto)).thenReturn(discipline);
         when(disciplineRepository.save(discipline)).thenReturn(discipline);
         when(disciplineMapper.toDto(discipline)).thenReturn(disciplineDto);
@@ -65,7 +65,7 @@ class DisciplineServiceTest {
     }
 
     @Test
-    void testGetAllLectorsShouldReturnListOfLectorDtos() {
+    void testGetAllDisciplinesShouldReturnListOfDisciplieDtos() {
         List<Discipline> entities = List.of(discipline);
         List<DisciplineDto> dtos = List.of(disciplineDto);
 
@@ -78,7 +78,7 @@ class DisciplineServiceTest {
     }
 
     @Test
-    void testGetLectorByIdShouldReturnLectorDtoIfFound() {
+    void testGetDisciplieByIdShouldReturnDisciplineDtoIfFound() {
         when(disciplineRepository.findById(id)).thenReturn(Optional.of(discipline));
         when(disciplineMapper.toDto(discipline)).thenReturn(disciplineDto);
 
@@ -89,7 +89,7 @@ class DisciplineServiceTest {
     }
 
     @Test
-    void testGetLectorByIdShouldReturnEmptyOptionalIfLectorNotFound() {
+    void testGetDisciplineByIdShouldReturnEmptyOptionalIfDisciplineNotFound() {
         when(disciplineRepository.findById(id)).thenReturn(Optional.empty());
 
         Optional<DisciplineDto> result = disciplineService.getDisciplineById(id);
@@ -98,7 +98,7 @@ class DisciplineServiceTest {
     }
 
     @Test
-    void testUpdateLectorShouldUpdateAndReturnDtoIfFound() {
+    void testUpdateDisciplineShouldUpdateAndReturnDtoIfFound() {
         when(disciplineRepository.findById(id)).thenReturn(Optional.of(discipline));
         doAnswer(invocation -> null).when(disciplineMapper).updateEntityFromDto(disciplineDto, discipline);
         when(disciplineRepository.save(discipline)).thenReturn(discipline);
@@ -111,7 +111,7 @@ class DisciplineServiceTest {
     }
 
     @Test
-    void testUpdateLectorShouldReturnEmptyOptionalIfNotFound() {
+    void testUpdateDisciplineShouldReturnEmptyOptionalIfNotFound() {
         when(disciplineRepository.findById(id)).thenReturn(Optional.empty());
 
         Optional<DisciplineDto> result = disciplineService.updateDiscipline(id, disciplineDto);
@@ -120,7 +120,7 @@ class DisciplineServiceTest {
     }
 
     @Test
-    void testDeleteLectorShouldDeleteLectorIfFound() {
+    void testDeleteDisciplineShouldDeleteDisciplineIfFound() {
         when(disciplineRepository.findById(id)).thenReturn(Optional.of(discipline));
         doAnswer(invocation -> null).when(disciplineRepository).delete(discipline);
 
@@ -129,7 +129,7 @@ class DisciplineServiceTest {
     }
 
     @Test
-    void testDeleteLectorShouldThrowIfNotFound() {
+    void testDeleteDisciplineShouldThrowIfNotFound() {
         when(disciplineRepository.findById(id)).thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(RuntimeException.class, () ->

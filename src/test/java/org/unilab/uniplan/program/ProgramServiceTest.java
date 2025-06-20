@@ -49,6 +49,7 @@ class ProgramServiceTest {
             programDisciplineIds.add(new ProgramDisciplineId(UUID.randomUUID(),UUID.randomUUID()));
         }
         programDto = new ProgramDto(id,courseId,programDisciplineIds);
+        program = new Program();
     }
 
     @Test

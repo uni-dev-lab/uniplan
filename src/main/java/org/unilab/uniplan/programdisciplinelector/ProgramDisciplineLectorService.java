@@ -21,8 +21,8 @@ public class ProgramDisciplineLectorService {
     @Transactional
     public ProgramDisciplineLectorDto createProgramDisciplineLector(ProgramDisciplineLectorDto programDisciplineLectorDto){
         final ProgramDisciplineLector programDisciplineLector = programDisciplineLectorMapper.toEntity(programDisciplineLectorDto);
-
-        return programDisciplineLectorMapper.toDto(programDisciplineLectorRepository.save(programDisciplineLector));
+        
+        return saveEntityAndConvertToDto(programDisciplineLector);
     }
 
     public List<ProgramDisciplineLectorDto> getAllProgramDisciplineLectors(){
@@ -56,12 +56,12 @@ public class ProgramDisciplineLectorService {
         programDisciplineLectorRepository.delete(programDisciplineLector);
     }
 
-    private void updateEntityFromDto(ProgramDisciplineLectorDto dto, ProgramDisciplineLector entity) {
+    private void updateEntityFromDto(final ProgramDisciplineLectorDto dto,final ProgramDisciplineLector entity) {
         programDisciplineLectorMapper.updateEntityFromDto(dto, entity);
     }
 
-    private ProgramDisciplineLectorDto saveEntityAndConvertToDto(ProgramDisciplineLector entity) {
-        ProgramDisciplineLector savedEntity = programDisciplineLectorRepository.save(entity);
+    private ProgramDisciplineLectorDto saveEntityAndConvertToDto(final ProgramDisciplineLector entity) {
+        final ProgramDisciplineLector savedEntity = programDisciplineLectorRepository.save(entity);
         return programDisciplineLectorMapper.toDto(savedEntity);
     }
 }

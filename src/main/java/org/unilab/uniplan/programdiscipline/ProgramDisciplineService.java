@@ -1,12 +1,13 @@
 package org.unilab.uniplan.programdiscipline;
 
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineDto;
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,13 +30,20 @@ public class ProgramDisciplineService {
         return programDisciplineMapper.toDtos(programDisciplines);
     }
 
-    public Optional<ProgramDisciplineDto> getProgramDisciplineById(ProgramDisciplineId id){
+    public Optional<ProgramDisciplineDto> getProgramDisciplineById(final UUID disciplineId,
+                                                                   final UUID programId) {
+        final ProgramDisciplineId id = programDisciplineMapper.toProgramDisciplineId(disciplineId,
+                                                                                     programId);
         return programDisciplineRepository.findById(id)
                                           .map(programDisciplineMapper::toDto);
     }
 
     @Transactional
-    public Optional<ProgramDisciplineDto> updateProgramDiscipline(ProgramDisciplineId id, ProgramDisciplineDto programDisciplineDto){
+    public Optional<ProgramDisciplineDto> updateProgramDiscipline(final UUID disciplineId,
+                                                                  final UUID programId,
+                                                                  ProgramDisciplineDto programDisciplineDto) {
+        final ProgramDisciplineId id = programDisciplineMapper.toProgramDisciplineId(disciplineId,
+                                                                                     programId);
         return programDisciplineRepository.findById(id).map(existingProgramDiscipline -> {
             programDisciplineMapper.updateEntityFromDto(programDisciplineDto,
                                                         existingProgramDiscipline);
@@ -45,7 +53,9 @@ public class ProgramDisciplineService {
     }
 
     @Transactional
-    public void deleteProgramDiscipline(ProgramDisciplineId id){
+    public void deleteProgramDiscipline(final UUID disciplineId, final UUID programId) {
+        final ProgramDisciplineId id = programDisciplineMapper.toProgramDisciplineId(disciplineId,
+                                                                                     programId);
         final ProgramDiscipline programDiscipline = programDisciplineRepository.findById(id)
                                                                                .orElseThrow(() -> new RuntimeException(
                                                                                    MessageFormat.format(

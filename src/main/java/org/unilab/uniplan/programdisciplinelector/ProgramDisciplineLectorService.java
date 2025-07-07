@@ -21,7 +21,7 @@ public class ProgramDisciplineLectorService {
     @Transactional
     public ProgramDisciplineLectorDto createProgramDisciplineLector(ProgramDisciplineLectorDto programDisciplineLectorDto){
         final ProgramDisciplineLector programDisciplineLector = programDisciplineLectorMapper.toEntity(programDisciplineLectorDto);
-        
+
         return saveEntityAndConvertToDto(programDisciplineLector);
     }
 

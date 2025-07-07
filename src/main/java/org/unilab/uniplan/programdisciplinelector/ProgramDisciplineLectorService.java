@@ -1,12 +1,13 @@
 package org.unilab.uniplan.programdisciplinelector;
 
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorDto;
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,44 +20,65 @@ public class ProgramDisciplineLectorService {
     private final ProgramDisciplineLectorRepository programDisciplineLectorRepository;
 
     @Transactional
-    public ProgramDisciplineLectorDto createProgramDisciplineLector(ProgramDisciplineLectorDto programDisciplineLectorDto){
-        final ProgramDisciplineLector programDisciplineLector = programDisciplineLectorMapper.toEntity(programDisciplineLectorDto);
+    public ProgramDisciplineLectorDto createProgramDisciplineLector(ProgramDisciplineLectorDto programDisciplineLectorDto) {
+        final ProgramDisciplineLector programDisciplineLector = programDisciplineLectorMapper.toEntity(
+            programDisciplineLectorDto);
 
         return saveEntityAndConvertToDto(programDisciplineLector);
     }
 
-    public List<ProgramDisciplineLectorDto> getAllProgramDisciplineLectors(){
+    public List<ProgramDisciplineLectorDto> getAllProgramDisciplineLectors() {
         final List<ProgramDisciplineLector> programDisciplineLectors = programDisciplineLectorRepository.findAll();
         return programDisciplineLectorMapper.toDtos(programDisciplineLectors);
     }
 
-    public Optional<ProgramDisciplineLectorDto> getProgramDisciplineLectorById(ProgramDisciplineLectorId id){
+    public Optional<ProgramDisciplineLectorDto> getProgramDisciplineLectorById(
+        final UUID lectorId, final UUID programId, final UUID disciplineId) {
+        final ProgramDisciplineLectorId id = programDisciplineLectorMapper.toProgramDisciplineLectorId(
+            lectorId,
+            programId,
+            disciplineId);
         return programDisciplineLectorRepository.findById(id)
                                                 .map(programDisciplineLectorMapper::toDto);
     }
 
     @Transactional
-    public Optional<ProgramDisciplineLectorDto> updateProgramDisciplineLector(ProgramDisciplineLectorId id, ProgramDisciplineLectorDto programDisciplineLectorDto) {
+    public Optional<ProgramDisciplineLectorDto> updateProgramDisciplineLector(
+        final UUID lectorId, final UUID programId, final UUID disciplineId,
+        ProgramDisciplineLectorDto programDisciplineLectorDto) {
+        final ProgramDisciplineLectorId id = programDisciplineLectorMapper.toProgramDisciplineLectorId(
+            lectorId,
+            programId,
+            disciplineId);
         return programDisciplineLectorRepository.findById(id)
                                                 .map(existingProgramDisciplineLector -> {
-                                                    updateEntityFromDto(programDisciplineLectorDto, existingProgramDisciplineLector);
-                                                    return saveEntityAndConvertToDto(existingProgramDisciplineLector);
+                                                    updateEntityFromDto(programDisciplineLectorDto,
+                                                                        existingProgramDisciplineLector);
+                                                    return saveEntityAndConvertToDto(
+                                                        existingProgramDisciplineLector);
                                                 });
     }
 
-    public void deleteProgramDisciplineLector(ProgramDisciplineLectorId id){
+    public void deleteProgramDisciplineLector(final UUID lectorId,
+                                              final UUID programId,
+                                              final UUID disciplineId) {
+        final ProgramDisciplineLectorId id = programDisciplineLectorMapper.toProgramDisciplineLectorId(
+            lectorId,
+            programId,
+            disciplineId);
         final ProgramDisciplineLector programDisciplineLector = programDisciplineLectorRepository
             .findById(id)
             .orElseThrow(() -> new RuntimeException(
-                    MessageFormat.format(
-                        PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND,
-                        id
-                    )
-                ));
+                MessageFormat.format(
+                    PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND,
+                    id
+                )
+            ));
         programDisciplineLectorRepository.delete(programDisciplineLector);
     }
 
-    private void updateEntityFromDto(final ProgramDisciplineLectorDto dto,final ProgramDisciplineLector entity) {
+    private void updateEntityFromDto(final ProgramDisciplineLectorDto dto,
+                                     final ProgramDisciplineLector entity) {
         programDisciplineLectorMapper.updateEntityFromDto(dto, entity);
     }
 

@@ -1,7 +1,12 @@
 package org.unilab.uniplan.programdisciplinelector;
 
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +22,6 @@ import org.springframework.web.server.ResponseStatusException;
 import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorDto;
 import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorRequestDto;
 import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorResponseDto;
-import java.text.MessageFormat;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/ProgramDisciplineLector")
@@ -44,22 +47,29 @@ public class ProgramDisciplineLectorController {
         return programDisciplineLectorMapper.toResponseDtoList(programDisciplineLectorService.getAllProgramDisciplineLectors());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProgramDisciplineLectorResponseDto> getProgramDisciplineLectorById(@NotNull@PathVariable ProgramDisciplineLectorId id){
+    @GetMapping("/{lectorId}/{programId}/{disciplineId}")
+    public ResponseEntity<ProgramDisciplineLectorResponseDto> getProgramDisciplineLectorById(@NotNull @PathVariable final UUID lectorId,
+                                                                                             @NotNull @PathVariable final UUID programId,
+                                                                                             @NotNull @PathVariable final UUID disciplineId) {
         final ProgramDisciplineLectorDto programDisciplineLectorDto = programDisciplineLectorService
-            .getProgramDisciplineLectorById(id)
+            .getProgramDisciplineLectorById(lectorId, programId, disciplineId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                                                            MessageFormat.format(PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND, id)
             ));
         return ResponseEntity.ok(programDisciplineLectorMapper.toResponseDto(programDisciplineLectorDto));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ProgramDisciplineLectorResponseDto> updateProgramDisciplineLector(@NotNull @PathVariable ProgramDisciplineLectorId id,
+    @PutMapping("/{lectorId}/{programId}/{disciplineId}")
+    public ResponseEntity<ProgramDisciplineLectorResponseDto> updateProgramDisciplineLector(@NotNull @PathVariable final UUID lectorId,
+                                                                                            @NotNull @PathVariable final UUID programId,
+                                                                                            @NotNull @PathVariable final UUID disciplineId,
                                                                                             @Valid @NotNull @RequestBody ProgramDisciplineLectorRequestDto programDisciplineLectorRequestDto){
         final ProgramDisciplineLectorDto programDisciplineLectorDto = programDisciplineLectorMapper.toInternalDto(programDisciplineLectorRequestDto);
 
-        return programDisciplineLectorService.updateProgramDisciplineLector(id, programDisciplineLectorDto)
+        return programDisciplineLectorService.updateProgramDisciplineLector(lectorId,
+                                                                            programId,
+                                                                            disciplineId,
+                                                                            programDisciplineLectorDto)
                                              .map(programDisciplineLectorMapper::toResponseDto)
                                              .map(ResponseEntity::ok)
                                              .orElseThrow(() -> new ResponseStatusException(
@@ -68,9 +78,13 @@ public class ProgramDisciplineLectorController {
                                              ));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProgramDisciplineLector(@NotNull @PathVariable ProgramDisciplineLectorId id){
-        programDisciplineLectorService.deleteProgramDisciplineLector(id);
+    @DeleteMapping("/{lectorId}/{programId}/{disciplineId}")
+    public ResponseEntity<Void> deleteProgramDisciplineLector(@NotNull @PathVariable final UUID lectorId,
+                                                              @NotNull @PathVariable final UUID programId,
+                                                              @NotNull @PathVariable final UUID disciplineId) {
+        programDisciplineLectorService.deleteProgramDisciplineLector(lectorId,
+                                                                     programId,
+                                                                     disciplineId);
 
         return ResponseEntity.noContent().build();
     }

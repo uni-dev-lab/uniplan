@@ -36,25 +36,32 @@ public class ProgramDisciplineLectorService {
     }
 
     @Transactional
-    public Optional<ProgramDisciplineLectorDto> updateProgramDisciplineLector(ProgramDisciplineLectorId id, ProgramDisciplineLectorDto programDisciplineLectorDto){
+    public Optional<ProgramDisciplineLectorDto> updateProgramDisciplineLector(ProgramDisciplineLectorId id, ProgramDisciplineLectorDto programDisciplineLectorDto) {
         return programDisciplineLectorRepository.findById(id)
-                                                .map(existingProgramDisciplineLector ->{
-                                                    programDisciplineLectorMapper
-                                                        .updateEntityFromDto(programDisciplineLectorDto,
-                                                                             existingProgramDisciplineLector);
-                                                    return programDisciplineLectorMapper
-                                                        .toDto(programDisciplineLectorRepository
-                                                                   .save(existingProgramDisciplineLector));
+                                                .map(existingProgramDisciplineLector -> {
+                                                    updateEntityFromDto(programDisciplineLectorDto, existingProgramDisciplineLector);
+                                                    return saveEntityAndConvertToDto(existingProgramDisciplineLector);
                                                 });
     }
 
     public void deleteProgramDisciplineLector(ProgramDisciplineLectorId id){
         final ProgramDisciplineLector programDisciplineLector = programDisciplineLectorRepository
             .findById(id)
-                .orElseThrow(() -> new RuntimeException(
-                    MessageFormat
-                        .format(PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND,id)
+            .orElseThrow(() -> new RuntimeException(
+                    MessageFormat.format(
+                        PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND,
+                        id
+                    )
                 ));
         programDisciplineLectorRepository.delete(programDisciplineLector);
+    }
+
+    private void updateEntityFromDto(ProgramDisciplineLectorDto dto, ProgramDisciplineLector entity) {
+        programDisciplineLectorMapper.updateEntityFromDto(dto, entity);
+    }
+
+    private ProgramDisciplineLectorDto saveEntityAndConvertToDto(ProgramDisciplineLector entity) {
+        ProgramDisciplineLector savedEntity = programDisciplineLectorRepository.save(entity);
+        return programDisciplineLectorMapper.toDto(savedEntity);
     }
 }

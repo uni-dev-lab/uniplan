@@ -1,12 +1,13 @@
 package org.unilab.uniplan.programdiscipline;
 
+import java.util.List;
+import java.util.UUID;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineDto;
 import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineRequestDto;
 import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineResponseDto;
-import java.util.List;
 
 @Mapper
 public interface ProgramDisciplineMapper {
@@ -33,4 +34,6 @@ public interface ProgramDisciplineMapper {
     @Mapping(target = "id", ignore = true)
     void updateEntityFromDto(final ProgramDisciplineDto programDisciplineDto,
                              @MappingTarget final ProgramDiscipline programDiscipline);
+
+    ProgramDisciplineId toProgramDisciplineId(UUID disciplineId, UUID programId);
 }

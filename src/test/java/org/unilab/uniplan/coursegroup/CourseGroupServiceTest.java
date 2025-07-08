@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.unilab.uniplan.coursegroup.dto.CourseGroupDto;
 
 @ExtendWith(MockitoExtension.class)
 class CourseGroupServiceTest {
@@ -32,7 +33,7 @@ class CourseGroupServiceTest {
     @Mock
     private CourseGroupRepository courseGroupRepository;
 
-    private CourseGroupDTO courseGroupDTO;
+    private CourseGroupDto courseGroupDTO;
     private CourseGroup courseGroup;
     private UUID courseGroupId;
     private UUID courseId;
@@ -41,7 +42,7 @@ class CourseGroupServiceTest {
     void setUp() {
         courseGroupId = UUID.randomUUID();
         courseId = UUID.randomUUID();
-        courseGroupDTO = new CourseGroupDTO(courseGroupId, courseId, "firstGroup", 15);
+        courseGroupDTO = new CourseGroupDto(courseGroupId, courseId, "firstGroup", 15);
         courseGroup = new CourseGroup();
     }
 
@@ -51,7 +52,7 @@ class CourseGroupServiceTest {
         when(courseGroupRepository.save(courseGroup)).thenReturn(courseGroup);
         when(courseGroupMapper.toDTO(courseGroup)).thenReturn(courseGroupDTO);
 
-        CourseGroupDTO result = courseGroupService.createCourseGroup(courseGroupDTO);
+        CourseGroupDto result = courseGroupService.createCourseGroup(courseGroupDTO);
 
         assertEquals(courseGroupDTO, result);
         verify(courseGroupRepository).save(courseGroup);
@@ -61,7 +62,7 @@ class CourseGroupServiceTest {
     void findCourseGroupByIdShouldReturnCourseGroupDTOIfNotExists() {
         when(courseGroupRepository.findById(courseGroupId)).thenReturn(Optional.empty());
 
-        Optional<CourseGroupDTO> result = courseGroupService.findCourseGroupById(courseGroupId);
+        Optional<CourseGroupDto> result = courseGroupService.findCourseGroupById(courseGroupId);
 
         assertFalse(result.isPresent());
         assertTrue(result.isEmpty());
@@ -72,7 +73,7 @@ class CourseGroupServiceTest {
         when(courseGroupRepository.findById(courseGroupId)).thenReturn(Optional.of(courseGroup));
         when(courseGroupMapper.toDTO(courseGroup)).thenReturn(courseGroupDTO);
 
-        Optional<CourseGroupDTO> result = courseGroupService.findCourseGroupById(courseGroupId);
+        Optional<CourseGroupDto> result = courseGroupService.findCourseGroupById(courseGroupId);
 
         assertTrue(result.isPresent());
         assertEquals(courseGroupDTO, result.get());
@@ -84,7 +85,7 @@ class CourseGroupServiceTest {
         when(courseGroupRepository.findAll()).thenReturn(groupList);
         when(courseGroupMapper.toDTO(courseGroup)).thenReturn(courseGroupDTO);
 
-        List<CourseGroupDTO> result = courseGroupService.findAll();
+        List<CourseGroupDto> result = courseGroupService.findAll();
 
         assertEquals(1, result.size());
         assertEquals(courseGroupDTO, result.get(0));
@@ -97,7 +98,7 @@ class CourseGroupServiceTest {
         when(courseGroupRepository.save(courseGroup)).thenReturn(courseGroup);
         when(courseGroupMapper.toDTO(courseGroup)).thenReturn(courseGroupDTO);
 
-        Optional<CourseGroupDTO> result = courseGroupService.updateCourseGroup(courseGroupId,
+        Optional<CourseGroupDto> result = courseGroupService.updateCourseGroup(courseGroupId,
                                                                                courseGroupDTO);
 
         assertTrue(result.isPresent());
@@ -109,7 +110,7 @@ class CourseGroupServiceTest {
     void updateCourseGroupShouldReturnEmptyIfNotFound() {
         when(courseGroupRepository.findById(courseGroupId)).thenReturn(Optional.empty());
 
-        Optional<CourseGroupDTO> result = courseGroupService.updateCourseGroup(courseGroupId,
+        Optional<CourseGroupDto> result = courseGroupService.updateCourseGroup(courseGroupId,
                                                                                courseGroupDTO);
 
         assertFalse(result.isPresent());

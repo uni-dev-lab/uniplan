@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import org.unilab.uniplan.major.dto.MajorDto;
+import org.unilab.uniplan.major.dto.MajorRequestDto;
+import org.unilab.uniplan.major.dto.MajorResponseDto;
 
 @RestController
 @RequestMapping("/majors")
@@ -29,15 +32,15 @@ public class MajorController {
     private final MajorMapper majorMapper;
 
     @PostMapping
-    public ResponseEntity<MajorResponseDTO> addMajor(@RequestBody @NotNull
-                                                     @Valid final MajorRequestDTO majorRequestDTO) {
-        final MajorDTO majorDTO = majorMapper.toInnerDTO(majorRequestDTO);
+    public ResponseEntity<MajorResponseDto> addMajor(@RequestBody @NotNull
+                                                     @Valid final MajorRequestDto majorRequestDTO) {
+        final MajorDto majorDTO = majorMapper.toInnerDTO(majorRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
                              .body(majorMapper.toResponseDTO(majorService.createMajor(majorDTO)));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MajorResponseDTO> getMajorById(@PathVariable @NotNull final UUID id) {
+    public ResponseEntity<MajorResponseDto> getMajorById(@PathVariable @NotNull final UUID id) {
         return ResponseEntity.ok(majorMapper.toResponseDTO(majorService.findMajorById(id)
                                                                        .orElseThrow(() -> new ResponseStatusException(
                                                                            HttpStatus.NOT_FOUND,
@@ -47,14 +50,14 @@ public class MajorController {
     }
 
     @GetMapping
-    public List<MajorResponseDTO> getAllMajors() {
+    public List<MajorResponseDto> getAllMajors() {
         return majorMapper.toResponseDTOList(majorService.findAll());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MajorResponseDTO> updateMajor(@PathVariable @NotNull final UUID id,
-                                                        @RequestBody @NotNull @Valid MajorRequestDTO majorRequestDTO) {
-        final MajorDTO majorDTO = majorMapper.toInnerDTO(majorRequestDTO);
+    public ResponseEntity<MajorResponseDto> updateMajor(@PathVariable @NotNull final UUID id,
+                                                        @RequestBody @NotNull @Valid MajorRequestDto majorRequestDTO) {
+        final MajorDto majorDTO = majorMapper.toInnerDTO(majorRequestDTO);
         return ResponseEntity.ok(majorMapper.toResponseDTO(majorService.updateMajor(id, majorDTO)
                                                                        .orElseThrow(() -> new ResponseStatusException(
                                                                            HttpStatus.NOT_FOUND,

@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.unilab.uniplan.studentgroup.dto.StudentGroupDto;
 
 @ExtendWith(MockitoExtension.class)
 class StudentGroupServiceTest {
@@ -37,7 +38,7 @@ class StudentGroupServiceTest {
     private UUID groupId;
     private StudentGroupId studentGroupId;
     private StudentGroup studentGroup;
-    private StudentGroupDTO studentGroupDTO;
+    private StudentGroupDto studentGroupDTO;
 
     @BeforeEach
     void setUp() {
@@ -48,7 +49,7 @@ class StudentGroupServiceTest {
         studentGroup = new StudentGroup();
         studentGroup.setId(studentGroupId);
 
-        studentGroupDTO = new StudentGroupDTO(studentId, groupId);
+        studentGroupDTO = new StudentGroupDto(studentId, groupId);
     }
 
     @Test
@@ -57,7 +58,7 @@ class StudentGroupServiceTest {
         when(studentGroupRepository.save(studentGroup)).thenReturn(studentGroup);
         when(studentGroupMapper.toDTO(studentGroup)).thenReturn(studentGroupDTO);
 
-        StudentGroupDTO result = studentGroupService.createStudentGroup(studentGroupDTO);
+        StudentGroupDto result = studentGroupService.createStudentGroup(studentGroupDTO);
 
         assertNotNull(result);
         assertEquals(studentId, result.studentId());
@@ -72,7 +73,7 @@ class StudentGroupServiceTest {
         when(studentGroupRepository.save(studentGroup)).thenReturn(studentGroup);
         when(studentGroupMapper.toDTO(studentGroup)).thenReturn(studentGroupDTO);
 
-        Optional<StudentGroupDTO> result = studentGroupService.updateStudentGroup(studentId,
+        Optional<StudentGroupDto> result = studentGroupService.updateStudentGroup(studentId,
                                                                                   groupId,
                                                                                   studentGroupDTO);
 
@@ -86,7 +87,7 @@ class StudentGroupServiceTest {
     void updateStudentGroupShouldReturnEmptyIfNotFound() {
         when(studentGroupRepository.findById(studentGroupId)).thenReturn(Optional.empty());
 
-        Optional<StudentGroupDTO> result = studentGroupService.updateStudentGroup(studentId,
+        Optional<StudentGroupDto> result = studentGroupService.updateStudentGroup(studentId,
                                                                                   groupId,
                                                                                   studentGroupDTO);
 
@@ -119,7 +120,7 @@ class StudentGroupServiceTest {
         when(studentGroupRepository.findById(studentGroupId)).thenReturn(Optional.of(studentGroup));
         when(studentGroupMapper.toDTO(studentGroup)).thenReturn(studentGroupDTO);
 
-        Optional<StudentGroupDTO> result = studentGroupService.findStudentGroupById(studentId,
+        Optional<StudentGroupDto> result = studentGroupService.findStudentGroupById(studentId,
                                                                                     groupId);
 
         assertTrue(result.isPresent());
@@ -131,7 +132,7 @@ class StudentGroupServiceTest {
     void findStudentGroupByIdShouldReturnEmptyIfNotFound() {
         when(studentGroupRepository.findById(studentGroupId)).thenReturn(Optional.empty());
 
-        Optional<StudentGroupDTO> result = studentGroupService.findStudentGroupById(studentId,
+        Optional<StudentGroupDto> result = studentGroupService.findStudentGroupById(studentId,
                                                                                     groupId);
 
         assertFalse(result.isPresent());
@@ -143,7 +144,7 @@ class StudentGroupServiceTest {
         when(studentGroupRepository.findAll()).thenReturn(List.of(studentGroup));
         when(studentGroupMapper.toDTO(studentGroup)).thenReturn(studentGroupDTO);
 
-        List<StudentGroupDTO> result = studentGroupService.findAll();
+        List<StudentGroupDto> result = studentGroupService.findAll();
 
         assertEquals(1, result.size());
         assertEquals(studentId, result.get(0).studentId());

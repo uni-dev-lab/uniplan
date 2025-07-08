@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.unilab.uniplan.course.dto.CourseDto;
 
 @ExtendWith(MockitoExtension.class)
 class CourseServiceTest {
@@ -34,13 +35,13 @@ class CourseServiceTest {
 
     private UUID courseId;
     private Course course;
-    private CourseDTO courseDTO;
+    private CourseDto courseDTO;
 
     @BeforeEach
     void setUp() {
         courseId = UUID.randomUUID();
         UUID majorId = UUID.randomUUID();
-        courseDTO = new CourseDTO(courseId, majorId, (byte) 2, "bachelor", "regular education");
+        courseDTO = new CourseDto(courseId, majorId, (byte) 2, "bachelor", "regular education");
         course = new Course();
     }
 
@@ -50,7 +51,7 @@ class CourseServiceTest {
         when(courseRepository.save(course)).thenReturn(course);
         when(courseMapper.toDTO(course)).thenReturn(courseDTO);
 
-        CourseDTO result = courseService.createCourse(courseDTO);
+        CourseDto result = courseService.createCourse(courseDTO);
 
         assertEquals(courseDTO, result);
         verify(courseRepository).save(course);
@@ -60,7 +61,7 @@ class CourseServiceTest {
     void findCourseByIdShouldReturnEmptyIfNotFound() {
         when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
 
-        Optional<CourseDTO> result = courseService.findCourseById(courseId);
+        Optional<CourseDto> result = courseService.findCourseById(courseId);
 
         assertFalse(result.isPresent());
         assertTrue(result.isEmpty());
@@ -71,7 +72,7 @@ class CourseServiceTest {
         when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
         when(courseMapper.toDTO(course)).thenReturn(courseDTO);
 
-        Optional<CourseDTO> result = courseService.findCourseById(courseId);
+        Optional<CourseDto> result = courseService.findCourseById(courseId);
 
         assertTrue(result.isPresent());
         assertEquals(courseDTO, result.get());
@@ -83,7 +84,7 @@ class CourseServiceTest {
         when(courseRepository.findAll()).thenReturn(courseList);
         when(courseMapper.toDTO(course)).thenReturn(courseDTO);
 
-        List<CourseDTO> result = courseService.findAll();
+        List<CourseDto> result = courseService.findAll();
 
         assertEquals(1, result.size());
         assertEquals(courseDTO, result.get(0));
@@ -96,7 +97,7 @@ class CourseServiceTest {
         when(courseRepository.save(course)).thenReturn(course);
         when(courseMapper.toDTO(course)).thenReturn(courseDTO);
 
-        Optional<CourseDTO> result = courseService.updateCourse(courseId, courseDTO);
+        Optional<CourseDto> result = courseService.updateCourse(courseId, courseDTO);
 
         assertTrue(result.isPresent());
         assertEquals(courseDTO, result.get());
@@ -108,7 +109,7 @@ class CourseServiceTest {
     void updateCourseShouldReturnEmptyIfNotFound() {
         when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
 
-        Optional<CourseDTO> result = courseService.updateCourse(courseId, courseDTO);
+        Optional<CourseDto> result = courseService.updateCourse(courseId, courseDTO);
 
         assertFalse(result.isPresent());
         verify(courseRepository, never()).save(any());

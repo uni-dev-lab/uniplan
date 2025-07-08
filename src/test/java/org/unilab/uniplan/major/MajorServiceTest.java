@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.unilab.uniplan.major.dto.MajorDto;
 
 @ExtendWith(MockitoExtension.class)
 class MajorServiceTest {
@@ -33,7 +34,7 @@ class MajorServiceTest {
     @Mock
     private MajorMapper majorMapper;
 
-    private MajorDTO majorDTO;
+    private MajorDto majorDTO;
     private Major major;
     private UUID majorId;
     private UUID facultyId;
@@ -42,7 +43,7 @@ class MajorServiceTest {
     void setUp() {
         majorId = UUID.randomUUID();
         facultyId = UUID.randomUUID();
-        majorDTO = new MajorDTO(majorId, facultyId, "Informatics");
+        majorDTO = new MajorDto(majorId, facultyId, "Informatics");
         major = new Major();
     }
 
@@ -52,7 +53,7 @@ class MajorServiceTest {
         when(majorRepository.save(major)).thenReturn(major);
         when(majorMapper.toDTO(major)).thenReturn(majorDTO);
 
-        MajorDTO result = majorService.createMajor(majorDTO);
+        MajorDto result = majorService.createMajor(majorDTO);
 
         assertNotNull(result);
         assertEquals("Informatics", result.majorName());
@@ -65,7 +66,7 @@ class MajorServiceTest {
         when(majorRepository.findById(majorId)).thenReturn(Optional.of(major));
         when(majorMapper.toDTO(major)).thenReturn(majorDTO);
 
-        Optional<MajorDTO> result = majorService.findMajorById(majorId);
+        Optional<MajorDto> result = majorService.findMajorById(majorId);
 
         assertTrue(result.isPresent());
         assertEquals("Informatics", result.get().majorName());
@@ -75,7 +76,7 @@ class MajorServiceTest {
     void findMajorByIdShouldReturnEmptyIfNotFound() {
         when(majorRepository.findById(majorId)).thenReturn(Optional.empty());
 
-        Optional<MajorDTO> result = majorService.findMajorById(majorId);
+        Optional<MajorDto> result = majorService.findMajorById(majorId);
 
         assertFalse(result.isPresent());
         assertTrue(result.isEmpty());
@@ -86,7 +87,7 @@ class MajorServiceTest {
         when(majorRepository.findAll()).thenReturn(List.of(major));
         when(majorMapper.toDTO(major)).thenReturn(majorDTO);
 
-        List<MajorDTO> result = majorService.findAll();
+        List<MajorDto> result = majorService.findAll();
 
         assertEquals(1, result.size());
         assertEquals("Informatics", result.get(0).majorName());
@@ -99,7 +100,7 @@ class MajorServiceTest {
         when(majorRepository.save(major)).thenReturn(major);
         when(majorMapper.toDTO(major)).thenReturn(majorDTO);
 
-        Optional<MajorDTO> result = majorService.updateMajor(majorId, majorDTO);
+        Optional<MajorDto> result = majorService.updateMajor(majorId, majorDTO);
 
         assertTrue(result.isPresent());
         assertEquals("Informatics", result.get().majorName());
@@ -110,7 +111,7 @@ class MajorServiceTest {
     void updateMajorShouldReturnEmptyIfNotFound() {
         when(majorRepository.findById(majorId)).thenReturn(Optional.empty());
 
-        Optional<MajorDTO> result = majorService.updateMajor(majorId, majorDTO);
+        Optional<MajorDto> result = majorService.updateMajor(majorId, majorDTO);
 
         assertFalse(result.isPresent());
         verify(majorRepository, never()).save(any());
@@ -141,7 +142,7 @@ class MajorServiceTest {
         when(majorRepository.findById(majorId)).thenReturn(Optional.of(major));
         when(majorMapper.toDTO(major)).thenReturn(majorDTO);
 
-        Optional<MajorDTO> result = majorService.findMajorById(majorId);
+        Optional<MajorDto> result = majorService.findMajorById(majorId);
 
         assertTrue(result.isPresent());
         assertEquals(majorDTO, result.get());
@@ -152,7 +153,7 @@ class MajorServiceTest {
     void findByIdShouldReturnEmptyIfNotFound() {
         when(majorRepository.findById(majorId)).thenReturn(Optional.empty());
 
-        Optional<MajorDTO> result = majorService.findMajorById(majorId);
+        Optional<MajorDto> result = majorService.findMajorById(majorId);
 
         assertFalse(result.isPresent());
     }

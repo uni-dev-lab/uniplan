@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.unilab.uniplan.student.dto.StudentDto;
 
 @ExtendWith(MockitoExtension.class)
 class StudentServiceTest {
@@ -33,14 +34,14 @@ class StudentServiceTest {
     private StudentService studentService;
 
     private UUID studentId;
-    private StudentDTO studentDTO;
+    private StudentDto studentDTO;
     private Student student;
 
     @BeforeEach
     void beforeAll() {
         studentId = UUID.randomUUID();
         UUID courseId = UUID.randomUUID();
-        studentDTO = new StudentDTO(studentId, "Petar", "Petrov", "2301261005", courseId);
+        studentDTO = new StudentDto(studentId, "Petar", "Petrov", "2301261005", courseId);
         student = new Student();
     }
 
@@ -50,7 +51,7 @@ class StudentServiceTest {
         when(studentRepository.save(student)).thenReturn(student);
         when(studentMapper.toDTO(student)).thenReturn(studentDTO);
 
-        StudentDTO result = studentService.createStudent(studentDTO);
+        StudentDto result = studentService.createStudent(studentDTO);
 
         assertEquals(studentDTO, result);
         verify(studentRepository).save(student);
@@ -61,7 +62,7 @@ class StudentServiceTest {
         when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
         when(studentMapper.toDTO(student)).thenReturn(studentDTO);
 
-        Optional<StudentDTO> result = studentService.findStudentById(studentId);
+        Optional<StudentDto> result = studentService.findStudentById(studentId);
 
         assertTrue(result.isPresent());
         assertEquals(studentDTO, result.get());
@@ -71,7 +72,7 @@ class StudentServiceTest {
     void findStudentByIdShouldReturnEmptyIfNotExists() {
         when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
 
-        Optional<StudentDTO> result = studentService.findStudentById(studentId);
+        Optional<StudentDto> result = studentService.findStudentById(studentId);
 
         assertFalse(result.isPresent());
         assertTrue(result.isEmpty());
@@ -83,7 +84,7 @@ class StudentServiceTest {
         when(studentRepository.findAll()).thenReturn(students);
         when(studentMapper.toDTO(any(Student.class))).thenReturn(studentDTO);
 
-        List<StudentDTO> result = studentService.findAll();
+        List<StudentDto> result = studentService.findAll();
 
         assertEquals(1, result.size());
         assertEquals(studentDTO, result.getFirst());
@@ -97,7 +98,7 @@ class StudentServiceTest {
         when(studentRepository.save(student)).thenReturn(student);
         when(studentMapper.toDTO(student)).thenReturn(studentDTO);
 
-        Optional<StudentDTO> result = studentService.updateStudent(studentId, studentDTO);
+        Optional<StudentDto> result = studentService.updateStudent(studentId, studentDTO);
 
         assertTrue(result.isPresent());
         assertEquals(studentDTO, result.get());
@@ -108,7 +109,7 @@ class StudentServiceTest {
     void updateStudentShouldReturnEmptyIfNotFound() {
         when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
 
-        Optional<StudentDTO> result = studentService.updateStudent(studentId, studentDTO);
+        Optional<StudentDto> result = studentService.updateStudent(studentId, studentDTO);
 
         assertFalse(result.isPresent());
         verify(studentRepository, never()).save(any());

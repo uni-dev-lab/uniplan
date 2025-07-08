@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.unilab.uniplan.course.dto.CourseDto;
 
 @Service
 @RequiredArgsConstructor
@@ -18,23 +19,23 @@ public class CourseService {
     private final CourseMapper courseMapper;
 
     @Transactional
-    public CourseDTO createCourse(final CourseDTO courseDTO) {
+    public CourseDto createCourse(final CourseDto courseDTO) {
         final Course course = courseMapper.toEntity(courseDTO);
         return courseMapper.toDTO(courseRepository.save(course));
     }
 
-    public Optional<CourseDTO> findCourseById(final UUID id) {
+    public Optional<CourseDto> findCourseById(final UUID id) {
         return courseRepository.findById(id)
                                .map(courseMapper::toDTO);
     }
 
-    public List<CourseDTO> findAll() {
+    public List<CourseDto> findAll() {
         return courseRepository.findAll()
                                .stream().map(courseMapper::toDTO).toList();
     }
 
     @Transactional
-    public Optional<CourseDTO> updateCourse(final UUID id, final CourseDTO courseDTO) {
+    public Optional<CourseDto> updateCourse(final UUID id, final CourseDto courseDTO) {
         return courseRepository.findById(id).map(
             existingCourse -> {
                 courseMapper.updateEntityFromDTO(courseDTO, existingCourse);

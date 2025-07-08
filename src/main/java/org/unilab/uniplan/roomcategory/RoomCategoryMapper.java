@@ -28,7 +28,5 @@ public interface RoomCategoryMapper {
 
     List<RoomCategoryResponseDto> toResponseDtoList(List<RoomCategoryDto> roomCategories);
 
-    default RoomCategoryId toRoomCategoryId(UUID roomId, UUID categoryId) {
-        return new RoomCategoryId(roomId, categoryId);
-    }
+    RoomCategoryId toRoomCategoryId(UUID roomId, UUID categoryId);
 }

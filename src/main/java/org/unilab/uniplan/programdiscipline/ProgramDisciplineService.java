@@ -12,7 +12,8 @@ import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineDto;
 @Service
 @RequiredArgsConstructor
 public class ProgramDisciplineService {
-    private static final String PROGRAM_DISCIPLINE_NOT_FOUND = "Program discipline with ID {0} not found.";
+
+    private static final String PROGRAM_DISCIPLINE_NOT_FOUND = "Program discipline with disciplineId {0} and programId {1} not found.";
 
     private final ProgramDisciplineRepository programDisciplineRepository;
 
@@ -60,7 +61,8 @@ public class ProgramDisciplineService {
                                                                                .orElseThrow(() -> new RuntimeException(
                                                                                    MessageFormat.format(
                                                                                        PROGRAM_DISCIPLINE_NOT_FOUND,
-                                                                                       id)));
+                                                                                       disciplineId,
+                                                                                       programId)));
         programDisciplineRepository.delete(programDiscipline);
     }
 }

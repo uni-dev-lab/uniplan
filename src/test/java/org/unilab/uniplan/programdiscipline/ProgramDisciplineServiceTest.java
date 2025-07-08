@@ -42,13 +42,20 @@ class ProgramDisciplineServiceTest {
 
     @BeforeEach
     void setUp(){
-        id = new ProgramDisciplineId(UUID.randomUUID(),UUID.randomUUID());
         disciplineId = UUID.randomUUID();
         programId = UUID.randomUUID();
+        id = programDisciplineMapper.toProgramDisciplineId(
+            disciplineId,
+            programId);
         hoursExercise = 12;
         hoursLecture = 12;
         semesterCount = 4;
-        programDisciplineDto = new ProgramDisciplineDto(id,disciplineId,programId,hoursLecture,hoursExercise,semesterCount);
+        programDisciplineDto = new ProgramDisciplineDto(id,
+                                                        disciplineId,
+                                                        programId,
+                                                        hoursLecture,
+                                                        hoursExercise,
+                                                        semesterCount);
         programDiscipline = new ProgramDiscipline();
     }
 
@@ -81,7 +88,9 @@ class ProgramDisciplineServiceTest {
         when(programDisciplineRepository.findById(id)).thenReturn(Optional.of(programDiscipline));
         when(programDisciplineMapper.toDto(programDiscipline)).thenReturn(programDisciplineDto);
 
-        Optional<ProgramDisciplineDto> result = programDisciplineService.getProgramDisciplineById(id);
+        Optional<ProgramDisciplineDto> result = programDisciplineService.getProgramDisciplineById(
+            disciplineId,
+            programId);
 
         assertTrue(result.isPresent());
         assertEquals(programDisciplineDto, result.get());
@@ -91,7 +100,9 @@ class ProgramDisciplineServiceTest {
     void testGetProgramDisciplineByIdShouldReturnEmptyOptionalIfProgramDisciplineNotFound() {
         when(programDisciplineRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<ProgramDisciplineDto> result = programDisciplineService.getProgramDisciplineById(id);
+        Optional<ProgramDisciplineDto> result = programDisciplineService.getProgramDisciplineById(
+            disciplineId,
+            programId);
 
         assertTrue(result.isEmpty());
     }
@@ -103,7 +114,10 @@ class ProgramDisciplineServiceTest {
         when(programDisciplineRepository.save(programDiscipline)).thenReturn(programDiscipline);
         when(programDisciplineMapper.toDto(programDiscipline)).thenReturn(programDisciplineDto);
 
-        Optional<ProgramDisciplineDto> result = programDisciplineService.updateProgramDiscipline(id, programDisciplineDto);
+        Optional<ProgramDisciplineDto> result = programDisciplineService.updateProgramDiscipline(
+            disciplineId,
+            programId,
+            programDisciplineDto);
 
         assertTrue(result.isPresent());
         assertEquals(programDisciplineDto, result.get());
@@ -113,7 +127,10 @@ class ProgramDisciplineServiceTest {
     void testUpdateProgramDisciplineShouldReturnEmptyOptionalIfNotFound() {
         when(programDisciplineRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<ProgramDisciplineDto> result = programDisciplineService.updateProgramDiscipline(id, programDisciplineDto);
+        Optional<ProgramDisciplineDto> result = programDisciplineService.updateProgramDiscipline(
+            disciplineId,
+            programId,
+            programDisciplineDto);
 
         assertTrue(result.isEmpty());
     }
@@ -123,7 +140,8 @@ class ProgramDisciplineServiceTest {
         when(programDisciplineRepository.findById(id)).thenReturn(Optional.of(programDiscipline));
         doAnswer(invocation -> null).when(programDisciplineRepository).delete(programDiscipline);
 
-        assertDoesNotThrow(() -> programDisciplineService.deleteProgramDiscipline(id));
+        assertDoesNotThrow(() -> programDisciplineService.deleteProgramDiscipline(disciplineId,
+                                                                                  programId));
         verify(programDisciplineRepository).delete(programDiscipline);
     }
 
@@ -132,8 +150,9 @@ class ProgramDisciplineServiceTest {
         when(programDisciplineRepository.findById(id)).thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(RuntimeException.class, () ->
-            programDisciplineService.deleteProgramDiscipline(id));
+            programDisciplineService.deleteProgramDiscipline(disciplineId, programId));
 
-        assertTrue(exception.getMessage().contains(id.toString()));
+        assertTrue(exception.getMessage().contains(disciplineId.toString()));
+        assertTrue(exception.getMessage().contains(programId.toString()));
     }
 }

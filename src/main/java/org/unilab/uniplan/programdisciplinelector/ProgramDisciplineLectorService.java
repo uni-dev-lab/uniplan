@@ -13,7 +13,7 @@ import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorDto
 @RequiredArgsConstructor
 public class ProgramDisciplineLectorService {
 
-    private static final String PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND = "Program discipline lector with ID {0} not found.";
+    private static final String PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND = "Program discipline lector with lectorId {0}, programId {1} and disciplineId {2} not found.";
 
     private final ProgramDisciplineLectorMapper programDisciplineLectorMapper;
 
@@ -71,7 +71,9 @@ public class ProgramDisciplineLectorService {
             .orElseThrow(() -> new RuntimeException(
                 MessageFormat.format(
                     PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND,
-                    id
+                    lectorId,
+                    programId,
+                    disciplineId
                 )
             ));
         programDisciplineLectorRepository.delete(programDisciplineLector);

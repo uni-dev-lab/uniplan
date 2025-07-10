@@ -2,6 +2,9 @@ package org.unilab.uniplan.programdiscipline;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +20,13 @@ import org.springframework.web.server.ResponseStatusException;
 import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineDto;
 import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineRequestDto;
 import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineResponseDto;
-import java.text.MessageFormat;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/programDisciplines")
 @RequiredArgsConstructor
 public class ProgramDisciplineController {
 
-    private static final String PROGRAM_DISCIPLINE_NOT_FOUND = "Lector with ID {0} not found.";
+    private static final String PROGRAM_DISCIPLINE_NOT_FOUND = "Program Discipline with disciplieID {0} and programID {1} not found.";
     private final ProgramDisciplineMapper programDisciplineMapper;
     private final ProgramDisciplineService programDisciplineService;
 
@@ -44,35 +45,45 @@ public class ProgramDisciplineController {
         return programDisciplineMapper.toResponseDtoList(programDisciplineService.getAllProgramDisciplines());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProgramDisciplineResponseDto> getProgramDisciplineById(@NotNull @PathVariable ProgramDisciplineId id){
+    @GetMapping("/{disciplineId}/{programId}")
+    public ResponseEntity<ProgramDisciplineResponseDto> getProgramDisciplineById(@NotNull @PathVariable UUID disciplineId,
+                                                                                 @NotNull @PathVariable UUID programId) {
         final ProgramDisciplineDto programDisciplineDto = programDisciplineService
-                                                            .getProgramDisciplineById(id)
+            .getProgramDisciplineById(disciplineId, programId)
                                                             .orElseThrow(()-> new ResponseStatusException(
                                                                 HttpStatus.NOT_FOUND,
-                                                                MessageFormat.format(PROGRAM_DISCIPLINE_NOT_FOUND, id)
+                                                                MessageFormat.format(
+                                                                    PROGRAM_DISCIPLINE_NOT_FOUND,
+                                                                    disciplineId,
+                                                                    programId)
                                                             ));
         return ResponseEntity.ok(programDisciplineMapper.toResponseDto(programDisciplineDto));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ProgramDisciplineResponseDto> updateProgramDiscipline(@NotNull @PathVariable ProgramDisciplineId id,
+    @PutMapping("/{disciplineId}/{programId}")
+    public ResponseEntity<ProgramDisciplineResponseDto> updateProgramDiscipline(@NotNull @PathVariable UUID disciplineId,
+                                                                                @NotNull @PathVariable UUID programId,
                                                                                 @NotNull @Valid @RequestBody ProgramDisciplineRequestDto programDisciplineRequestDto){
         final ProgramDisciplineDto programDisciplineDto = programDisciplineMapper
                                                             .toInternalDto(programDisciplineRequestDto);
 
-        return programDisciplineService.updateProgramDiscipline(id , programDisciplineDto)
+        return programDisciplineService.updateProgramDiscipline(disciplineId,
+                                                                programId,
+                                                                programDisciplineDto)
                                        .map(programDisciplineMapper::toResponseDto)
                                        .map(ResponseEntity::ok)
                                        .orElseThrow(() -> new ResponseStatusException(
                                            HttpStatus.NOT_FOUND,
-                                           MessageFormat.format(PROGRAM_DISCIPLINE_NOT_FOUND,id)
+                                           MessageFormat.format(PROGRAM_DISCIPLINE_NOT_FOUND,
+                                                                disciplineId,
+                                                                programId)
                                        ));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProgramDiscipline(@NotNull @PathVariable ProgramDisciplineId id){
-        programDisciplineService.deleteProgramDiscipline(id);
+    @DeleteMapping("/{disciplineId}/{programId}")
+    public ResponseEntity<Void> deleteProgramDiscipline(@NotNull @PathVariable UUID disciplineId,
+                                                        @NotNull @PathVariable UUID programId) {
+        programDisciplineService.deleteProgramDiscipline(disciplineId, programId);
 
         return ResponseEntity.noContent().build();
     }

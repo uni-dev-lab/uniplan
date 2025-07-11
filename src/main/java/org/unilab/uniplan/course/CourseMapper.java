@@ -4,24 +4,27 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.unilab.uniplan.course.dto.CourseDto;
+import org.unilab.uniplan.course.dto.CourseRequestDto;
+import org.unilab.uniplan.course.dto.CourseResponseDto;
 
 @Mapper
 public interface CourseMapper {
 
     @Mapping(source = "majorId", target = "major.id")
-    Course toEntity(CourseDTO courseDTO);
+    Course toEntity(CourseDto courseDTO);
 
     @Mapping(source = "major.id", target = "majorId")
-    CourseDTO toDTO(Course course);
+    CourseDto toDTO(Course course);
 
     @Mapping(source = "majorId", target = "major.id")
-    void updateEntityFromDTO(CourseDTO courseDTO, @MappingTarget Course course);
+    void updateEntityFromDTO(CourseDto courseDTO, @MappingTarget Course course);
 
     @Mapping(target = "id", ignore = true)
-    CourseDTO toInnerDTO(CourseRequestDTO courseRequestDTO);
+    CourseDto toInnerDTO(CourseRequestDto courseRequestDTO);
 
     @Mapping(source = "majorId", target = "majorId")
-    CourseResponseDTO toResponseDTO(CourseDTO courseDTO);
+    CourseResponseDto toResponseDTO(CourseDto courseDTO);
 
-    List<CourseResponseDTO> toResponseDTOList(List<CourseDTO> courses);
+    List<CourseResponseDto> toResponseDTOList(List<CourseDto> courses);
 }

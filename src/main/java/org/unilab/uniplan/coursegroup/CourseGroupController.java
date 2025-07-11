@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import org.unilab.uniplan.coursegroup.dto.CourseGroupDto;
+import org.unilab.uniplan.coursegroup.dto.CourseGroupRequestDto;
+import org.unilab.uniplan.coursegroup.dto.CourseGroupResponseDto;
 
 @RestController
 @RequestMapping("/courseGroups")
@@ -29,16 +32,16 @@ public class CourseGroupController {
     private final CourseGroupMapper courseGroupMapper;
 
     @PostMapping
-    public ResponseEntity<CourseGroupResponseDTO> addCourseGroup(@RequestBody
-                                                                 @Valid @NotNull final CourseGroupRequestDTO courseGroupRequestDTO) {
-        final CourseGroupDTO courseGroupDTO = courseGroupMapper.toInnerDTO(courseGroupRequestDTO);
+    public ResponseEntity<CourseGroupResponseDto> addCourseGroup(@RequestBody
+                                                                 @Valid @NotNull final CourseGroupRequestDto courseGroupRequestDTO) {
+        final CourseGroupDto courseGroupDTO = courseGroupMapper.toInnerDTO(courseGroupRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
                              .body(courseGroupMapper.toResponseDTO(courseGroupService.createCourseGroup(
                                  courseGroupDTO)));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CourseGroupResponseDTO> getCourseGroup(@PathVariable @NotNull final UUID id) {
+    public ResponseEntity<CourseGroupResponseDto> getCourseGroup(@PathVariable @NotNull final UUID id) {
         return ResponseEntity.ok(courseGroupMapper.toResponseDTO(courseGroupService.findCourseGroupById(
                                                                                        id)
                                                                                    .orElseThrow(() -> new ResponseStatusException(
@@ -49,14 +52,14 @@ public class CourseGroupController {
     }
 
     @GetMapping
-    public List<CourseGroupResponseDTO> getAllCourseGroups() {
+    public List<CourseGroupResponseDto> getAllCourseGroups() {
         return courseGroupMapper.toResponseDTOList(courseGroupService.findAll());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CourseGroupResponseDTO> updateCourseGroup(@PathVariable @NotNull final UUID id,
-                                                                    @RequestBody @NotNull @Valid final CourseGroupRequestDTO courseGroupRequestDTO) {
-        final CourseGroupDTO courseGroupDTO = courseGroupMapper.toInnerDTO(courseGroupRequestDTO);
+    public ResponseEntity<CourseGroupResponseDto> updateCourseGroup(@PathVariable @NotNull final UUID id,
+                                                                    @RequestBody @NotNull @Valid final CourseGroupRequestDto courseGroupRequestDTO) {
+        final CourseGroupDto courseGroupDTO = courseGroupMapper.toInnerDTO(courseGroupRequestDTO);
         return ResponseEntity.ok(courseGroupMapper.toResponseDTO(courseGroupService.updateCourseGroup(
                                                                                        id,
                                                                                        courseGroupDTO)

@@ -79,7 +79,6 @@ class MajorServiceTest {
         Optional<MajorDto> result = majorService.findMajorById(majorId);
 
         assertFalse(result.isPresent());
-        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -90,7 +89,7 @@ class MajorServiceTest {
         List<MajorDto> result = majorService.findAll();
 
         assertEquals(1, result.size());
-        assertEquals("Informatics", result.get(0).majorName());
+        assertEquals("Informatics", result.getFirst().majorName());
     }
 
     @Test

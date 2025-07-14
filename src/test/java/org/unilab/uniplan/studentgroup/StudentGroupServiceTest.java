@@ -136,7 +136,6 @@ class StudentGroupServiceTest {
                                                                                     groupId);
 
         assertFalse(result.isPresent());
-        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -147,7 +146,7 @@ class StudentGroupServiceTest {
         List<StudentGroupDto> result = studentGroupService.findAll();
 
         assertEquals(1, result.size());
-        assertEquals(studentId, result.get(0).studentId());
-        assertEquals(groupId, result.get(0).courseGroupId());
+        assertEquals(studentId, result.getFirst().studentId());
+        assertEquals(groupId, result.getFirst().courseGroupId());
     }
 }

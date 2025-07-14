@@ -75,7 +75,6 @@ class StudentServiceTest {
         Optional<StudentDto> result = studentService.findStudentById(studentId);
 
         assertFalse(result.isPresent());
-        assertTrue(result.isEmpty());
     }
 
     @Test

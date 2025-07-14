@@ -65,7 +65,6 @@ class CourseGroupServiceTest {
         Optional<CourseGroupDto> result = courseGroupService.findCourseGroupById(courseGroupId);
 
         assertFalse(result.isPresent());
-        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -88,7 +87,7 @@ class CourseGroupServiceTest {
         List<CourseGroupDto> result = courseGroupService.findAll();
 
         assertEquals(1, result.size());
-        assertEquals(courseGroupDTO, result.get(0));
+        assertEquals(courseGroupDTO, result.getFirst());
     }
 
     @Test

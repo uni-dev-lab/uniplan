@@ -1,4 +1,4 @@
-package org.unilab.uniplan.course;
+package org.unilab.uniplan.course.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import java.util.UUID;
 
-public record CourseResponseDTO(
+public record CourseDto(
     UUID id,
     @NotNull
     UUID majorId,
@@ -21,4 +21,6 @@ public record CourseResponseDTO(
     @NotNull
     @Size(max = 100)
     String courseSubtype
-) {}
+) {
+
+}

@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import org.unilab.uniplan.studentgroup.dto.StudentGroupDto;
+import org.unilab.uniplan.studentgroup.dto.StudentGroupRequestDto;
+import org.unilab.uniplan.studentgroup.dto.StudentGroupResponseDto;
 
 @RestController
 @RequestMapping("/studentGroups")
@@ -29,15 +32,15 @@ public class StudentGroupController {
     private final StudentGroupMapper studentGroupMapper;
 
     @PostMapping
-    public ResponseEntity<StudentGroupResponseDTO> addStudentGroup(@RequestBody @NotNull @Valid final StudentGroupRequestDTO studentGroupRequestDTO) {
-        final StudentGroupDTO studentGroupDTO = studentGroupMapper.toInnerDTO(studentGroupRequestDTO);
+    public ResponseEntity<StudentGroupResponseDto> addStudentGroup(@RequestBody @NotNull @Valid final StudentGroupRequestDto studentGroupRequestDTO) {
+        final StudentGroupDto studentGroupDTO = studentGroupMapper.toInnerDTO(studentGroupRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
                              .body(studentGroupMapper.toResponseDTO(studentGroupService.createStudentGroup(
                                  studentGroupDTO)));
     }
 
     @GetMapping("/{studentId}/{courseGroupId}")
-    public ResponseEntity<StudentGroupResponseDTO> getStudentGroupById(@PathVariable @NotNull final UUID studentId,
+    public ResponseEntity<StudentGroupResponseDto> getStudentGroupById(@PathVariable @NotNull final UUID studentId,
                                                                        @PathVariable @NotNull final UUID courseGroupId) {
 
         return ResponseEntity.ok(studentGroupMapper.toResponseDTO(studentGroupService
@@ -53,15 +56,15 @@ public class StudentGroupController {
     }
 
     @GetMapping
-    public List<StudentGroupResponseDTO> getAllStudentGroups() {
+    public List<StudentGroupResponseDto> getAllStudentGroups() {
         return studentGroupMapper.toResponseDTOList(studentGroupService.findAll());
     }
 
     @PutMapping("/{studentId}/{courseGroupId}")
-    public ResponseEntity<StudentGroupResponseDTO> updateStudentGroup(@PathVariable @NotNull final UUID studentId,
+    public ResponseEntity<StudentGroupResponseDto> updateStudentGroup(@PathVariable @NotNull final UUID studentId,
                                                                       @PathVariable @NotNull final UUID courseGroupId,
-                                                                      @RequestBody @NotNull @Valid final StudentGroupRequestDTO studentGroupRequestDTO) {
-        final StudentGroupDTO studentGroupDTO = studentGroupMapper.toInnerDTO(studentGroupRequestDTO);
+                                                                      @RequestBody @NotNull @Valid final StudentGroupRequestDto studentGroupRequestDTO) {
+        final StudentGroupDto studentGroupDTO = studentGroupMapper.toInnerDTO(studentGroupRequestDTO);
         return ResponseEntity.ok(studentGroupMapper
                                      .toResponseDTO(studentGroupService.updateStudentGroup(studentId,
                                                                                            courseGroupId,

@@ -1,10 +1,10 @@
-package org.unilab.uniplan.student;
+package org.unilab.uniplan.student.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.UUID;
 
-public record StudentDTO(
+public record StudentDto(
     UUID id,
     @NotNull
     @Size(max = 100)

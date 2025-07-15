@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.unilab.uniplan.student.dto.StudentDto;
 
 @Service
 @RequiredArgsConstructor
@@ -18,23 +19,23 @@ public class StudentService {
     private final StudentMapper studentMapper;
 
     @Transactional
-    public StudentDTO createStudent(final StudentDTO studentDTO) {
+    public StudentDto createStudent(final StudentDto studentDTO) {
         final Student student = studentMapper.toEntity(studentDTO);
         return studentMapper.toDTO(studentRepository.save(student));
     }
 
-    public Optional<StudentDTO> findStudentById(final UUID id) {
+    public Optional<StudentDto> findStudentById(final UUID id) {
         return studentRepository.findById(id)
                                 .map(studentMapper::toDTO);
     }
 
-    public List<StudentDTO> findAll() {
+    public List<StudentDto> findAll() {
         return studentRepository.findAll()
                                 .stream().map(studentMapper::toDTO).toList();
     }
 
     @Transactional
-    public Optional<StudentDTO> updateStudent(final UUID id, final StudentDTO studentDTO) {
+    public Optional<StudentDto> updateStudent(final UUID id, final StudentDto studentDTO) {
         return studentRepository.findById(id)
                                 .map(existingStudent -> {
                                     studentMapper.updateEntityFromDTO(studentDTO, existingStudent);

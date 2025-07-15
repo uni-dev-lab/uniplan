@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import org.unilab.uniplan.student.dto.StudentDto;
+import org.unilab.uniplan.student.dto.StudentRequestDto;
+import org.unilab.uniplan.student.dto.StudentResponseDto;
 
 @RestController
 @RequestMapping("/students")
@@ -29,18 +32,18 @@ public class StudentController {
     private final StudentMapper studentMapper;
 
     @PostMapping
-    public ResponseEntity<StudentResponseDTO> createStudent(@RequestBody @NotNull
-                                                            @Valid final StudentRequestDTO studentRequestDTO) {
-        final StudentDTO studentDTO = studentMapper.toInternalDTO(studentRequestDTO);
+    public ResponseEntity<StudentResponseDto> createStudent(@RequestBody @NotNull
+                                                            @Valid final StudentRequestDto studentRequestDTO) {
+        final StudentDto studentDTO = studentMapper.toInternalDTO(studentRequestDTO);
         studentService.createStudent(studentDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
                              .body(studentMapper.toResponseDTO(studentDTO));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StudentResponseDTO> getStudent(@PathVariable
+    public ResponseEntity<StudentResponseDto> getStudent(@PathVariable
                                                          @NotNull final UUID id) {
-        final StudentResponseDTO studentResponseDTO = studentMapper.toResponseDTO(studentService.findStudentById(
+        final StudentResponseDto studentResponseDTO = studentMapper.toResponseDTO(studentService.findStudentById(
                                                                                                     id)
                                                                                                 .orElseThrow(
                                                                                                     () -> new ResponseStatusException(
@@ -53,16 +56,16 @@ public class StudentController {
     }
 
     @GetMapping
-    public List<StudentResponseDTO> getAllStudents() {
+    public List<StudentResponseDto> getAllStudents() {
         return studentMapper.toResponseDTOList(studentService.findAll());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StudentResponseDTO> updateStudent(@PathVariable
+    public ResponseEntity<StudentResponseDto> updateStudent(@PathVariable
                                                             @NotNull final UUID id,
                                                             @RequestBody
-                                                            @NotNull @Valid final StudentRequestDTO studentRequestDTO) {
-        final StudentDTO studentDTO = studentMapper.toInternalDTO(studentRequestDTO);
+                                                            @NotNull @Valid final StudentRequestDto studentRequestDTO) {
+        final StudentDto studentDTO = studentMapper.toInternalDTO(studentRequestDTO);
         studentService.updateStudent(id, studentDTO).orElseThrow(
             () -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND,

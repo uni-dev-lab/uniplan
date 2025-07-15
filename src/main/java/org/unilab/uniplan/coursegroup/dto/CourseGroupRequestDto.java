@@ -1,4 +1,4 @@
-package org.unilab.uniplan.coursegroup;
+package org.unilab.uniplan.coursegroup.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
@@ -6,8 +6,7 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import java.util.UUID;
 
-public record CourseGroupResponseDTO(
-    UUID id,
+public record CourseGroupRequestDto(
     @NotNull
     UUID courseId,
     @NotNull
@@ -16,4 +15,6 @@ public record CourseGroupResponseDTO(
     @Positive
     @Max(40)
     int maxGroup
-) {}
+) {
+
+}

@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.unilab.uniplan.coursegroup.dto.CourseGroupDto;
 
 @Service
 @RequiredArgsConstructor
@@ -18,24 +19,24 @@ public class CourseGroupService {
     private final CourseGroupMapper courseGroupMapper;
 
     @Transactional
-    public CourseGroupDTO createCourseGroup(final CourseGroupDTO courseGroupDTO) {
+    public CourseGroupDto createCourseGroup(final CourseGroupDto courseGroupDTO) {
         final CourseGroup courseGroup = courseGroupMapper.toEntity(courseGroupDTO);
         return courseGroupMapper.toDTO(courseGroupRepository.save(courseGroup));
     }
 
-    public Optional<CourseGroupDTO> findCourseGroupById(final UUID id) {
+    public Optional<CourseGroupDto> findCourseGroupById(final UUID id) {
         return courseGroupRepository.findById(id)
                                     .map(courseGroupMapper::toDTO);
     }
 
-    public List<CourseGroupDTO> findAll() {
+    public List<CourseGroupDto> findAll() {
         return courseGroupRepository.findAll()
                                     .stream().map(courseGroupMapper::toDTO).toList();
     }
 
     @Transactional
-    public Optional<CourseGroupDTO> updateCourseGroup(final UUID id,
-                                                      final CourseGroupDTO courseGroupDTO) {
+    public Optional<CourseGroupDto> updateCourseGroup(final UUID id,
+                                                      final CourseGroupDto courseGroupDTO) {
 
         return courseGroupRepository.findById(id).map(
             existingCourseGroup -> {

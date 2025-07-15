@@ -4,24 +4,27 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.unilab.uniplan.major.dto.MajorDto;
+import org.unilab.uniplan.major.dto.MajorRequestDto;
+import org.unilab.uniplan.major.dto.MajorResponseDto;
 
 @Mapper
 public interface MajorMapper {
-    
+
     @Mapping(source = "facultyId", target = "faculty.id")
-    Major toEntity(MajorDTO majorDTO);
+    Major toEntity(MajorDto majorDTO);
 
     @Mapping(source = "faculty.id", target = "facultyId")
-    MajorDTO toDTO(Major major);
+    MajorDto toDTO(Major major);
 
     @Mapping(source = "facultyId", target = "faculty.id")
-    void updateEntityFromDTO(MajorDTO majorDTO, @MappingTarget Major major);
+    void updateEntityFromDTO(MajorDto majorDTO, @MappingTarget Major major);
 
     @Mapping(target = "id", ignore = true)
-    MajorDTO toInnerDTO(MajorRequestDTO requestDTO);
+    MajorDto toInnerDTO(MajorRequestDto requestDTO);
 
     @Mapping(source = "facultyId", target = "facultyId")
-    MajorResponseDTO toResponseDTO(MajorDTO innerDTO);
+    MajorResponseDto toResponseDTO(MajorDto innerDTO);
 
-    List<MajorResponseDTO> toResponseDTOList(List<MajorDTO> majors);
+    List<MajorResponseDto> toResponseDTOList(List<MajorDto> majors);
 }

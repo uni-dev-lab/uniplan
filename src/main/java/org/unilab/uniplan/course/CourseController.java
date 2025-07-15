@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import org.unilab.uniplan.course.dto.CourseDto;
+import org.unilab.uniplan.course.dto.CourseRequestDto;
+import org.unilab.uniplan.course.dto.CourseResponseDto;
 
 @RestController
 @RequestMapping("/courses")
@@ -29,15 +32,15 @@ public class CourseController {
     private final CourseMapper courseMapper;
 
     @PostMapping
-    public ResponseEntity<CourseResponseDTO> addCourse(@RequestBody @NotNull
-                                                       @Valid final CourseRequestDTO courseRequestDTO) {
-        final CourseDTO courseDTO = courseMapper.toInnerDTO(courseRequestDTO);
+    public ResponseEntity<CourseResponseDto> addCourse(@RequestBody @NotNull
+                                                       @Valid final CourseRequestDto courseRequestDTO) {
+        final CourseDto courseDTO = courseMapper.toInnerDTO(courseRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
                              .body(courseMapper.toResponseDTO(courseService.createCourse(courseDTO)));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CourseResponseDTO> getMajorById(@PathVariable @NotNull final UUID id) {
+    public ResponseEntity<CourseResponseDto> getMajorById(@PathVariable @NotNull final UUID id) {
         return ResponseEntity.ok(courseMapper.toResponseDTO(courseService.findCourseById(id)
                                                                          .orElseThrow(() -> new ResponseStatusException(
                                                                              HttpStatus.NOT_FOUND,
@@ -47,14 +50,14 @@ public class CourseController {
     }
 
     @GetMapping
-    public List<CourseResponseDTO> getAllCourses() {
+    public List<CourseResponseDto> getAllCourses() {
         return courseMapper.toResponseDTOList(courseService.findAll());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CourseResponseDTO> updateCourse(@PathVariable @NotNull final UUID id,
-                                                          @RequestBody @NotNull @Valid final CourseRequestDTO courseRequestDTO) {
-        final CourseDTO courseDTO = courseMapper.toInnerDTO(courseRequestDTO);
+    public ResponseEntity<CourseResponseDto> updateCourse(@PathVariable @NotNull final UUID id,
+                                                          @RequestBody @NotNull @Valid final CourseRequestDto courseRequestDTO) {
+        final CourseDto courseDTO = courseMapper.toInnerDTO(courseRequestDTO);
         return ResponseEntity.ok(courseMapper.toResponseDTO(courseService.updateCourse(id,
                                                                                        courseDTO)
                                                                          .orElseThrow(() -> new ResponseStatusException(

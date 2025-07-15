@@ -5,31 +5,34 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
+import org.unilab.uniplan.studentgroup.dto.StudentGroupDto;
+import org.unilab.uniplan.studentgroup.dto.StudentGroupRequestDto;
+import org.unilab.uniplan.studentgroup.dto.StudentGroupResponseDto;
 
 @Mapper
 public interface StudentGroupMapper {
 
     @Mapping(source = "id.studentId", target = "studentId")
     @Mapping(source = "id.courseGroupId", target = "courseGroupId")
-    StudentGroupDTO toDTO(StudentGroup studentGroup);
+    StudentGroupDto toDTO(StudentGroup studentGroup);
 
     @Mapping(target = "id", source = ".", qualifiedByName = "toStudentGroupId")
-    StudentGroup toEntity(StudentGroupDTO dto);
+    StudentGroup toEntity(StudentGroupDto dto);
 
     @Named("toStudentGroupId")
-    default StudentGroupId toStudentGroupId(StudentGroupDTO dto) {
+    default StudentGroupId toStudentGroupId(StudentGroupDto dto) {
         return new StudentGroupId(dto.studentId(), dto.courseGroupId());
     }
 
     @Mapping(target = "id", source = ".", qualifiedByName = "toStudentGroupId")
-    void updateEntityFromDTO(StudentGroupDTO studentGroupDTO,
+    void updateEntityFromDTO(StudentGroupDto studentGroupDTO,
                              @MappingTarget StudentGroup studentGroup);
-    
-    StudentGroupDTO toInnerDTO(StudentGroupRequestDTO studentGroupRequestDTO);
+
+    StudentGroupDto toInnerDTO(StudentGroupRequestDto studentGroupRequestDTO);
 
     @Mapping(source = "studentId", target = "studentId")
     @Mapping(source = "courseGroupId", target = "courseGroupId")
-    StudentGroupResponseDTO toResponseDTO(StudentGroupDTO studentGroupDTO);
+    StudentGroupResponseDto toResponseDTO(StudentGroupDto studentGroupDTO);
 
-    List<StudentGroupResponseDTO> toResponseDTOList(List<StudentGroupDTO> studentGroups);
+    List<StudentGroupResponseDto> toResponseDTOList(List<StudentGroupDto> studentGroups);
 }

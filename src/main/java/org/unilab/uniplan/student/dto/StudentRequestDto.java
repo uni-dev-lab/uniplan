@@ -1,10 +1,10 @@
-package org.unilab.uniplan.student;
+package org.unilab.uniplan.student.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.UUID;
 
-public record StudentRequestDTO (
+public record StudentRequestDto(
     @NotNull
     @Size(max = 100)
     String firstName,
@@ -13,4 +13,6 @@ public record StudentRequestDTO (
     String lastName,
     String facultyNumber,
     UUID courseId
-) {}
+) {
+
+}

@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.unilab.uniplan.major.dto.MajorDto;
 
 @Service
 @RequiredArgsConstructor
@@ -18,23 +19,23 @@ public class MajorService {
     private final MajorMapper majorMapper;
 
     @Transactional
-    public MajorDTO createMajor(final MajorDTO majorDTO) {
+    public MajorDto createMajor(final MajorDto majorDTO) {
         final Major major = majorMapper.toEntity(majorDTO);
         return majorMapper.toDTO(majorRepository.save(major));
     }
 
-    public Optional<MajorDTO> findMajorById(final UUID id) {
+    public Optional<MajorDto> findMajorById(final UUID id) {
         return majorRepository.findById(id)
                               .map(majorMapper::toDTO);
     }
 
-    public List<MajorDTO> findAll() {
+    public List<MajorDto> findAll() {
         return majorRepository.findAll()
                               .stream().map(majorMapper::toDTO).toList();
     }
 
     @Transactional
-    public Optional<MajorDTO> updateMajor(final UUID id, final MajorDTO majorDTO) {
+    public Optional<MajorDto> updateMajor(final UUID id, final MajorDto majorDTO) {
         return majorRepository.findById(id).map(existingMajor -> {
             majorMapper.updateEntityFromDTO(majorDTO, existingMajor);
 

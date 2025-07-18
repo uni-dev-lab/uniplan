@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.unilab.uniplan.studentgroup.dto.StudentGroupDto;
 
 @Service
 @RequiredArgsConstructor
@@ -18,17 +19,17 @@ public class StudentGroupService {
     private final StudentGroupMapper studentGroupMapper;
 
     @Transactional
-    public StudentGroupDTO createStudentGroup(final StudentGroupDTO studentGroupDTO) {
+    public StudentGroupDto createStudentGroup(final StudentGroupDto studentGroupDTO) {
         StudentGroup studentGroup = studentGroupMapper.toEntity(studentGroupDTO);
         return studentGroupMapper.toDTO(studentGroupRepository.save(studentGroup));
     }
 
     @Transactional
-    public Optional<StudentGroupDTO> updateStudentGroup(final UUID studentId,
+    public Optional<StudentGroupDto> updateStudentGroup(final UUID studentId,
                                                         final UUID courseGroupId,
-                                                        final StudentGroupDTO studentGroupDTO) {
+                                                        final StudentGroupDto studentGroupDTO) {
         final StudentGroupId id = new StudentGroupId(studentId, courseGroupId);
-        
+
         return studentGroupRepository.findById(id).map(
             existingStudentGroup -> {
                 studentGroupMapper.updateEntityFromDTO(studentGroupDTO, existingStudentGroup);
@@ -48,7 +49,7 @@ public class StudentGroupService {
         studentGroupRepository.delete(studentGroup);
     }
 
-    public Optional<StudentGroupDTO> findStudentGroupById(final UUID studentId,
+    public Optional<StudentGroupDto> findStudentGroupById(final UUID studentId,
                                                           final UUID courseGroupId) {
         final StudentGroupId id = new StudentGroupId(studentId, courseGroupId);
 
@@ -56,7 +57,7 @@ public class StudentGroupService {
                                      .map(studentGroupMapper::toDTO);
     }
 
-    public List<StudentGroupDTO> findAll() {
+    public List<StudentGroupDto> findAll() {
         return studentGroupRepository.findAll()
                                      .stream().map(studentGroupMapper::toDTO).toList();
     }

@@ -1,9 +1,9 @@
-package org.unilab.uniplan.studentgroup;
+package org.unilab.uniplan.studentgroup.dto;
 
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
-public record StudentGroupDTO(
+public record StudentGroupResponseDto(
     @NotNull
     UUID studentId,
     @NotNull

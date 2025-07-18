@@ -47,9 +47,9 @@ class DisciplineServiceTest {
         name = "Programing";
         mainLector = "Ivan Ivanov";
         for (int i = 0; i < programDisciplineCount; i++) {
-            programDisciplineIds.add(new ProgramDisciplineId(UUID.randomUUID(),UUID.randomUUID()));
+            programDisciplineIds.add(new ProgramDisciplineId(UUID.randomUUID(), UUID.randomUUID()));
         }
-        disciplineDto = new DisciplineDto(id,name,mainLector,programDisciplineIds);
+        disciplineDto = new DisciplineDto(id, name, mainLector, programDisciplineIds);
         discipline = new Discipline();
     }
 

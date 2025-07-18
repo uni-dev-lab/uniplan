@@ -47,7 +47,7 @@ class LectorServiceTest {
         firstName = "Ivan";
         lastName = "Ivanov";
         email = "i.ivanov@gmail.com";
-        lectorDto = new LectorDto(id,facultyId,email,firstName,lastName);
+        lectorDto = new LectorDto(id, facultyId, email, firstName, lastName);
         lector = new Lector();
     }
 

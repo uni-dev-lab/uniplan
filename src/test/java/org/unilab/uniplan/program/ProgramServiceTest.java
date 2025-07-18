@@ -48,7 +48,7 @@ class ProgramServiceTest {
         for (int i = 0; i < programDisciplineCount; i++) {
             programDisciplineIds.add(new ProgramDisciplineId(UUID.randomUUID(),UUID.randomUUID()));
         }
-        programDto = new ProgramDto(id,courseId,programDisciplineIds);
+        programDto = new ProgramDto(id, courseId, programDisciplineIds);
         program = new Program();
     }
 

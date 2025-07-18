@@ -45,7 +45,11 @@ class ProgramDisciplineLectorServiceTest {
         disciplineId = UUID.randomUUID();
         programDisciplineLectorId = programDisciplineLectorMapper.toProgramDisciplineLectorId(lectorId,programId,disciplineId);
         lectorType = LectorType.BOTH;
-         programDisciplineLectorDto = new ProgramDisciplineLectorDto(programDisciplineLectorId,lectorId,programId,disciplineId,lectorType);
+        programDisciplineLectorDto = new ProgramDisciplineLectorDto(programDisciplineLectorId,
+                                                                    lectorId,
+                                                                    programId,
+                                                                    disciplineId,
+                                                                    lectorType);
          programDisciplineLector = new ProgramDisciplineLector();
     }
 

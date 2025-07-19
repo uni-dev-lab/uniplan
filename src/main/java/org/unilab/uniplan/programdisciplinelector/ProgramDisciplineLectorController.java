@@ -27,7 +27,8 @@ import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorRes
 @RequestMapping("/api/ProgramDisciplineLector")
 @RequiredArgsConstructor
 public class ProgramDisciplineLectorController {
-    private static final String PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND = "Program discipline lector with ID {0} not found.";
+
+    private static final String PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND = "Program discipline lector with lectorId {0}, programId {1} and disciplineId {2} not found.";
     private final ProgramDisciplineLectorMapper programDisciplineLectorMapper;
     private final ProgramDisciplineLectorService programDisciplineLectorService;
 

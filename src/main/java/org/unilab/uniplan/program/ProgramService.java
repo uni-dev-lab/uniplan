@@ -1,18 +1,19 @@
 package org.unilab.uniplan.program;
 
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.unilab.uniplan.program.dto.ProgramDto;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.unilab.uniplan.program.dto.ProgramDto;
 
 @Service
 @RequiredArgsConstructor
 public class ProgramService{
+    public static final String PROGRAM_NOT_FOUND = "Program with ID {0} not found.";
 
     private final ProgramRepository programRepository;
     private final ProgramMapper programMapper;
@@ -47,7 +48,12 @@ public class ProgramService{
 
     public void deleteProgram(UUID id) {
         final Program program = programRepository.findById(id)
-                                            .orElseThrow(() -> new EntityNotFoundException("Program not found"));
+                                            .orElseThrow(() -> new RuntimeException(
+                                                MessageFormat.format(
+                                                    PROGRAM_NOT_FOUND,
+                                                    id
+                                                )
+                                            ));
 
         programRepository.delete(program);
     }

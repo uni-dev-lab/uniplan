@@ -12,21 +12,21 @@ import lombok.Setter;
 import org.unilab.uniplan.common.model.BaseEntity;
 import org.unilab.uniplan.course.Course;
 
+@Entity
+@Table(name = "course_group")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "course_group")
 public class CourseGroup extends BaseEntity {
   
     @ManyToOne
-    @JoinColumn(name = "COURSE_ID", nullable = false)
+    @JoinColumn(name = "course_id", nullable = false)
     private Course course;
     
-    @Column(name = "GROUP_NAME", nullable = false)
+    @Column(name = "group_name", nullable = false)
     private String groupName;
 
-    @Column(name = "MAX_GROUP", nullable = false)
+    @Column(name = "max_group", nullable = false)
     private int maxGroup;
 }

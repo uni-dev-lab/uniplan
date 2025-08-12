@@ -21,9 +21,9 @@ import org.unilab.uniplan.faculty.Faculty;
 public class Room extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "FACULTY_ID", referencedColumnName = "ID", nullable = false)
+    @JoinColumn(name = "faculty_id", referencedColumnName = "id", nullable = false)
     private Faculty faculty;
-    @Column(name = "ROOM_NUMBER", nullable = false, length = 50)
+    @Column(name = "room_number", nullable = false, length = 50)
     private String roomNumber;
 
 }

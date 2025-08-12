@@ -26,10 +26,10 @@ public class StudentGroup extends AuditableEntity {
     private StudentGroupId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "STUDENT_ID", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "student_id", nullable = false, insertable = false, updatable = false)
     private Student student;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "GROUP_ID", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "group_id", nullable = false, insertable = false, updatable = false)
     private CourseGroup courseGroup;
 }

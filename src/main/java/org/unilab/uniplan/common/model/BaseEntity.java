@@ -18,7 +18,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public abstract class BaseEntity extends AuditableEntity {
 
     @Id
-    @Column(columnDefinition = "UUID", updatable = false, nullable = false)
+    @Column(name = "id", columnDefinition = "UUID", updatable = false, nullable = false)
     private UUID id;
 
     @PrePersist

@@ -26,10 +26,10 @@ public class RoomCategory extends AuditableEntity {
     private RoomCategoryId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ROOM_ID", referencedColumnName = "ID", updatable = false, insertable = false, nullable = false)
+    @JoinColumn(name = "room_id", referencedColumnName = "id", updatable = false, insertable = false, nullable = false)
     private Room room;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CATEGORY_ID", referencedColumnName = "ID", updatable = false, insertable = false, nullable = false)
+    @JoinColumn(name = "category_id", referencedColumnName = "id", updatable = false, insertable = false, nullable = false)
     private Category category;
 }

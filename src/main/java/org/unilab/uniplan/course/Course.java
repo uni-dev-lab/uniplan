@@ -14,26 +14,26 @@ import lombok.Setter;
 import org.unilab.uniplan.common.model.BaseEntity;
 import org.unilab.uniplan.major.Major;
 
+@Entity
+@Table(name = "courses")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "courses")
 public class Course extends BaseEntity {
     
     @ManyToOne
-    @JoinColumn(name = "MAJOR_ID", nullable = false)
+    @JoinColumn(name = "major_id", nullable = false)
     private Major major;
 
-    @Column(name = "COURSE_YEAR", nullable = false)
+    @Column(name = "course_year", nullable = false)
     @Min(1)
     @Max(20)
     private byte courseYear;
 
-    @Column(name = "COURSE_TYPE", nullable = false, length = 100)
+    @Column(name = "course_type", nullable = false, length = 100)
     private String courseType;
 
-    @Column(name = "COURSE_SUBTYPE", nullable = false, length = 100)
+    @Column(name = "course_subtype", nullable = false, length = 100)
     private String courseSubtype;
 }

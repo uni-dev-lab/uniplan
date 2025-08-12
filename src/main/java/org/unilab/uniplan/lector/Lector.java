@@ -13,19 +13,19 @@ import lombok.Setter;
 import org.unilab.uniplan.common.model.Person;
 import org.unilab.uniplan.faculty.Faculty;
 
+@Entity
+@Table(name = "lectors")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "lectors")
 public class Lector extends Person {
 
-    @Column(name = "EMAIL", nullable = false, length = 250)
+    @Column(name = "email", nullable = false, length = 250)
     private String email;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FACULTY_ID", referencedColumnName = "ID", nullable = false)
+    @JoinColumn(name = "faculty_id", referencedColumnName = "ID", nullable = false)
     private Faculty faculty;
 }
 

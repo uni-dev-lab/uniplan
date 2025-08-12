@@ -21,10 +21,10 @@ import org.unilab.uniplan.university.University;
 public class Faculty extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "UNI_ID", referencedColumnName = "ID", nullable = false)
+    @JoinColumn(name = "uni_id", referencedColumnName = "id", nullable = false)
     private University university;
-    @Column(name = "FACULTY_NAME", nullable = false, length = 200)
+    @Column(name = "faculty_name", nullable = false, length = 200)
     private String facultyName;
-    @Column(name = "LOCATION", length = 500)
+    @Column(name = "location", length = 500)
     private String location;
 }

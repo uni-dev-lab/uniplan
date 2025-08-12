@@ -18,30 +18,30 @@ import org.unilab.uniplan.discipline.Discipline;
 import org.unilab.uniplan.lector.Lector;
 import org.unilab.uniplan.program.Program;
 
+@Entity
+@Table(name = "lector_program")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "lector_program")
 public class ProgramDisciplineLector extends AuditableEntity {
 
     @EmbeddedId
     private ProgramDisciplineLectorId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "LECTOR_ID", referencedColumnName = "ID", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "lector_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
     private Lector lector;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PROGRAM_ID", referencedColumnName = "ID", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "program_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
     private Program program;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "discipline_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
     private Discipline discipline;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "LECTOR_TYPE", nullable = false, length = 100)
+    @Column(name = "lector_type", nullable = false, length = 100)
     private LectorType lectorType;
 }

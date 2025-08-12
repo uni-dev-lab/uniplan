@@ -15,7 +15,7 @@ import org.unilab.uniplan.common.model.AuditableEntity;
 import org.unilab.uniplan.room.Room;
 
 @Entity
-@Table(name = "room_category")
+@Table(name = "room_categories")
 @Getter
 @Setter
 @NoArgsConstructor

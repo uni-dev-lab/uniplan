@@ -19,7 +19,7 @@ import org.unilab.uniplan.lector.Lector;
 import org.unilab.uniplan.program.Program;
 
 @Entity
-@Table(name = "lector_program")
+@Table(name = "lector_programs")
 @Getter
 @Setter
 @NoArgsConstructor

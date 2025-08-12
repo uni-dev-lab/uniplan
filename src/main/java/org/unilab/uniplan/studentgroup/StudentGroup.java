@@ -15,7 +15,7 @@ import org.unilab.uniplan.coursegroup.CourseGroup;
 import org.unilab.uniplan.student.Student;
 
 @Entity
-@Table(name = "student_group")
+@Table(name = "student_groups")
 @Getter
 @Setter
 @NoArgsConstructor

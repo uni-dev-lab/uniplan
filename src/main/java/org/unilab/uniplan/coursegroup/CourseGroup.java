@@ -17,7 +17,7 @@ import org.unilab.uniplan.course.Course;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "COURSE_GROUP")
+@Table(name = "course_group")
 public class CourseGroup extends BaseEntity {
   
     @ManyToOne

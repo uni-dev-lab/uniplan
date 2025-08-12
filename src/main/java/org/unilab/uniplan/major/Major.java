@@ -17,7 +17,7 @@ import org.unilab.uniplan.faculty.Faculty;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "MAJOR")
+@Table(name = "majors")
 public class Major extends BaseEntity {
     
     @ManyToOne

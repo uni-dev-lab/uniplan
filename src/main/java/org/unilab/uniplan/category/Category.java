@@ -10,7 +10,7 @@ import lombok.Setter;
 import org.unilab.uniplan.common.model.BaseEntity;
 
 @Entity
-@Table(name = "CATEGORY")
+@Table(name = "categories")
 @Getter
 @Setter
 @NoArgsConstructor

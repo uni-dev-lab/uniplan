@@ -18,7 +18,7 @@ import org.unilab.uniplan.course.Course;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Student")
+@Table(name = "students")
 public class Student extends Person {
 
     @ManyToOne(fetch = FetchType.LAZY)

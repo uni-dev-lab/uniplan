@@ -10,7 +10,7 @@ import lombok.Setter;
 import org.unilab.uniplan.common.model.BaseEntity;
 
 @Entity
-@Table(name = "UNIVERSITY")
+@Table(name = "universities")
 @Getter
 @Setter
 @NoArgsConstructor

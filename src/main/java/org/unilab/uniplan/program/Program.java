@@ -19,7 +19,7 @@ import org.unilab.uniplan.programdiscipline.ProgramDiscipline;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "PROGRAM")
+@Table(name = "programs")
 public class Program extends BaseEntity {
 
     @OneToOne

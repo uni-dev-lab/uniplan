@@ -17,7 +17,7 @@ import org.unilab.uniplan.programdiscipline.ProgramDiscipline;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "DISCIPLINE")
+@Table(name = "disciplines")
 public class Discipline extends BaseEntity {
 
     @Column(name = "DISCIPLINE_NAME", nullable = false, length = 100)

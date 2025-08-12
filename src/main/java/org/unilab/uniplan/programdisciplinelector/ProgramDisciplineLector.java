@@ -23,7 +23,7 @@ import org.unilab.uniplan.program.Program;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "LECTOR_PROGRAM")
+@Table(name = "lector_program")
 public class ProgramDisciplineLector extends AuditableEntity {
 
     @EmbeddedId

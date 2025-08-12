@@ -18,7 +18,7 @@ import org.unilab.uniplan.faculty.Faculty;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "LECTOR")
+@Table(name = "lectors")
 public class Lector extends Person {
 
     @Column(name = "EMAIL", nullable = false, length = 250)

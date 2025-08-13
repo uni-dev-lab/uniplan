@@ -49,7 +49,7 @@ class StudentServiceTest {
     void createStudentShouldReturnSaveAndReturnStudentDTO() {
         when(studentMapper.toEntity(studentDTO)).thenReturn(student);
         when(studentRepository.save(student)).thenReturn(student);
-        when(studentMapper.toDTO(student)).thenReturn(studentDTO);
+        when(studentMapper.toDto(student)).thenReturn(studentDTO);
 
         StudentDto result = studentService.createStudent(studentDTO);
 
@@ -60,7 +60,7 @@ class StudentServiceTest {
     @Test
     void findStudentByIdShouldReturnStudentDTOIfExists() {
         when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
-        when(studentMapper.toDTO(student)).thenReturn(studentDTO);
+        when(studentMapper.toDto(student)).thenReturn(studentDTO);
 
         Optional<StudentDto> result = studentService.findStudentById(studentId);
 
@@ -81,7 +81,7 @@ class StudentServiceTest {
     void findAllShouldReturnMappedStudentDTOList() {
         List<Student> students = List.of(student);
         when(studentRepository.findAll()).thenReturn(students);
-        when(studentMapper.toDTO(any(Student.class))).thenReturn(studentDTO);
+        when(studentMapper.toDto(any(Student.class))).thenReturn(studentDTO);
 
         List<StudentDto> result = studentService.findAll();
 
@@ -93,9 +93,9 @@ class StudentServiceTest {
     @Test
     void updateStudentShouldReturnUpdatedStudentDTOIfExists() {
         when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
-        doNothing().when(studentMapper).updateEntityFromDTO(studentDTO, student);
+        doNothing().when(studentMapper).updateEntityFromDto(studentDTO, student);
         when(studentRepository.save(student)).thenReturn(student);
-        when(studentMapper.toDTO(student)).thenReturn(studentDTO);
+        when(studentMapper.toDto(student)).thenReturn(studentDTO);
 
         Optional<StudentDto> result = studentService.updateStudent(studentId, studentDTO);
 

@@ -14,7 +14,7 @@ public interface StudentGroupMapper {
 
     @Mapping(source = "id.studentId", target = "studentId")
     @Mapping(source = "id.courseGroupId", target = "courseGroupId")
-    StudentGroupDto toDTO(StudentGroup studentGroup);
+    StudentGroupDto toDto(StudentGroup studentGroup);
 
     @Mapping(target = "id", source = ".", qualifiedByName = "toStudentGroupId")
     StudentGroup toEntity(StudentGroupDto dto);
@@ -25,14 +25,14 @@ public interface StudentGroupMapper {
     }
 
     @Mapping(target = "id", source = ".", qualifiedByName = "toStudentGroupId")
-    void updateEntityFromDTO(StudentGroupDto studentGroupDTO,
+    void updateEntityFromDto(StudentGroupDto studentGroupDto,
                              @MappingTarget StudentGroup studentGroup);
 
-    StudentGroupDto toInnerDTO(StudentGroupRequestDto studentGroupRequestDTO);
+    StudentGroupDto toInnerDto(StudentGroupRequestDto studentGroupRequestDto);
 
     @Mapping(source = "studentId", target = "studentId")
     @Mapping(source = "courseGroupId", target = "courseGroupId")
-    StudentGroupResponseDto toResponseDTO(StudentGroupDto studentGroupDTO);
+    StudentGroupResponseDto toResponseDto(StudentGroupDto studentGroupDto);
 
-    List<StudentGroupResponseDto> toResponseDTOList(List<StudentGroupDto> studentGroups);
+    List<StudentGroupResponseDto> toResponseDtoList(List<StudentGroupDto> studentGroups);
 }

@@ -16,7 +16,7 @@ import org.unilab.uniplan.course.Course;
 import org.unilab.uniplan.programdiscipline.ProgramDiscipline;
 
 @Entity
-@Table(name = "programs")
+@Table(name = "program")
 @Getter
 @Setter
 @NoArgsConstructor

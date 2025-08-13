@@ -13,7 +13,7 @@ import org.unilab.uniplan.common.model.BaseEntity;
 import org.unilab.uniplan.faculty.Faculty;
 
 @Entity
-@Table(name = "majors")
+@Table(name = "major")
 @Getter
 @Setter
 @NoArgsConstructor

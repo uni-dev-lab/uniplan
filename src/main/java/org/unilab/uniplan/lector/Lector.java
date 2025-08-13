@@ -14,7 +14,7 @@ import org.unilab.uniplan.common.model.Person;
 import org.unilab.uniplan.faculty.Faculty;
 
 @Entity
-@Table(name = "lectors")
+@Table(name = "lector")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,7 +25,7 @@ public class Lector extends Person {
     private String email;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "faculty_id", referencedColumnName = "ID", nullable = false)
+    @JoinColumn(name = "faculty_id", referencedColumnName = "id", nullable = false)
     private Faculty faculty;
 }
 

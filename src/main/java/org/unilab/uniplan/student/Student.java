@@ -14,7 +14,7 @@ import org.unilab.uniplan.common.model.Person;
 import org.unilab.uniplan.course.Course;
 
 @Entity
-@Table(name = "students")
+@Table(name = "student")
 @Getter
 @Setter
 @NoArgsConstructor

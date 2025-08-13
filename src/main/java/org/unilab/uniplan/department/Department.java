@@ -13,7 +13,7 @@ import org.unilab.uniplan.common.model.BaseEntity;
 import org.unilab.uniplan.faculty.Faculty;
 
 @Entity
-@Table(name = "DEPARTMENT")
+@Table(name = "department")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,8 +21,8 @@ import org.unilab.uniplan.faculty.Faculty;
 public class Department extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "FACULTY_ID", referencedColumnName = "ID", nullable = false)
+    @JoinColumn(name = "faculty_id", referencedColumnName = "id", nullable = false)
     private Faculty faculty;
-    @Column(name = "DEPARTMENT_NAME", nullable = false, length = 200)
+    @Column(name = "department_name", nullable = false, length = 200)
     private String departmentName;
 }

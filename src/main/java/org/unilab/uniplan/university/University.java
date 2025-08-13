@@ -10,22 +10,22 @@ import lombok.Setter;
 import org.unilab.uniplan.common.model.BaseEntity;
 
 @Entity
-@Table(name = "UNIVERSITY")
+@Table(name = "university")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class University extends BaseEntity {
 
-    @Column(name = "UNI_NAME", nullable = false)
+    @Column(name = "uni_name", nullable = false)
     private String uniName;
-    @Column(name = "LOCATION", length = 500)
+    @Column(name = "location", length = 500)
     private String location;
-    @Column(name = "ESTABLISHED_YEAR")
+    @Column(name = "established_year")
     private short establishedYear;
-    @Column(name = "ACCREDITATION", length = 200)
+    @Column(name = "accreditation", length = 200)
     private String accreditation;
-    @Column(name = "WEBSITE", length = 2048)
+    @Column(name = "website", length = 2048)
     private String website;
 
 }

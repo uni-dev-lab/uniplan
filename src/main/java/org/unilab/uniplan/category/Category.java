@@ -10,15 +10,15 @@ import lombok.Setter;
 import org.unilab.uniplan.common.model.BaseEntity;
 
 @Entity
-@Table(name = "CATEGORY")
+@Table(name = "category")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Category extends BaseEntity {
 
-    @Column(name = "ROOM_TYPE", nullable = false, length = 50)
+    @Column(name = "room_type", nullable = false, length = 50)
     private String roomType;
-    @Column(name = "CAPACITY", nullable = false)
+    @Column(name = "capacity", nullable = false)
     private short capacity;
 }

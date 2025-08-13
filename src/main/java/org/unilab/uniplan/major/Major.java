@@ -12,18 +12,18 @@ import lombok.Setter;
 import org.unilab.uniplan.common.model.BaseEntity;
 import org.unilab.uniplan.faculty.Faculty;
 
+@Entity
+@Table(name = "major")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "MAJOR")
 public class Major extends BaseEntity {
     
     @ManyToOne
-    @JoinColumn(name = "FACULTY_ID", nullable = false)
+    @JoinColumn(name = "faculty_id", nullable = false)
     private Faculty faculty;
 
-    @Column(name = "MAJOR_NAME", nullable = false, length = 200)
+    @Column(name = "major_name", nullable = false, length = 200)
     private String majorName;
 }

@@ -96,6 +96,7 @@ public class PostConstructMethodService {
         this.programDisciplineLectorRepository = programDisciplineLectorRepository;
     }
 
+    //temp fix - once executed, comment @PostConstruct so it does not populate the DB again
     @PostConstruct
     public void populateDatabase() {
         University plovdivUniversity = createUniversity();

@@ -1,14 +1,14 @@
 package org.unilab.uniplan.lector;
 
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.unilab.uniplan.faculty.FacultyService;
 import org.unilab.uniplan.lector.dto.LectorDto;
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +25,7 @@ public class LectorService {
     public LectorDto createLector(LectorDto lectorDto) {
         final Lector lector = lectorMapper.toEntity(lectorDto);
 
-        return lectorMapper.toDto(lectorRepository.save(lector));
+        return saveEntityAndConvertToDto(lector);
     }
 
     public List<LectorDto> getAllLectors() {
@@ -40,13 +40,9 @@ public class LectorService {
     @Transactional
     public Optional<LectorDto> updateLector(UUID id, LectorDto lectorDto) {
         return lectorRepository.findById(id)
-                                 .map(existingLector -> {
-                                     lectorMapper.updateEntityFromDto(lectorDto,
-                                                                        existingLector);
-
-                                     return lectorMapper.toDto(lectorRepository.save(
-                                         existingLector));
-                                 });
+                               .map(existingLector -> updateAndSaveEntityAndConvertToDto(
+                                   lectorDto,
+                                   existingLector));
     }
 
     public void deleteLector(UUID id) {
@@ -58,6 +54,17 @@ public class LectorService {
                                                )
                                            ));
        lectorRepository.delete(lector);
+    }
+
+    private LectorDto updateAndSaveEntityAndConvertToDto(final LectorDto dto,
+                                                         final Lector entity) {
+        lectorMapper.updateEntityFromDto(dto, entity);
+        return saveEntityAndConvertToDto(entity);
+    }
+
+    private LectorDto saveEntityAndConvertToDto(final Lector entity) {
+        final Lector savedEntity = lectorRepository.save(entity);
+        return lectorMapper.toDto(savedEntity);
     }
 }
 

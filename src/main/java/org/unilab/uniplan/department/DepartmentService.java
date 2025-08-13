@@ -22,7 +22,7 @@ public class DepartmentService {
     public DepartmentDto createDepartment(final DepartmentDto departmentDto) {
         final Department department = departmentMapper.toEntity(departmentDto);
 
-        return departmentMapper.toDto(departmentRepository.save(department));
+        return saveEntityAndConvertToDto(department);
     }
 
     public List<DepartmentDto> getAllDepartments() {
@@ -40,12 +40,9 @@ public class DepartmentService {
     public Optional<DepartmentDto> updateDepartment(final UUID id,
                                                     final DepartmentDto departmentDto) {
         return departmentRepository.findById(id)
-                                   .map(existingDepartment -> {
-                                       departmentMapper.updateEntityFromDto(departmentDto,
-                                                                            existingDepartment);
-                                       return departmentMapper.toDto(departmentRepository.save(
-                                           existingDepartment));
-                                   });
+                                   .map(existingDepartment -> updateAndSaveEntityAndConvertToDto(
+                                       departmentDto,
+                                       existingDepartment));
     }
 
     @Transactional
@@ -55,5 +52,16 @@ public class DepartmentService {
                                                               MessageFormat.format(
                                                                   DEPARTMENT_NOT_FOUND, id)));
         departmentRepository.delete(department);
+    }
+
+    private DepartmentDto updateAndSaveEntityAndConvertToDto(final DepartmentDto dto,
+                                                             final Department entity) {
+        departmentMapper.updateEntityFromDto(dto, entity);
+        return saveEntityAndConvertToDto(entity);
+    }
+
+    private DepartmentDto saveEntityAndConvertToDto(final Department entity) {
+        final Department savedEntity = departmentRepository.save(entity);
+        return departmentMapper.toDto(savedEntity);
     }
 }

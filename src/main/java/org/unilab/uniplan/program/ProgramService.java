@@ -21,7 +21,7 @@ public class ProgramService{
     @Transactional
     public ProgramDto createProgram(ProgramDto request) {
         final Program program = programMapper.toEntity(request);
-        return programMapper.toDto(programRepository.save(program));
+        return saveEntityAndConvertToDto(program);
     }
 
     public List<ProgramDto> getAllPrograms() {
@@ -37,13 +37,9 @@ public class ProgramService{
     @Transactional
     public Optional<ProgramDto> updateProgram(UUID id, ProgramDto programDto) {
         return programRepository.findById(id)
-                                 .map(existingCategory -> {
-                                     programMapper.updateEntityFromDto(programDto,
-                                                                        existingCategory);
-
-                                     return programMapper.toDto(programRepository.save(
-                                         existingCategory));
-                                 });
+                                .map(existingCategory -> updateAndSaveEntityAndConvertToDto(
+                                    programDto,
+                                    existingCategory));
     }
 
     public void deleteProgram(UUID id) {
@@ -56,5 +52,16 @@ public class ProgramService{
                                             ));
 
         programRepository.delete(program);
+    }
+
+    private ProgramDto updateAndSaveEntityAndConvertToDto(final ProgramDto dto,
+                                                          final Program entity) {
+        programMapper.updateEntityFromDto(dto, entity);
+        return saveEntityAndConvertToDto(entity);
+    }
+
+    private ProgramDto saveEntityAndConvertToDto(final Program entity) {
+        final Program savedEntity = programRepository.save(entity);
+        return programMapper.toDto(savedEntity);
     }
 }

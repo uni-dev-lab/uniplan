@@ -22,7 +22,7 @@ public class FacultyService {
     public FacultyDto createFaculty(final FacultyDto facultyDto) {
         final Faculty faculty = facultyMapper.toEntity(facultyDto);
 
-        return facultyMapper.toDto(facultyRepository.save(faculty));
+        return saveEntityAndConvertToDto(faculty);
     }
 
     public List<FacultyDto> getAllFaculties() {
@@ -38,12 +38,9 @@ public class FacultyService {
     @Transactional
     public Optional<FacultyDto> updateFaculty(final UUID id, final FacultyDto facultyDto) {
         return facultyRepository.findById(id)
-                                .map(existingFaculty -> {
-                                    facultyMapper.updateEntityFromDto(facultyDto, existingFaculty);
-
-                                    return facultyMapper.toDto(facultyRepository.save(
-                                        existingFaculty));
-                                });
+                                .map(existingFaculty -> updateAndSaveEntityAndConvertToDto(
+                                    facultyDto,
+                                    existingFaculty));
     }
 
     @Transactional
@@ -52,5 +49,16 @@ public class FacultyService {
                                                  .orElseThrow(() -> new RuntimeException(
                                                      MessageFormat.format(FACULTY_NOT_FOUND, id)));
         facultyRepository.delete(faculty);
+    }
+
+    private FacultyDto updateAndSaveEntityAndConvertToDto(final FacultyDto dto,
+                                                          final Faculty entity) {
+        facultyMapper.updateEntityFromDto(dto, entity);
+        return saveEntityAndConvertToDto(entity);
+    }
+
+    private FacultyDto saveEntityAndConvertToDto(final Faculty entity) {
+        final Faculty savedEntity = facultyRepository.save(entity);
+        return facultyMapper.toDto(savedEntity);
     }
 }

@@ -22,7 +22,7 @@ public class CategoryService {
     public CategoryDto createCategory(final CategoryDto categoryDto) {
         final Category category = categoryMapper.toEntity(categoryDto);
 
-        return categoryMapper.toDto(categoryRepository.save(category));
+        return saveEntityAndConvertToDto(category);
     }
 
     public List<CategoryDto> getAllCategories() {
@@ -39,13 +39,9 @@ public class CategoryService {
     @Transactional
     public Optional<CategoryDto> updateCategory(final UUID id, final CategoryDto categoryDto) {
         return categoryRepository.findById(id)
-                                 .map(existingCategory -> {
-                                     categoryMapper.updateEntityFromDto(categoryDto,
-                                                                        existingCategory);
-
-                                     return categoryMapper.toDto(categoryRepository.save(
-                                         existingCategory));
-                                 });
+                                 .map(existingCategory -> updateAndSaveEntityAndConvertToDto(
+                                     categoryDto,
+                                     existingCategory));
     }
 
 
@@ -57,5 +53,17 @@ public class CategoryService {
                                                             CATEGORY_NOT_FOUND,
                                                             id)));
         categoryRepository.delete(category);
+    }
+
+
+    private CategoryDto updateAndSaveEntityAndConvertToDto(final CategoryDto dto,
+                                                           final Category entity) {
+        categoryMapper.updateEntityFromDto(dto, entity);
+        return saveEntityAndConvertToDto(entity);
+    }
+
+    private CategoryDto saveEntityAndConvertToDto(final Category entity) {
+        final Category savedEntity = categoryRepository.save(entity);
+        return categoryMapper.toDto(savedEntity);
     }
 }

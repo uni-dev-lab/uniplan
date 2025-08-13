@@ -23,7 +23,7 @@ public class ProgramDisciplineService {
     public ProgramDisciplineDto createProgramDiscipline(ProgramDisciplineDto programDisciplineDto){
         final ProgramDiscipline programDiscipline = programDisciplineMapper.toEntity(programDisciplineDto);
 
-        return programDisciplineMapper.toDto(programDisciplineRepository.save(programDiscipline));
+        return saveEntityAndConvertToDto(programDiscipline);
     }
 
     public List<ProgramDisciplineDto> getAllProgramDisciplines(){
@@ -45,12 +45,10 @@ public class ProgramDisciplineService {
                                                                   ProgramDisciplineDto programDisciplineDto) {
         final ProgramDisciplineId id = programDisciplineMapper.toProgramDisciplineId(disciplineId,
                                                                                      programId);
-        return programDisciplineRepository.findById(id).map(existingProgramDiscipline -> {
-            programDisciplineMapper.updateEntityFromDto(programDisciplineDto,
-                                                        existingProgramDiscipline);
-            return programDisciplineMapper.toDto(programDisciplineRepository.save(
-                existingProgramDiscipline));
-        });
+        return programDisciplineRepository.findById(id)
+                                          .map(existingProgramDiscipline -> updateAndSaveEntityAndConvertToDto(
+                                              programDisciplineDto,
+                                              existingProgramDiscipline));
     }
 
     @Transactional
@@ -64,5 +62,17 @@ public class ProgramDisciplineService {
                                                                                        disciplineId,
                                                                                        programId)));
         programDisciplineRepository.delete(programDiscipline);
+    }
+
+
+    private ProgramDisciplineDto updateAndSaveEntityAndConvertToDto(final ProgramDisciplineDto dto,
+                                                                    final ProgramDiscipline entity) {
+        programDisciplineMapper.updateEntityFromDto(dto, entity);
+        return saveEntityAndConvertToDto(entity);
+    }
+
+    private ProgramDisciplineDto saveEntityAndConvertToDto(final ProgramDiscipline entity) {
+        final ProgramDiscipline savedEntity = programDisciplineRepository.save(entity);
+        return programDisciplineMapper.toDto(savedEntity);
     }
 }

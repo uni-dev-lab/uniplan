@@ -21,7 +21,7 @@ public class StudentGroupService {
     @Transactional
     public StudentGroupDto createStudentGroup(final StudentGroupDto studentGroupDTO) {
         StudentGroup studentGroup = studentGroupMapper.toEntity(studentGroupDTO);
-        return studentGroupMapper.toDTO(studentGroupRepository.save(studentGroup));
+        return saveEntityAndConvertToDto(studentGroup);
     }
 
     @Transactional
@@ -31,11 +31,7 @@ public class StudentGroupService {
         final StudentGroupId id = new StudentGroupId(studentId, courseGroupId);
 
         return studentGroupRepository.findById(id).map(
-            existingStudentGroup -> {
-                studentGroupMapper.updateEntityFromDTO(studentGroupDTO, existingStudentGroup);
-
-                return studentGroupMapper.toDTO(studentGroupRepository.save(existingStudentGroup));
-            });
+            existingStudentGroup -> updateAndSaveEntityAndConvertToDto(studentGroupDTO, existingStudentGroup));
     }
 
     @Transactional
@@ -54,11 +50,23 @@ public class StudentGroupService {
         final StudentGroupId id = new StudentGroupId(studentId, courseGroupId);
 
         return studentGroupRepository.findById(id)
-                                     .map(studentGroupMapper::toDTO);
+                                     .map(studentGroupMapper::toDto);
     }
 
     public List<StudentGroupDto> findAll() {
         return studentGroupRepository.findAll()
-                                     .stream().map(studentGroupMapper::toDTO).toList();
+                                     .stream().map(studentGroupMapper::toDto).toList();
+    }
+
+
+    private StudentGroupDto updateAndSaveEntityAndConvertToDto(final StudentGroupDto dto,
+                                                               final StudentGroup entity) {
+        studentGroupMapper.updateEntityFromDto(dto, entity);
+        return saveEntityAndConvertToDto(entity);
+    }
+
+    private StudentGroupDto saveEntityAndConvertToDto(final StudentGroup entity) {
+        final StudentGroup savedEntity = studentGroupRepository.save(entity);
+        return studentGroupMapper.toDto(savedEntity);
     }
 }

@@ -7,8 +7,6 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.unilab.uniplan.programdisciplinelector.ProgramDisciplineLector;
-import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorDto;
 import org.unilab.uniplan.room.dto.RoomDto;
 
 @Service

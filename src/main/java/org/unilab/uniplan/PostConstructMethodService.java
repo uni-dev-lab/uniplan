@@ -97,24 +97,24 @@ public class PostConstructMethodService {
     }
 
     @PostConstruct
-//    public void populateDatabase() {
-//        University plovdivUniversity = createUniversity();
-//        Faculty fmi = createFaculty(plovdivUniversity);
-//        Department computerSystems = createDepartment(fmi);
-//        Room roomOne = createRoom(fmi);
-//        Category roomCat = createCategory();
-//        RoomCategory roomOneCategory = createRoomCategory(roomOne, roomCat);
-//        Major informatics = createMajor(fmi);
-//        Course secondCourse = createCourse(informatics);
-//        Lector lector = createLector(fmi);
-//        Student student = createStudent(secondCourse);
-//        Discipline discipline = createDiscipline();
-//        Program program = createProgram(secondCourse);
-//        CourseGroup courseGroup = createCourseGroup(secondCourse);
-//        StudentGroup studentGroup = createStudentGroup(student, courseGroup);
-//        ProgramDiscipline programDiscipline = createProgramDiscipline(discipline, program);
-//        ProgramDisciplineLector programDisciplineLector = createProgramDisciplineLector(lector, discipline ,program);
-//    }
+    public void populateDatabase() {
+        University plovdivUniversity = createUniversity();
+        Faculty fmi = createFaculty(plovdivUniversity);
+        Department computerSystems = createDepartment(fmi);
+        Room roomOne = createRoom(fmi);
+        Category roomCat = createCategory();
+        RoomCategory roomOneCategory = createRoomCategory(roomOne, roomCat);
+        Major informatics = createMajor(fmi);
+        Course secondCourse = createCourse(informatics);
+        Lector lector = createLector(fmi);
+        Student student = createStudent(secondCourse);
+        Discipline discipline = createDiscipline();       
+        Program program = createProgram(secondCourse);
+        CourseGroup courseGroup = createCourseGroup(secondCourse);
+        StudentGroup studentGroup = createStudentGroup(student, courseGroup);
+        ProgramDiscipline programDiscipline = createProgramDiscipline(discipline, program);
+        ProgramDisciplineLector programDisciplineLector = createProgramDisciplineLector(lector, discipline ,program); 
+    }
     
     private University createUniversity() {
         University plovdivUniversity = new University("Plovdiv University \"Paisii Hilendarski\"", "TsentarPlovdiv Center, King Asen St 24, 4000 Plovdiv",

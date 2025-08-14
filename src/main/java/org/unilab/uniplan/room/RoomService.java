@@ -37,7 +37,7 @@ public class RoomService {
     @Transactional
     public Optional<RoomDto> updateRoom(final UUID id, final RoomDto roomDto) {
         return roomRepository.findById(id)
-                             .map(existingRoom -> updateAndSaveEntityAndConvertToDto(
+                             .map(existingRoom -> updateEntityAndConvertToDto(
                                  roomDto,
                                  existingRoom));
     }
@@ -50,8 +50,8 @@ public class RoomService {
         roomRepository.delete(room);
     }
 
-    private RoomDto updateAndSaveEntityAndConvertToDto(final RoomDto dto,
-                                                       final Room entity) {
+    private RoomDto updateEntityAndConvertToDto(final RoomDto dto,
+                                                final Room entity) {
         roomMapper.updateEntityFromDto(dto, entity);
         return saveEntityAndConvertToDto(entity);
     }

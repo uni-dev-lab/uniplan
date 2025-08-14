@@ -40,7 +40,7 @@ public class DepartmentService {
     public Optional<DepartmentDto> updateDepartment(final UUID id,
                                                     final DepartmentDto departmentDto) {
         return departmentRepository.findById(id)
-                                   .map(existingDepartment -> updateAndSaveEntityAndConvertToDto(
+                                   .map(existingDepartment -> updateEntityAndConvertToDto(
                                        departmentDto,
                                        existingDepartment));
     }
@@ -54,8 +54,8 @@ public class DepartmentService {
         departmentRepository.delete(department);
     }
 
-    private DepartmentDto updateAndSaveEntityAndConvertToDto(final DepartmentDto dto,
-                                                             final Department entity) {
+    private DepartmentDto updateEntityAndConvertToDto(final DepartmentDto dto,
+                                                      final Department entity) {
         departmentMapper.updateEntityFromDto(dto, entity);
         return saveEntityAndConvertToDto(entity);
     }

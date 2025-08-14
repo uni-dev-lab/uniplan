@@ -40,7 +40,7 @@ public class UniversityService {
     public Optional<UniversityDto> updateUniversity(final UUID id,
                                                     final UniversityDto universityDto) {
         return universityRepository.findById(id)
-                                   .map(existingUniversity -> updateAndSaveEntityAndConvertToDto(
+                                   .map(existingUniversity -> updateEntityAndConvertToDto(
                                        universityDto,
                                        existingUniversity));
     }
@@ -55,8 +55,8 @@ public class UniversityService {
         universityRepository.delete(university);
     }
 
-    private UniversityDto updateAndSaveEntityAndConvertToDto(final UniversityDto dto,
-                                                             final University entity) {
+    private UniversityDto updateEntityAndConvertToDto(final UniversityDto dto,
+                                                      final University entity) {
         universityMapper.updateEntityFromDto(dto, entity);
         return saveEntityAndConvertToDto(entity);
     }

@@ -46,7 +46,7 @@ public class ProgramDisciplineService {
         final ProgramDisciplineId id = programDisciplineMapper.toProgramDisciplineId(disciplineId,
                                                                                      programId);
         return programDisciplineRepository.findById(id)
-                                          .map(existingProgramDiscipline -> updateAndSaveEntityAndConvertToDto(
+                                          .map(existingProgramDiscipline -> updateEntityAndConvertToDto(
                                               programDisciplineDto,
                                               existingProgramDiscipline));
     }
@@ -65,8 +65,8 @@ public class ProgramDisciplineService {
     }
 
 
-    private ProgramDisciplineDto updateAndSaveEntityAndConvertToDto(final ProgramDisciplineDto dto,
-                                                                    final ProgramDiscipline entity) {
+    private ProgramDisciplineDto updateEntityAndConvertToDto(final ProgramDisciplineDto dto,
+                                                             final ProgramDiscipline entity) {
         programDisciplineMapper.updateEntityFromDto(dto, entity);
         return saveEntityAndConvertToDto(entity);
     }

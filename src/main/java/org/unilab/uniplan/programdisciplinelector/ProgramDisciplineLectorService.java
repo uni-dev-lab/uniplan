@@ -51,7 +51,7 @@ public class ProgramDisciplineLectorService {
             programId,
             disciplineId);
         return programDisciplineLectorRepository.findById(id)
-                                                .map(existingProgramDisciplineLector -> updateAndSaveEntityAndConvertToDto(
+                                                .map(existingProgramDisciplineLector -> updateEntityAndConvertToDto(
                                                     programDisciplineLectorDto,
                                                     existingProgramDisciplineLector));
     }
@@ -76,8 +76,8 @@ public class ProgramDisciplineLectorService {
         programDisciplineLectorRepository.delete(programDisciplineLector);
     }
 
-    private ProgramDisciplineLectorDto updateAndSaveEntityAndConvertToDto(final ProgramDisciplineLectorDto dto,
-                                                                          final ProgramDisciplineLector entity) {
+    private ProgramDisciplineLectorDto updateEntityAndConvertToDto(final ProgramDisciplineLectorDto dto,
+                                                                   final ProgramDisciplineLector entity) {
         programDisciplineLectorMapper.updateEntityFromDto(dto, entity);
         return saveEntityAndConvertToDto(entity);
     }

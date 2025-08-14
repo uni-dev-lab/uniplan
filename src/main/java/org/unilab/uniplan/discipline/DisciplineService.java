@@ -41,7 +41,7 @@ public class DisciplineService {
     @Transactional
     public Optional<DisciplineDto> updateDiscipline(UUID id, @Valid DisciplineDto disciplineDto) {
         return disciplineRepository.findById(id)
-                                   .map(existingDiscipline -> updateAndSaveEntityAndConvertToDto(
+                                   .map(existingDiscipline -> updateEntityAndConvertToDto(
                                        disciplineDto,
                                        existingDiscipline));
     }
@@ -56,8 +56,8 @@ public class DisciplineService {
         disciplineRepository.delete(discipline);
     }
 
-    private DisciplineDto updateAndSaveEntityAndConvertToDto(final DisciplineDto dto,
-                                                             final Discipline entity) {
+    private DisciplineDto updateEntityAndConvertToDto(final DisciplineDto dto,
+                                                      final Discipline entity) {
         disciplineMapper.updateEntityFromDto(dto, entity);
         return saveEntityAndConvertToDto(entity);
     }

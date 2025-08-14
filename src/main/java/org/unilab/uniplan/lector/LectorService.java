@@ -40,7 +40,7 @@ public class LectorService {
     @Transactional
     public Optional<LectorDto> updateLector(UUID id, LectorDto lectorDto) {
         return lectorRepository.findById(id)
-                               .map(existingLector -> updateAndSaveEntityAndConvertToDto(
+                               .map(existingLector -> updateEntityAndConvertToDto(
                                    lectorDto,
                                    existingLector));
     }
@@ -56,8 +56,8 @@ public class LectorService {
        lectorRepository.delete(lector);
     }
 
-    private LectorDto updateAndSaveEntityAndConvertToDto(final LectorDto dto,
-                                                         final Lector entity) {
+    private LectorDto updateEntityAndConvertToDto(final LectorDto dto,
+                                                  final Lector entity) {
         lectorMapper.updateEntityFromDto(dto, entity);
         return saveEntityAndConvertToDto(entity);
     }

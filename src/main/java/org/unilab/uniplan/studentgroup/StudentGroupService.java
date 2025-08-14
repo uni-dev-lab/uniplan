@@ -31,7 +31,7 @@ public class StudentGroupService {
         final StudentGroupId id = new StudentGroupId(studentId, courseGroupId);
 
         return studentGroupRepository.findById(id).map(
-            existingStudentGroup -> updateAndSaveEntityAndConvertToDto(studentGroupDTO, existingStudentGroup));
+            existingStudentGroup -> updateEntityAndConvertToDto(studentGroupDTO, existingStudentGroup));
     }
 
     @Transactional
@@ -59,8 +59,8 @@ public class StudentGroupService {
     }
 
 
-    private StudentGroupDto updateAndSaveEntityAndConvertToDto(final StudentGroupDto dto,
-                                                               final StudentGroup entity) {
+    private StudentGroupDto updateEntityAndConvertToDto(final StudentGroupDto dto,
+                                                        final StudentGroup entity) {
         studentGroupMapper.updateEntityFromDto(dto, entity);
         return saveEntityAndConvertToDto(entity);
     }

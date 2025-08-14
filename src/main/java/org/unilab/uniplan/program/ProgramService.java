@@ -37,7 +37,7 @@ public class ProgramService{
     @Transactional
     public Optional<ProgramDto> updateProgram(UUID id, ProgramDto programDto) {
         return programRepository.findById(id)
-                                .map(existingCategory -> updateAndSaveEntityAndConvertToDto(
+                                .map(existingCategory -> updateEntityAndConvertToDto(
                                     programDto,
                                     existingCategory));
     }
@@ -54,8 +54,8 @@ public class ProgramService{
         programRepository.delete(program);
     }
 
-    private ProgramDto updateAndSaveEntityAndConvertToDto(final ProgramDto dto,
-                                                          final Program entity) {
+    private ProgramDto updateEntityAndConvertToDto(final ProgramDto dto,
+                                                   final Program entity) {
         programMapper.updateEntityFromDto(dto, entity);
         return saveEntityAndConvertToDto(entity);
     }

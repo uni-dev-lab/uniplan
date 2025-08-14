@@ -36,7 +36,7 @@ public class MajorService {
 
     @Transactional
     public Optional<MajorDto> updateMajor(final UUID id, final MajorDto majorDTO) {
-        return majorRepository.findById(id).map(existingMajor -> updateAndSaveEntityAndConvertToDto(
+        return majorRepository.findById(id).map(existingMajor -> updateEntityAndConvertToDto(
             majorDTO,
             existingMajor));
     }
@@ -49,8 +49,8 @@ public class MajorService {
         majorRepository.delete(major);
     }
 
-    private MajorDto updateAndSaveEntityAndConvertToDto(final MajorDto dto,
-                                                        final Major entity) {
+    private MajorDto updateEntityAndConvertToDto(final MajorDto dto,
+                                                 final Major entity) {
         majorMapper.updateEntityFromDto(dto, entity);
         return saveEntityAndConvertToDto(entity);
     }

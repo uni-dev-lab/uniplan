@@ -39,8 +39,8 @@ public class CourseGroupService {
                                                       final CourseGroupDto courseGroupDTO) {
 
         return courseGroupRepository.findById(id).map(
-            existingCourseGroup -> updateAndSaveEntityAndConvertToDto(courseGroupDTO,
-                                                                      existingCourseGroup));
+            existingCourseGroup -> updateEntityAndConvertToDto(courseGroupDTO,
+                                                               existingCourseGroup));
     }
 
     @Transactional
@@ -53,8 +53,8 @@ public class CourseGroupService {
         courseGroupRepository.delete(courseGroup);
     }
 
-    private CourseGroupDto updateAndSaveEntityAndConvertToDto(final CourseGroupDto dto,
-                                                              final CourseGroup entity) {
+    private CourseGroupDto updateEntityAndConvertToDto(final CourseGroupDto dto,
+                                                       final CourseGroup entity) {
         courseGroupMapper.updateEntityFromDto(dto, entity);
         return saveEntityAndConvertToDto(entity);
     }

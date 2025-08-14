@@ -37,7 +37,7 @@ public class StudentService {
     @Transactional
     public Optional<StudentDto> updateStudent(final UUID id, final StudentDto studentDTO) {
         return studentRepository.findById(id)
-                                .map(existingStudent -> updateAndSaveEntityAndConvertToDto(
+                                .map(existingStudent -> updateEntityAndConvertToDto(
                                     studentDTO,
                                     existingStudent));
     }
@@ -50,8 +50,8 @@ public class StudentService {
         studentRepository.delete(student);
     }
 
-    private StudentDto updateAndSaveEntityAndConvertToDto(final StudentDto dto,
-                                                          final Student entity) {
+    private StudentDto updateEntityAndConvertToDto(final StudentDto dto,
+                                                   final Student entity) {
         studentMapper.updateEntityFromDto(dto, entity);
         return saveEntityAndConvertToDto(entity);
     }

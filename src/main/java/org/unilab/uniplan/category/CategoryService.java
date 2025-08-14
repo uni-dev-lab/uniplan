@@ -39,7 +39,7 @@ public class CategoryService {
     @Transactional
     public Optional<CategoryDto> updateCategory(final UUID id, final CategoryDto categoryDto) {
         return categoryRepository.findById(id)
-                                 .map(existingCategory -> updateAndSaveEntityAndConvertToDto(
+                                 .map(existingCategory -> updateEntityAndConvertToDto(
                                      categoryDto,
                                      existingCategory));
     }
@@ -56,8 +56,8 @@ public class CategoryService {
     }
 
 
-    private CategoryDto updateAndSaveEntityAndConvertToDto(final CategoryDto dto,
-                                                           final Category entity) {
+    private CategoryDto updateEntityAndConvertToDto(final CategoryDto dto,
+                                                    final Category entity) {
         categoryMapper.updateEntityFromDto(dto, entity);
         return saveEntityAndConvertToDto(entity);
     }

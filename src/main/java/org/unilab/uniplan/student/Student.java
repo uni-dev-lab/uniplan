@@ -13,12 +13,12 @@ import lombok.Setter;
 import org.unilab.uniplan.common.model.Person;
 import org.unilab.uniplan.course.Course;
 
+@Entity
+@Table(name = "student")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "Student")
 public class Student extends Person {
 
     @ManyToOne(fetch = FetchType.LAZY)

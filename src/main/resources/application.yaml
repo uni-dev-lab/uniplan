@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: Plan University Schedule
+
+  datasource:
+    url: ${POSTGRES_URL}
+    driver: org.postgresql.Driver
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  liquibase:
+    enabled: true
+    change-log:

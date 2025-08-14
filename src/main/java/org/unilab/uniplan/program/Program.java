@@ -5,6 +5,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,18 +15,18 @@ import org.unilab.uniplan.common.model.BaseEntity;
 import org.unilab.uniplan.course.Course;
 import org.unilab.uniplan.programdiscipline.ProgramDiscipline;
 
+@Entity
+@Table(name = "program")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "PROGRAM")
 public class Program extends BaseEntity {
 
     @OneToOne
-    @JoinColumn(name = "COURSE_ID", nullable = false)
+    @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
     @OneToMany(mappedBy = "program")
-    private List<ProgramDiscipline> programDisciplines;
+    private List<ProgramDiscipline> programDisciplines = new ArrayList<>();
 }

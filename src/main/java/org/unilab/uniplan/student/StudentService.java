@@ -1,19 +1,18 @@
 package org.unilab.uniplan.student;
 
+import static org.unilab.uniplan.utils.ErrorConstants.STUDENT_NOT_FOUND;
+
 import jakarta.transaction.Transactional;
-import java.text.MessageFormat;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.student.dto.StudentDto;
 
 @Service
 @RequiredArgsConstructor
 public class StudentService {
-
-    private static final String STUDENT_NOT_FOUND = "Student with ID {0} not found.";
 
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
@@ -24,9 +23,11 @@ public class StudentService {
         return saveEntityAndConvertToDto(student);
     }
 
-    public Optional<StudentDto> findStudentById(final UUID id) {
+    public StudentDto findStudentById(final UUID id) {
         return studentRepository.findById(id)
-                                .map(studentMapper::toDto);
+                                .map(studentMapper::toDto)
+                                .orElseThrow(() -> new ResourceNotFoundException(STUDENT_NOT_FOUND.getMessage(
+                                    id.toString())));
     }
 
     public List<StudentDto> findAll() {
@@ -35,18 +36,20 @@ public class StudentService {
     }
 
     @Transactional
-    public Optional<StudentDto> updateStudent(final UUID id, final StudentDto studentDTO) {
+    public StudentDto updateStudent(final UUID id, final StudentDto studentDTO) {
         return studentRepository.findById(id)
                                 .map(existingStudent -> updateEntityAndConvertToDto(
                                     studentDTO,
-                                    existingStudent));
+                                    existingStudent))
+                                .orElseThrow(() -> new ResourceNotFoundException(STUDENT_NOT_FOUND.getMessage(
+                                    id.toString())));
     }
 
     @Transactional
     public void deleteStudent(final UUID id) {
         final Student student = studentRepository.findById(id)
-                                                 .orElseThrow(() -> new RuntimeException(
-                                                     MessageFormat.format(STUDENT_NOT_FOUND, id)));
+                                                 .orElseThrow(() -> new ResourceNotFoundException(
+                                                     STUDENT_NOT_FOUND.getMessage(id.toString())));
         studentRepository.delete(student);
     }
 

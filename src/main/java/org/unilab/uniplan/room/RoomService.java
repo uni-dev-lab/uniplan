@@ -1,19 +1,18 @@
 package org.unilab.uniplan.room;
 
-import java.text.MessageFormat;
+import static org.unilab.uniplan.utils.ErrorConstants.ROOM_NOT_FOUND;
+
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.room.dto.RoomDto;
 
 @Service
 @RequiredArgsConstructor
 public class RoomService {
-
-    private static final String ROOM_NOT_FOUND = "Room with ID {0} not found.";
 
     private final RoomRepository roomRepository;
     private final RoomMapper roomMapper;
@@ -29,24 +28,27 @@ public class RoomService {
         return roomMapper.toDtoList(roomRepository.findAll());
     }
 
-    public Optional<RoomDto> getRoomById(final UUID id) {
+    public RoomDto getRoomById(final UUID id) {
         return roomRepository.findById(id)
-                             .map(roomMapper::toDto);
+                             .map(roomMapper::toDto)
+                             .orElseThrow(() -> new ResourceNotFoundException(ROOM_NOT_FOUND.getMessage(
+                                 id.toString())));
     }
 
     @Transactional
-    public Optional<RoomDto> updateRoom(final UUID id, final RoomDto roomDto) {
+    public RoomDto updateRoom(final UUID id, final RoomDto roomDto) {
         return roomRepository.findById(id)
                              .map(existingRoom -> updateEntityAndConvertToDto(
                                  roomDto,
-                                 existingRoom));
+                                 existingRoom)).orElseThrow(() -> new ResourceNotFoundException(
+                ROOM_NOT_FOUND.getMessage(id.toString())));
     }
 
     @Transactional
     public void deleteRoom(final UUID id) {
         final Room room = roomRepository.findById(id)
-                                        .orElseThrow(() -> new RuntimeException(
-                                            MessageFormat.format(ROOM_NOT_FOUND, id)));
+                                        .orElseThrow(() -> new ResourceNotFoundException(
+                                            ROOM_NOT_FOUND.getMessage(id.toString())));
         roomRepository.delete(room);
     }
 

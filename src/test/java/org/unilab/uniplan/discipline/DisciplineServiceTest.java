@@ -19,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.discipline.dto.DisciplineDto;
+import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.programdiscipline.ProgramDisciplineId;
 
 @ExtendWith(MockitoExtension.class)
@@ -65,7 +66,7 @@ class DisciplineServiceTest {
     }
 
     @Test
-    void testGetAllDisciplinesShouldReturnListOfDisciplieDtos() {
+    void testGetAllDisciplinesShouldReturnListOfDisciplineDtos() {
         List<Discipline> entities = List.of(discipline);
         List<DisciplineDto> dtos = List.of(disciplineDto);
 
@@ -78,23 +79,24 @@ class DisciplineServiceTest {
     }
 
     @Test
-    void testGetDisciplieByIdShouldReturnDisciplineDtoIfFound() {
+    void testGetDisciplineByIdShouldReturnDisciplineDtoIfFound() {
         when(disciplineRepository.findById(id)).thenReturn(Optional.of(discipline));
         when(disciplineMapper.toDto(discipline)).thenReturn(disciplineDto);
 
-        Optional<DisciplineDto> result = disciplineService.getDisciplineById(id);
+        DisciplineDto result = disciplineService.getDisciplineById(id);
 
-        assertTrue(result.isPresent());
-        assertEquals(disciplineDto, result.get());
+        assertEquals(disciplineDto, result);
     }
 
     @Test
     void testGetDisciplineByIdShouldReturnEmptyOptionalIfDisciplineNotFound() {
         when(disciplineRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<DisciplineDto> result = disciplineService.getDisciplineById(id);
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+                                                           () -> disciplineService.getDisciplineById(
+                                                               id));
 
-        assertTrue(result.isEmpty());
+        assertTrue(exception.getMessage().contains(id.toString()));
     }
 
     @Test
@@ -104,19 +106,20 @@ class DisciplineServiceTest {
         when(disciplineRepository.save(discipline)).thenReturn(discipline);
         when(disciplineMapper.toDto(discipline)).thenReturn(disciplineDto);
 
-        Optional<DisciplineDto> result = disciplineService.updateDiscipline(id, disciplineDto);
+        DisciplineDto result = disciplineService.updateDiscipline(id, disciplineDto);
 
-        assertTrue(result.isPresent());
-        assertEquals(disciplineDto, result.get());
+        assertEquals(disciplineDto, result);
     }
 
     @Test
     void testUpdateDisciplineShouldReturnEmptyOptionalIfNotFound() {
         when(disciplineRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<DisciplineDto> result = disciplineService.updateDiscipline(id, disciplineDto);
+        org.unilab.uniplan.exception.ResourceNotFoundException exception = assertThrows(
+            ResourceNotFoundException.class,
+            () -> disciplineService.updateDiscipline(id, disciplineDto));
 
-        assertTrue(result.isEmpty());
+        assertTrue(exception.getMessage().contains(id.toString()));
     }
 
     @Test
@@ -132,7 +135,7 @@ class DisciplineServiceTest {
     void testDeleteDisciplineShouldThrowIfNotFound() {
         when(disciplineRepository.findById(id)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
             disciplineService.deleteDiscipline(id));
 
         assertTrue(exception.getMessage().contains(id.toString()));

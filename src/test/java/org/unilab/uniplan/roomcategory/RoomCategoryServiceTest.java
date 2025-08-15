@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.roomcategory.dto.RoomCategoryDto;
 
 @ExtendWith(MockitoExtension.class)
@@ -76,11 +77,9 @@ class RoomCategoryServiceTest {
         when(roomCategoryRepository.findById(id)).thenReturn(Optional.of(entity));
         when(roomCategoryMapper.toDto(entity)).thenReturn(dto);
 
-        Optional<RoomCategoryDto> result = roomCategoryService.getRoomCategoryById(roomId,
+        RoomCategoryDto result = roomCategoryService.getRoomCategoryById(roomId,
                                                                                    categoryId);
-
-        assertTrue(result.isPresent());
-        assertEquals(dto, result.get());
+        assertEquals(dto, result);
     }
 
     @Test
@@ -90,10 +89,10 @@ class RoomCategoryServiceTest {
         when(roomCategoryMapper.toRoomCategoryId(roomId, categoryId)).thenReturn(id);
         when(roomCategoryRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<RoomCategoryDto> result = roomCategoryService.getRoomCategoryById(roomId,
-                                                                                   categoryId);
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> roomCategoryService.getRoomCategoryById(roomId,
+                                                                                      categoryId));
 
-        assertTrue(result.isEmpty());
+        assertTrue(exception.getMessage().contains(id.toString()));
     }
 
     @Test
@@ -115,7 +114,7 @@ class RoomCategoryServiceTest {
         when(roomCategoryMapper.toRoomCategoryId(roomId, categoryId)).thenReturn(id);
         when(roomCategoryRepository.findById(id)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
             roomCategoryService.deleteRoomCategory(roomId, categoryId));
 
         assertTrue(exception.getMessage().contains(roomId.toString()));

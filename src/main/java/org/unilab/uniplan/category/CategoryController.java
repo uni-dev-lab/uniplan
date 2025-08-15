@@ -21,6 +21,8 @@ import org.unilab.uniplan.category.dto.CategoryDto;
 import org.unilab.uniplan.category.dto.CategoryRequestDto;
 import org.unilab.uniplan.category.dto.CategoryResponseDto;
 
+import static org.springframework.http.ResponseEntity.ok;
+
 
 @RestController
 @RequestMapping("/categories")
@@ -47,14 +49,9 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CategoryResponseDto> getCategoryById(@NotNull @PathVariable final UUID id) {
-        final CategoryDto categoryDto = categoryService.getCategoryById(id)
-                                                       .orElseThrow(() -> new ResponseStatusException(
-                                                           HttpStatus.NOT_FOUND,
-                                                           MessageFormat.format(CATEGORY_NOT_FOUND,
-                                                                                id)
-                                                       ));
+        final CategoryDto categoryDto = categoryService.getCategoryById(id);
 
-        return ResponseEntity.ok(categoryMapper.toResponseDto(categoryDto));
+        return ok(categoryMapper.toResponseDto(categoryDto));
     }
 
 
@@ -65,13 +62,7 @@ public class CategoryController {
 
         final CategoryDto internalDto = categoryMapper.toInternalDto(categoryRequestDto);
 
-        return categoryService.updateCategory(id, internalDto)
-                              .map(categoryMapper::toResponseDto)
-                              .map(ResponseEntity::ok)
-                              .orElseThrow(() -> new ResponseStatusException(
-                                  HttpStatus.NOT_FOUND,
-                                  MessageFormat.format(CATEGORY_NOT_FOUND, id)
-                              ));
+        return ok(categoryMapper.toResponseDto(categoryService.updateCategory(id, internalDto)));
     }
 
     @DeleteMapping("/{id}")

@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.student.dto.StudentDto;
 
 @ExtendWith(MockitoExtension.class)
@@ -62,19 +63,18 @@ class StudentServiceTest {
         when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
         when(studentMapper.toDto(student)).thenReturn(studentDTO);
 
-        Optional<StudentDto> result = studentService.findStudentById(studentId);
+        StudentDto result = studentService.findStudentById(studentId);
 
-        assertTrue(result.isPresent());
-        assertEquals(studentDTO, result.get());
+        assertEquals(studentDTO, result);
     }
 
     @Test
     void findStudentByIdShouldReturnEmptyIfNotExists() {
         when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
 
-        Optional<StudentDto> result = studentService.findStudentById(studentId);
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> studentService.findStudentById(studentId));
 
-        assertFalse(result.isPresent());
+        assertTrue(exception.getMessage().contains(studentId.toString()));
     }
 
     @Test
@@ -97,10 +97,9 @@ class StudentServiceTest {
         when(studentRepository.save(student)).thenReturn(student);
         when(studentMapper.toDto(student)).thenReturn(studentDTO);
 
-        Optional<StudentDto> result = studentService.updateStudent(studentId, studentDTO);
+        StudentDto result = studentService.updateStudent(studentId, studentDTO);
 
-        assertTrue(result.isPresent());
-        assertEquals(studentDTO, result.get());
+        assertEquals(studentDTO, result);
         verify(studentRepository).save(student);
     }
 
@@ -108,9 +107,9 @@ class StudentServiceTest {
     void updateStudentShouldReturnEmptyIfNotFound() {
         when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
 
-        Optional<StudentDto> result = studentService.updateStudent(studentId, studentDTO);
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> studentService.updateStudent(studentId, studentDTO));
 
-        assertFalse(result.isPresent());
+        assertTrue(exception.getMessage().contains(studentId.toString()));
         verify(studentRepository, never()).save(any());
     }
 
@@ -127,10 +126,10 @@ class StudentServiceTest {
     void deleteStudentShouldThrowIfNotFound() {
         when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class,
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
                                                   () -> studentService.deleteStudent(studentId));
 
-        assertTrue(exception.getMessage().contains("Student with ID"));
+        assertTrue(exception.getMessage().contains(studentId.toString()));
         verify(studentRepository, never()).delete(any());
     }
 }

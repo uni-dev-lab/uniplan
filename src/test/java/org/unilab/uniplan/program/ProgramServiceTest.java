@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.program.dto.ProgramDto;
 import org.unilab.uniplan.programdiscipline.ProgramDisciplineId;
 
@@ -81,19 +82,19 @@ class ProgramServiceTest {
         when(programRepository.findById(id)).thenReturn(Optional.of(program));
         when(programMapper.toDto(program)).thenReturn(programDto);
 
-        Optional<ProgramDto> result = programService.getProgramById(id);
+        ProgramDto result = programService.getProgramById(id);
 
-        assertTrue(result.isPresent());
-        assertEquals(programDto, result.get());
+        assertEquals(programDto, result);
     }
 
     @Test
     void testGetProgramByIdShouldReturnEmptyOptionalIfProgramNotFound() {
         when(programRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<ProgramDto> result = programService.getProgramById(id);
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+                                                           () -> programService.getProgramById(id));
 
-        assertTrue(result.isEmpty());
+        assertTrue(exception.getMessage().contains(id.toString()));
     }
 
     @Test
@@ -103,19 +104,20 @@ class ProgramServiceTest {
         when(programRepository.save(program)).thenReturn(program);
         when(programMapper.toDto(program)).thenReturn(programDto);
 
-        Optional<ProgramDto> result = programService.updateProgram(id, programDto);
+        ProgramDto result = programService.updateProgram(id, programDto);
 
-        assertTrue(result.isPresent());
-        assertEquals(programDto, result.get());
+        assertEquals(programDto, result);
     }
 
     @Test
     void testUpdateProgramShouldReturnEmptyOptionalIfNotFound() {
         when(programRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<ProgramDto> result = programService.updateProgram(id, programDto);
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+                                                           () -> programService.updateProgram(id,
+                                                                                              programDto));
 
-        assertTrue(result.isEmpty());
+        assertTrue(exception.getMessage().contains(id.toString()));
     }
 
     @Test
@@ -131,7 +133,7 @@ class ProgramServiceTest {
     void testDeleteProgramShouldThrowIfNotFound() {
         when(programRepository.findById(id)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
             programService.deleteProgram(id));
 
         assertTrue(exception.getMessage().contains(id.toString()));

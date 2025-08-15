@@ -1,19 +1,18 @@
 package org.unilab.uniplan.category;
 
-import java.text.MessageFormat;
+import static org.unilab.uniplan.utils.ErrorConstants.CATEGORY_NOT_FOUND;
+
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.unilab.uniplan.category.dto.CategoryDto;
+import org.unilab.uniplan.exception.ResourceNotFoundException;
 
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
-
-    private static final String CATEGORY_NOT_FOUND = "Category with ID {0} not found.";
 
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
@@ -31,27 +30,29 @@ public class CategoryService {
         return categoryMapper.toDtoList(categories);
     }
 
-    public Optional<CategoryDto> getCategoryById(final UUID id) {
+    public CategoryDto getCategoryById(final UUID id) {
         return categoryRepository.findById(id)
-                                 .map(categoryMapper::toDto);
+                                 .map(categoryMapper::toDto)
+                                 .orElseThrow(() -> new ResourceNotFoundException(CATEGORY_NOT_FOUND.getMessage(
+                                     id.toString())));
     }
 
     @Transactional
-    public Optional<CategoryDto> updateCategory(final UUID id, final CategoryDto categoryDto) {
+    public CategoryDto updateCategory(final UUID id, final CategoryDto categoryDto) {
         return categoryRepository.findById(id)
                                  .map(existingCategory -> updateEntityAndConvertToDto(
                                      categoryDto,
-                                     existingCategory));
+                                     existingCategory))
+                                 .orElseThrow(() -> new ResourceNotFoundException(CATEGORY_NOT_FOUND.getMessage(
+                                     id.toString())));
     }
 
 
     @Transactional
     public void deleteCategory(final UUID id) {
         final Category category = categoryRepository.findById(id)
-                                                    .orElseThrow(() -> new RuntimeException(
-                                                        MessageFormat.format(
-                                                            CATEGORY_NOT_FOUND,
-                                                            id)));
+                                                    .orElseThrow(() -> new ResourceNotFoundException(
+                                                        CATEGORY_NOT_FOUND.getMessage(id.toString())));
         categoryRepository.delete(category);
     }
 

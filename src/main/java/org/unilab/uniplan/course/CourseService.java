@@ -1,19 +1,19 @@
 package org.unilab.uniplan.course;
 
+import static org.unilab.uniplan.utils.ErrorConstants.CATEGORY_NOT_FOUND;
+import static org.unilab.uniplan.utils.ErrorConstants.COURSE_NOT_FOUND;
+
 import jakarta.transaction.Transactional;
-import java.text.MessageFormat;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.unilab.uniplan.course.dto.CourseDto;
+import org.unilab.uniplan.exception.ResourceNotFoundException;
 
 @Service
 @RequiredArgsConstructor
 public class CourseService {
-
-    private static final String COURSE_NOT_FOUND = "Course with ID {0} not found.";
 
     private final CourseRepository courseRepository;
     private final CourseMapper courseMapper;
@@ -24,9 +24,11 @@ public class CourseService {
         return saveEntityAndConvertToDto(course);
     }
 
-    public Optional<CourseDto> findCourseById(final UUID id) {
+    public CourseDto findCourseById(final UUID id) {
         return courseRepository.findById(id)
-                               .map(courseMapper::toDto);
+                               .map(courseMapper::toDto)
+                               .orElseThrow(() -> new ResourceNotFoundException(COURSE_NOT_FOUND.getMessage(
+                                   id.toString())));
     }
 
     public List<CourseDto> findAll() {
@@ -35,18 +37,20 @@ public class CourseService {
     }
 
     @Transactional
-    public Optional<CourseDto> updateCourse(final UUID id, final CourseDto courseDTO) {
+    public CourseDto updateCourse(final UUID id, final CourseDto courseDTO) {
         return courseRepository.findById(id).map(
             existingCourse -> updateEntityAndConvertToDto(
                 courseDTO,
-                existingCourse));
+                existingCourse))
+                               .orElseThrow(() -> new ResourceNotFoundException(COURSE_NOT_FOUND.getMessage(
+                                   id.toString())));
     }
 
     @Transactional
     public void deleteCourse(final UUID id) {
         final Course course = courseRepository.findById(id)
-                                              .orElseThrow(() -> new RuntimeException(
-                                                  MessageFormat.format(COURSE_NOT_FOUND, id)));
+                                              .orElseThrow(() -> new ResourceNotFoundException(
+                                                  CATEGORY_NOT_FOUND.getMessage(id.toString())));
         courseRepository.delete(course);
     }
 

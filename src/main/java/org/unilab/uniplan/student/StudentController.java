@@ -26,8 +26,6 @@ import org.unilab.uniplan.student.dto.StudentResponseDto;
 @RequiredArgsConstructor
 public class StudentController {
 
-    private static final String STUDENT_NOT_FOUND = "Student with ID {0} not found.";
-
     private final StudentService studentService;
     private final StudentMapper studentMapper;
 
@@ -44,13 +42,7 @@ public class StudentController {
     public ResponseEntity<StudentResponseDto> getStudent(@PathVariable
                                                          @NotNull final UUID id) {
         final StudentResponseDto studentResponseDTO = studentMapper.toResponseDto(studentService.findStudentById(
-                                                                                                    id)
-                                                                                                .orElseThrow(
-                                                                                                    () -> new ResponseStatusException(
-                                                                                                        HttpStatus.NOT_FOUND,
-                                                                                                        MessageFormat.format(
-                                                                                                            STUDENT_NOT_FOUND,
-                                                                                                            id))));
+                                                                                                    id));
 
         return ResponseEntity.ok(studentResponseDTO);
     }
@@ -66,12 +58,7 @@ public class StudentController {
                                                             @RequestBody
                                                             @NotNull @Valid final StudentRequestDto studentRequestDTO) {
         final StudentDto studentDTO = studentMapper.toInternalDto(studentRequestDTO);
-        studentService.updateStudent(id, studentDTO).orElseThrow(
-            () -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                MessageFormat.format(
-                    STUDENT_NOT_FOUND,
-                    id)));
+        studentService.updateStudent(id, studentDTO);
         return ResponseEntity.ok(studentMapper.toResponseDto(studentDTO));
     }
 

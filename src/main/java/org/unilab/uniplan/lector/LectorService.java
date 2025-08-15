@@ -1,19 +1,19 @@
 package org.unilab.uniplan.lector;
 
-import java.text.MessageFormat;
+import static org.unilab.uniplan.utils.ErrorConstants.LECTOR_NOT_FOUND;
+
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.faculty.FacultyService;
 import org.unilab.uniplan.lector.dto.LectorDto;
 
 @Service
 @RequiredArgsConstructor
 public class LectorService {
-    public static final String LECTOR_NOT_FOUND = "Lector with ID {0} not found.";
 
     private final LectorRepository lectorRepository;
 
@@ -33,25 +33,26 @@ public class LectorService {
         return lectorMapper.toDtos(lectors);
     }
 
-    public Optional<LectorDto> getLectorById(UUID id) {
-        return lectorRepository.findById(id).map(lectorMapper::toDto);
+    public LectorDto getLectorById(UUID id) {
+        return lectorRepository.findById(id)
+                               .map(lectorMapper::toDto)
+                               .orElseThrow(() -> new ResourceNotFoundException(LECTOR_NOT_FOUND.getMessage(
+                                   id.toString())));
     }
 
     @Transactional
-    public Optional<LectorDto> updateLector(UUID id, LectorDto lectorDto) {
+    public LectorDto updateLector(UUID id, LectorDto lectorDto) {
         return lectorRepository.findById(id)
                                .map(existingLector -> updateEntityAndConvertToDto(
                                    lectorDto,
-                                   existingLector));
+                                   existingLector)).orElseThrow(() -> new ResourceNotFoundException(
+                LECTOR_NOT_FOUND.getMessage(id.toString())));
     }
 
     public void deleteLector(UUID id) {
        final Lector lector =lectorRepository.findById(id)
-                                            .orElseThrow(() -> new RuntimeException(
-                                               MessageFormat.format(
-                                                   LECTOR_NOT_FOUND,
-                                                   id
-                                               )
+                                            .orElseThrow(() -> new ResourceNotFoundException(
+                                                LECTOR_NOT_FOUND.getMessage(id.toString())
                                            ));
        lectorRepository.delete(lector);
     }

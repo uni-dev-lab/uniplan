@@ -1,19 +1,18 @@
 package org.unilab.uniplan.studentgroup;
 
+import static org.unilab.uniplan.utils.ErrorConstants.STUDENT_GROUP_NOT_FOUND;
+
 import jakarta.transaction.Transactional;
-import java.text.MessageFormat;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.studentgroup.dto.StudentGroupDto;
 
 @Service
 @RequiredArgsConstructor
 public class StudentGroupService {
-
-    private static final String STUDENTGROUP_NOT_FOUND = "StudentGroup with ID {0} not found.";
 
     private final StudentGroupRepository studentGroupRepository;
     private final StudentGroupMapper studentGroupMapper;
@@ -25,32 +24,36 @@ public class StudentGroupService {
     }
 
     @Transactional
-    public Optional<StudentGroupDto> updateStudentGroup(final UUID studentId,
+    public StudentGroupDto updateStudentGroup(final UUID studentId,
                                                         final UUID courseGroupId,
                                                         final StudentGroupDto studentGroupDTO) {
         final StudentGroupId id = new StudentGroupId(studentId, courseGroupId);
 
         return studentGroupRepository.findById(id).map(
-            existingStudentGroup -> updateEntityAndConvertToDto(studentGroupDTO, existingStudentGroup));
+                                         existingStudentGroup -> updateEntityAndConvertToDto(studentGroupDTO,
+                                                                                             existingStudentGroup))
+                                     .orElseThrow(() -> new ResourceNotFoundException(
+                                         STUDENT_GROUP_NOT_FOUND.getMessage(id.toString())));
     }
 
     @Transactional
     public void deleteStudentGroup(final UUID studentId, final UUID courseGroupId) {
         final StudentGroupId id = new StudentGroupId(studentId, courseGroupId);
         final StudentGroup studentGroup = studentGroupRepository.findById(id)
-                                                                .orElseThrow(() -> new RuntimeException(
-                                                                    MessageFormat.format(
-                                                                        STUDENTGROUP_NOT_FOUND,
-                                                                        id)));
+                                                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                                    STUDENT_GROUP_NOT_FOUND.getMessage(
+                                                                        id.toString())));
         studentGroupRepository.delete(studentGroup);
     }
 
-    public Optional<StudentGroupDto> findStudentGroupById(final UUID studentId,
+    public StudentGroupDto findStudentGroupById(final UUID studentId,
                                                           final UUID courseGroupId) {
         final StudentGroupId id = new StudentGroupId(studentId, courseGroupId);
 
         return studentGroupRepository.findById(id)
-                                     .map(studentGroupMapper::toDto);
+                                     .map(studentGroupMapper::toDto)
+                                     .orElseThrow(() -> new ResourceNotFoundException(
+                                         STUDENT_GROUP_NOT_FOUND.getMessage(id.toString())));
     }
 
     public List<StudentGroupDto> findAll() {

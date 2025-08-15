@@ -44,5 +44,10 @@ public class ProgramDisciplineLectorId implements Serializable {
     public int hashCode() {
         return Objects.hash(lectorId, programId, disciplineId);
     }
+
+    @Override
+    public String toString() {
+        return lectorId.toString() + ", " + programId.toString() + ", " + disciplineId.toString();
+    }
 }
 

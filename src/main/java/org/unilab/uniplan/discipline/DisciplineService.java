@@ -1,21 +1,22 @@
 package org.unilab.uniplan.discipline;
 
+import static org.unilab.uniplan.utils.ErrorConstants.DEPARTMENT_NOT_FOUND;
+import static org.unilab.uniplan.utils.ErrorConstants.DISCIPLINE_NOT_FOUND;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.text.MessageFormat;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.unilab.uniplan.discipline.dto.DisciplineDto;
+import org.unilab.uniplan.exception.ResourceNotFoundException;
 
 @Service
 @RequiredArgsConstructor
 public class DisciplineService {
 
-    private static final String DISCIPLINE_NOT_FOUND = "Discipline with ID {0} not found.";
     private final DisciplineRepository disciplineRepository;
     private final DisciplineMapper disciplineMapper;
 
@@ -33,26 +34,28 @@ public class DisciplineService {
         return disciplineMapper.toDtoList(disciplines);
     }
 
-    public Optional<DisciplineDto> getDisciplineById(@NotNull UUID id) {
+    public DisciplineDto getDisciplineById(@NotNull UUID id) {
         return disciplineRepository.findById(id)
-                                   .map(disciplineMapper::toDto);
+                                   .map(disciplineMapper::toDto)
+                                   .orElseThrow(() -> new ResourceNotFoundException(
+                                       DISCIPLINE_NOT_FOUND.getMessage(id.toString())));
     }
 
     @Transactional
-    public Optional<DisciplineDto> updateDiscipline(UUID id, @Valid DisciplineDto disciplineDto) {
+    public DisciplineDto updateDiscipline(UUID id, @Valid DisciplineDto disciplineDto) {
         return disciplineRepository.findById(id)
                                    .map(existingDiscipline -> updateEntityAndConvertToDto(
                                        disciplineDto,
-                                       existingDiscipline));
+                                       existingDiscipline))
+                                   .orElseThrow(() -> new ResourceNotFoundException(
+                                       DISCIPLINE_NOT_FOUND.getMessage(id.toString())));
     }
 
     @Transactional
     public void deleteDiscipline(UUID id) {
-        final Discipline discipline =disciplineRepository.findById(id)
-                                                         .orElseThrow(() -> new RuntimeException(
-                                                             MessageFormat.format(
-                                                                 DISCIPLINE_NOT_FOUND,
-                                                                 id)));
+        final Discipline discipline = disciplineRepository.findById(id)
+                                                         .orElseThrow(() -> new ResourceNotFoundException(
+                                                             DEPARTMENT_NOT_FOUND.getMessage(id.toString())));
         disciplineRepository.delete(discipline);
     }
 

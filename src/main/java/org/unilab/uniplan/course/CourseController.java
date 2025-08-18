@@ -34,14 +34,14 @@ public class CourseController {
     @PostMapping
     public ResponseEntity<CourseResponseDto> addCourse(@RequestBody @NotNull
                                                        @Valid final CourseRequestDto courseRequestDTO) {
-        final CourseDto courseDTO = courseMapper.toInnerDTO(courseRequestDTO);
+        final CourseDto courseDTO = courseMapper.toInnerDto(courseRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
-                             .body(courseMapper.toResponseDTO(courseService.createCourse(courseDTO)));
+                             .body(courseMapper.toResponseDto(courseService.createCourse(courseDTO)));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CourseResponseDto> getMajorById(@PathVariable @NotNull final UUID id) {
-        return ResponseEntity.ok(courseMapper.toResponseDTO(courseService.findCourseById(id)
+        return ResponseEntity.ok(courseMapper.toResponseDto(courseService.findCourseById(id)
                                                                          .orElseThrow(() -> new ResponseStatusException(
                                                                              HttpStatus.NOT_FOUND,
                                                                              MessageFormat.format(
@@ -51,14 +51,14 @@ public class CourseController {
 
     @GetMapping
     public List<CourseResponseDto> getAllCourses() {
-        return courseMapper.toResponseDTOList(courseService.findAll());
+        return courseMapper.toResponseDtoList(courseService.findAll());
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<CourseResponseDto> updateCourse(@PathVariable @NotNull final UUID id,
                                                           @RequestBody @NotNull @Valid final CourseRequestDto courseRequestDTO) {
-        final CourseDto courseDTO = courseMapper.toInnerDTO(courseRequestDTO);
-        return ResponseEntity.ok(courseMapper.toResponseDTO(courseService.updateCourse(id,
+        final CourseDto courseDTO = courseMapper.toInnerDto(courseRequestDTO);
+        return ResponseEntity.ok(courseMapper.toResponseDto(courseService.updateCourse(id,
                                                                                        courseDTO)
                                                                          .orElseThrow(() -> new ResponseStatusException(
                                                                              HttpStatus.NOT_FOUND,

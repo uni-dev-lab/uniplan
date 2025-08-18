@@ -50,7 +50,7 @@ class CourseGroupServiceTest {
     void createCourseGroupShouldReturnAndSavedCourseGroupDTO() {
         when(courseGroupMapper.toEntity(courseGroupDTO)).thenReturn(courseGroup);
         when(courseGroupRepository.save(courseGroup)).thenReturn(courseGroup);
-        when(courseGroupMapper.toDTO(courseGroup)).thenReturn(courseGroupDTO);
+        when(courseGroupMapper.toDto(courseGroup)).thenReturn(courseGroupDTO);
 
         CourseGroupDto result = courseGroupService.createCourseGroup(courseGroupDTO);
 
@@ -70,7 +70,7 @@ class CourseGroupServiceTest {
     @Test
     void findByIdShouldReturnCourseGroupDTOIfExists() {
         when(courseGroupRepository.findById(courseGroupId)).thenReturn(Optional.of(courseGroup));
-        when(courseGroupMapper.toDTO(courseGroup)).thenReturn(courseGroupDTO);
+        when(courseGroupMapper.toDto(courseGroup)).thenReturn(courseGroupDTO);
 
         Optional<CourseGroupDto> result = courseGroupService.findCourseGroupById(courseGroupId);
 
@@ -82,7 +82,7 @@ class CourseGroupServiceTest {
     void findAllShouldReturnListOfCourseGroupDTOs() {
         List<CourseGroup> groupList = List.of(courseGroup);
         when(courseGroupRepository.findAll()).thenReturn(groupList);
-        when(courseGroupMapper.toDTO(courseGroup)).thenReturn(courseGroupDTO);
+        when(courseGroupMapper.toDto(courseGroup)).thenReturn(courseGroupDTO);
 
         List<CourseGroupDto> result = courseGroupService.findAll();
 
@@ -93,9 +93,9 @@ class CourseGroupServiceTest {
     @Test
     void updateCourseGroupShouldReturnUpdatedCourseGroupDTOIfExists() {
         when(courseGroupRepository.findById(courseGroupId)).thenReturn(Optional.of(courseGroup));
-        doNothing().when(courseGroupMapper).updateEntityFromDTO(courseGroupDTO, courseGroup);
+        doNothing().when(courseGroupMapper).updateEntityFromDto(courseGroupDTO, courseGroup);
         when(courseGroupRepository.save(courseGroup)).thenReturn(courseGroup);
-        when(courseGroupMapper.toDTO(courseGroup)).thenReturn(courseGroupDTO);
+        when(courseGroupMapper.toDto(courseGroup)).thenReturn(courseGroupDTO);
 
         Optional<CourseGroupDto> result = courseGroupService.updateCourseGroup(courseGroupId,
                                                                                courseGroupDTO);

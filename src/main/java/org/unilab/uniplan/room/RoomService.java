@@ -22,7 +22,7 @@ public class RoomService {
     public RoomDto createRoom(final RoomDto roomDto) {
         final Room room = roomMapper.toEntity(roomDto);
 
-        return roomMapper.toDto(roomRepository.save(room));
+        return saveEntityAndConvertToDto(room);
     }
 
     public List<RoomDto> getAllRooms() {
@@ -37,11 +37,9 @@ public class RoomService {
     @Transactional
     public Optional<RoomDto> updateRoom(final UUID id, final RoomDto roomDto) {
         return roomRepository.findById(id)
-                             .map(existingRoom -> {
-                                 roomMapper.updateEntityFromDto(roomDto, existingRoom);
-
-                                 return roomMapper.toDto(roomRepository.save(existingRoom));
-                             });
+                             .map(existingRoom -> updateEntityAndConvertToDto(
+                                 roomDto,
+                                 existingRoom));
     }
 
     @Transactional
@@ -50,5 +48,16 @@ public class RoomService {
                                         .orElseThrow(() -> new RuntimeException(
                                             MessageFormat.format(ROOM_NOT_FOUND, id)));
         roomRepository.delete(room);
+    }
+
+    private RoomDto updateEntityAndConvertToDto(final RoomDto dto,
+                                                final Room entity) {
+        roomMapper.updateEntityFromDto(dto, entity);
+        return saveEntityAndConvertToDto(entity);
+    }
+
+    private RoomDto saveEntityAndConvertToDto(final Room entity) {
+        final Room savedEntity = roomRepository.save(entity);
+        return roomMapper.toDto(savedEntity);
     }
 }

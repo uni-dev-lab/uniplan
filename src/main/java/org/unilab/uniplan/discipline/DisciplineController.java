@@ -2,6 +2,9 @@ package org.unilab.uniplan.discipline;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +20,6 @@ import org.springframework.web.server.ResponseStatusException;
 import org.unilab.uniplan.discipline.dto.DisciplineDto;
 import org.unilab.uniplan.discipline.dto.DisciplineRequestDto;
 import org.unilab.uniplan.discipline.dto.DisciplineResponseDto;
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor

@@ -21,27 +21,25 @@ public class CourseService {
     @Transactional
     public CourseDto createCourse(final CourseDto courseDTO) {
         final Course course = courseMapper.toEntity(courseDTO);
-        return courseMapper.toDTO(courseRepository.save(course));
+        return saveEntityAndConvertToDto(course);
     }
 
     public Optional<CourseDto> findCourseById(final UUID id) {
         return courseRepository.findById(id)
-                               .map(courseMapper::toDTO);
+                               .map(courseMapper::toDto);
     }
 
     public List<CourseDto> findAll() {
         return courseRepository.findAll()
-                               .stream().map(courseMapper::toDTO).toList();
+                               .stream().map(courseMapper::toDto).toList();
     }
 
     @Transactional
     public Optional<CourseDto> updateCourse(final UUID id, final CourseDto courseDTO) {
         return courseRepository.findById(id).map(
-            existingCourse -> {
-                courseMapper.updateEntityFromDTO(courseDTO, existingCourse);
-
-                return courseMapper.toDTO(courseRepository.save(existingCourse));
-            });
+            existingCourse -> updateEntityAndConvertToDto(
+                courseDTO,
+                existingCourse));
     }
 
     @Transactional
@@ -50,5 +48,16 @@ public class CourseService {
                                               .orElseThrow(() -> new RuntimeException(
                                                   MessageFormat.format(COURSE_NOT_FOUND, id)));
         courseRepository.delete(course);
+    }
+
+    private CourseDto updateEntityAndConvertToDto(final CourseDto dto,
+                                                  final Course entity) {
+        courseMapper.updateEntityFromDto(dto, entity);
+        return saveEntityAndConvertToDto(entity);
+    }
+
+    private CourseDto saveEntityAndConvertToDto(final Course entity) {
+        final Course savedEntity = courseRepository.save(entity);
+        return courseMapper.toDto(savedEntity);
     }
 }

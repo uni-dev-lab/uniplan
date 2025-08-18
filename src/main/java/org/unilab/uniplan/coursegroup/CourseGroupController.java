@@ -34,15 +34,15 @@ public class CourseGroupController {
     @PostMapping
     public ResponseEntity<CourseGroupResponseDto> addCourseGroup(@RequestBody
                                                                  @Valid @NotNull final CourseGroupRequestDto courseGroupRequestDTO) {
-        final CourseGroupDto courseGroupDTO = courseGroupMapper.toInnerDTO(courseGroupRequestDTO);
+        final CourseGroupDto courseGroupDTO = courseGroupMapper.toInnerDto(courseGroupRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
-                             .body(courseGroupMapper.toResponseDTO(courseGroupService.createCourseGroup(
+                             .body(courseGroupMapper.toResponseDto(courseGroupService.createCourseGroup(
                                  courseGroupDTO)));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CourseGroupResponseDto> getCourseGroup(@PathVariable @NotNull final UUID id) {
-        return ResponseEntity.ok(courseGroupMapper.toResponseDTO(courseGroupService.findCourseGroupById(
+        return ResponseEntity.ok(courseGroupMapper.toResponseDto(courseGroupService.findCourseGroupById(
                                                                                        id)
                                                                                    .orElseThrow(() -> new ResponseStatusException(
                                                                                        HttpStatus.NOT_FOUND,
@@ -53,14 +53,14 @@ public class CourseGroupController {
 
     @GetMapping
     public List<CourseGroupResponseDto> getAllCourseGroups() {
-        return courseGroupMapper.toResponseDTOList(courseGroupService.findAll());
+        return courseGroupMapper.toResponseDtoList(courseGroupService.findAll());
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<CourseGroupResponseDto> updateCourseGroup(@PathVariable @NotNull final UUID id,
                                                                     @RequestBody @NotNull @Valid final CourseGroupRequestDto courseGroupRequestDTO) {
-        final CourseGroupDto courseGroupDTO = courseGroupMapper.toInnerDTO(courseGroupRequestDTO);
-        return ResponseEntity.ok(courseGroupMapper.toResponseDTO(courseGroupService.updateCourseGroup(
+        final CourseGroupDto courseGroupDTO = courseGroupMapper.toInnerDto(courseGroupRequestDTO);
+        return ResponseEntity.ok(courseGroupMapper.toResponseDto(courseGroupService.updateCourseGroup(
                                                                                        id,
                                                                                        courseGroupDTO)
                                                                                    .orElseThrow(() -> new ResponseStatusException(

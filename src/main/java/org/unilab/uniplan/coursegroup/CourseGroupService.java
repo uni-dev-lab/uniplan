@@ -21,17 +21,17 @@ public class CourseGroupService {
     @Transactional
     public CourseGroupDto createCourseGroup(final CourseGroupDto courseGroupDTO) {
         final CourseGroup courseGroup = courseGroupMapper.toEntity(courseGroupDTO);
-        return courseGroupMapper.toDTO(courseGroupRepository.save(courseGroup));
+        return saveEntityAndConvertToDto(courseGroup);
     }
 
     public Optional<CourseGroupDto> findCourseGroupById(final UUID id) {
         return courseGroupRepository.findById(id)
-                                    .map(courseGroupMapper::toDTO);
+                                    .map(courseGroupMapper::toDto);
     }
 
     public List<CourseGroupDto> findAll() {
         return courseGroupRepository.findAll()
-                                    .stream().map(courseGroupMapper::toDTO).toList();
+                                    .stream().map(courseGroupMapper::toDto).toList();
     }
 
     @Transactional
@@ -39,11 +39,8 @@ public class CourseGroupService {
                                                       final CourseGroupDto courseGroupDTO) {
 
         return courseGroupRepository.findById(id).map(
-            existingCourseGroup -> {
-                courseGroupMapper.updateEntityFromDTO(courseGroupDTO, existingCourseGroup);
-
-                return courseGroupMapper.toDTO(courseGroupRepository.save(existingCourseGroup));
-            });
+            existingCourseGroup -> updateEntityAndConvertToDto(courseGroupDTO,
+                                                               existingCourseGroup));
     }
 
     @Transactional
@@ -54,5 +51,16 @@ public class CourseGroupService {
                                                                      COURSEGROUP_NOT_FOUND,
                                                                      id)));
         courseGroupRepository.delete(courseGroup);
+    }
+
+    private CourseGroupDto updateEntityAndConvertToDto(final CourseGroupDto dto,
+                                                       final CourseGroup entity) {
+        courseGroupMapper.updateEntityFromDto(dto, entity);
+        return saveEntityAndConvertToDto(entity);
+    }
+
+    private CourseGroupDto saveEntityAndConvertToDto(final CourseGroup entity) {
+        final CourseGroup savedEntity = courseGroupRepository.save(entity);
+        return courseGroupMapper.toDto(savedEntity);
     }
 }

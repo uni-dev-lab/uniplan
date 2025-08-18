@@ -34,16 +34,16 @@ public class StudentController {
     @PostMapping
     public ResponseEntity<StudentResponseDto> createStudent(@RequestBody @NotNull
                                                             @Valid final StudentRequestDto studentRequestDTO) {
-        final StudentDto studentDTO = studentMapper.toInternalDTO(studentRequestDTO);
+        final StudentDto studentDTO = studentMapper.toInternalDto(studentRequestDTO);
         studentService.createStudent(studentDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
-                             .body(studentMapper.toResponseDTO(studentDTO));
+                             .body(studentMapper.toResponseDto(studentDTO));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<StudentResponseDto> getStudent(@PathVariable
                                                          @NotNull final UUID id) {
-        final StudentResponseDto studentResponseDTO = studentMapper.toResponseDTO(studentService.findStudentById(
+        final StudentResponseDto studentResponseDTO = studentMapper.toResponseDto(studentService.findStudentById(
                                                                                                     id)
                                                                                                 .orElseThrow(
                                                                                                     () -> new ResponseStatusException(
@@ -57,7 +57,7 @@ public class StudentController {
 
     @GetMapping
     public List<StudentResponseDto> getAllStudents() {
-        return studentMapper.toResponseDTOList(studentService.findAll());
+        return studentMapper.toResponseDtoList(studentService.findAll());
     }
 
     @PutMapping("/{id}")
@@ -65,14 +65,14 @@ public class StudentController {
                                                             @NotNull final UUID id,
                                                             @RequestBody
                                                             @NotNull @Valid final StudentRequestDto studentRequestDTO) {
-        final StudentDto studentDTO = studentMapper.toInternalDTO(studentRequestDTO);
+        final StudentDto studentDTO = studentMapper.toInternalDto(studentRequestDTO);
         studentService.updateStudent(id, studentDTO).orElseThrow(
             () -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND,
                 MessageFormat.format(
                     STUDENT_NOT_FOUND,
                     id)));
-        return ResponseEntity.ok(studentMapper.toResponseDTO(studentDTO));
+        return ResponseEntity.ok(studentMapper.toResponseDto(studentDTO));
     }
 
     @DeleteMapping("/{id}")

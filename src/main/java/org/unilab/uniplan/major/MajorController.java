@@ -34,14 +34,14 @@ public class MajorController {
     @PostMapping
     public ResponseEntity<MajorResponseDto> addMajor(@RequestBody @NotNull
                                                      @Valid final MajorRequestDto majorRequestDTO) {
-        final MajorDto majorDTO = majorMapper.toInnerDTO(majorRequestDTO);
+        final MajorDto majorDTO = majorMapper.toInnerDto(majorRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
-                             .body(majorMapper.toResponseDTO(majorService.createMajor(majorDTO)));
+                             .body(majorMapper.toResponseDto(majorService.createMajor(majorDTO)));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<MajorResponseDto> getMajorById(@PathVariable @NotNull final UUID id) {
-        return ResponseEntity.ok(majorMapper.toResponseDTO(majorService.findMajorById(id)
+        return ResponseEntity.ok(majorMapper.toResponseDto(majorService.findMajorById(id)
                                                                        .orElseThrow(() -> new ResponseStatusException(
                                                                            HttpStatus.NOT_FOUND,
                                                                            MessageFormat.format(
@@ -51,14 +51,14 @@ public class MajorController {
 
     @GetMapping
     public List<MajorResponseDto> getAllMajors() {
-        return majorMapper.toResponseDTOList(majorService.findAll());
+        return majorMapper.toResponseDtoList(majorService.findAll());
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<MajorResponseDto> updateMajor(@PathVariable @NotNull final UUID id,
                                                         @RequestBody @NotNull @Valid MajorRequestDto majorRequestDTO) {
-        final MajorDto majorDTO = majorMapper.toInnerDTO(majorRequestDTO);
-        return ResponseEntity.ok(majorMapper.toResponseDTO(majorService.updateMajor(id, majorDTO)
+        final MajorDto majorDTO = majorMapper.toInnerDto(majorRequestDTO);
+        return ResponseEntity.ok(majorMapper.toResponseDto(majorService.updateMajor(id, majorDTO)
                                                                        .orElseThrow(() -> new ResponseStatusException(
                                                                            HttpStatus.NOT_FOUND,
                                                                            MessageFormat.format(

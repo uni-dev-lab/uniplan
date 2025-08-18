@@ -2,15 +2,14 @@ package org.unilab.uniplan.discipline;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.unilab.uniplan.discipline.dto.DisciplineDto;
-
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.unilab.uniplan.discipline.dto.DisciplineDto;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +24,7 @@ public class DisciplineService {
     public DisciplineDto createDiscipline(@Valid DisciplineDto disciplineDto) {
         final Discipline discipline = disciplineMapper.toEntity(disciplineDto);
 
-        return disciplineMapper.toDto(disciplineRepository.save(discipline));
+        return saveEntityAndConvertToDto(discipline);
     }
 
     public List<DisciplineDto> getAllDisciplines() {
@@ -42,13 +41,9 @@ public class DisciplineService {
     @Transactional
     public Optional<DisciplineDto> updateDiscipline(UUID id, @Valid DisciplineDto disciplineDto) {
         return disciplineRepository.findById(id)
-                                 .map(existingDiscipline -> {
-                                     disciplineMapper.updateEntityFromDto(disciplineDto,
-                                                                        existingDiscipline);
-
-                                     return disciplineMapper.toDto(disciplineRepository.save(
-                                         existingDiscipline));
-                                 });
+                                   .map(existingDiscipline -> updateEntityAndConvertToDto(
+                                       disciplineDto,
+                                       existingDiscipline));
     }
 
     @Transactional
@@ -59,5 +54,16 @@ public class DisciplineService {
                                                                  DISCIPLINE_NOT_FOUND,
                                                                  id)));
         disciplineRepository.delete(discipline);
+    }
+
+    private DisciplineDto updateEntityAndConvertToDto(final DisciplineDto dto,
+                                                      final Discipline entity) {
+        disciplineMapper.updateEntityFromDto(dto, entity);
+        return saveEntityAndConvertToDto(entity);
+    }
+
+    private DisciplineDto saveEntityAndConvertToDto(final Discipline entity) {
+        final Discipline savedEntity = disciplineRepository.save(entity);
+        return disciplineMapper.toDto(savedEntity);
     }
 }

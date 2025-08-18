@@ -35,7 +35,7 @@ public class CategoryService {
         return categoryRepository.findById(id)
                                  .map(categoryMapper::toDto)
                                  .orElseThrow(() -> new ResourceNotFoundException(CATEGORY_NOT_FOUND.getMessage(
-                                     id.toString())));
+                                     String.valueOf(id))));
     }
 
     @Transactional
@@ -45,7 +45,7 @@ public class CategoryService {
                                      categoryDto,
                                      existingCategory))
                                  .orElseThrow(() -> new ResourceNotFoundException(CATEGORY_NOT_FOUND.getMessage(
-                                     id.toString())));
+                                     String.valueOf(id))));
     }
 
 
@@ -53,7 +53,7 @@ public class CategoryService {
     public void deleteCategory(final UUID id) {
         final Category category = categoryRepository.findById(id)
                                                     .orElseThrow(() -> new ResourceNotFoundException(
-                                                        CATEGORY_NOT_FOUND.getMessage(id.toString())));
+                                                        CATEGORY_NOT_FOUND.getMessage(String.valueOf(id))));
         categoryRepository.delete(category);
     }
 

@@ -33,7 +33,7 @@ public class StudentGroupService {
                                          existingStudentGroup -> updateEntityAndConvertToDto(studentGroupDTO,
                                                                                              existingStudentGroup))
                                      .orElseThrow(() -> new ResourceNotFoundException(
-                                         STUDENT_GROUP_NOT_FOUND.getMessage(id.toString())));
+                                         STUDENT_GROUP_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     @Transactional
@@ -42,7 +42,7 @@ public class StudentGroupService {
         final StudentGroup studentGroup = studentGroupRepository.findById(id)
                                                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                                     STUDENT_GROUP_NOT_FOUND.getMessage(
-                                                                        id.toString())));
+                                                                        String.valueOf(id))));
         studentGroupRepository.delete(studentGroup);
     }
 
@@ -53,7 +53,7 @@ public class StudentGroupService {
         return studentGroupRepository.findById(id)
                                      .map(studentGroupMapper::toDto)
                                      .orElseThrow(() -> new ResourceNotFoundException(
-                                         STUDENT_GROUP_NOT_FOUND.getMessage(id.toString())));
+                                         STUDENT_GROUP_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     public List<StudentGroupDto> findAll() {

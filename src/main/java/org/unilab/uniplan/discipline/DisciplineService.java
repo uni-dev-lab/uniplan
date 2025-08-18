@@ -1,6 +1,5 @@
 package org.unilab.uniplan.discipline;
 
-import static org.unilab.uniplan.utils.ErrorConstants.DEPARTMENT_NOT_FOUND;
 import static org.unilab.uniplan.utils.ErrorConstants.DISCIPLINE_NOT_FOUND;
 
 import jakarta.validation.Valid;
@@ -38,7 +37,7 @@ public class DisciplineService {
         return disciplineRepository.findById(id)
                                    .map(disciplineMapper::toDto)
                                    .orElseThrow(() -> new ResourceNotFoundException(
-                                       DISCIPLINE_NOT_FOUND.getMessage(id.toString())));
+                                       DISCIPLINE_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     @Transactional
@@ -48,14 +47,14 @@ public class DisciplineService {
                                        disciplineDto,
                                        existingDiscipline))
                                    .orElseThrow(() -> new ResourceNotFoundException(
-                                       DISCIPLINE_NOT_FOUND.getMessage(id.toString())));
+                                       DISCIPLINE_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     @Transactional
     public void deleteDiscipline(UUID id) {
         final Discipline discipline = disciplineRepository.findById(id)
                                                          .orElseThrow(() -> new ResourceNotFoundException(
-                                                             DEPARTMENT_NOT_FOUND.getMessage(id.toString())));
+                                                             DISCIPLINE_NOT_FOUND.getMessage(String.valueOf(id))));
         disciplineRepository.delete(discipline);
     }
 

@@ -5,6 +5,7 @@ import static org.unilab.uniplan.utils.ErrorConstants.STUDENT_NOT_FOUND;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
@@ -27,7 +28,7 @@ public class StudentService {
         return studentRepository.findById(id)
                                 .map(studentMapper::toDto)
                                 .orElseThrow(() -> new ResourceNotFoundException(STUDENT_NOT_FOUND.getMessage(
-                                    id.toString())));
+                                    String.valueOf(id))));
     }
 
     public List<StudentDto> findAll() {
@@ -42,14 +43,14 @@ public class StudentService {
                                     studentDTO,
                                     existingStudent))
                                 .orElseThrow(() -> new ResourceNotFoundException(STUDENT_NOT_FOUND.getMessage(
-                                    id.toString())));
+                                    String.valueOf(id))));
     }
 
     @Transactional
     public void deleteStudent(final UUID id) {
         final Student student = studentRepository.findById(id)
                                                  .orElseThrow(() -> new ResourceNotFoundException(
-                                                     STUDENT_NOT_FOUND.getMessage(id.toString())));
+                                                     STUDENT_NOT_FOUND.getMessage(String.valueOf(id))));
         studentRepository.delete(student);
     }
 

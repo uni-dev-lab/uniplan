@@ -35,7 +35,7 @@ public class UniversityService {
         return universityRepository.findById(id)
                                    .map(universityMapper::toDto)
                                    .orElseThrow(() -> new ResourceNotFoundException(
-                                       UNIVERSITY_NOT_FOUND.getMessage(id.toString())));
+                                       UNIVERSITY_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     @Transactional
@@ -46,14 +46,14 @@ public class UniversityService {
                                        universityDto,
                                        existingUniversity))
                                    .orElseThrow(() -> new ResourceNotFoundException(
-                                       UNIVERSITY_NOT_FOUND.getMessage(id.toString())));
+                                       UNIVERSITY_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     @Transactional
     public void deleteUniversity(final UUID id) {
         final University university = universityRepository.findById(id)
                                                           .orElseThrow(() -> new ResourceNotFoundException(
-                                                              UNIVERSITY_NOT_FOUND.getMessage(id.toString())));
+                                                              UNIVERSITY_NOT_FOUND.getMessage(String.valueOf(id))));
         universityRepository.delete(university);
     }
 

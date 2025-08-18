@@ -32,7 +32,7 @@ public class RoomService {
         return roomRepository.findById(id)
                              .map(roomMapper::toDto)
                              .orElseThrow(() -> new ResourceNotFoundException(ROOM_NOT_FOUND.getMessage(
-                                 id.toString())));
+                                 String.valueOf(id))));
     }
 
     @Transactional
@@ -41,14 +41,14 @@ public class RoomService {
                              .map(existingRoom -> updateEntityAndConvertToDto(
                                  roomDto,
                                  existingRoom)).orElseThrow(() -> new ResourceNotFoundException(
-                ROOM_NOT_FOUND.getMessage(id.toString())));
+                ROOM_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     @Transactional
     public void deleteRoom(final UUID id) {
         final Room room = roomRepository.findById(id)
                                         .orElseThrow(() -> new ResourceNotFoundException(
-                                            ROOM_NOT_FOUND.getMessage(id.toString())));
+                                            ROOM_NOT_FOUND.getMessage(String.valueOf(id))));
         roomRepository.delete(room);
     }
 

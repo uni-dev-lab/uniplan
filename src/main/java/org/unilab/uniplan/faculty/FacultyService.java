@@ -33,7 +33,7 @@ public class FacultyService {
         return facultyRepository.findById(id)
                                 .map(facultyMapper::toDto)
                                 .orElseThrow(() -> new ResourceNotFoundException(FACULTY_NOT_FOUND.getMessage(
-                                    id.toString())));
+                                    String.valueOf(id))));
     }
 
     @Transactional
@@ -43,14 +43,14 @@ public class FacultyService {
                                     facultyDto,
                                     existingFaculty))
                                 .orElseThrow(() -> new ResourceNotFoundException(FACULTY_NOT_FOUND.getMessage(
-                                    id.toString())));
+                                    String.valueOf(id))));
     }
 
     @Transactional
     public void deleteFaculty(final UUID id) {
         final Faculty faculty = facultyRepository.findById(id)
                                                  .orElseThrow(() -> new ResourceNotFoundException(
-                                                     FACULTY_NOT_FOUND.getMessage(id.toString())));
+                                                     FACULTY_NOT_FOUND.getMessage(String.valueOf(id))));
         facultyRepository.delete(faculty);
     }
 

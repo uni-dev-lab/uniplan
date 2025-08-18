@@ -35,7 +35,7 @@ public class RoomCategoryService {
         return roomCategoryRepository.findById(id)
                                      .map(roomCategoryMapper::toDto)
                                      .orElseThrow(() -> new ResourceNotFoundException(
-                                         ROOM_CATEGORY_NOT_FOUND.getMessage(id.toString())));
+                                         ROOM_CATEGORY_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     @Transactional
@@ -45,7 +45,7 @@ public class RoomCategoryService {
         final RoomCategory roomCategory = roomCategoryRepository.findById(id)
                                                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                                     ROOM_CATEGORY_NOT_FOUND.getMessage(
-                                                                        id.toString())));
+                                                                        String.valueOf(id))));
 
         roomCategoryRepository.delete(roomCategory);
     }

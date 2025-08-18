@@ -37,7 +37,7 @@ public class LectorService {
         return lectorRepository.findById(id)
                                .map(lectorMapper::toDto)
                                .orElseThrow(() -> new ResourceNotFoundException(LECTOR_NOT_FOUND.getMessage(
-                                   id.toString())));
+                                   String.valueOf(id))));
     }
 
     @Transactional
@@ -46,13 +46,13 @@ public class LectorService {
                                .map(existingLector -> updateEntityAndConvertToDto(
                                    lectorDto,
                                    existingLector)).orElseThrow(() -> new ResourceNotFoundException(
-                LECTOR_NOT_FOUND.getMessage(id.toString())));
+                LECTOR_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     public void deleteLector(UUID id) {
        final Lector lector =lectorRepository.findById(id)
                                             .orElseThrow(() -> new ResourceNotFoundException(
-                                                LECTOR_NOT_FOUND.getMessage(id.toString())
+                                                LECTOR_NOT_FOUND.getMessage(String.valueOf(id))
                                            ));
        lectorRepository.delete(lector);
     }

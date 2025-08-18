@@ -34,7 +34,7 @@ public class ProgramService{
         return programRepository.findById(id)
                                 .map(programMapper::toDto)
                                 .orElseThrow(() -> new ResourceNotFoundException(PROGRAM_NOT_FOUND.getMessage(
-                                    id.toString())));
+                                    String.valueOf(id))));
     }
 
     @Transactional
@@ -44,13 +44,13 @@ public class ProgramService{
                                     programDto,
                                     existingCategory))
                                 .orElseThrow(() -> new ResourceNotFoundException(PROGRAM_NOT_FOUND.getMessage(
-                                    id.toString())));
+                                    String.valueOf(id))));
     }
 
     public void deleteProgram(UUID id) {
         final Program program = programRepository.findById(id)
                                                  .orElseThrow(() -> new ResourceNotFoundException(
-                                                     PROGRAM_NOT_FOUND.getMessage(id.toString())));
+                                                     PROGRAM_NOT_FOUND.getMessage(String.valueOf(id))));
 
         programRepository.delete(program);
     }

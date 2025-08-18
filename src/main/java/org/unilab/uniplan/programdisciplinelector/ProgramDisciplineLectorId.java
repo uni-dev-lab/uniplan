@@ -47,7 +47,7 @@ public class ProgramDisciplineLectorId implements Serializable {
 
     @Override
     public String toString() {
-        return lectorId.toString() + ", " + programId.toString() + ", " + disciplineId.toString();
+        return lectorId + ", " + programId + ", " + disciplineId;
     }
 }
 

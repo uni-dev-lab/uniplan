@@ -41,7 +41,7 @@ public class ProgramDisciplineLectorService {
                                                 .map(programDisciplineLectorMapper::toDto)
                                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                     PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND.getMessage(
-                                                        id.toString())));
+                                                        String.valueOf(id))));
     }
 
     @Transactional
@@ -58,7 +58,7 @@ public class ProgramDisciplineLectorService {
                                                     existingProgramDisciplineLector))
                                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                     PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND.getMessage(
-                                                        id.toString())));
+                                                        String.valueOf(id))));
     }
 
     public void deleteProgramDisciplineLector(final UUID lectorId,
@@ -71,7 +71,7 @@ public class ProgramDisciplineLectorService {
         final ProgramDisciplineLector programDisciplineLector = programDisciplineLectorRepository
             .findById(id)
             .orElseThrow(() -> new ResourceNotFoundException(
-                PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND.getMessage(id.toString())
+                PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND.getMessage(String.valueOf(id))
             ));
         programDisciplineLectorRepository.delete(programDisciplineLector);
     }

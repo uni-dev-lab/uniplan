@@ -43,7 +43,7 @@ public class ProgramDisciplineId implements Serializable {
 
     @Override
     public String toString() {
-        return disciplineId.toString() + ", " + programId.toString();
+        return disciplineId + ", " + programId;
     }
 }
 

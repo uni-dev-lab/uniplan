@@ -27,7 +27,7 @@ public class CourseGroupService {
         return courseGroupRepository.findById(id)
                                     .map(courseGroupMapper::toDto)
                                     .orElseThrow(() -> new ResourceNotFoundException(
-                                        COURSE_GROUP_NOT_FOUND.getMessage(id.toString())));
+                                        COURSE_GROUP_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     public List<CourseGroupDto> findAll() {
@@ -43,7 +43,7 @@ public class CourseGroupService {
             existingCourseGroup -> updateEntityAndConvertToDto(courseGroupDTO,
                                                                existingCourseGroup))
                                     .orElseThrow(() -> new ResourceNotFoundException(
-                                        COURSE_GROUP_NOT_FOUND.getMessage(id.toString())));
+                                        COURSE_GROUP_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     @Transactional
@@ -51,7 +51,7 @@ public class CourseGroupService {
         final CourseGroup courseGroup = courseGroupRepository.findById(id)
                                                              .orElseThrow(() -> new ResourceNotFoundException(
                                                                  COURSE_GROUP_NOT_FOUND.getMessage(
-                                                                     id.toString())));
+                                                                     String.valueOf(id))));
         courseGroupRepository.delete(courseGroup);
     }
 

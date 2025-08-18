@@ -34,7 +34,7 @@ public class DepartmentService {
         return departmentRepository.findById(id)
                                    .map(departmentMapper::toDto)
                                    .orElseThrow(() -> new ResourceNotFoundException(
-                                       DEPARTMENT_NOT_FOUND.getMessage(id.toString())));
+                                       DEPARTMENT_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     @Transactional
@@ -45,14 +45,14 @@ public class DepartmentService {
                                        departmentDto,
                                        existingDepartment))
                                    .orElseThrow(() -> new ResourceNotFoundException(
-                                       DEPARTMENT_NOT_FOUND.getMessage(id.toString())));
+                                       DEPARTMENT_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     @Transactional
     public void deleteDepartment(final UUID id) {
         final Department department = departmentRepository.findById(id)
                                                           .orElseThrow(() -> new ResourceNotFoundException(
-                                                              DEPARTMENT_NOT_FOUND.getMessage(id.toString())));
+                                                              DEPARTMENT_NOT_FOUND.getMessage(String.valueOf(id))));
         departmentRepository.delete(department);
     }
 

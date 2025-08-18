@@ -1,6 +1,5 @@
 package org.unilab.uniplan.programdiscipline;
 
-import static org.unilab.uniplan.utils.ErrorConstants.PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND;
 import static org.unilab.uniplan.utils.ErrorConstants.PROGRAM_DISCIPLINE_NOT_FOUND;
 
 import java.util.List;
@@ -38,7 +37,7 @@ public class ProgramDisciplineService {
         return programDisciplineRepository.findById(id)
                                           .map(programDisciplineMapper::toDto)
                                           .orElseThrow(() -> new ResourceNotFoundException(
-                                              PROGRAM_DISCIPLINE_NOT_FOUND.getMessage(id.toString())));
+                                              PROGRAM_DISCIPLINE_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     @Transactional
@@ -52,7 +51,7 @@ public class ProgramDisciplineService {
                                               programDisciplineDto,
                                               existingProgramDiscipline))
                                           .orElseThrow(() -> new ResourceNotFoundException(
-                                              PROGRAM_DISCIPLINE_NOT_FOUND.getMessage(id.toString())));
+                                              PROGRAM_DISCIPLINE_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     @Transactional
@@ -61,8 +60,8 @@ public class ProgramDisciplineService {
                                                                                      programId);
         final ProgramDiscipline programDiscipline = programDisciplineRepository.findById(id)
                                                                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                                                   PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND.getMessage(
-                                                                                       id.toString())));
+                                                                                   PROGRAM_DISCIPLINE_NOT_FOUND.getMessage(
+                                                                                       String.valueOf(id))));
         programDisciplineRepository.delete(programDiscipline);
     }
 

@@ -27,7 +27,7 @@ public class MajorService {
         return majorRepository.findById(id)
                               .map(majorMapper::toDto)
                               .orElseThrow(() -> new ResourceNotFoundException(
-                                  MAJOR_NOT_FOUND.getMessage(id.toString())));
+                                  MAJOR_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     public List<MajorDto> findAll() {
@@ -41,14 +41,14 @@ public class MajorService {
             majorDTO,
             existingMajor))
                               .orElseThrow(() -> new ResourceNotFoundException(MAJOR_NOT_FOUND.getMessage(
-                                  id.toString())));
+                                  String.valueOf(id))));
     }
 
     @Transactional
     public void deleteMajor(final UUID id) {
         final Major major = majorRepository.findById(id)
                                            .orElseThrow(() -> new ResourceNotFoundException(
-                                               MAJOR_NOT_FOUND.getMessage(id.toString())));
+                                               MAJOR_NOT_FOUND.getMessage(String.valueOf(id))));
         majorRepository.delete(major);
     }
 

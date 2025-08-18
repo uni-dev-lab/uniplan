@@ -27,7 +27,7 @@ public class CourseService {
         return courseRepository.findById(id)
                                .map(courseMapper::toDto)
                                .orElseThrow(() -> new ResourceNotFoundException(COURSE_NOT_FOUND.getMessage(
-                                   id.toString())));
+                                   String.valueOf(id))));
     }
 
     public List<CourseDto> findAll() {
@@ -42,14 +42,14 @@ public class CourseService {
                 courseDTO,
                 existingCourse))
                                .orElseThrow(() -> new ResourceNotFoundException(COURSE_NOT_FOUND.getMessage(
-                                   id.toString())));
+                                   String.valueOf(id))));
     }
 
     @Transactional
     public void deleteCourse(final UUID id) {
         final Course course = courseRepository.findById(id)
                                               .orElseThrow(() -> new ResourceNotFoundException(
-                                                  COURSE_NOT_FOUND.getMessage(id.toString())));
+                                                  COURSE_NOT_FOUND.getMessage(String.valueOf(id))));
         courseRepository.delete(course);
     }
 

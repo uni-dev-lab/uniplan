@@ -1,6 +1,5 @@
 package org.unilab.uniplan.course;
 
-import static org.unilab.uniplan.utils.ErrorConstants.CATEGORY_NOT_FOUND;
 import static org.unilab.uniplan.utils.ErrorConstants.COURSE_NOT_FOUND;
 
 import jakarta.transaction.Transactional;
@@ -50,7 +49,7 @@ public class CourseService {
     public void deleteCourse(final UUID id) {
         final Course course = courseRepository.findById(id)
                                               .orElseThrow(() -> new ResourceNotFoundException(
-                                                  CATEGORY_NOT_FOUND.getMessage(id.toString())));
+                                                  COURSE_NOT_FOUND.getMessage(id.toString())));
         courseRepository.delete(course);
     }
 

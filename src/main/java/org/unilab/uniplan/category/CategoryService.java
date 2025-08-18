@@ -3,6 +3,7 @@ package org.unilab.uniplan.category;
 import static org.unilab.uniplan.utils.ErrorConstants.CATEGORY_NOT_FOUND;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

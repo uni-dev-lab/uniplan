@@ -1,0 +1,801 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1755084381762-1
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_category
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: room_type
+                  type: VARCHAR(50)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: capacity
+                  type: SMALLINT
+            tableName: category
+  - changeSet:
+      id: 1755084381762-2
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_course
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: major_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: course_year
+                  type: TINYINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: course_type
+                  type: VARCHAR(100)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: course_subtype
+                  type: VARCHAR(100)
+            tableName: course
+  - changeSet:
+      id: 1755084381762-3
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_course_group
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: course_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: group_name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: max_group
+                  type: INT
+            tableName: course_group
+  - changeSet:
+      id: 1755084381762-4
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_department
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: faculty_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: department_name
+                  type: VARCHAR(200)
+            tableName: department
+  - changeSet:
+      id: 1755084381762-5
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_discipline
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: discipline_name
+                  type: VARCHAR(100)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: main_lector
+                  type: VARCHAR(200)
+            tableName: discipline
+  - changeSet:
+      id: 1755084381762-6
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_faculty
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: uni_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: faculty_name
+                  type: VARCHAR(200)
+              - column:
+                  name: location
+                  type: VARCHAR(500)
+            tableName: faculty
+  - changeSet:
+      id: 1755084381762-7
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_lector
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: first_name
+                  type: VARCHAR(100)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: last_name
+                  type: VARCHAR(100)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: email
+                  type: VARCHAR(250)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: faculty_id
+                  type: UUID
+            tableName: lector
+  - changeSet:
+      id: 1755084381762-8
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_lector_program
+                  name: lector_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_lector_program
+                  name: program_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_lector_program
+                  name: discipline_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: lector_type
+                  type: VARCHAR(100)
+            tableName: lector_program
+  - changeSet:
+      id: 1755084381762-9
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_major
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: faculty_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: major_name
+                  type: VARCHAR(200)
+            tableName: major
+  - changeSet:
+      id: 1755084381762-10
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_program
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: course_id
+                  type: UUID
+            tableName: program
+  - changeSet:
+      id: 1755084381762-11
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_program_discipline
+                  name: discipline_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_program_discipline
+                  name: program_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: hours_lecture
+                  type: SMALLINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: hours_exercises
+                  type: SMALLINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: semester_count
+                  type: TINYINT
+            tableName: program_discipline
+  - changeSet:
+      id: 1755084381762-12
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_room
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: faculty_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: room_number
+                  type: VARCHAR(50)
+            tableName: room
+  - changeSet:
+      id: 1755084381762-13
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_room_category
+                  name: room_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_room_category
+                  name: category_id
+                  type: UUID
+            tableName: room_category
+  - changeSet:
+      id: 1755084381762-14
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_student
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: first_name
+                  type: VARCHAR(100)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: last_name
+                  type: VARCHAR(100)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: course_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: faculty_number
+                  type: VARCHAR(100)
+            tableName: student
+  - changeSet:
+      id: 1755084381762-15
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_student_group
+                  name: student_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_student_group
+                  name: group_id
+                  type: UUID
+            tableName: student_group
+  - changeSet:
+      id: 1755084381762-16
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_university
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: uni_name
+                  type: VARCHAR(255)
+              - column:
+                  name: location
+                  type: VARCHAR(500)
+              - column:
+                  name: established_year
+                  type: SMALLINT
+              - column:
+                  name: accreditation
+                  type: VARCHAR(200)
+              - column:
+                  name: website
+                  type: VARCHAR(2048)
+            tableName: university
+  - changeSet:
+      id: 1755084381762-17
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: course_id
+            constraintName: uc_program_course
+            tableName: program
+  - changeSet:
+      id: 1755084381762-18
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: faculty_number
+            constraintName: uc_student_faculty_number
+            tableName: student
+  - changeSet:
+      id: 1755084381762-19
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: course_id
+            baseTableName: course_group
+            constraintName: FK_COURSE_GROUP_ON_COURSE
+            referencedColumnNames: id
+            referencedTableName: course
+  - changeSet:
+      id: 1755084381762-20
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: major_id
+            baseTableName: course
+            constraintName: FK_COURSE_ON_MAJOR
+            referencedColumnNames: id
+            referencedTableName: major
+  - changeSet:
+      id: 1755084381762-21
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: faculty_id
+            baseTableName: department
+            constraintName: FK_DEPARTMENT_ON_FACULTY
+            referencedColumnNames: id
+            referencedTableName: faculty
+  - changeSet:
+      id: 1755084381762-22
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: uni_id
+            baseTableName: faculty
+            constraintName: FK_FACULTY_ON_UNI
+            referencedColumnNames: id
+            referencedTableName: university
+  - changeSet:
+      id: 1755084381762-23
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: faculty_id
+            baseTableName: lector
+            constraintName: FK_LECTOR_ON_FACULTY
+            referencedColumnNames: id
+            referencedTableName: faculty
+  - changeSet:
+      id: 1755084381762-24
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: discipline_id
+            baseTableName: lector_program
+            constraintName: FK_LECTOR_PROGRAM_ON_DISCIPLINE
+            referencedColumnNames: id
+            referencedTableName: discipline
+  - changeSet:
+      id: 1755084381762-25
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: lector_id
+            baseTableName: lector_program
+            constraintName: FK_LECTOR_PROGRAM_ON_LECTOR
+            referencedColumnNames: id
+            referencedTableName: lector
+  - changeSet:
+      id: 1755084381762-26
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: program_id
+            baseTableName: lector_program
+            constraintName: FK_LECTOR_PROGRAM_ON_PROGRAM
+            referencedColumnNames: id
+            referencedTableName: program
+  - changeSet:
+      id: 1755084381762-27
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: faculty_id
+            baseTableName: major
+            constraintName: FK_MAJOR_ON_FACULTY
+            referencedColumnNames: id
+            referencedTableName: faculty
+  - changeSet:
+      id: 1755084381762-28
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: discipline_id
+            baseTableName: program_discipline
+            constraintName: FK_PROGRAM_DISCIPLINE_ON_DISCIPLINE
+            referencedColumnNames: id
+            referencedTableName: discipline
+  - changeSet:
+      id: 1755084381762-29
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: program_id
+            baseTableName: program_discipline
+            constraintName: FK_PROGRAM_DISCIPLINE_ON_PROGRAM
+            referencedColumnNames: id
+            referencedTableName: program
+  - changeSet:
+      id: 1755084381762-30
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: course_id
+            baseTableName: program
+            constraintName: FK_PROGRAM_ON_COURSE
+            referencedColumnNames: id
+            referencedTableName: course
+  - changeSet:
+      id: 1755084381762-31
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: category_id
+            baseTableName: room_category
+            constraintName: FK_ROOM_CATEGORY_ON_CATEGORY
+            referencedColumnNames: id
+            referencedTableName: category
+  - changeSet:
+      id: 1755084381762-32
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: room_id
+            baseTableName: room_category
+            constraintName: FK_ROOM_CATEGORY_ON_ROOM
+            referencedColumnNames: id
+            referencedTableName: room
+  - changeSet:
+      id: 1755084381762-33
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: faculty_id
+            baseTableName: room
+            constraintName: FK_ROOM_ON_FACULTY
+            referencedColumnNames: id
+            referencedTableName: faculty
+  - changeSet:
+      id: 1755084381762-34
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: group_id
+            baseTableName: student_group
+            constraintName: FK_STUDENT_GROUP_ON_GROUP
+            referencedColumnNames: id
+            referencedTableName: course_group
+  - changeSet:
+      id: 1755084381762-35
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: student_id
+            baseTableName: student_group
+            constraintName: FK_STUDENT_GROUP_ON_STUDENT
+            referencedColumnNames: id
+            referencedTableName: student
+  - changeSet:
+      id: 1755084381762-36
+      author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: course_id
+            baseTableName: student
+            constraintName: FK_STUDENT_ON_COURSE
+            referencedColumnNames: id
+            referencedTableName: course
+

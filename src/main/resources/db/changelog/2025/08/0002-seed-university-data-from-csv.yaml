@@ -1,0 +1,179 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: sideroff
+      changes:
+        - loadData:
+            tableName: university
+            file: "../../../data/university"
+            relativeToChangelogFile: true
+            encoding: UTF-8
+            separator: ","
+            quotchar: '"'
+
+  - changeSet:
+      id: 2
+      author: sideroff
+      changes:
+        - loadData:
+            tableName: faculty
+            file: "../../../data/faculty"
+            relativeToChangelogFile: true
+            encoding: UTF-8
+            separator: ","
+            quotchar: '"'
+  - changeSet:
+      id: 3
+      author: sideroff
+      changes:
+        - loadData:
+            tableName: department
+            file: "../../../data/department"
+            relativeToChangelogFile: true
+            encoding: UTF-8
+            separator: ","
+            quotchar: '"'
+  - changeSet:
+      id: 4
+      author: sideroff
+      changes:
+        - loadData:
+            tableName: room
+            file: "../../../data/room"
+            relativeToChangelogFile: true
+            encoding: UTF-8
+            separator: ","
+            quotchar: '"'
+  - changeSet:
+      id: 5
+      author: sideroff
+      changes:
+        - loadData:
+            tableName: category
+            file: "../../../data/category"
+            relativeToChangelogFile: true
+            encoding: UTF-8
+            separator: ","
+            quotchar: '"'
+  - changeSet:
+      id: 6
+      author: sideroff
+      changes:
+        - loadData:
+            tableName: room_category
+            file: "../../../data/room_category"
+            relativeToChangelogFile: true
+            encoding: UTF-8
+            separator: ","
+            quotchar: '"'
+  - changeSet:
+      id: 7
+      author: sideroff
+      changes:
+        - loadData:
+            tableName: major
+            file: "../../../data/major"
+            relativeToChangelogFile: true
+            encoding: UTF-8
+            separator: ","
+            quotchar: '"'
+  - changeSet:
+      id: 8
+      author: sideroff
+      changes:
+        - loadData:
+            tableName: course
+            file: "../../../data/course"
+            relativeToChangelogFile: true
+            encoding: UTF-8
+            separator: ","
+            quotchar: '"'
+  - changeSet:
+      id: 9
+      author: sideroff
+      changes:
+        - loadData:
+            tableName: lector
+            file: "../../../data/lector"
+            relativeToChangelogFile: true
+            encoding: UTF-8
+            separator: ","
+            quotchar: '"'
+  - changeSet:
+      id: 10
+      author: sideroff
+      changes:
+        - loadData:
+            tableName: student
+            file: "../../../data/student"
+            relativeToChangelogFile: true
+            encoding: UTF-8
+            separator: ","
+            quotchar: '"'
+  - changeSet:
+      id: 11
+      author: sideroff
+      changes:
+        - loadData:
+            tableName: discipline
+            file: "../../../data/discipline"
+            relativeToChangelogFile: true
+            encoding: UTF-8
+            separator: ","
+            quotchar: '"'
+  - changeSet:
+      id: 12
+      author: sideroff
+      changes:
+        - loadData:
+            tableName: program
+            file: "../../../data/program"
+            relativeToChangelogFile: true
+            encoding: UTF-8
+            separator: ","
+            quotchar: '"'
+  - changeSet:
+      id: 13
+      author: sideroff
+      changes:
+        - loadData:
+            tableName: course_group
+            file: "../../../data/course_group"
+            relativeToChangelogFile: true
+            encoding: UTF-8
+            separator: ","
+            quotchar: '"'
+  - changeSet:
+      id: 14
+      author: sideroff
+      changes:
+        - loadData:
+            tableName: student_group
+            file: "../../../data/student_group"
+            relativeToChangelogFile: true
+            encoding: UTF-8
+            separator: ","
+            quotchar: '"'
+  - changeSet:
+      id: 15
+      author: sideroff
+      changes:
+        - loadData:
+            tableName: program_discipline
+            file: "../../../data/program_discipline"
+            relativeToChangelogFile: true
+            encoding: UTF-8
+            separator: ","
+            quotchar: '"'
+  - changeSet:
+      id: 16
+      author: sideroff
+      changes:
+        - loadData:
+            tableName: lector_program
+            file: "../../../data/lector_program"
+            relativeToChangelogFile: true
+            encoding: UTF-8
+            separator: ","
+            quotchar: '"'
+

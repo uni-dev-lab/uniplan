@@ -158,6 +158,15 @@
           </compilerArgs>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.liquibase</groupId>
+        <artifactId>liquibase-maven-plugin</artifactId>
+        <version>4.32.0</version>
+        <configuration>
+          <driver>org.postgresql.Driver</driver>
+          <changeLogFile>src/main/resources/db/changelog/db.changelog-master.yaml</changeLogFile>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 

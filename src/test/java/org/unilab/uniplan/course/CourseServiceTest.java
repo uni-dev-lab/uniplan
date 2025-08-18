@@ -49,7 +49,7 @@ class CourseServiceTest {
     void createCourseShouldReturnAndSavedCourseDTO() {
         when(courseMapper.toEntity(courseDTO)).thenReturn(course);
         when(courseRepository.save(course)).thenReturn(course);
-        when(courseMapper.toDTO(course)).thenReturn(courseDTO);
+        when(courseMapper.toDto(course)).thenReturn(courseDTO);
 
         CourseDto result = courseService.createCourse(courseDTO);
 
@@ -69,7 +69,7 @@ class CourseServiceTest {
     @Test
     void findByIdShouldReturnCourseDTOIfFound() {
         when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
-        when(courseMapper.toDTO(course)).thenReturn(courseDTO);
+        when(courseMapper.toDto(course)).thenReturn(courseDTO);
 
         Optional<CourseDto> result = courseService.findCourseById(courseId);
 
@@ -81,7 +81,7 @@ class CourseServiceTest {
     void findAllShouldReturnListOfCourseDTOs() {
         List<Course> courseList = List.of(course);
         when(courseRepository.findAll()).thenReturn(courseList);
-        when(courseMapper.toDTO(course)).thenReturn(courseDTO);
+        when(courseMapper.toDto(course)).thenReturn(courseDTO);
 
         List<CourseDto> result = courseService.findAll();
 
@@ -92,16 +92,16 @@ class CourseServiceTest {
     @Test
     void updateCourseShouldReturnUpdatedCourseDTOIfFound() {
         when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
-        doNothing().when(courseMapper).updateEntityFromDTO(courseDTO, course);
+        doNothing().when(courseMapper).updateEntityFromDto(courseDTO, course);
         when(courseRepository.save(course)).thenReturn(course);
-        when(courseMapper.toDTO(course)).thenReturn(courseDTO);
+        when(courseMapper.toDto(course)).thenReturn(courseDTO);
 
         Optional<CourseDto> result = courseService.updateCourse(courseId, courseDTO);
 
         assertTrue(result.isPresent());
         assertEquals(courseDTO, result.get());
         verify(courseRepository).save(course);
-        verify(courseMapper).updateEntityFromDTO(courseDTO, course);
+        verify(courseMapper).updateEntityFromDto(courseDTO, course);
     }
 
     @Test

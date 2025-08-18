@@ -1,12 +1,12 @@
 package org.unilab.uniplan.program;
 
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.unilab.uniplan.program.dto.ProgramDto;
 import org.unilab.uniplan.program.dto.ProgramRequestDto;
 import org.unilab.uniplan.program.dto.ProgramResponseDto;
-import java.util.List;
 
 @Mapper
 public interface ProgramMapper {

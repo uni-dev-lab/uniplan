@@ -1,12 +1,12 @@
 package org.unilab.uniplan.discipline;
 
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.unilab.uniplan.discipline.dto.DisciplineDto;
 import org.unilab.uniplan.discipline.dto.DisciplineRequestDto;
 import org.unilab.uniplan.discipline.dto.DisciplineResponseDto;
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface DisciplineMapper {

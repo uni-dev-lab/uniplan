@@ -51,7 +51,7 @@ class MajorServiceTest {
     void createMajorShouldReturnAndSavedMajorDTO() {
         when(majorMapper.toEntity(majorDTO)).thenReturn(major);
         when(majorRepository.save(major)).thenReturn(major);
-        when(majorMapper.toDTO(major)).thenReturn(majorDTO);
+        when(majorMapper.toDto(major)).thenReturn(majorDTO);
 
         MajorDto result = majorService.createMajor(majorDTO);
 
@@ -64,7 +64,7 @@ class MajorServiceTest {
     @Test
     void findMajorByIdShouldReturnMajorDTOIfFound() {
         when(majorRepository.findById(majorId)).thenReturn(Optional.of(major));
-        when(majorMapper.toDTO(major)).thenReturn(majorDTO);
+        when(majorMapper.toDto(major)).thenReturn(majorDTO);
 
         Optional<MajorDto> result = majorService.findMajorById(majorId);
 
@@ -84,7 +84,7 @@ class MajorServiceTest {
     @Test
     void findAllShouldReturnListOfMajorDTOs() {
         when(majorRepository.findAll()).thenReturn(List.of(major));
-        when(majorMapper.toDTO(major)).thenReturn(majorDTO);
+        when(majorMapper.toDto(major)).thenReturn(majorDTO);
 
         List<MajorDto> result = majorService.findAll();
 
@@ -95,9 +95,9 @@ class MajorServiceTest {
     @Test
     void updateMajorShouldReturnUpdatedMajorDTOIfFound() {
         when(majorRepository.findById(majorId)).thenReturn(Optional.of(major));
-        doNothing().when(majorMapper).updateEntityFromDTO(majorDTO, major);
+        doNothing().when(majorMapper).updateEntityFromDto(majorDTO, major);
         when(majorRepository.save(major)).thenReturn(major);
-        when(majorMapper.toDTO(major)).thenReturn(majorDTO);
+        when(majorMapper.toDto(major)).thenReturn(majorDTO);
 
         Optional<MajorDto> result = majorService.updateMajor(majorId, majorDTO);
 
@@ -139,13 +139,13 @@ class MajorServiceTest {
     @Test
     void findByIdShouldReturnEntityIfExists() {
         when(majorRepository.findById(majorId)).thenReturn(Optional.of(major));
-        when(majorMapper.toDTO(major)).thenReturn(majorDTO);
+        when(majorMapper.toDto(major)).thenReturn(majorDTO);
 
         Optional<MajorDto> result = majorService.findMajorById(majorId);
 
         assertTrue(result.isPresent());
         assertEquals(majorDTO, result.get());
-        verify(majorMapper).toDTO(major);
+        verify(majorMapper).toDto(major);
     }
 
     @Test

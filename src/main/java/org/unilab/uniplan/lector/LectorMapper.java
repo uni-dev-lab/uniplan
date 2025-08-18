@@ -1,12 +1,12 @@
 package org.unilab.uniplan.lector;
 
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.unilab.uniplan.lector.dto.LectorDto;
 import org.unilab.uniplan.lector.dto.LectorRequestDto;
 import org.unilab.uniplan.lector.dto.LectorResponseDto;
-import java.util.List;
 
 @Mapper
 public interface LectorMapper {

@@ -12,19 +12,19 @@ import org.unilab.uniplan.course.dto.CourseResponseDto;
 public interface CourseMapper {
 
     @Mapping(source = "majorId", target = "major.id")
-    Course toEntity(CourseDto courseDTO);
+    Course toEntity(CourseDto courseDto);
 
     @Mapping(source = "major.id", target = "majorId")
-    CourseDto toDTO(Course course);
+    CourseDto toDto(Course course);
 
     @Mapping(source = "majorId", target = "major.id")
-    void updateEntityFromDTO(CourseDto courseDTO, @MappingTarget Course course);
+    void updateEntityFromDto(CourseDto courseDto, @MappingTarget Course course);
 
     @Mapping(target = "id", ignore = true)
-    CourseDto toInnerDTO(CourseRequestDto courseRequestDTO);
+    CourseDto toInnerDto(CourseRequestDto courseRequestDto);
 
     @Mapping(source = "majorId", target = "majorId")
-    CourseResponseDto toResponseDTO(CourseDto courseDTO);
+    CourseResponseDto toResponseDto(CourseDto courseDto);
 
-    List<CourseResponseDto> toResponseDTOList(List<CourseDto> courses);
+    List<CourseResponseDto> toResponseDtoList(List<CourseDto> courses);
 }

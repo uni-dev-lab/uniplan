@@ -56,7 +56,7 @@ class StudentGroupServiceTest {
     void createStudentGroupShouldReturnAndSavedStudentGroupDTO() {
         when(studentGroupMapper.toEntity(studentGroupDTO)).thenReturn(studentGroup);
         when(studentGroupRepository.save(studentGroup)).thenReturn(studentGroup);
-        when(studentGroupMapper.toDTO(studentGroup)).thenReturn(studentGroupDTO);
+        when(studentGroupMapper.toDto(studentGroup)).thenReturn(studentGroupDTO);
 
         StudentGroupDto result = studentGroupService.createStudentGroup(studentGroupDTO);
 
@@ -69,9 +69,9 @@ class StudentGroupServiceTest {
     @Test
     void updateStudentGroupShouldUpdateAndReturnStudentGroupDTOIfExists() {
         when(studentGroupRepository.findById(studentGroupId)).thenReturn(Optional.of(studentGroup));
-        doNothing().when(studentGroupMapper).updateEntityFromDTO(studentGroupDTO, studentGroup);
+        doNothing().when(studentGroupMapper).updateEntityFromDto(studentGroupDTO, studentGroup);
         when(studentGroupRepository.save(studentGroup)).thenReturn(studentGroup);
-        when(studentGroupMapper.toDTO(studentGroup)).thenReturn(studentGroupDTO);
+        when(studentGroupMapper.toDto(studentGroup)).thenReturn(studentGroupDTO);
 
         Optional<StudentGroupDto> result = studentGroupService.updateStudentGroup(studentId,
                                                                                   groupId,
@@ -118,7 +118,7 @@ class StudentGroupServiceTest {
     @Test
     void findStudentGroupByIdShouldReturnStudentGroupDTOIfFound() {
         when(studentGroupRepository.findById(studentGroupId)).thenReturn(Optional.of(studentGroup));
-        when(studentGroupMapper.toDTO(studentGroup)).thenReturn(studentGroupDTO);
+        when(studentGroupMapper.toDto(studentGroup)).thenReturn(studentGroupDTO);
 
         Optional<StudentGroupDto> result = studentGroupService.findStudentGroupById(studentId,
                                                                                     groupId);
@@ -141,7 +141,7 @@ class StudentGroupServiceTest {
     @Test
     void findAllShouldReturnListOfStudentGroupDTOs() {
         when(studentGroupRepository.findAll()).thenReturn(List.of(studentGroup));
-        when(studentGroupMapper.toDTO(studentGroup)).thenReturn(studentGroupDTO);
+        when(studentGroupMapper.toDto(studentGroup)).thenReturn(studentGroupDTO);
 
         List<StudentGroupDto> result = studentGroupService.findAll();
 

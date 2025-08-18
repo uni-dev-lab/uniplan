@@ -22,7 +22,7 @@ public class UniversityService {
     public UniversityDto createUniversity(final UniversityDto universityDto) {
         final University university = universityMapper.toEntity(universityDto);
 
-        return universityMapper.toDto(universityRepository.save(university));
+        return saveEntityAndConvertToDto(university);
     }
 
     public List<UniversityDto> getAllUniversities() {
@@ -40,13 +40,9 @@ public class UniversityService {
     public Optional<UniversityDto> updateUniversity(final UUID id,
                                                     final UniversityDto universityDto) {
         return universityRepository.findById(id)
-                                   .map(existingUniversity -> {
-                                       universityMapper.updateEntityFromDto(universityDto,
-                                                                            existingUniversity);
-
-                                       return universityMapper.toDto(universityRepository.save(
-                                           existingUniversity));
-                                   });
+                                   .map(existingUniversity -> updateEntityAndConvertToDto(
+                                       universityDto,
+                                       existingUniversity));
     }
 
     @Transactional
@@ -57,5 +53,16 @@ public class UniversityService {
                                                                   UNIVERSITY_NOT_FOUND,
                                                                   id)));
         universityRepository.delete(university);
+    }
+
+    private UniversityDto updateEntityAndConvertToDto(final UniversityDto dto,
+                                                      final University entity) {
+        universityMapper.updateEntityFromDto(dto, entity);
+        return saveEntityAndConvertToDto(entity);
+    }
+
+    private UniversityDto saveEntityAndConvertToDto(final University entity) {
+        final University savedEntity = universityRepository.save(entity);
+        return universityMapper.toDto(savedEntity);
     }
 }

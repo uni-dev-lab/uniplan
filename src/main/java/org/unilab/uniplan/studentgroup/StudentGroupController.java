@@ -33,9 +33,9 @@ public class StudentGroupController {
 
     @PostMapping
     public ResponseEntity<StudentGroupResponseDto> addStudentGroup(@RequestBody @NotNull @Valid final StudentGroupRequestDto studentGroupRequestDTO) {
-        final StudentGroupDto studentGroupDTO = studentGroupMapper.toInnerDTO(studentGroupRequestDTO);
+        final StudentGroupDto studentGroupDTO = studentGroupMapper.toInnerDto(studentGroupRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
-                             .body(studentGroupMapper.toResponseDTO(studentGroupService.createStudentGroup(
+                             .body(studentGroupMapper.toResponseDto(studentGroupService.createStudentGroup(
                                  studentGroupDTO)));
     }
 
@@ -43,7 +43,7 @@ public class StudentGroupController {
     public ResponseEntity<StudentGroupResponseDto> getStudentGroupById(@PathVariable @NotNull final UUID studentId,
                                                                        @PathVariable @NotNull final UUID courseGroupId) {
 
-        return ResponseEntity.ok(studentGroupMapper.toResponseDTO(studentGroupService
+        return ResponseEntity.ok(studentGroupMapper.toResponseDto(studentGroupService
                                                                       .findStudentGroupById(
                                                                           studentId,
                                                                           courseGroupId)
@@ -57,16 +57,16 @@ public class StudentGroupController {
 
     @GetMapping
     public List<StudentGroupResponseDto> getAllStudentGroups() {
-        return studentGroupMapper.toResponseDTOList(studentGroupService.findAll());
+        return studentGroupMapper.toResponseDtoList(studentGroupService.findAll());
     }
 
     @PutMapping("/{studentId}/{courseGroupId}")
     public ResponseEntity<StudentGroupResponseDto> updateStudentGroup(@PathVariable @NotNull final UUID studentId,
                                                                       @PathVariable @NotNull final UUID courseGroupId,
                                                                       @RequestBody @NotNull @Valid final StudentGroupRequestDto studentGroupRequestDTO) {
-        final StudentGroupDto studentGroupDTO = studentGroupMapper.toInnerDTO(studentGroupRequestDTO);
+        final StudentGroupDto studentGroupDTO = studentGroupMapper.toInnerDto(studentGroupRequestDTO);
         return ResponseEntity.ok(studentGroupMapper
-                                     .toResponseDTO(studentGroupService.updateStudentGroup(studentId,
+                                     .toResponseDto(studentGroupService.updateStudentGroup(studentId,
                                                                                            courseGroupId,
                                                                                            studentGroupDTO)
                                                                        .orElseThrow(() -> new ResponseStatusException(

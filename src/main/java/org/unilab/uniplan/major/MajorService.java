@@ -21,26 +21,24 @@ public class MajorService {
     @Transactional
     public MajorDto createMajor(final MajorDto majorDTO) {
         final Major major = majorMapper.toEntity(majorDTO);
-        return majorMapper.toDTO(majorRepository.save(major));
+        return saveEntityAndConvertToDto(major);
     }
 
     public Optional<MajorDto> findMajorById(final UUID id) {
         return majorRepository.findById(id)
-                              .map(majorMapper::toDTO);
+                              .map(majorMapper::toDto);
     }
 
     public List<MajorDto> findAll() {
         return majorRepository.findAll()
-                              .stream().map(majorMapper::toDTO).toList();
+                              .stream().map(majorMapper::toDto).toList();
     }
 
     @Transactional
     public Optional<MajorDto> updateMajor(final UUID id, final MajorDto majorDTO) {
-        return majorRepository.findById(id).map(existingMajor -> {
-            majorMapper.updateEntityFromDTO(majorDTO, existingMajor);
-
-            return majorMapper.toDTO(majorRepository.save(existingMajor));
-        });
+        return majorRepository.findById(id).map(existingMajor -> updateEntityAndConvertToDto(
+            majorDTO,
+            existingMajor));
     }
 
     @Transactional
@@ -49,5 +47,16 @@ public class MajorService {
                                            .orElseThrow(() -> new RuntimeException(
                                                MessageFormat.format(MAJOR_NOT_FOUND, id)));
         majorRepository.delete(major);
+    }
+
+    private MajorDto updateEntityAndConvertToDto(final MajorDto dto,
+                                                 final Major entity) {
+        majorMapper.updateEntityFromDto(dto, entity);
+        return saveEntityAndConvertToDto(entity);
+    }
+
+    private MajorDto saveEntityAndConvertToDto(final Major entity) {
+        final Major savedEntity = majorRepository.save(entity);
+        return majorMapper.toDto(savedEntity);
     }
 }

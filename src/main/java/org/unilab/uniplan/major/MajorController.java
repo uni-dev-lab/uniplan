@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import org.unilab.uniplan.major.dto.MajorCourseDto;
 import org.unilab.uniplan.major.dto.MajorDto;
 import org.unilab.uniplan.major.dto.MajorRequestDto;
 import org.unilab.uniplan.major.dto.MajorResponseDto;
@@ -52,6 +53,11 @@ public class MajorController {
     @GetMapping
     public List<MajorResponseDto> getAllMajors() {
         return majorMapper.toResponseDTOList(majorService.findAll());
+    }
+
+    @GetMapping("/all")
+    public List<MajorCourseDto> getAllMajorCourse() {
+        return majorService.findAllMajorCourseByMajor();
     }
 
     @PutMapping("/{id}")

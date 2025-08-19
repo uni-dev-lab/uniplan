@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.unilab.uniplan.major.dto.MajorCourseDto;
 import org.unilab.uniplan.major.dto.MajorDto;
 
 @Service
@@ -31,6 +32,11 @@ public class MajorService {
 
     public List<MajorDto> findAll() {
         return majorRepository.findAll()
+                              .stream().map(majorMapper::toDTO).toList();
+    }
+
+    public List<MajorCourseDto> findAllMajorCourseByMajor() {
+        return majorRepository.findMajorWithCourse()
                               .stream().map(majorMapper::toDTO).toList();
     }
 

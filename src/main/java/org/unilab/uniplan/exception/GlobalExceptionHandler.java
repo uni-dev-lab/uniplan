@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(
             new ErrorResponse(
-                "Ресурсът не беше намерен!",
+                "The resource was not found!",
                 HttpStatus.NOT_FOUND.value(),
                 LocalDateTime.now(),
                 request.getRequestURI()
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(
             new ErrorResponse(
-                "Невалидни данни!",
+                "Invalid data!",
                 HttpStatus.BAD_REQUEST.value(),
                 LocalDateTime.now(),
                 request.getRequestURI()
@@ -58,7 +58,7 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(
             new ErrorResponse(
-                "Липса на данни!",
+                "Missing data!",
                 ex.getStatusCode().value(),
                 LocalDateTime.now(),
                 request.getRequestURI()
@@ -84,7 +84,7 @@ public class GlobalExceptionHandler {
         log.info(message);
 
         return new ResponseEntity<>(new ErrorResponse(
-            "Грешка!",
+            "Error!",
             HttpStatus.BAD_REQUEST.value(),
             LocalDateTime.now(),
             request.getRequestURI()
@@ -99,7 +99,7 @@ public class GlobalExceptionHandler {
         log.info(ex.getMessage());
 
         return new ResponseEntity<>(new ErrorResponse(
-            "Грешка в сървъра!",
+            "Server error!",
             HttpStatus.INTERNAL_SERVER_ERROR.value(),
             LocalDateTime.now(),
             request.getRequestURI()
@@ -113,6 +113,6 @@ public class GlobalExceptionHandler {
         log.info(ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                             .body("Грешка!");
+                             .body("Error!");
     }
 }

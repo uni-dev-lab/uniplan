@@ -1,7 +1,6 @@
 package org.unilab.uniplan.major;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -78,7 +77,7 @@ class MajorServiceTest {
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> majorService.findMajorById(majorId));
 
-        assertTrue(exception.getMessage().contains(majorId.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(majorId)));
     }
 
     @Test
@@ -111,7 +110,7 @@ class MajorServiceTest {
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> majorService.updateMajor(majorId, majorDTO));
 
-        assertTrue(exception.getMessage().contains(majorId.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(majorId)));
         verify(majorRepository, never()).save(any());
     }
 
@@ -153,6 +152,6 @@ class MajorServiceTest {
         org.unilab.uniplan.exception.ResourceNotFoundException exception = assertThrows(
             ResourceNotFoundException.class, () -> majorService.findMajorById(majorId));
 
-        assertTrue(exception.getMessage().contains(majorId.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(majorId)));
     }
 }

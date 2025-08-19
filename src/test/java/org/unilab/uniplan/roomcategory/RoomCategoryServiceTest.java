@@ -92,7 +92,7 @@ class RoomCategoryServiceTest {
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> roomCategoryService.getRoomCategoryById(roomId,
                                                                                       categoryId));
 
-        assertTrue(exception.getMessage().contains(id.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 
     @Test
@@ -117,7 +117,7 @@ class RoomCategoryServiceTest {
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
             roomCategoryService.deleteRoomCategory(roomId, categoryId));
 
-        assertTrue(exception.getMessage().contains(roomId.toString()));
-        assertTrue(exception.getMessage().contains(categoryId.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(roomId)));
+        assertTrue(exception.getMessage().contains(String.valueOf(categoryId)));
     }
 }

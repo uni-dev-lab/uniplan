@@ -83,7 +83,7 @@ class CategoryServiceTest {
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> categoryService.getCategoryById(id));
 
-        assertTrue(exception.getMessage().contains(id.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 
     @Test
@@ -104,7 +104,7 @@ class CategoryServiceTest {
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> categoryService.updateCategory(id, dto));
 
-        assertTrue(exception.getMessage().contains(id.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 
     @Test
@@ -123,6 +123,6 @@ class CategoryServiceTest {
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
             categoryService.deleteCategory(id));
 
-        assertTrue(exception.getMessage().contains(id.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 }

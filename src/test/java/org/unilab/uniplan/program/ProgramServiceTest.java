@@ -94,7 +94,7 @@ class ProgramServiceTest {
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
                                                            () -> programService.getProgramById(id));
 
-        assertTrue(exception.getMessage().contains(id.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 
     @Test
@@ -117,7 +117,7 @@ class ProgramServiceTest {
                                                            () -> programService.updateProgram(id,
                                                                                               programDto));
 
-        assertTrue(exception.getMessage().contains(id.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 
     @Test
@@ -136,6 +136,6 @@ class ProgramServiceTest {
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
             programService.deleteProgram(id));
 
-        assertTrue(exception.getMessage().contains(id.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 }

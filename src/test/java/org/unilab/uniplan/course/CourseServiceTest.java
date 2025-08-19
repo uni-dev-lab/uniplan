@@ -1,7 +1,6 @@
 package org.unilab.uniplan.course;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
@@ -64,7 +63,7 @@ class CourseServiceTest {
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> courseService.findCourseById(courseId));
 
-        assertTrue(exception.getMessage().contains(courseId.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(courseId)));
     }
 
     @Test
@@ -109,7 +108,7 @@ class CourseServiceTest {
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> courseService.updateCourse(courseId, courseDTO));
 
-        assertTrue(exception.getMessage().contains(courseId.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(courseId)));
         verify(courseRepository, never()).save(any());
     }
 
@@ -129,7 +128,7 @@ class CourseServiceTest {
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
             courseService.deleteCourse(courseId));
 
-        assertTrue(exception.getMessage().contains(courseId.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(courseId)));
         verify(courseRepository, never()).delete(any());
     }
 }

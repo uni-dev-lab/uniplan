@@ -86,7 +86,7 @@ class FacultyServiceTest {
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
                                                            () -> facultyService.getFacultyById(id));
 
-        assertTrue(exception.getMessage().contains(id.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 
     @Test
@@ -109,8 +109,7 @@ class FacultyServiceTest {
                                                            () -> facultyService.updateFaculty(id,
                                                                                               dto));
 
-        assertTrue(exception.getMessage().contains(id.toString()));
-        ;
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 
     @Test
@@ -129,6 +128,6 @@ class FacultyServiceTest {
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
                                                   () -> facultyService.deleteFaculty(id));
 
-        assertTrue(exception.getMessage().contains(id.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 }

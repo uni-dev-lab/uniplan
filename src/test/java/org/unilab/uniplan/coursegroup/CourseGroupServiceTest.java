@@ -66,7 +66,7 @@ class CourseGroupServiceTest {
                                                            () -> courseGroupService.findCourseGroupById(
                                                                courseGroupId));
 
-        assertTrue(exception.getMessage().contains(courseGroupId.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(courseGroupId)));
     }
 
     @Test
@@ -114,7 +114,7 @@ class CourseGroupServiceTest {
                                                                courseGroupId,
                                                                courseGroupDTO));
 
-        assertTrue(exception.getMessage().contains(courseGroupId.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(courseGroupId)));
         verify(courseGroupRepository, never()).save(any());
     }
 
@@ -135,7 +135,7 @@ class CourseGroupServiceTest {
                                                   () -> courseGroupService.deleteCourseGroup(
                                                       courseGroupId));
 
-        assertTrue(exception.getMessage().contains(courseGroupId.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(courseGroupId)));
         verify(courseGroupRepository, never()).delete(any());
     }
 }

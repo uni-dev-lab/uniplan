@@ -1,7 +1,6 @@
 package org.unilab.uniplan.student;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
@@ -74,7 +73,7 @@ class StudentServiceTest {
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> studentService.findStudentById(studentId));
 
-        assertTrue(exception.getMessage().contains(studentId.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(studentId)));
     }
 
     @Test
@@ -109,7 +108,7 @@ class StudentServiceTest {
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> studentService.updateStudent(studentId, studentDTO));
 
-        assertTrue(exception.getMessage().contains(studentId.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(studentId)));
         verify(studentRepository, never()).save(any());
     }
 
@@ -129,7 +128,7 @@ class StudentServiceTest {
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
                                                   () -> studentService.deleteStudent(studentId));
 
-        assertTrue(exception.getMessage().contains(studentId.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(studentId)));
         verify(studentRepository, never()).delete(any());
     }
 }

@@ -96,7 +96,7 @@ class DisciplineServiceTest {
                                                            () -> disciplineService.getDisciplineById(
                                                                id));
 
-        assertTrue(exception.getMessage().contains(id.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 
     @Test
@@ -119,7 +119,7 @@ class DisciplineServiceTest {
             ResourceNotFoundException.class,
             () -> disciplineService.updateDiscipline(id, disciplineDto));
 
-        assertTrue(exception.getMessage().contains(id.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 
     @Test
@@ -138,6 +138,6 @@ class DisciplineServiceTest {
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
             disciplineService.deleteDiscipline(id));
 
-        assertTrue(exception.getMessage().contains(id.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 }

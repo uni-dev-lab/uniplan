@@ -93,7 +93,7 @@ class LectorServiceTest {
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
                                                            () -> lectorService.getLectorById(id));
 
-        assertTrue(exception.getMessage().contains(id.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 
     @Test
@@ -116,7 +116,7 @@ class LectorServiceTest {
                                                            () -> lectorService.updateLector(id,
                                                                                             lectorDto));
 
-        assertTrue(exception.getMessage().contains(id.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 
     @Test
@@ -135,6 +135,6 @@ class LectorServiceTest {
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
             lectorService.deleteLector(id));
 
-        assertTrue(exception.getMessage().contains(id.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 }

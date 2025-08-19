@@ -29,8 +29,6 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequiredArgsConstructor
 public class CategoryController {
 
-    private static final String CATEGORY_NOT_FOUND = "Category with ID {0} not found.";
-
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
 

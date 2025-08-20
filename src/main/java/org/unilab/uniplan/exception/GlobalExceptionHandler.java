@@ -3,7 +3,10 @@ package org.unilab.uniplan.exception;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,7 +17,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+
+    private final MessageSource messageSource;
 
     //Handles resource not found exceptions triggered by element not found by search parameters
     @ExceptionHandler(ResourceNotFoundException.class)
@@ -24,7 +30,7 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(
             new ErrorResponse(
-                "The resource was not found!",
+                messageSource.getMessage("resource_not_found", null, LocaleContextHolder.getLocale()),
                 HttpStatus.NOT_FOUND.value(),
                 LocalDateTime.now(),
                 request.getRequestURI()
@@ -41,7 +47,7 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(
             new ErrorResponse(
-                "Invalid data!",
+                messageSource.getMessage("invalid_data", null, LocaleContextHolder.getLocale()),
                 HttpStatus.BAD_REQUEST.value(),
                 LocalDateTime.now(),
                 request.getRequestURI()
@@ -58,7 +64,7 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(
             new ErrorResponse(
-                "Missing data!",
+                messageSource.getMessage("missing_data", null, LocaleContextHolder.getLocale()),
                 ex.getStatusCode().value(),
                 LocalDateTime.now(),
                 request.getRequestURI()
@@ -74,17 +80,20 @@ public class GlobalExceptionHandler {
 
         final String expectedType = Optional.ofNullable(ex.getRequiredType())
                                       .map(Class::getSimpleName)
-                                      .orElse("unknown type");
+                                      .orElse(messageSource.getMessage(
+                                          "unknown_type", null,
+                                          LocaleContextHolder.getLocale()));
 
         final String message = "Invalid parameter: "
-                         + ex.getName()
-                         + " should be of type "
-                         + expectedType;
+                               + ex.getName()
+                               + " should be of type "
+                               + expectedType;
 
         log.info(message);
 
         return new ResponseEntity<>(new ErrorResponse(
-            "Error!",
+            messageSource.getMessage("error", null,
+                                     LocaleContextHolder.getLocale()),
             HttpStatus.BAD_REQUEST.value(),
             LocalDateTime.now(),
             request.getRequestURI()
@@ -99,7 +108,8 @@ public class GlobalExceptionHandler {
         log.info(ex.getMessage());
 
         return new ResponseEntity<>(new ErrorResponse(
-            "Server error!",
+            messageSource.getMessage("server_error", null,
+                                     LocaleContextHolder.getLocale()),
             HttpStatus.INTERNAL_SERVER_ERROR.value(),
             LocalDateTime.now(),
             request.getRequestURI()
@@ -113,6 +123,7 @@ public class GlobalExceptionHandler {
         log.info(ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                             .body("Error!");
+                             .body(messageSource.getMessage("error", null,
+                                                            LocaleContextHolder.getLocale()));
     }
 }

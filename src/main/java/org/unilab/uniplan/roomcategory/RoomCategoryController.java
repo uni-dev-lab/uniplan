@@ -2,7 +2,6 @@ package org.unilab.uniplan.roomcategory;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -15,13 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import org.unilab.uniplan.roomcategory.dto.RoomCategoryDto;
 import org.unilab.uniplan.roomcategory.dto.RoomCategoryRequestDto;
 import org.unilab.uniplan.roomcategory.dto.RoomCategoryResponseDto;
 
 @RestController
-@RequestMapping("/room-categories")
+@RequestMapping("/roomCategories")
 @RequiredArgsConstructor
 public class RoomCategoryController {
 

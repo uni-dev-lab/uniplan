@@ -1,7 +1,8 @@
 package org.unilab.uniplan.program;
 
+import static org.springframework.http.ResponseEntity.ok;
+
 import jakarta.validation.Valid;
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -15,14 +16,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import org.unilab.uniplan.program.dto.ProgramDto;
 import org.unilab.uniplan.program.dto.ProgramRequestDto;
 
-import static org.springframework.http.ResponseEntity.ok;
-
 @RestController
-@RequestMapping("/api/programs")
+@RequestMapping("/programs")
 @RequiredArgsConstructor
 public class ProgramController {
 

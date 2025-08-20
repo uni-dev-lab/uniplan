@@ -22,7 +22,7 @@ import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorReq
 import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorResponseDto;
 
 @RestController
-@RequestMapping("/api/ProgramDisciplineLector")
+@RequestMapping("/programDisciplineLector")
 @RequiredArgsConstructor
 public class ProgramDisciplineLectorController {
 

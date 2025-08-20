@@ -2,7 +2,6 @@ package org.unilab.uniplan.student;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import org.unilab.uniplan.student.dto.StudentDto;
 import org.unilab.uniplan.student.dto.StudentRequestDto;
 import org.unilab.uniplan.student.dto.StudentResponseDto;
@@ -25,8 +23,6 @@ import org.unilab.uniplan.student.dto.StudentResponseDto;
 @RequestMapping("/students")
 @RequiredArgsConstructor
 public class StudentController {
-
-    private static final String STUDENT_NOT_FOUND = "Student with ID {0} not found.";
 
     private final StudentService studentService;
     private final StudentMapper studentMapper;
@@ -44,13 +40,7 @@ public class StudentController {
     public ResponseEntity<StudentResponseDto> getStudent(@PathVariable
                                                          @NotNull final UUID id) {
         final StudentResponseDto studentResponseDTO = studentMapper.toResponseDto(studentService.findStudentById(
-                                                                                                    id)
-                                                                                                .orElseThrow(
-                                                                                                    () -> new ResponseStatusException(
-                                                                                                        HttpStatus.NOT_FOUND,
-                                                                                                        MessageFormat.format(
-                                                                                                            STUDENT_NOT_FOUND,
-                                                                                                            id))));
+                                                                                                    id));
 
         return ResponseEntity.ok(studentResponseDTO);
     }
@@ -66,12 +56,7 @@ public class StudentController {
                                                             @RequestBody
                                                             @NotNull @Valid final StudentRequestDto studentRequestDTO) {
         final StudentDto studentDTO = studentMapper.toInternalDto(studentRequestDTO);
-        studentService.updateStudent(id, studentDTO).orElseThrow(
-            () -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                MessageFormat.format(
-                    STUDENT_NOT_FOUND,
-                    id)));
+        studentService.updateStudent(id, studentDTO);
         return ResponseEntity.ok(studentMapper.toResponseDto(studentDTO));
     }
 

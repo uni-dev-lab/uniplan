@@ -1,8 +1,9 @@
 package org.unilab.uniplan.faculty;
 
+import static org.springframework.http.ResponseEntity.ok;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import org.unilab.uniplan.faculty.dto.FacultyDto;
 import org.unilab.uniplan.faculty.dto.FacultyRequestDto;
 import org.unilab.uniplan.faculty.dto.FacultyResponseDto;
@@ -25,8 +25,6 @@ import org.unilab.uniplan.faculty.dto.FacultyResponseDto;
 @RequestMapping("/faculties")
 @RequiredArgsConstructor
 public class FacultyController {
-
-    private static final String FACULTY_NOT_FOUND = "Faculty with ID {0} not found.";
 
     private final FacultyService facultyService;
     private final FacultyMapper facultyMapper;
@@ -49,12 +47,9 @@ public class FacultyController {
 
     @GetMapping("/{id}")
     public ResponseEntity<FacultyResponseDto> getFacultyById(@NotNull @PathVariable final UUID id) {
-        final FacultyDto facultyDto = facultyService.getFacultyById(id)
-                                                    .orElseThrow(() -> new ResponseStatusException(
-                                                        HttpStatus.NOT_FOUND,
-                                                        MessageFormat.format(FACULTY_NOT_FOUND, id)
-                                                    ));
-        return ResponseEntity.ok(facultyMapper.toResponseDto(facultyDto));
+        final FacultyDto facultyDto = facultyService.getFacultyById(id);
+
+        return ok(facultyMapper.toResponseDto(facultyDto));
     }
 
     @PutMapping("/{id}")
@@ -64,13 +59,7 @@ public class FacultyController {
 
         final FacultyDto internalDto = facultyMapper.toInternalDto(facultyRequestDto);
 
-        return facultyService.updateFaculty(id, internalDto)
-                             .map(facultyMapper::toResponseDto)
-                             .map(ResponseEntity::ok)
-                             .orElseThrow(() -> new ResponseStatusException(
-                                 HttpStatus.NOT_FOUND,
-                                 MessageFormat.format(FACULTY_NOT_FOUND, id)
-                             ));
+        return ok(facultyMapper.toResponseDto(facultyService.updateFaculty(id, internalDto)));
     }
 
     @DeleteMapping("/{id}")

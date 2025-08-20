@@ -16,6 +16,23 @@ import org.springframework.web.server.ResponseStatusException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    //Handles resource not found exceptions triggered by element not found by search parameters
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(final ResourceNotFoundException ex,
+                                                                   final HttpServletRequest request) {
+        log.info(ex.getMessage());
+
+        return new ResponseEntity<>(
+            new ErrorResponse(
+                "The resource was not found!",
+                HttpStatus.NOT_FOUND.value(),
+                LocalDateTime.now(),
+                request.getRequestURI()
+            ),
+            HttpStatus.NOT_FOUND
+        );
+    }
+
     //Handles validation exceptions triggered by method argument validation failures (e.g. @Valid)
     @ExceptionHandler(HandlerMethodValidationException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(final HandlerMethodValidationException ex,
@@ -24,7 +41,7 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(
             new ErrorResponse(
-                "Невалидни данни!",
+                "Invalid data!",
                 HttpStatus.BAD_REQUEST.value(),
                 LocalDateTime.now(),
                 request.getRequestURI()
@@ -41,7 +58,7 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(
             new ErrorResponse(
-                "Липса на данни!",
+                "Missing data!",
                 ex.getStatusCode().value(),
                 LocalDateTime.now(),
                 request.getRequestURI()
@@ -67,7 +84,7 @@ public class GlobalExceptionHandler {
         log.info(message);
 
         return new ResponseEntity<>(new ErrorResponse(
-            "Грешка!",
+            "Error!",
             HttpStatus.BAD_REQUEST.value(),
             LocalDateTime.now(),
             request.getRequestURI()
@@ -82,7 +99,7 @@ public class GlobalExceptionHandler {
         log.info(ex.getMessage());
 
         return new ResponseEntity<>(new ErrorResponse(
-            "Грешка в сървъра!",
+            "Server error!",
             HttpStatus.INTERNAL_SERVER_ERROR.value(),
             LocalDateTime.now(),
             request.getRequestURI()
@@ -96,6 +113,6 @@ public class GlobalExceptionHandler {
         log.info(ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                             .body("Грешка!");
+                             .body("Error!");
     }
 }

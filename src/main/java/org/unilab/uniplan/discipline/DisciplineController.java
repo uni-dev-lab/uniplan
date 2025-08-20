@@ -1,8 +1,9 @@
 package org.unilab.uniplan.discipline;
 
+import static org.springframework.http.ResponseEntity.ok;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import org.unilab.uniplan.discipline.dto.DisciplineDto;
 import org.unilab.uniplan.discipline.dto.DisciplineRequestDto;
 import org.unilab.uniplan.discipline.dto.DisciplineResponseDto;
@@ -26,7 +26,6 @@ import org.unilab.uniplan.discipline.dto.DisciplineResponseDto;
 @RequestMapping("/api/disciplines")
 public class DisciplineController {
 
-    private static final String DISCIPLINE_NOT_FOUND = "Discipline with ID {0} not found.";
     private final DisciplineMapper disciplineMapper;
     private final DisciplineService disciplineService;
 
@@ -45,28 +44,17 @@ public class DisciplineController {
 
     @GetMapping("/{id}")
     public ResponseEntity<DisciplineResponseDto> getDisciplineById(@NotNull @PathVariable final UUID id) {
-        final DisciplineDto disciplineDto = disciplineService.getDisciplineById(id)
-                                                             .orElseThrow(() -> new ResponseStatusException(
-                                                                 HttpStatus.NOT_FOUND,
-                                                                 MessageFormat.format(
-                                                                     DISCIPLINE_NOT_FOUND,
-                                                                     id)));
-        return ResponseEntity.ok(disciplineMapper.toResponseDto(disciplineDto));
+        final DisciplineDto disciplineDto = disciplineService.getDisciplineById(id);
+
+        return ok(disciplineMapper.toResponseDto(disciplineDto));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<DisciplineResponseDto> update(@NotNull @PathVariable UUID id, @Valid @NotNull @RequestBody DisciplineRequestDto disciplineRequestDto) {
-       final DisciplineDto internalDto =disciplineMapper.toInternalDto(disciplineRequestDto);
+       final DisciplineDto internalDto = disciplineMapper.toInternalDto(disciplineRequestDto);
 
-       return disciplineService.updateDiscipline(id, internalDto)
-                               .map(disciplineMapper::toResponseDto)
-                               .map(ResponseEntity::ok)
-                               .orElseThrow(() -> new ResponseStatusException(
-                                   HttpStatus.NOT_FOUND,
-                                   MessageFormat.format(
-                                       DISCIPLINE_NOT_FOUND,
-                                       id)
-                               ));
+        return ok(disciplineMapper.toResponseDto(disciplineService.updateDiscipline(id,
+                                                                                    internalDto)));
     }
 
     @DeleteMapping("/{id}")

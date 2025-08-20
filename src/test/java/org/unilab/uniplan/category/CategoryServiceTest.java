@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.category.dto.CategoryDto;
+import org.unilab.uniplan.exception.ResourceNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceTest {
@@ -71,19 +72,18 @@ class CategoryServiceTest {
         when(categoryRepository.findById(id)).thenReturn(Optional.of(entity));
         when(categoryMapper.toDto(entity)).thenReturn(dto);
 
-        Optional<CategoryDto> result = categoryService.getCategoryById(id);
+        CategoryDto result = categoryService.getCategoryById(id);
 
-        assertTrue(result.isPresent());
-        assertEquals(dto, result.get());
+        assertEquals(dto, result);
     }
 
     @Test
     void testFindCategoryByIdShouldReturnEmptyOptionalIfCategoryNotFound() {
         when(categoryRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<CategoryDto> result = categoryService.getCategoryById(id);
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> categoryService.getCategoryById(id));
 
-        assertTrue(result.isEmpty());
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 
     @Test
@@ -93,19 +93,18 @@ class CategoryServiceTest {
         when(categoryRepository.save(entity)).thenReturn(entity);
         when(categoryMapper.toDto(entity)).thenReturn(dto);
 
-        Optional<CategoryDto> result = categoryService.updateCategory(id, dto);
+        CategoryDto result = categoryService.updateCategory(id, dto);
 
-        assertTrue(result.isPresent());
-        assertEquals(dto, result.get());
+        assertEquals(dto, result);
     }
 
     @Test
     void testUpdateCategoryShouldReturnEmptyOptionalIfNotFound() {
         when(categoryRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<CategoryDto> result = categoryService.updateCategory(id, dto);
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> categoryService.updateCategory(id, dto));
 
-        assertTrue(result.isEmpty());
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 
     @Test
@@ -121,9 +120,9 @@ class CategoryServiceTest {
     void testDeleteCategoryShouldThrowIfNotFound() {
         when(categoryRepository.findById(id)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
             categoryService.deleteCategory(id));
 
-        assertTrue(exception.getMessage().contains(id.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 }

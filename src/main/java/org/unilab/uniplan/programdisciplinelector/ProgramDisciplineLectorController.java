@@ -1,10 +1,9 @@
 package org.unilab.uniplan.programdisciplinelector;
 
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+import static org.springframework.http.ResponseEntity.ok;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorDto;
 import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorRequestDto;
 import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorResponseDto;
@@ -28,7 +26,6 @@ import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorRes
 @RequiredArgsConstructor
 public class ProgramDisciplineLectorController {
 
-    private static final String PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND = "Program discipline lector with lectorId {0}, programId {1} and disciplineId {2} not found.";
     private final ProgramDisciplineLectorMapper programDisciplineLectorMapper;
     private final ProgramDisciplineLectorService programDisciplineLectorService;
 
@@ -53,11 +50,9 @@ public class ProgramDisciplineLectorController {
                                                                                              @NotNull @PathVariable final UUID programId,
                                                                                              @NotNull @PathVariable final UUID disciplineId) {
         final ProgramDisciplineLectorDto programDisciplineLectorDto = programDisciplineLectorService
-            .getProgramDisciplineLectorById(lectorId, programId, disciplineId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                                           MessageFormat.format(PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND, id)
-            ));
-        return ResponseEntity.ok(programDisciplineLectorMapper.toResponseDto(programDisciplineLectorDto));
+            .getProgramDisciplineLectorById(lectorId, programId, disciplineId);
+
+        return ok(programDisciplineLectorMapper.toResponseDto(programDisciplineLectorDto));
     }
 
     @PutMapping("/{lectorId}/{programId}/{disciplineId}")
@@ -67,16 +62,11 @@ public class ProgramDisciplineLectorController {
                                                                                             @Valid @NotNull @RequestBody ProgramDisciplineLectorRequestDto programDisciplineLectorRequestDto){
         final ProgramDisciplineLectorDto programDisciplineLectorDto = programDisciplineLectorMapper.toInternalDto(programDisciplineLectorRequestDto);
 
-        return programDisciplineLectorService.updateProgramDisciplineLector(lectorId,
-                                                                            programId,
-                                                                            disciplineId,
-                                                                            programDisciplineLectorDto)
-                                             .map(programDisciplineLectorMapper::toResponseDto)
-                                             .map(ResponseEntity::ok)
-                                             .orElseThrow(() -> new ResponseStatusException(
-                                                HttpStatus.NOT_FOUND,
-                                                MessageFormat.format(PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND,id)
-                                             ));
+        return ok(programDisciplineLectorMapper.toResponseDto(programDisciplineLectorService.updateProgramDisciplineLector(
+            lectorId,
+            programId,
+            disciplineId,
+            programDisciplineLectorDto)));
     }
 
     @DeleteMapping("/{lectorId}/{programId}/{disciplineId}")

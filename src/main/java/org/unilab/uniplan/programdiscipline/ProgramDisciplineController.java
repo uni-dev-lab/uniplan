@@ -21,12 +21,13 @@ import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineDto;
 import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineRequestDto;
 import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineResponseDto;
 
+import static org.springframework.http.ResponseEntity.ok;
+
 @RestController
 @RequestMapping("/api/programDisciplines")
 @RequiredArgsConstructor
 public class ProgramDisciplineController {
 
-    private static final String PROGRAM_DISCIPLINE_NOT_FOUND = "Program Discipline with disciplieID {0} and programID {1} not found.";
     private final ProgramDisciplineMapper programDisciplineMapper;
     private final ProgramDisciplineService programDisciplineService;
 
@@ -49,15 +50,9 @@ public class ProgramDisciplineController {
     public ResponseEntity<ProgramDisciplineResponseDto> getProgramDisciplineById(@NotNull @PathVariable UUID disciplineId,
                                                                                  @NotNull @PathVariable UUID programId) {
         final ProgramDisciplineDto programDisciplineDto = programDisciplineService
-            .getProgramDisciplineById(disciplineId, programId)
-                                                            .orElseThrow(()-> new ResponseStatusException(
-                                                                HttpStatus.NOT_FOUND,
-                                                                MessageFormat.format(
-                                                                    PROGRAM_DISCIPLINE_NOT_FOUND,
-                                                                    disciplineId,
-                                                                    programId)
-                                                            ));
-        return ResponseEntity.ok(programDisciplineMapper.toResponseDto(programDisciplineDto));
+            .getProgramDisciplineById(disciplineId, programId);
+
+        return ok(programDisciplineMapper.toResponseDto(programDisciplineDto));
     }
 
     @PutMapping("/{disciplineId}/{programId}")
@@ -67,17 +62,9 @@ public class ProgramDisciplineController {
         final ProgramDisciplineDto programDisciplineDto = programDisciplineMapper
                                                             .toInternalDto(programDisciplineRequestDto);
 
-        return programDisciplineService.updateProgramDiscipline(disciplineId,
+        return ok(programDisciplineMapper.toResponseDto(programDisciplineService.updateProgramDiscipline(disciplineId,
                                                                 programId,
-                                                                programDisciplineDto)
-                                       .map(programDisciplineMapper::toResponseDto)
-                                       .map(ResponseEntity::ok)
-                                       .orElseThrow(() -> new ResponseStatusException(
-                                           HttpStatus.NOT_FOUND,
-                                           MessageFormat.format(PROGRAM_DISCIPLINE_NOT_FOUND,
-                                                                disciplineId,
-                                                                programId)
-                                       ));
+                                                                programDisciplineDto)));
     }
 
     @DeleteMapping("/{disciplineId}/{programId}")

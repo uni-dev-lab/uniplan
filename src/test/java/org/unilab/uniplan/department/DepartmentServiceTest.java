@@ -2,7 +2,6 @@ package org.unilab.uniplan.department;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doAnswer;
@@ -19,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.department.dto.DepartmentDto;
+import org.unilab.uniplan.exception.ResourceNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class DepartmentServiceTest {
@@ -74,19 +74,18 @@ class DepartmentServiceTest {
         when(departmentRepository.findById(id)).thenReturn(Optional.of(entity));
         when(departmentMapper.toDto(entity)).thenReturn(dto);
 
-        Optional<DepartmentDto> result = departmentService.getDepartmentById(id);
+        DepartmentDto result = departmentService.getDepartmentById(id);
 
-        assertTrue(result.isPresent());
-        assertEquals(dto, result.get());
+        assertEquals(dto, result);
     }
 
     @Test
     void testFindDepartmentByIdShouldReturnEmptyOptionalIfDepartmentNotFound() {
         when(departmentRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<DepartmentDto> result = departmentService.getDepartmentById(id);
+        org.unilab.uniplan.exception.ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> departmentService.getDepartmentById(id));
 
-        assertFalse(result.isPresent());
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 
     @Test
@@ -96,19 +95,18 @@ class DepartmentServiceTest {
         when(departmentRepository.save(entity)).thenReturn(entity);
         when(departmentMapper.toDto(entity)).thenReturn(dto);
 
-        Optional<DepartmentDto> result = departmentService.updateDepartment(id, dto);
+        DepartmentDto result = departmentService.updateDepartment(id, dto);
 
-        assertTrue(result.isPresent());
-        assertEquals(dto, result.get());
+        assertEquals(dto, result);
     }
 
     @Test
     void testUpdateDepartmentShouldReturnEmptyOptionalIfDepartmentNotFound() {
         when(departmentRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<DepartmentDto> result = departmentService.updateDepartment(id, dto);
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> departmentService.updateDepartment(id, dto));
 
-        assertFalse(result.isPresent());
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 
     @Test
@@ -124,10 +122,10 @@ class DepartmentServiceTest {
     void testDeleteDepartmentShouldThrowIfNotFound() {
         when(departmentRepository.findById(id)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class,
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
                                                   () -> departmentService.deleteDepartment(id));
 
-        assertTrue(exception.getMessage().contains(id.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
 
     }
 }

@@ -1,7 +1,6 @@
 package org.unilab.uniplan.course;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
@@ -20,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.course.dto.CourseDto;
+import org.unilab.uniplan.exception.ResourceNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class CourseServiceTest {
@@ -61,9 +61,9 @@ class CourseServiceTest {
     void findCourseByIdShouldReturnEmptyIfNotFound() {
         when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
 
-        Optional<CourseDto> result = courseService.findCourseById(courseId);
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> courseService.findCourseById(courseId));
 
-        assertFalse(result.isPresent());
+        assertTrue(exception.getMessage().contains(String.valueOf(courseId)));
     }
 
     @Test
@@ -71,10 +71,9 @@ class CourseServiceTest {
         when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
         when(courseMapper.toDto(course)).thenReturn(courseDTO);
 
-        Optional<CourseDto> result = courseService.findCourseById(courseId);
+        CourseDto result = courseService.findCourseById(courseId);
 
-        assertTrue(result.isPresent());
-        assertEquals(courseDTO, result.get());
+        assertEquals(courseDTO, result);
     }
 
     @Test
@@ -96,10 +95,9 @@ class CourseServiceTest {
         when(courseRepository.save(course)).thenReturn(course);
         when(courseMapper.toDto(course)).thenReturn(courseDTO);
 
-        Optional<CourseDto> result = courseService.updateCourse(courseId, courseDTO);
+        CourseDto result = courseService.updateCourse(courseId, courseDTO);
 
-        assertTrue(result.isPresent());
-        assertEquals(courseDTO, result.get());
+        assertEquals(courseDTO, result);
         verify(courseRepository).save(course);
         verify(courseMapper).updateEntityFromDto(courseDTO, course);
     }
@@ -108,9 +106,9 @@ class CourseServiceTest {
     void updateCourseShouldReturnEmptyIfNotFound() {
         when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
 
-        Optional<CourseDto> result = courseService.updateCourse(courseId, courseDTO);
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> courseService.updateCourse(courseId, courseDTO));
 
-        assertFalse(result.isPresent());
+        assertTrue(exception.getMessage().contains(String.valueOf(courseId)));
         verify(courseRepository, never()).save(any());
     }
 
@@ -127,10 +125,10 @@ class CourseServiceTest {
     void deleteCourseShouldThrowIfNotFound() {
         when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
             courseService.deleteCourse(courseId));
 
-        assertTrue(exception.getMessage().contains("Course with ID"));
+        assertTrue(exception.getMessage().contains(String.valueOf(courseId)));
         verify(courseRepository, never()).delete(any());
     }
 }

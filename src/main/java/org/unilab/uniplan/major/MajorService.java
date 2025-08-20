@@ -1,19 +1,18 @@
 package org.unilab.uniplan.major;
 
+import static org.unilab.uniplan.utils.ErrorConstants.MAJOR_NOT_FOUND;
+
 import jakarta.transaction.Transactional;
-import java.text.MessageFormat;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.major.dto.MajorDto;
 
 @Service
 @RequiredArgsConstructor
 public class MajorService {
-
-    private static final String MAJOR_NOT_FOUND = "Major with ID {0} not found.";
 
     private final MajorRepository majorRepository;
     private final MajorMapper majorMapper;
@@ -24,9 +23,11 @@ public class MajorService {
         return saveEntityAndConvertToDto(major);
     }
 
-    public Optional<MajorDto> findMajorById(final UUID id) {
+    public MajorDto findMajorById(final UUID id) {
         return majorRepository.findById(id)
-                              .map(majorMapper::toDto);
+                              .map(majorMapper::toDto)
+                              .orElseThrow(() -> new ResourceNotFoundException(
+                                  MAJOR_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     public List<MajorDto> findAll() {
@@ -35,17 +36,19 @@ public class MajorService {
     }
 
     @Transactional
-    public Optional<MajorDto> updateMajor(final UUID id, final MajorDto majorDTO) {
+    public MajorDto updateMajor(final UUID id, final MajorDto majorDTO) {
         return majorRepository.findById(id).map(existingMajor -> updateEntityAndConvertToDto(
             majorDTO,
-            existingMajor));
+            existingMajor))
+                              .orElseThrow(() -> new ResourceNotFoundException(MAJOR_NOT_FOUND.getMessage(
+                                  String.valueOf(id))));
     }
 
     @Transactional
     public void deleteMajor(final UUID id) {
         final Major major = majorRepository.findById(id)
-                                           .orElseThrow(() -> new RuntimeException(
-                                               MessageFormat.format(MAJOR_NOT_FOUND, id)));
+                                           .orElseThrow(() -> new ResourceNotFoundException(
+                                               MAJOR_NOT_FOUND.getMessage(String.valueOf(id))));
         majorRepository.delete(major);
     }
 

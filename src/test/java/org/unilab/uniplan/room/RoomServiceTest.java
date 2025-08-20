@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.room.dto.RoomDto;
 
 @ExtendWith(MockitoExtension.class)
@@ -73,19 +74,18 @@ class RoomServiceTest {
         when(roomRepository.findById(id)).thenReturn(Optional.of(entity));
         when(roomMapper.toDto(entity)).thenReturn(dto);
 
-        Optional<RoomDto> result = roomService.getRoomById(id);
+        RoomDto result = roomService.getRoomById(id);
 
-        assertTrue(result.isPresent());
-        assertEquals(dto, result.get());
+        assertEquals(dto, result);
     }
 
     @Test
     void testGetRoomByIdShouldReturnEmptyOptionalIfRoomNotFound() {
         when(roomRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<RoomDto> result = roomService.getRoomById(id);
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> roomService.getRoomById(id));
 
-        assertTrue(result.isEmpty());
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 
     @Test
@@ -95,19 +95,18 @@ class RoomServiceTest {
         when(roomRepository.save(entity)).thenReturn(entity);
         when(roomMapper.toDto(entity)).thenReturn(dto);
 
-        Optional<RoomDto> result = roomService.updateRoom(id, dto);
+        RoomDto result = roomService.updateRoom(id, dto);
 
-        assertTrue(result.isPresent());
-        assertEquals(dto, result.get());
+        assertEquals(dto, result);
     }
 
     @Test
     void testUpdateRoomShouldReturnEmptyOptionalIfNotFound() {
         when(roomRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<RoomDto> result = roomService.updateRoom(id, dto);
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> roomService.updateRoom(id, dto));
 
-        assertTrue(result.isEmpty());
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 
     @Test
@@ -123,9 +122,9 @@ class RoomServiceTest {
     void testDeleteRoomShouldThrowIfNotFound() {
         when(roomRepository.findById(id)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
             roomService.deleteRoom(id));
 
-        assertTrue(exception.getMessage().contains(id.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 }

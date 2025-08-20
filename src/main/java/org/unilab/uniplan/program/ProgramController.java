@@ -19,12 +19,12 @@ import org.springframework.web.server.ResponseStatusException;
 import org.unilab.uniplan.program.dto.ProgramDto;
 import org.unilab.uniplan.program.dto.ProgramRequestDto;
 
+import static org.springframework.http.ResponseEntity.ok;
+
 @RestController
 @RequestMapping("/api/programs")
 @RequiredArgsConstructor
 public class ProgramController {
-
-    private static final String PROGRAM_NOT_FOUND = "Program with ID {0} not found.";
 
     private final ProgramService programService;
     private final ProgramMapper programMapper;
@@ -37,14 +37,12 @@ public class ProgramController {
 
     @GetMapping
     public ResponseEntity<List<ProgramDto>> getAllPrograms() {
-        return ResponseEntity.ok(programService.getAllPrograms());
+        return ok(programService.getAllPrograms());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProgramDto> getProgramById(@PathVariable UUID id) {
-        return programService.getProgramById(id)
-                             .map(ResponseEntity::ok)
-                             .orElse(ResponseEntity.notFound().build());
+        return ok(programService.getProgramById(id));
     }
 
     @PutMapping("/{id}")
@@ -52,12 +50,7 @@ public class ProgramController {
                                                     @Valid @RequestBody ProgramRequestDto request) {
         final ProgramDto programDto = programMapper.toInternalDto(request);
 
-        return programService.updateProgram(id, programDto)
-                              .map(ResponseEntity::ok)
-                              .orElseThrow(() -> new ResponseStatusException(
-                                  HttpStatus.NOT_FOUND,
-                                  MessageFormat.format(PROGRAM_NOT_FOUND, id)
-                              ));
+        return ok(programService.updateProgram(id, programDto));
     }
 
     @DeleteMapping("/{id}")

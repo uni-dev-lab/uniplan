@@ -41,4 +41,9 @@ public class StudentGroupId implements Serializable {
     public int hashCode() {
         return Objects.hash(studentId, courseGroupId);
     }
+
+    @Override
+    public String toString() {
+        return studentId + ", " + courseGroupId;
+    }
 }

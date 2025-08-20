@@ -25,8 +25,6 @@ import org.unilab.uniplan.roomcategory.dto.RoomCategoryResponseDto;
 @RequiredArgsConstructor
 public class RoomCategoryController {
 
-    private static final String ROOM_CATEGORY_NOT_FOUND = "Room Category with Room ID {0} and Category ID {1} not found.";
-
     private final RoomCategoryService roomCategoryService;
     private final RoomCategoryMapper roomCategoryMapper;
 
@@ -50,13 +48,7 @@ public class RoomCategoryController {
     public ResponseEntity<RoomCategoryResponseDto> getRoomCategoryById(@PathVariable final UUID roomId,
                                                                        @PathVariable final UUID categoryId) {
         RoomCategoryDto roomCategoryDto = roomCategoryService.getRoomCategoryById(roomId,
-                                                                                  categoryId)
-                                                             .orElseThrow(() -> new ResponseStatusException(
-                                                                 HttpStatus.NOT_FOUND,
-                                                                 MessageFormat.format(
-                                                                     ROOM_CATEGORY_NOT_FOUND,
-                                                                     roomId,
-                                                                     categoryId)));
+                                                                                  categoryId);
 
         return ResponseEntity.ok(roomCategoryMapper.toResponseDto(roomCategoryDto));
     }

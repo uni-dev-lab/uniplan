@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.faculty.dto.FacultyDto;
 
 @ExtendWith(MockitoExtension.class)
@@ -73,19 +74,19 @@ class FacultyServiceTest {
         when(facultyRepository.findById(id)).thenReturn(Optional.of(entity));
         when(facultyMapper.toDto(entity)).thenReturn(dto);
 
-        Optional<FacultyDto> result = facultyService.getFacultyById(id);
+        FacultyDto result = facultyService.getFacultyById(id);
 
-        assertTrue(result.isPresent());
-        assertEquals(dto, result.get());
+        assertEquals(dto, result);
     }
 
     @Test
     void testGetFacultyByIdShouldReturnEmptyOptionalIfFacultyNotFound() {
         when(facultyRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<FacultyDto> result = facultyService.getFacultyById(id);
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+                                                           () -> facultyService.getFacultyById(id));
 
-        assertTrue(result.isEmpty());
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 
     @Test
@@ -95,19 +96,20 @@ class FacultyServiceTest {
         when(facultyRepository.save(entity)).thenReturn(entity);
         when(facultyMapper.toDto(entity)).thenReturn(dto);
 
-        Optional<FacultyDto> result = facultyService.updateFaculty(id, dto);
+        FacultyDto result = facultyService.updateFaculty(id, dto);
 
-        assertTrue(result.isPresent());
-        assertEquals(dto, result.get());
+        assertEquals(dto, result);
     }
 
     @Test
     void testUpdateFacultyShouldReturnEmptyOptionalIfNotFound() {
         when(facultyRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<FacultyDto> result = facultyService.updateFaculty(id, dto);
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+                                                           () -> facultyService.updateFaculty(id,
+                                                                                              dto));
 
-        assertTrue(result.isEmpty());
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 
     @Test
@@ -123,9 +125,9 @@ class FacultyServiceTest {
     void testDeleteFacultyShouldThrowIfNotFound() {
         when(facultyRepository.findById(id)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class,
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
                                                   () -> facultyService.deleteFaculty(id));
 
-        assertTrue(exception.getMessage().contains(id.toString()));
+        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 }

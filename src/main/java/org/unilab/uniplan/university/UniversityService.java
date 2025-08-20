@@ -1,19 +1,19 @@
 package org.unilab.uniplan.university;
 
-import java.text.MessageFormat;
+import static org.unilab.uniplan.utils.ErrorConstants.UNIVERSITY_NOT_FOUND;
+
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.university.dto.UniversityDto;
 
 @Service
 @RequiredArgsConstructor
 public class UniversityService {
 
-    private static final String UNIVERSITY_NOT_FOUND = "University with ID {0} not found.";
 
     private final UniversityRepository universityRepository;
     private final UniversityMapper universityMapper;
@@ -31,27 +31,29 @@ public class UniversityService {
         return universityMapper.toDtoList(universities);
     }
 
-    public Optional<UniversityDto> getUniversityById(final UUID id) {
+    public UniversityDto getUniversityById(final UUID id) {
         return universityRepository.findById(id)
-                                   .map(universityMapper::toDto);
+                                   .map(universityMapper::toDto)
+                                   .orElseThrow(() -> new ResourceNotFoundException(
+                                       UNIVERSITY_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     @Transactional
-    public Optional<UniversityDto> updateUniversity(final UUID id,
-                                                    final UniversityDto universityDto) {
+    public UniversityDto updateUniversity(final UUID id,
+                                          final UniversityDto universityDto) {
         return universityRepository.findById(id)
                                    .map(existingUniversity -> updateEntityAndConvertToDto(
                                        universityDto,
-                                       existingUniversity));
+                                       existingUniversity))
+                                   .orElseThrow(() -> new ResourceNotFoundException(
+                                       UNIVERSITY_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     @Transactional
     public void deleteUniversity(final UUID id) {
         final University university = universityRepository.findById(id)
-                                                          .orElseThrow(() -> new RuntimeException(
-                                                              MessageFormat.format(
-                                                                  UNIVERSITY_NOT_FOUND,
-                                                                  id)));
+                                                          .orElseThrow(() -> new ResourceNotFoundException(
+                                                              UNIVERSITY_NOT_FOUND.getMessage(String.valueOf(id))));
         universityRepository.delete(university);
     }
 

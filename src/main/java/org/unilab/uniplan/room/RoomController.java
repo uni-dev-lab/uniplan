@@ -1,8 +1,9 @@
 package org.unilab.uniplan.room;
 
+import static org.springframework.http.ResponseEntity.ok;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import org.unilab.uniplan.room.dto.RoomDto;
 import org.unilab.uniplan.room.dto.RoomRequestDto;
 import org.unilab.uniplan.room.dto.RoomResponseDto;
@@ -25,8 +25,6 @@ import org.unilab.uniplan.room.dto.RoomResponseDto;
 @RequestMapping("/rooms")
 @RequiredArgsConstructor
 public class RoomController {
-
-    private static final String ROOM_NOT_FOUND = "Room with ID {0} not found.";
 
     private final RoomService roomService;
     private final RoomMapper roomMapper;
@@ -45,25 +43,17 @@ public class RoomController {
 
     @GetMapping("/{id}")
     public ResponseEntity<RoomResponseDto> getRoomById(@PathVariable final UUID id) {
-        final RoomDto roomDto = roomService.getRoomById(id)
-                                           .orElseThrow(() -> new ResponseStatusException(
-                                               HttpStatus.NOT_FOUND,
-                                               MessageFormat.format(ROOM_NOT_FOUND, id)
-                                           ));
-        return ResponseEntity.ok(roomMapper.toResponseDto(roomDto));
+        final RoomDto roomDto = roomService.getRoomById(id);
+
+        return ok(roomMapper.toResponseDto(roomDto));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<RoomResponseDto> updateRoom(@PathVariable final UUID id,
                                                       @Valid @NotNull @RequestBody final RoomRequestDto roomRequestDto) {
         final RoomDto internalDto = roomMapper.toInternalDto(roomRequestDto);
-        return roomService.updateRoom(id, internalDto)
-                          .map(roomMapper::toResponseDto)
-                          .map(ResponseEntity::ok)
-                          .orElseThrow(() -> new ResponseStatusException(
-                              HttpStatus.NOT_FOUND,
-                              MessageFormat.format(ROOM_NOT_FOUND, id)
-                          ));
+
+        return ok(roomMapper.toResponseDto(roomService.updateRoom(id, internalDto)));
     }
 
     @DeleteMapping("/{id}")

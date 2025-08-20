@@ -1,19 +1,18 @@
 package org.unilab.uniplan.coursegroup;
 
+import static org.unilab.uniplan.utils.ErrorConstants.COURSE_GROUP_NOT_FOUND;
+
 import jakarta.transaction.Transactional;
-import java.text.MessageFormat;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.unilab.uniplan.coursegroup.dto.CourseGroupDto;
+import org.unilab.uniplan.exception.ResourceNotFoundException;
 
 @Service
 @RequiredArgsConstructor
 public class CourseGroupService {
-
-    private static final String COURSEGROUP_NOT_FOUND = "CourseGroup with ID {0} not found.";
 
     private final CourseGroupRepository courseGroupRepository;
     private final CourseGroupMapper courseGroupMapper;
@@ -24,9 +23,11 @@ public class CourseGroupService {
         return saveEntityAndConvertToDto(courseGroup);
     }
 
-    public Optional<CourseGroupDto> findCourseGroupById(final UUID id) {
+    public CourseGroupDto findCourseGroupById(final UUID id) {
         return courseGroupRepository.findById(id)
-                                    .map(courseGroupMapper::toDto);
+                                    .map(courseGroupMapper::toDto)
+                                    .orElseThrow(() -> new ResourceNotFoundException(
+                                        COURSE_GROUP_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     public List<CourseGroupDto> findAll() {
@@ -35,21 +36,22 @@ public class CourseGroupService {
     }
 
     @Transactional
-    public Optional<CourseGroupDto> updateCourseGroup(final UUID id,
+    public CourseGroupDto updateCourseGroup(final UUID id,
                                                       final CourseGroupDto courseGroupDTO) {
 
         return courseGroupRepository.findById(id).map(
             existingCourseGroup -> updateEntityAndConvertToDto(courseGroupDTO,
-                                                               existingCourseGroup));
+                                                               existingCourseGroup))
+                                    .orElseThrow(() -> new ResourceNotFoundException(
+                                        COURSE_GROUP_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     @Transactional
     public void deleteCourseGroup(final UUID id) {
         final CourseGroup courseGroup = courseGroupRepository.findById(id)
-                                                             .orElseThrow(() -> new RuntimeException(
-                                                                 MessageFormat.format(
-                                                                     COURSEGROUP_NOT_FOUND,
-                                                                     id)));
+                                                             .orElseThrow(() -> new ResourceNotFoundException(
+                                                                 COURSE_GROUP_NOT_FOUND.getMessage(
+                                                                     String.valueOf(id))));
         courseGroupRepository.delete(courseGroup);
     }
 

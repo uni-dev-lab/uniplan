@@ -2,7 +2,6 @@ package org.unilab.uniplan.studentgroup;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import org.unilab.uniplan.studentgroup.dto.StudentGroupDto;
 import org.unilab.uniplan.studentgroup.dto.StudentGroupRequestDto;
 import org.unilab.uniplan.studentgroup.dto.StudentGroupResponseDto;
@@ -25,8 +23,6 @@ import org.unilab.uniplan.studentgroup.dto.StudentGroupResponseDto;
 @RequestMapping("/studentGroups")
 @RequiredArgsConstructor
 public class StudentGroupController {
-
-    private static final String STUDENTGROUP_NOT_FOUND = "StudentGroup with StudentID {0} and CourseGroupId {1} not found.";
 
     private final StudentGroupService studentGroupService;
     private final StudentGroupMapper studentGroupMapper;
@@ -47,12 +43,7 @@ public class StudentGroupController {
                                                                       .findStudentGroupById(
                                                                           studentId,
                                                                           courseGroupId)
-                                                                      .orElseThrow(() -> new ResponseStatusException(
-                                                                          HttpStatus.NOT_FOUND,
-                                                                          MessageFormat.format(
-                                                                              STUDENTGROUP_NOT_FOUND,
-                                                                              studentId,
-                                                                              courseGroupId)))));
+        ));
     }
 
     @GetMapping
@@ -68,13 +59,7 @@ public class StudentGroupController {
         return ResponseEntity.ok(studentGroupMapper
                                      .toResponseDto(studentGroupService.updateStudentGroup(studentId,
                                                                                            courseGroupId,
-                                                                                           studentGroupDTO)
-                                                                       .orElseThrow(() -> new ResponseStatusException(
-                                                                           HttpStatus.NOT_FOUND,
-                                                                           MessageFormat.format(
-                                                                               STUDENTGROUP_NOT_FOUND,
-                                                                               studentId,
-                                                                               courseGroupId)))));
+                                                                                           studentGroupDTO)));
     }
 
     @DeleteMapping("/{studentId}/{courseGroupId}")

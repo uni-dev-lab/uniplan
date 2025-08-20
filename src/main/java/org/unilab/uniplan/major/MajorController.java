@@ -26,8 +26,6 @@ import org.unilab.uniplan.major.dto.MajorResponseDto;
 @RequiredArgsConstructor
 public class MajorController {
 
-    private static final String MAJOR_NOT_FOUND = "Major with ID {0} not found.";
-
     private final MajorService majorService;
     private final MajorMapper majorMapper;
 
@@ -41,12 +39,7 @@ public class MajorController {
 
     @GetMapping("/{id}")
     public ResponseEntity<MajorResponseDto> getMajorById(@PathVariable @NotNull final UUID id) {
-        return ResponseEntity.ok(majorMapper.toResponseDto(majorService.findMajorById(id)
-                                                                       .orElseThrow(() -> new ResponseStatusException(
-                                                                           HttpStatus.NOT_FOUND,
-                                                                           MessageFormat.format(
-                                                                               MAJOR_NOT_FOUND,
-                                                                               id)))));
+        return ResponseEntity.ok(majorMapper.toResponseDto(majorService.findMajorById(id)));
     }
 
     @GetMapping
@@ -58,12 +51,7 @@ public class MajorController {
     public ResponseEntity<MajorResponseDto> updateMajor(@PathVariable @NotNull final UUID id,
                                                         @RequestBody @NotNull @Valid MajorRequestDto majorRequestDTO) {
         final MajorDto majorDTO = majorMapper.toInnerDto(majorRequestDTO);
-        return ResponseEntity.ok(majorMapper.toResponseDto(majorService.updateMajor(id, majorDTO)
-                                                                       .orElseThrow(() -> new ResponseStatusException(
-                                                                           HttpStatus.NOT_FOUND,
-                                                                           MessageFormat.format(
-                                                                               MAJOR_NOT_FOUND,
-                                                                               id)))));
+        return ResponseEntity.ok(majorMapper.toResponseDto(majorService.updateMajor(id, majorDTO)));
     }
 
     @DeleteMapping("/{id}")

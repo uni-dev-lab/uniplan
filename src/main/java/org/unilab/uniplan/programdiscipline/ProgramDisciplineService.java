@@ -1,19 +1,18 @@
 package org.unilab.uniplan.programdiscipline;
 
-import java.text.MessageFormat;
+import static org.unilab.uniplan.utils.ErrorConstants.PROGRAM_DISCIPLINE_NOT_FOUND;
+
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineDto;
 
 @Service
 @RequiredArgsConstructor
 public class ProgramDisciplineService {
-
-    private static final String PROGRAM_DISCIPLINE_NOT_FOUND = "Program discipline with disciplineId {0} and programId {1} not found.";
 
     private final ProgramDisciplineRepository programDisciplineRepository;
 
@@ -31,24 +30,28 @@ public class ProgramDisciplineService {
         return programDisciplineMapper.toDtos(programDisciplines);
     }
 
-    public Optional<ProgramDisciplineDto> getProgramDisciplineById(final UUID disciplineId,
-                                                                   final UUID programId) {
+    public ProgramDisciplineDto getProgramDisciplineById(final UUID disciplineId,
+                                                         final UUID programId) {
         final ProgramDisciplineId id = programDisciplineMapper.toProgramDisciplineId(disciplineId,
                                                                                      programId);
         return programDisciplineRepository.findById(id)
-                                          .map(programDisciplineMapper::toDto);
+                                          .map(programDisciplineMapper::toDto)
+                                          .orElseThrow(() -> new ResourceNotFoundException(
+                                              PROGRAM_DISCIPLINE_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     @Transactional
-    public Optional<ProgramDisciplineDto> updateProgramDiscipline(final UUID disciplineId,
-                                                                  final UUID programId,
-                                                                  ProgramDisciplineDto programDisciplineDto) {
+    public ProgramDisciplineDto updateProgramDiscipline(final UUID disciplineId,
+                                                        final UUID programId,
+                                                        ProgramDisciplineDto programDisciplineDto) {
         final ProgramDisciplineId id = programDisciplineMapper.toProgramDisciplineId(disciplineId,
                                                                                      programId);
         return programDisciplineRepository.findById(id)
                                           .map(existingProgramDiscipline -> updateEntityAndConvertToDto(
                                               programDisciplineDto,
-                                              existingProgramDiscipline));
+                                              existingProgramDiscipline))
+                                          .orElseThrow(() -> new ResourceNotFoundException(
+                                              PROGRAM_DISCIPLINE_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     @Transactional
@@ -56,11 +59,9 @@ public class ProgramDisciplineService {
         final ProgramDisciplineId id = programDisciplineMapper.toProgramDisciplineId(disciplineId,
                                                                                      programId);
         final ProgramDiscipline programDiscipline = programDisciplineRepository.findById(id)
-                                                                               .orElseThrow(() -> new RuntimeException(
-                                                                                   MessageFormat.format(
-                                                                                       PROGRAM_DISCIPLINE_NOT_FOUND,
-                                                                                       disciplineId,
-                                                                                       programId)));
+                                                                               .orElseThrow(() -> new ResourceNotFoundException(
+                                                                                   PROGRAM_DISCIPLINE_NOT_FOUND.getMessage(
+                                                                                       String.valueOf(id))));
         programDisciplineRepository.delete(programDiscipline);
     }
 

@@ -26,8 +26,6 @@ import org.unilab.uniplan.course.dto.CourseResponseDto;
 @RequiredArgsConstructor
 public class CourseController {
 
-    private static final String COURSE_NOT_FOUND = "Course with ID {0} not found.";
-
     private final CourseService courseService;
     private final CourseMapper courseMapper;
 
@@ -41,12 +39,7 @@ public class CourseController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CourseResponseDto> getMajorById(@PathVariable @NotNull final UUID id) {
-        return ResponseEntity.ok(courseMapper.toResponseDto(courseService.findCourseById(id)
-                                                                         .orElseThrow(() -> new ResponseStatusException(
-                                                                             HttpStatus.NOT_FOUND,
-                                                                             MessageFormat.format(
-                                                                                 COURSE_NOT_FOUND,
-                                                                                 id)))));
+        return ResponseEntity.ok(courseMapper.toResponseDto(courseService.findCourseById(id)));
     }
 
     @GetMapping
@@ -58,13 +51,7 @@ public class CourseController {
     public ResponseEntity<CourseResponseDto> updateCourse(@PathVariable @NotNull final UUID id,
                                                           @RequestBody @NotNull @Valid final CourseRequestDto courseRequestDTO) {
         final CourseDto courseDTO = courseMapper.toInnerDto(courseRequestDTO);
-        return ResponseEntity.ok(courseMapper.toResponseDto(courseService.updateCourse(id,
-                                                                                       courseDTO)
-                                                                         .orElseThrow(() -> new ResponseStatusException(
-                                                                             HttpStatus.NOT_FOUND,
-                                                                             MessageFormat.format(
-                                                                                 COURSE_NOT_FOUND,
-                                                                                 id)))));
+        return ResponseEntity.ok(courseMapper.toResponseDto(courseService.updateCourse(id, courseDTO)));
     }
 
     @DeleteMapping("/{id}")

@@ -21,12 +21,13 @@ import org.unilab.uniplan.university.dto.UniversityDto;
 import org.unilab.uniplan.university.dto.UniversityRequestDto;
 import org.unilab.uniplan.university.dto.UniversityResponseDto;
 
+import static org.springframework.http.ResponseEntity.created;
+import static org.springframework.http.ResponseEntity.ok;
+
 @RestController
 @RequestMapping("/universities")
 @RequiredArgsConstructor
 public class UniversityController {
-
-    private static final String UNIVERSITY_NOT_FOUND = "University with ID {0} not found.";
 
     private final UniversityService universityService;
     private final UniversityMapper universityMapper;
@@ -51,13 +52,9 @@ public class UniversityController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UniversityResponseDto> getUniversityById(@NotNull @PathVariable final UUID id) {
-        var universityDto = universityService.getUniversityById(id)
-                                             .orElseThrow(() -> new ResponseStatusException(
-                                                 HttpStatus.NOT_FOUND,
-                                                 MessageFormat.format(UNIVERSITY_NOT_FOUND, id)
-                                             ));
+        final UniversityDto universityDto = universityService.getUniversityById(id);
 
-        return ResponseEntity.ok(universityMapper.toResponseDto(universityDto));
+        return ok(universityMapper.toResponseDto(universityDto));
     }
 
     @PutMapping("/{id}")
@@ -65,15 +62,9 @@ public class UniversityController {
         @PathVariable final UUID id,
         @Valid @NotNull @RequestBody final UniversityRequestDto universityRequestDto) {
 
-        UniversityDto universityDto = universityMapper.toInternalDto(universityRequestDto);
+        final UniversityDto universityDto = universityMapper.toInternalDto(universityRequestDto);
 
-        return universityService.updateUniversity(id, universityDto)
-                                .map(universityMapper::toResponseDto)
-                                .map(ResponseEntity::ok)
-                                .orElseThrow(() -> new ResponseStatusException(
-                                    HttpStatus.NOT_FOUND,
-                                    MessageFormat.format(UNIVERSITY_NOT_FOUND, id)
-                                ));
+        return ok(universityMapper.toResponseDto(universityService.updateUniversity(id, universityDto)));
     }
 
     @DeleteMapping("/{id}")

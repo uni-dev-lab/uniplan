@@ -34,4 +34,9 @@ public class RoomCategoryId implements Serializable {
     public int hashCode() {
         return Objects.hash(roomId, categoryId);
     }
+
+    @Override
+    public String toString() {
+        return roomId + ", " + categoryId;
+    }
 }

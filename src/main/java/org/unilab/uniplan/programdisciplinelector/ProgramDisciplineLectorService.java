@@ -1,19 +1,18 @@
 package org.unilab.uniplan.programdisciplinelector;
 
-import java.text.MessageFormat;
+import static org.unilab.uniplan.utils.ErrorConstants.PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND;
+
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorDto;
 
 @Service
 @RequiredArgsConstructor
 public class ProgramDisciplineLectorService {
-
-    private static final String PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND = "Program discipline lector with lectorId {0}, programId {1} and disciplineId {2} not found.";
 
     private final ProgramDisciplineLectorMapper programDisciplineLectorMapper;
 
@@ -32,18 +31,21 @@ public class ProgramDisciplineLectorService {
         return programDisciplineLectorMapper.toDtos(programDisciplineLectors);
     }
 
-    public Optional<ProgramDisciplineLectorDto> getProgramDisciplineLectorById(
+    public ProgramDisciplineLectorDto getProgramDisciplineLectorById(
         final UUID lectorId, final UUID programId, final UUID disciplineId) {
         final ProgramDisciplineLectorId id = programDisciplineLectorMapper.toProgramDisciplineLectorId(
             lectorId,
             programId,
             disciplineId);
         return programDisciplineLectorRepository.findById(id)
-                                                .map(programDisciplineLectorMapper::toDto);
+                                                .map(programDisciplineLectorMapper::toDto)
+                                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                    PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND.getMessage(
+                                                        String.valueOf(id))));
     }
 
     @Transactional
-    public Optional<ProgramDisciplineLectorDto> updateProgramDisciplineLector(
+    public ProgramDisciplineLectorDto updateProgramDisciplineLector(
         final UUID lectorId, final UUID programId, final UUID disciplineId,
         ProgramDisciplineLectorDto programDisciplineLectorDto) {
         final ProgramDisciplineLectorId id = programDisciplineLectorMapper.toProgramDisciplineLectorId(
@@ -53,7 +55,10 @@ public class ProgramDisciplineLectorService {
         return programDisciplineLectorRepository.findById(id)
                                                 .map(existingProgramDisciplineLector -> updateEntityAndConvertToDto(
                                                     programDisciplineLectorDto,
-                                                    existingProgramDisciplineLector));
+                                                    existingProgramDisciplineLector))
+                                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                    PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND.getMessage(
+                                                        String.valueOf(id))));
     }
 
     public void deleteProgramDisciplineLector(final UUID lectorId,
@@ -65,13 +70,8 @@ public class ProgramDisciplineLectorService {
             disciplineId);
         final ProgramDisciplineLector programDisciplineLector = programDisciplineLectorRepository
             .findById(id)
-            .orElseThrow(() -> new RuntimeException(
-                MessageFormat.format(
-                    PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND,
-                    lectorId,
-                    programId,
-                    disciplineId
-                )
+            .orElseThrow(() -> new ResourceNotFoundException(
+                PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND.getMessage(String.valueOf(id))
             ));
         programDisciplineLectorRepository.delete(programDisciplineLector);
     }

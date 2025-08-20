@@ -1,19 +1,18 @@
 package org.unilab.uniplan.department;
 
-import java.text.MessageFormat;
+import static org.unilab.uniplan.utils.ErrorConstants.DEPARTMENT_NOT_FOUND;
+
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.unilab.uniplan.department.dto.DepartmentDto;
+import org.unilab.uniplan.exception.ResourceNotFoundException;
 
 @Service
 @RequiredArgsConstructor
 public class DepartmentService {
-
-    private static final String DEPARTMENT_NOT_FOUND = "Department with ID {0} not found.";
 
     private final DepartmentRepository departmentRepository;
     private final DepartmentMapper departmentMapper;
@@ -31,26 +30,29 @@ public class DepartmentService {
         return departmentMapper.toDtoList(departments);
     }
 
-    public Optional<DepartmentDto> getDepartmentById(final UUID id) {
+    public DepartmentDto getDepartmentById(final UUID id) {
         return departmentRepository.findById(id)
-                                   .map(departmentMapper::toDto);
+                                   .map(departmentMapper::toDto)
+                                   .orElseThrow(() -> new ResourceNotFoundException(
+                                       DEPARTMENT_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     @Transactional
-    public Optional<DepartmentDto> updateDepartment(final UUID id,
+    public DepartmentDto updateDepartment(final UUID id,
                                                     final DepartmentDto departmentDto) {
         return departmentRepository.findById(id)
                                    .map(existingDepartment -> updateEntityAndConvertToDto(
                                        departmentDto,
-                                       existingDepartment));
+                                       existingDepartment))
+                                   .orElseThrow(() -> new ResourceNotFoundException(
+                                       DEPARTMENT_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     @Transactional
     public void deleteDepartment(final UUID id) {
         final Department department = departmentRepository.findById(id)
-                                                          .orElseThrow(() -> new RuntimeException(
-                                                              MessageFormat.format(
-                                                                  DEPARTMENT_NOT_FOUND, id)));
+                                                          .orElseThrow(() -> new ResourceNotFoundException(
+                                                              DEPARTMENT_NOT_FOUND.getMessage(String.valueOf(id))));
         departmentRepository.delete(department);
     }
 

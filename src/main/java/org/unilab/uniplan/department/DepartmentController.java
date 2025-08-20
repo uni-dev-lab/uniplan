@@ -21,6 +21,8 @@ import org.unilab.uniplan.department.dto.DepartmentDto;
 import org.unilab.uniplan.department.dto.DepartmentRequestDto;
 import org.unilab.uniplan.department.dto.DepartmentResponseDto;
 
+import static org.springframework.http.ResponseEntity.ok;
+
 @RestController
 @RequestMapping("/departments")
 @RequiredArgsConstructor
@@ -49,14 +51,9 @@ public class DepartmentController {
 
     @GetMapping("/{id}")
     public ResponseEntity<DepartmentResponseDto> getDepartmentById(@NotNull @PathVariable final UUID id) {
-        final DepartmentDto departmentDto = departmentService.getDepartmentById(id)
-                                                             .orElseThrow(() -> new ResponseStatusException(
-                                                                 HttpStatus.NOT_FOUND,
-                                                                 MessageFormat.format(
-                                                                     DEPARTMENT_NOT_FOUND,
-                                                                     id)
-                                                             ));
-        return ResponseEntity.ok(departmentMapper.toResponseDto(departmentDto));
+        final DepartmentDto departmentDto = departmentService.getDepartmentById(id);
+
+        return ok(departmentMapper.toResponseDto(departmentDto));
     }
 
     @PutMapping("/{id}")
@@ -66,13 +63,7 @@ public class DepartmentController {
 
         final DepartmentDto departmentDto = departmentMapper.toInternalDto(departmentRequestDto);
 
-        return departmentService.updateDepartment(id, departmentDto)
-                                .map(departmentMapper::toResponseDto)
-                                .map(ResponseEntity::ok)
-                                .orElseThrow(() -> new ResponseStatusException(
-                                    HttpStatus.NOT_FOUND,
-                                    MessageFormat.format(DEPARTMENT_NOT_FOUND, id)
-                                ));
+        return ok(departmentMapper.toResponseDto(departmentService.updateDepartment(id, departmentDto)));
     }
 
     @DeleteMapping("/{id}")

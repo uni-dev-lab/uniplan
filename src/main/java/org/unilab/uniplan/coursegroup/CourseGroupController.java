@@ -2,7 +2,6 @@ package org.unilab.uniplan.coursegroup;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import org.unilab.uniplan.coursegroup.dto.CourseGroupDto;
 import org.unilab.uniplan.coursegroup.dto.CourseGroupRequestDto;
 import org.unilab.uniplan.coursegroup.dto.CourseGroupResponseDto;
@@ -25,8 +23,6 @@ import org.unilab.uniplan.coursegroup.dto.CourseGroupResponseDto;
 @RequestMapping("/courseGroups")
 @RequiredArgsConstructor
 public class CourseGroupController {
-
-    private static final String COURSEGROUP_NOT_FOUND = "CourseGroup with ID {0} not found.";
 
     private final CourseGroupService courseGroupService;
     private final CourseGroupMapper courseGroupMapper;
@@ -43,12 +39,7 @@ public class CourseGroupController {
     @GetMapping("/{id}")
     public ResponseEntity<CourseGroupResponseDto> getCourseGroup(@PathVariable @NotNull final UUID id) {
         return ResponseEntity.ok(courseGroupMapper.toResponseDto(courseGroupService.findCourseGroupById(
-                                                                                       id)
-                                                                                   .orElseThrow(() -> new ResponseStatusException(
-                                                                                       HttpStatus.NOT_FOUND,
-                                                                                       MessageFormat.format(
-                                                                                           COURSEGROUP_NOT_FOUND,
-                                                                                           id)))));
+            id)));
     }
 
     @GetMapping
@@ -62,12 +53,7 @@ public class CourseGroupController {
         final CourseGroupDto courseGroupDTO = courseGroupMapper.toInnerDto(courseGroupRequestDTO);
         return ResponseEntity.ok(courseGroupMapper.toResponseDto(courseGroupService.updateCourseGroup(
                                                                                        id,
-                                                                                       courseGroupDTO)
-                                                                                   .orElseThrow(() -> new ResponseStatusException(
-                                                                                       HttpStatus.NOT_FOUND,
-                                                                                       MessageFormat.format(
-                                                                                           COURSEGROUP_NOT_FOUND,
-                                                                                           id)))));
+                                                                                       courseGroupDTO)));
     }
 
     @DeleteMapping("/{id}")

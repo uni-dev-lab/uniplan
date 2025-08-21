@@ -9,10 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.unilab.uniplan.roomcategory.dto.RoomCategoryDto;
 import org.unilab.uniplan.roomcategory.dto.RoomCategoryRequestDto;
@@ -26,7 +26,7 @@ public class RoomCategoryController {
     private final RoomCategoryService roomCategoryService;
     private final RoomCategoryMapper roomCategoryMapper;
 
-    @PostMapping
+    @PostMapping("/addRoomCategory")
     public ResponseEntity<RoomCategoryResponseDto> createRoomCategory(
         @Valid @NotNull @RequestBody final RoomCategoryRequestDto roomCategoryRequestDto) {
 
@@ -37,14 +37,14 @@ public class RoomCategoryController {
                                     HttpStatus.CREATED);
     }
 
-    @GetMapping
+    @GetMapping("/getAllRoomCategories")
     public List<RoomCategoryResponseDto> getAllRoomCategories() {
         return roomCategoryMapper.toResponseDtoList(roomCategoryService.getAllRoomCategories());
     }
 
-    @GetMapping("/{roomId}/{categoryId}")
-    public ResponseEntity<RoomCategoryResponseDto> getRoomCategoryById(@PathVariable final UUID roomId,
-                                                                       @PathVariable final UUID categoryId) {
+    @GetMapping("/getRoomCategoryById")
+    public ResponseEntity<RoomCategoryResponseDto> getRoomCategoryById(@RequestParam final UUID roomId,
+                                                                       @RequestParam final UUID categoryId) {
         RoomCategoryDto roomCategoryDto = roomCategoryService.getRoomCategoryById(roomId,
                                                                                   categoryId);
 
@@ -52,9 +52,9 @@ public class RoomCategoryController {
     }
 
 
-    @DeleteMapping("/{roomId}/{categoryId}")
-    public ResponseEntity<Void> deleteRoomCategory(@PathVariable final UUID roomId,
-                                                   @PathVariable final UUID categoryId) {
+    @DeleteMapping("/deleteRoomCategory")
+    public ResponseEntity<Void> deleteRoomCategory(@RequestParam final UUID roomId,
+                                                   @RequestParam final UUID categoryId) {
         roomCategoryService.deleteRoomCategory(roomId, categoryId);
         return ResponseEntity.noContent().build();
     }

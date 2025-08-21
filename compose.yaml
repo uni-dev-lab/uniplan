@@ -18,7 +18,7 @@ services:
     build:
       context: .
     ports:
-      - 8080:8080
+      - "8080:8080"
 
 
 # The commented out section below is an example of how to define a PostgreSQL
@@ -34,13 +34,14 @@ services:
   db:
     image: postgres
     restart: always
-    user: postgres
+    user: ${POSTGRES_USERNAME}
     secrets:
       - db-password
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: uniplan
+      POSTGRES_USERNAME: ${POSTGRES_USERNAME}
+      POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_PASSWORD_FILE: /run/secrets/db-password
     expose:
       - "5432"

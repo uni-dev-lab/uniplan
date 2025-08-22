@@ -22,7 +22,7 @@ import org.unilab.uniplan.lector.dto.LectorRequestDto;
 import org.unilab.uniplan.lector.dto.LectorResponseDto;
 
 @RestController
-@RequestMapping("/api/lectors")
+@RequestMapping("/lectors")
 @RequiredArgsConstructor
 public class LectorController {
 

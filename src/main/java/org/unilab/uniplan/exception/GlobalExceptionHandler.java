@@ -40,6 +40,7 @@ public class GlobalExceptionHandler {
         );
     }
 
+    
     //Handles validation exceptions triggered by method argument validation failures (e.g. @Valid)
     @ExceptionHandler(HandlerMethodValidationException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(final HandlerMethodValidationException ex,

@@ -22,14 +22,14 @@ import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorReq
 import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorResponseDto;
 
 @RestController
-@RequestMapping("/programDisciplineLector")
+@RequestMapping("/program-discipline-lectors")
 @RequiredArgsConstructor
 public class ProgramDisciplineLectorController {
 
     private final ProgramDisciplineLectorMapper programDisciplineLectorMapper;
     private final ProgramDisciplineLectorService programDisciplineLectorService;
 
-    @PostMapping("/addProgramDisciplineLector")
+    @PostMapping("/add")
     public ResponseEntity<ProgramDisciplineLectorResponseDto> createProgramDiscipline(@Valid @NotNull @RequestBody final
                                                                                       ProgramDisciplineLectorRequestDto programDisciplineLectorRequestDto){
         final ProgramDisciplineLectorDto programDisciplineLectorDto = programDisciplineLectorService
@@ -40,12 +40,12 @@ public class ProgramDisciplineLectorController {
                                     HttpStatus.CREATED);
     }
 
-    @GetMapping("/getAllProgramDisciplineLectors")
+    @GetMapping("/getAll")
     public List<ProgramDisciplineLectorResponseDto> getAllProgramDisciplineLectors(){
         return programDisciplineLectorMapper.toResponseDtoList(programDisciplineLectorService.getAllProgramDisciplineLectors());
     }
 
-    @GetMapping("/getProgramDisciplineLectorById")
+    @GetMapping("/getById")
     public ResponseEntity<ProgramDisciplineLectorResponseDto> getProgramDisciplineLectorById(@NotNull @RequestParam final UUID lectorId,
                                                                                              @NotNull @RequestParam final UUID programId,
                                                                                              @NotNull @RequestParam final UUID disciplineId) {
@@ -55,7 +55,7 @@ public class ProgramDisciplineLectorController {
         return ok(programDisciplineLectorMapper.toResponseDto(programDisciplineLectorDto));
     }
 
-    @PutMapping("/updateProgramDisciplineLector")
+    @PutMapping("/update")
     public ResponseEntity<ProgramDisciplineLectorResponseDto> updateProgramDisciplineLector(@NotNull @RequestParam final UUID lectorId,
                                                                                             @NotNull @RequestParam final UUID programId,
                                                                                             @NotNull @RequestParam final UUID disciplineId,
@@ -69,7 +69,7 @@ public class ProgramDisciplineLectorController {
             programDisciplineLectorDto)));
     }
 
-    @DeleteMapping("/deleteProgramDisciplineLector")
+    @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteProgramDisciplineLector(@NotNull @RequestParam final UUID lectorId,
                                                               @NotNull @RequestParam final UUID programId,
                                                               @NotNull @RequestParam final UUID disciplineId) {

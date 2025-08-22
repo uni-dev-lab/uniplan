@@ -20,14 +20,14 @@ import org.unilab.uniplan.studentgroup.dto.StudentGroupRequestDto;
 import org.unilab.uniplan.studentgroup.dto.StudentGroupResponseDto;
 
 @RestController
-@RequestMapping("/studentGroups")
+@RequestMapping("/student-groups")
 @RequiredArgsConstructor
 public class StudentGroupController {
 
     private final StudentGroupService studentGroupService;
     private final StudentGroupMapper studentGroupMapper;
 
-    @PostMapping("/addStudentGroup")
+    @PostMapping("/add")
     public ResponseEntity<StudentGroupResponseDto> addStudentGroup(@RequestBody @NotNull @Valid final StudentGroupRequestDto studentGroupRequestDTO) {
         final StudentGroupDto studentGroupDTO = studentGroupMapper.toInnerDto(studentGroupRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -35,7 +35,7 @@ public class StudentGroupController {
                                  studentGroupDTO)));
     }
 
-    @GetMapping("/getStudentGroupById")
+    @GetMapping("/getById")
     public ResponseEntity<StudentGroupResponseDto> getStudentGroupById(@RequestParam @NotNull final UUID studentId,
                                                                        @RequestParam @NotNull final UUID courseGroupId) {
 
@@ -46,12 +46,12 @@ public class StudentGroupController {
         ));
     }
 
-    @GetMapping("/getAllStudentGroups")
+    @GetMapping("/getAll")
     public List<StudentGroupResponseDto> getAllStudentGroups() {
         return studentGroupMapper.toResponseDtoList(studentGroupService.findAll());
     }
 
-    @PutMapping("/updateStudentGroup")
+    @PutMapping("/update")
     public ResponseEntity<StudentGroupResponseDto> updateStudentGroup(@RequestParam @NotNull final UUID studentId,
                                                                       @RequestParam @NotNull final UUID courseGroupId,
                                                                       @RequestBody @NotNull @Valid final StudentGroupRequestDto studentGroupRequestDTO) {
@@ -62,7 +62,7 @@ public class StudentGroupController {
                                                                                            studentGroupDTO)));
     }
 
-    @DeleteMapping("/deleteStudentGroup")
+    @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteStudentGroup(@RequestParam @NotNull final UUID studentId,
                                                    @RequestParam @NotNull final UUID courseGroupId) {
         studentGroupService.deleteStudentGroup(studentId, courseGroupId);

@@ -19,14 +19,14 @@ import org.unilab.uniplan.roomcategory.dto.RoomCategoryRequestDto;
 import org.unilab.uniplan.roomcategory.dto.RoomCategoryResponseDto;
 
 @RestController
-@RequestMapping("/roomCategories")
+@RequestMapping("/room-categories")
 @RequiredArgsConstructor
 public class RoomCategoryController {
 
     private final RoomCategoryService roomCategoryService;
     private final RoomCategoryMapper roomCategoryMapper;
 
-    @PostMapping("/addRoomCategory")
+    @PostMapping("/add")
     public ResponseEntity<RoomCategoryResponseDto> createRoomCategory(
         @Valid @NotNull @RequestBody final RoomCategoryRequestDto roomCategoryRequestDto) {
 
@@ -37,12 +37,12 @@ public class RoomCategoryController {
                                     HttpStatus.CREATED);
     }
 
-    @GetMapping("/getAllRoomCategories")
+    @GetMapping("/getAll")
     public List<RoomCategoryResponseDto> getAllRoomCategories() {
         return roomCategoryMapper.toResponseDtoList(roomCategoryService.getAllRoomCategories());
     }
 
-    @GetMapping("/getRoomCategoryById")
+    @GetMapping("/getById")
     public ResponseEntity<RoomCategoryResponseDto> getRoomCategoryById(@RequestParam final UUID roomId,
                                                                        @RequestParam final UUID categoryId) {
         RoomCategoryDto roomCategoryDto = roomCategoryService.getRoomCategoryById(roomId,
@@ -52,7 +52,7 @@ public class RoomCategoryController {
     }
 
 
-    @DeleteMapping("/deleteRoomCategory")
+    @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteRoomCategory(@RequestParam final UUID roomId,
                                                    @RequestParam final UUID categoryId) {
         roomCategoryService.deleteRoomCategory(roomId, categoryId);

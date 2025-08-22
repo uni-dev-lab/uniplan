@@ -20,7 +20,7 @@ import org.unilab.uniplan.coursegroup.dto.CourseGroupRequestDto;
 import org.unilab.uniplan.coursegroup.dto.CourseGroupResponseDto;
 
 @RestController
-@RequestMapping("/courseGroups")
+@RequestMapping("/course-groups")
 @RequiredArgsConstructor
 public class CourseGroupController {
 

@@ -22,14 +22,14 @@ import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineRequestDto;
 import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineResponseDto;
 
 @RestController
-@RequestMapping("/programDisciplines")
+@RequestMapping("/program-disciplines")
 @RequiredArgsConstructor
 public class ProgramDisciplineController {
 
     private final ProgramDisciplineMapper programDisciplineMapper;
     private final ProgramDisciplineService programDisciplineService;
 
-    @PostMapping("/addProgramDiscipline")
+    @PostMapping("/add")
     public ResponseEntity<ProgramDisciplineResponseDto> createProgramDiscipline(@Valid @NotNull @RequestBody final
                                                                         ProgramDisciplineRequestDto programDisciplineRequestDto){
         final ProgramDisciplineDto programDisciplineDto = programDisciplineService
@@ -39,12 +39,12 @@ public class ProgramDisciplineController {
                                     HttpStatus.CREATED);
     }
 
-    @GetMapping("/getAllProgramDisciplines")
+    @GetMapping("/getAll")
     public List<ProgramDisciplineResponseDto> getAllProgramDisciplines() {
         return programDisciplineMapper.toResponseDtoList(programDisciplineService.getAllProgramDisciplines());
     }
 
-    @GetMapping("/getProgramDisciplineById")
+    @GetMapping("/getById")
     public ResponseEntity<ProgramDisciplineResponseDto> getProgramDisciplineById(@NotNull @RequestParam UUID disciplineId,
                                                                                  @NotNull @RequestParam UUID programId) {
         final ProgramDisciplineDto programDisciplineDto = programDisciplineService
@@ -53,7 +53,7 @@ public class ProgramDisciplineController {
         return ok(programDisciplineMapper.toResponseDto(programDisciplineDto));
     }
 
-    @PutMapping("/updateProgramDiscipline")
+    @PutMapping("/update")
     public ResponseEntity<ProgramDisciplineResponseDto> updateProgramDiscipline(@NotNull @RequestParam UUID disciplineId,
                                                                                 @NotNull @RequestParam UUID programId,
                                                                                 @NotNull @Valid @RequestBody ProgramDisciplineRequestDto programDisciplineRequestDto){
@@ -65,7 +65,7 @@ public class ProgramDisciplineController {
                                                                 programDisciplineDto)));
     }
 
-    @DeleteMapping("/deleteProgramDiscipline")
+    @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteProgramDiscipline(@NotNull @RequestParam UUID disciplineId,
                                                         @NotNull @RequestParam UUID programId) {
         programDisciplineService.deleteProgramDiscipline(disciplineId, programId);

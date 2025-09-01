@@ -2,7 +2,6 @@ package org.unilab.uniplan.course;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import org.unilab.uniplan.course.dto.CourseDto;
 import org.unilab.uniplan.course.dto.CourseRequestDto;
 import org.unilab.uniplan.course.dto.CourseResponseDto;
@@ -36,6 +34,12 @@ public class CourseController {
         return ResponseEntity.status(HttpStatus.CREATED)
                              .body(courseMapper.toResponseDto(courseService.createCourse(courseDTO)));
     }
+
+    @GetMapping("/withMajor/{majorId}")
+    public  List<CourseResponseDto> getCoursesByMajorId(@PathVariable @NotNull final UUID majorId) {
+        return courseMapper.toResponseDtoList(courseService.findAllByMajorId(majorId));
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<CourseResponseDto> getMajorById(@PathVariable @NotNull final UUID id) {

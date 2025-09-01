@@ -2,7 +2,6 @@ package org.unilab.uniplan.major;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import org.unilab.uniplan.major.dto.MajorDto;
 import org.unilab.uniplan.major.dto.MajorRequestDto;
 import org.unilab.uniplan.major.dto.MajorResponseDto;
@@ -40,6 +38,11 @@ public class MajorController {
     @GetMapping("/{id}")
     public ResponseEntity<MajorResponseDto> getMajorById(@PathVariable @NotNull final UUID id) {
         return ResponseEntity.ok(majorMapper.toResponseDto(majorService.findMajorById(id)));
+    }
+
+    @GetMapping("/withFaculty/{facultyId}")
+    public  List<MajorResponseDto> getMajorsByFacultyId(@PathVariable @NotNull final UUID facultyId) {
+        return majorMapper.toResponseDtoList(majorService.findAllMajorByFacultyId(facultyId));
     }
 
     @GetMapping

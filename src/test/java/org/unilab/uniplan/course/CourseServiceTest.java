@@ -1,6 +1,7 @@
 package org.unilab.uniplan.course;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
@@ -8,7 +9,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,16 +34,18 @@ class CourseServiceTest {
     private CourseService courseService;
 
     private UUID courseId;
+    private UUID majorId;
     private Course course;
     private CourseDto courseDTO;
 
     @BeforeEach
     void setUp() {
         courseId = UUID.randomUUID();
-        UUID majorId = UUID.randomUUID();
+        majorId = UUID.randomUUID();
         courseDTO = new CourseDto(courseId, majorId, (byte) 2, "bachelor", "regular education");
         course = new Course();
     }
+
 
     @Test
     void createCourseShouldReturnAndSavedCourseDTO() {
@@ -55,6 +57,29 @@ class CourseServiceTest {
 
         assertEquals(courseDTO, result);
         verify(courseRepository).save(course);
+    }
+
+
+    @Test
+    void findAllByMajorIdShouldReturnListOfCourses() {
+
+
+        when(courseRepository.findAllByMajorId(majorId)).thenReturn(List.of(course));
+        when(courseMapper.toDto(course)).thenReturn(courseDTO);
+
+        List<CourseDto> result =  courseService.findAllByMajorId(majorId);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("bachelor", result.getFirst().courseType());
+    }
+
+    @Test
+    void findAllByMajorIdShouldReturnEmptyList() {
+
+        when(courseRepository.findAllByMajorId(majorId)).thenReturn(List.of());
+
+        assertTrue(courseService.findAllByMajorId(majorId).isEmpty());
     }
 
     @Test

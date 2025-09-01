@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.unilab.uniplan.student.dto.StudentCourseMajorDto;
 import org.unilab.uniplan.student.dto.StudentDto;
 import org.unilab.uniplan.student.dto.StudentRequestDto;
 import org.unilab.uniplan.student.dto.StudentResponseDto;
@@ -48,6 +51,22 @@ public class StudentController {
     @GetMapping
     public List<StudentResponseDto> getAllStudents() {
         return studentMapper.toResponseDtoList(studentService.findAll());
+    }
+
+    @GetMapping("/student-course-major")
+    public List<StudentCourseMajorDto> getStudentCourseMajorInfo(@RequestParam(required = false)
+                                                                         @Size(max = 100)
+                                                                         final String firstName,
+                                                                 @RequestParam(required = false)
+                                                                         @Size(max = 100)
+                                                                         final String lastName,
+                                                                 @RequestParam(required = false)
+                                                                         final String facultyNumber,
+                                                                 @RequestParam(required = false)
+                                                                         @Size(max = 200)
+                                                                         final String majorName){
+        return studentService.findStudentCourseMajorInfo(firstName, lastName, facultyNumber,
+                                                             majorName);
     }
 
     @PutMapping("/{id}")

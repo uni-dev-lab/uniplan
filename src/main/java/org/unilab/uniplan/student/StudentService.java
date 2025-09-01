@@ -5,10 +5,10 @@ import static org.unilab.uniplan.utils.ErrorConstants.STUDENT_NOT_FOUND;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.student.dto.StudentCourseMajorDto;
 import org.unilab.uniplan.student.dto.StudentDto;
 
 @Service
@@ -52,6 +52,13 @@ public class StudentService {
                                                  .orElseThrow(() -> new ResourceNotFoundException(
                                                      STUDENT_NOT_FOUND.getMessage(String.valueOf(id))));
         studentRepository.delete(student);
+    }
+
+    public List<StudentCourseMajorDto> findStudentCourseMajorInfo(String firstName,
+                                                                      String lastName,
+                                                                      String facultyNumber,
+                                                                      String majorName){
+        return studentRepository.searchStudents(firstName, lastName, facultyNumber, majorName);
     }
 
     private StudentDto updateEntityAndConvertToDto(final StudentDto dto,

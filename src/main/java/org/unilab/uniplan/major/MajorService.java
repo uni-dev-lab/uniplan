@@ -1,5 +1,8 @@
 package org.unilab.uniplan.major;
 
+import jakarta.validation.constraints.NotNull;
+import org.unilab.uniplan.major.dto.MajorCourseDto;
+
 import static org.unilab.uniplan.utils.ErrorConstants.MAJOR_NOT_FOUND;
 
 import jakarta.transaction.Transactional;
@@ -33,6 +36,14 @@ public class MajorService {
     public List<MajorDto> findAll() {
         return majorRepository.findAll()
                               .stream().map(majorMapper::toDto).toList();
+    }
+
+    public List<MajorCourseDto> findAllMajorsWithCourse() {
+        return majorRepository.findAllMajorsWithCourse();
+    }
+
+    public List<MajorCourseDto> findMajorWithCourse(@NotNull UUID majorId) {
+        return majorRepository.findMajorWithCourse(majorId);
     }
 
     @Transactional

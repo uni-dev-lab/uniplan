@@ -80,6 +80,8 @@ class CourseServiceTest {
         when(courseRepository.findAllByMajorId(majorId)).thenReturn(List.of());
 
         assertTrue(courseService.findAllByMajorId(majorId).isEmpty());
+
+        verify(courseRepository).findAllByMajorId(majorId);
     }
 
     @Test

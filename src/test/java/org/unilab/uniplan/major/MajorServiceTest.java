@@ -78,6 +78,8 @@ class MajorServiceTest {
         when(majorRepository.findAllByFacultyId(facultyId)).thenReturn(List.of());
 
         assertTrue(majorService.findAllMajorByFacultyId(facultyId).isEmpty());
+
+        verify(majorRepository).findAllByFacultyId(facultyId);
     }
 
     @Test

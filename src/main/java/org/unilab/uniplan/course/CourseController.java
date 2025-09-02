@@ -35,7 +35,7 @@ public class CourseController {
                              .body(courseMapper.toResponseDto(courseService.createCourse(courseDTO)));
     }
 
-    @GetMapping("/withMajor/{majorId}")
+    @GetMapping("/with-Major/{majorId}")
     public  List<CourseResponseDto> getCoursesByMajorId(@PathVariable @NotNull final UUID majorId) {
         return courseMapper.toResponseDtoList(courseService.findAllByMajorId(majorId));
     }

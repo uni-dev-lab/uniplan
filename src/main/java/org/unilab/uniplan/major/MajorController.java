@@ -40,7 +40,7 @@ public class MajorController {
         return ResponseEntity.ok(majorMapper.toResponseDto(majorService.findMajorById(id)));
     }
 
-    @GetMapping("/withFaculty/{facultyId}")
+    @GetMapping("/with-Faculty/{facultyId}")
     public  List<MajorResponseDto> getMajorsByFacultyId(@PathVariable @NotNull final UUID facultyId) {
         return majorMapper.toResponseDtoList(majorService.findAllMajorByFacultyId(facultyId));
     }

@@ -21,7 +21,7 @@ public record StudentCourseMajorDto(
     @NotNull
     String courseSubType,
     @NotNull
-    byte courseYear,
+    Byte courseYear,
     @NotNull
     UUID majorId,
     @NotNull

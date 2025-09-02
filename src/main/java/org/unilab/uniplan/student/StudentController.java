@@ -53,7 +53,7 @@ public class StudentController {
         return studentMapper.toResponseDtoList(studentService.findAll());
     }
 
-    @GetMapping("/student-course-major")
+    @GetMapping("/student-course-major/getStudentCourseMajorInfo")
     public List<StudentCourseMajorDto> getStudentCourseMajorInfo(@RequestParam(required = false)
                                                                          @Size(max = 100)
                                                                          final String firstName,

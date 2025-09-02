@@ -54,10 +54,10 @@ public class StudentService {
         studentRepository.delete(student);
     }
 
-    public List<StudentCourseMajorDto> findStudentCourseMajorInfo(String firstName,
-                                                                      String lastName,
-                                                                      String facultyNumber,
-                                                                      String majorName){
+    public List<StudentCourseMajorDto> findStudentCourseMajorInfo(final String firstName,
+                                                                      final String lastName,
+                                                                      final String facultyNumber,
+                                                                      final String majorName){
         return studentRepository.searchStudents(firstName, lastName, facultyNumber, majorName);
     }
 

@@ -42,7 +42,7 @@ public class MajorService {
         return majorRepository.findAllMajorsWithCourse();
     }
 
-    public List<MajorCourseDto> findMajorWithCourse(@NotNull UUID majorId) {
+    public List<MajorCourseDto> findMajorWithCourse(@NotNull final UUID majorId) {
         return majorRepository.findMajorWithCourse(majorId);
     }
 

@@ -1,7 +1,6 @@
 package org.unilab.uniplan.major;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -36,5 +35,5 @@ public interface MajorRepository extends JpaRepository<Major, UUID> {
                 join m.courses c
                 where m.id = :majorId
     """)
-    List<MajorCourseDto> findMajorWithCourse(@Param("majorId") UUID majorId);
+    List<MajorCourseDto> findMajorWithCourse(@Param("majorId") final UUID majorId);
 }

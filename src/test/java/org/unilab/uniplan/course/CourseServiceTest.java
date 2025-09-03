@@ -62,8 +62,6 @@ class CourseServiceTest {
 
     @Test
     void findAllByMajorIdShouldReturnListOfCourses() {
-
-
         when(courseRepository.findAllByMajorId(majorId)).thenReturn(List.of(course));
         when(courseMapper.toDto(course)).thenReturn(courseDTO);
 

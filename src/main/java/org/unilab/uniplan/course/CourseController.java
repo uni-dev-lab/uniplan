@@ -35,11 +35,10 @@ public class CourseController {
                              .body(courseMapper.toResponseDto(courseService.createCourse(courseDTO)));
     }
 
-    @GetMapping("/with-Major/{majorId}")
+    @GetMapping("/major/{majorId}")
     public  List<CourseResponseDto> getCoursesByMajorId(@PathVariable @NotNull final UUID majorId) {
         return courseMapper.toResponseDtoList(courseService.findAllByMajorId(majorId));
     }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<CourseResponseDto> getMajorById(@PathVariable @NotNull final UUID id) {

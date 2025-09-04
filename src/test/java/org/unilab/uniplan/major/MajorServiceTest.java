@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.major.dto.MajorCourseDto;
 import org.unilab.uniplan.major.dto.MajorDto;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,16 +35,21 @@ class MajorServiceTest {
     @Mock
     private MajorMapper majorMapper;
 
+    private MajorCourseDto majorCourseDto;
     private MajorDto majorDTO;
     private Major major;
     private UUID majorId;
+    private UUID courseId;
     private UUID facultyId;
 
     @BeforeEach
     void setUp() {
         majorId = UUID.randomUUID();
+        courseId = UUID.randomUUID();
         facultyId = UUID.randomUUID();
         majorDTO = new MajorDto(majorId, facultyId, "Informatics");
+        majorCourseDto = new MajorCourseDto(majorId, courseId, facultyId,
+                                            majorDTO.majorName(), "bachelor", "education");
         major = new Major();
     }
 
@@ -78,6 +84,42 @@ class MajorServiceTest {
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> majorService.findMajorById(majorId));
 
         assertTrue(exception.getMessage().contains(String.valueOf(majorId)));
+    }
+
+    @Test
+    void findMajorByIdWithCourseShouldReturnListOfMajorCourseDTO() {
+        when(majorRepository.findMajorWithCourse(majorId)).thenReturn(List.of(majorCourseDto));
+
+        List<MajorCourseDto> result = majorService.findMajorWithCourse(majorId);
+
+        assertEquals(majorCourseDto.majorName(), result.getFirst().majorName());
+    }
+
+    @Test
+    void findMajorByIdWithCourseShouldReturnEmptyList() {
+        when(majorRepository.findMajorWithCourse(majorId)).thenReturn(List.of());
+
+        List<MajorCourseDto> result = majorService.findMajorWithCourse(majorId);
+
+        assertEquals(List.of(), result);
+    }
+
+    @Test
+    void findAllMajorsWithCourseShouldReturnListOfMajorCourseDTO() {
+        when(majorRepository.findAllMajorsWithCourse()).thenReturn(List.of(majorCourseDto));
+
+        List<MajorCourseDto> result = majorService.findAllMajorsWithCourse();
+
+        assertEquals(majorCourseDto.majorName(), result.getFirst().majorName());
+    }
+
+    @Test
+    void findAllMajorsWithCourseShouldReturnEmptyList() {
+        when(majorRepository.findAllMajorsWithCourse()).thenReturn(List.of());
+
+        List<MajorCourseDto> result = majorService.findAllMajorsWithCourse();
+
+        assertEquals(List.of(), result);
     }
 
     @Test

@@ -35,6 +35,13 @@ public class MajorService {
                               .stream().map(majorMapper::toDto).toList();
     }
 
+    public List<MajorDto> findAllMajorByFacultyId(final UUID facultyId) {
+        return majorRepository.findAllByFacultyId(facultyId)
+                              .stream()
+                              .map(majorMapper::toDto)
+                              .toList();
+    }
+
     @Transactional
     public MajorDto updateMajor(final UUID id, final MajorDto majorDTO) {
         return majorRepository.findById(id).map(existingMajor -> updateEntityAndConvertToDto(

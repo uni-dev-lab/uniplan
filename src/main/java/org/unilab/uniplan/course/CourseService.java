@@ -1,7 +1,6 @@
 package org.unilab.uniplan.course;
 
 import static org.unilab.uniplan.utils.ErrorConstants.COURSE_NOT_FOUND;
-
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
@@ -28,6 +27,12 @@ public class CourseService {
                                .map(courseMapper::toDto)
                                .orElseThrow(() -> new ResourceNotFoundException(COURSE_NOT_FOUND.getMessage(
                                    String.valueOf(id))));
+    }
+
+    public List<CourseDto> findAllByMajorId(final UUID majorId) {
+        return courseRepository.findAllByMajorId(majorId)
+            .stream()
+            .map(courseMapper::toDto).toList();
     }
 
     public List<CourseDto> findAll() {

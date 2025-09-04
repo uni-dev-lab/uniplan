@@ -1,0 +1,244 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1756968984128-1
+      author: iliev
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_event
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+              - column:
+                  name: main_event_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: title
+                  type: VARCHAR(200)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: description
+                  type: VARCHAR(255)
+              - column:
+                  name: link
+                  type: VARCHAR(2048)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: start_date
+                  type: DATE
+              - column:
+                  constraints:
+                    nullable: false
+                  name: end_date
+                  type: DATE
+              - column:
+                  constraints:
+                    nullable: false
+                  name: start_time
+                  type: TIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: end_time
+                  type: TIME
+            tableName: event
+  - changeSet:
+      id: 1756968984128-2
+      author: iliev
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: event_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: room_category_category_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: room_category_room_id
+                  type: UUID
+            tableName: event_room_category
+  - changeSet:
+      id: 1756968984128-3
+      author: iliev
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_participant
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: event_id
+                  type: UUID
+              - column:
+                  name: participant_type
+                  type: VARCHAR(255)
+              - column:
+                  name: participant_id
+                  type: UUID
+              - column:
+                  name: role
+                  type: VARCHAR(255)
+            tableName: participant
+  - changeSet:
+      id: 1756968984128-4
+      author: iliev
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_recurrence
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: event_id
+                  type: UUID
+            tableName: recurrence
+  - changeSet:
+      id: 1756968984128-5
+      author: iliev
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addColumn:
+            columns:
+              - column:
+                  name: room_category_id
+                  type: UUID
+            tableName: room_category
+  - changeSet:
+      id: 1756968984128-6
+      author: iliev
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: room_category_category_id, room_category_room_id
+            constraintName: uc_event_room_category_rocaidroroid
+            tableName: event_room_category
+  - changeSet:
+      id: 1756968984128-7
+      author: iliev
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: event_id
+            constraintName: uc_recurrence_event
+            tableName: recurrence
+  - changeSet:
+      id: 1756968984128-8
+      author: iliev
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: main_event_id
+            baseTableName: event
+            constraintName: FK_EVENT_ON_MAIN_EVENT
+            referencedColumnNames: id
+            referencedTableName: event
+  - changeSet:
+      id: 1756968984128-9
+      author: iliev
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: event_id
+            baseTableName: participant
+            constraintName: FK_PARTICIPANT_ON_EVENT
+            referencedColumnNames: id
+            referencedTableName: event
+  - changeSet:
+      id: 1756968984128-10
+      author: iliev
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: event_id
+            baseTableName: recurrence
+            constraintName: FK_RECURRENCE_ON_EVENT
+            referencedColumnNames: id
+            referencedTableName: event
+  - changeSet:
+      id: 1756968984128-11
+      author: iliev
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: room_category_id
+            baseTableName: room_category
+            constraintName: FK_ROOM_CATEGORY_ON_ROOM_CATEGORY
+            referencedColumnNames: id
+            referencedTableName: event
+  - changeSet:
+      id: 1756968984128-12
+      author: iliev
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: event_id
+            baseTableName: event_room_category
+            constraintName: fk_everoocat_on_event
+            referencedColumnNames: id
+            referencedTableName: event
+  - changeSet:
+      id: 1756968984128-13
+      author: iliev
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: room_category_room_id,room_category_category_id
+            baseTableName: event_room_category
+            constraintName: fk_everoocat_on_room_category
+            referencedColumnNames: room_id,category_id
+            referencedTableName: room_category
+

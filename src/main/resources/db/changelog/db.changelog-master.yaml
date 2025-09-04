@@ -3,3 +3,5 @@ databaseChangeLog:
       file: db/changelog/2025/08/0001-baseline-init-changelog.yaml
   - include:
       file: db/changelog/2025/08/0002-seed-university-data-from-csv.yaml
+  - include:
+      file: db/changelog/2025.09/0003-event-init-changelog.yaml

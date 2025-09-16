@@ -54,19 +54,11 @@ public class StudentController {
     }
 
     @GetMapping("/student-course-major/getStudentCourseMajorInfo")
-    public List<StudentCourseMajorDto> getStudentCourseMajorInfo(@RequestParam(required = false)
-                                                                         @Size(max = 100)
-                                                                         final String firstName,
-                                                                 @RequestParam(required = false)
-                                                                         @Size(max = 100)
-                                                                         final String lastName,
-                                                                 @RequestParam(required = false)
-                                                                         final String facultyNumber,
-                                                                 @RequestParam(required = false)
-                                                                         @Size(max = 200)
-                                                                         final String majorName){
-        return studentService.findStudentCourseMajorInfo(firstName, lastName, facultyNumber,
-                                                             majorName);
+    public List<StudentCourseMajorDto> getStudentCourseMajorInfo(@RequestParam(required = false) @Size(max = 100) final String firstName,
+                                                                 @RequestParam(required = false) @Size(max = 100) final String lastName,
+                                                                 @RequestParam(required = false) final String facultyNumber,
+                                                                 @RequestParam(required = false) @Size(max = 200) final String majorName){
+        return studentService.findStudentCourseMajorInfo(firstName, lastName, facultyNumber, majorName);
     }
 
     @PutMapping("/{id}")

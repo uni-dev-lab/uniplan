@@ -1,15 +1,16 @@
 package org.unilab.uniplan.student.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.UUID;
 
 public record StudentCourseMajorDto(
     UUID studentId,
-    @NotNull
+    @NotBlank
     @Size(max = 100)
     String firstName,
-    @NotNull
+    @NotBlank
     @Size(max = 100)
     String lastName,
     @Size(max = 40)
@@ -24,7 +25,8 @@ public record StudentCourseMajorDto(
     Byte courseYear,
     @NotNull
     UUID majorId,
-    @NotNull
+    @NotBlank
+    @Size(max = 200)
     String majorName
 ) {
 

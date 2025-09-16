@@ -19,10 +19,10 @@ public interface StudentRepository extends JpaRepository<Student, UUID> {
     from Student s
     join s.course c
     join c.major m
-    where (:firstName is null or s.firstName = :firstName)
-      and (:lastName is null or s.lastName = :lastName)
-      and (:facultyNumber is null or s.facultyNumber = :facultyNumber)
-      and (:majorName is null or m.majorName = :majorName)
+    where (:firstName is null or lower(s.firstName) like lower(concat('%', :firstName, '%')))
+      and (:lastName is null or lower(s.lastName) like lower(concat('%', :lastName, '%')))
+      and (:facultyNumber is null or s.facultyNumber like concat('%', :facultyNumber, '%'))
+      and (:majorName is null or lower(m.majorName) like lower(concat('%', :majorName, '%')))
     """)
     List<StudentCourseMajorDto> searchStudents(
         @Param("firstName") String firstName,

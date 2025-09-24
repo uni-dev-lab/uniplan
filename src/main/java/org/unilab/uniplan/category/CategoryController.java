@@ -1,5 +1,6 @@
 package org.unilab.uniplan.category;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.text.MessageFormat;
@@ -27,6 +28,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController
 @RequestMapping("/categories")
 @RequiredArgsConstructor
+@Tag(name = "Room Categories", description = "Manage categories of rooms, including type and capacity")
 public class CategoryController {
 
     private final CategoryService categoryService;

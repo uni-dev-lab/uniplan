@@ -1,5 +1,6 @@
 package org.unilab.uniplan.department;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.text.MessageFormat;
@@ -26,6 +27,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController
 @RequestMapping("/departments")
 @RequiredArgsConstructor
+@Tag(name = "Departments", description = "Manage university departments (e.g., Computer Systems) associated with faculties")
 public class DepartmentController {
 
     private static final String DEPARTMENT_NOT_FOUND = "Department with ID {0} not found.";

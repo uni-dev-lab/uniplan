@@ -1,5 +1,6 @@
 package org.unilab.uniplan.roomcategory;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.text.MessageFormat;
@@ -23,6 +24,7 @@ import org.unilab.uniplan.roomcategory.dto.RoomCategoryResponseDto;
 @RestController
 @RequestMapping("/room-categories")
 @RequiredArgsConstructor
+@Tag(name = "Room-Category Assignments", description = "Manage the association of rooms with categories")
 public class RoomCategoryController {
 
     private final RoomCategoryService roomCategoryService;

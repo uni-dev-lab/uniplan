@@ -2,6 +2,7 @@ package org.unilab.uniplan.lector;
 
 import static org.springframework.http.ResponseEntity.ok;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.unilab.uniplan.lector.dto.LectorResponseDto;
 @RestController
 @RequestMapping("/api/lectors")
 @RequiredArgsConstructor
+@Tag(name = "Lectors", description = "Manage lecturers with contact information and associated faculties")
 public class LectorController {
 
     private final LectorService lectorService;

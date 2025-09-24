@@ -1,5 +1,6 @@
 package org.unilab.uniplan.course;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
@@ -22,6 +23,10 @@ import org.unilab.uniplan.course.dto.CourseResponseDto;
 @RestController
 @RequestMapping("/courses")
 @RequiredArgsConstructor
+@Tag(
+    name = "Courses",
+    description = "Manage university courses, including year of study, degree type (Bachelor, Master, PhD), and study form (Regular, Part-time, Distance)"
+)
 public class CourseController {
 
     private final CourseService courseService;

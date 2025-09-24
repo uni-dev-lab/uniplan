@@ -1,5 +1,6 @@
 package org.unilab.uniplan.university;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.text.MessageFormat;
@@ -27,6 +28,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController
 @RequestMapping("/universities")
 @RequiredArgsConstructor
+@Tag(name = "Universities", description = "Manage universities, including name, location, accreditation, establishment year, and website")
 public class UniversityController {
 
     private final UniversityService universityService;

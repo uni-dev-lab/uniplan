@@ -1,5 +1,6 @@
 package org.unilab.uniplan.student;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.unilab.uniplan.student.dto.StudentResponseDto;
 @RestController
 @RequestMapping("/students")
 @RequiredArgsConstructor
+@Tag(name = "Students", description = "Manage students, including faculty numbers and enrollment in course")
 public class StudentController {
 
     private final StudentService studentService;

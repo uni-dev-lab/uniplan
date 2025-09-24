@@ -2,6 +2,7 @@ package org.unilab.uniplan.programdisciplinelector;
 
 import static org.springframework.http.ResponseEntity.ok;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorRes
 @RestController
 @RequestMapping("/api/ProgramDisciplineLector")
 @RequiredArgsConstructor
+@Tag(name = "Program Discipline Lectors", description = "Assign lecturers to program disciplines with specific roles (e.g., Main Lecturer, Assistant)")
 public class ProgramDisciplineLectorController {
 
     private final ProgramDisciplineLectorMapper programDisciplineLectorMapper;

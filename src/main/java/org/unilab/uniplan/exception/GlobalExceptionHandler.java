@@ -25,7 +25,6 @@ public class GlobalExceptionHandler {
 
     //Handles resource not found exceptions triggered by element not found by search parameters
     @ExceptionHandler(ResourceNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorResponse> handleValidationException(final ResourceNotFoundException ex,
                                                                    final HttpServletRequest request,
                                                                    final Locale locale) {

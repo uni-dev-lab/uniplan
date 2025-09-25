@@ -16,26 +16,26 @@ public class SwaggerConfig {
     @Bean
     public OpenApiCustomizer globalResponsesCustomizer() {
         return openApi -> openApi.getPaths().values().forEach(pathItem ->
-                                                                  pathItem.readOperationsMap().forEach((httpMethod, operation) -> {
-                                                                      var responses = operation.getResponses();
+              pathItem.readOperationsMap().forEach((httpMethod, operation) -> {
+                  var responses = operation.getResponses();
 
-                                                                      // Общи за всички
-                                                                      responses.addApiResponse("400", new ApiResponse().description("Invalid input / Bad request"));
-                                                                      responses.addApiResponse("500", new ApiResponse().description("Internal server error"));
+                  // for all
+                  responses.addApiResponse("400", new ApiResponse().description("Invalid input / Bad request"));
+                  responses.addApiResponse("500", new ApiResponse().description("Internal server error"));
 
-                                                                      // По метод
-                                                                      switch (httpMethod) {
-                                                                          case POST -> responses.addApiResponse("201", new ApiResponse().description("Resource created"));
-                                                                          case PUT -> {
-                                                                              responses.addApiResponse("200", new ApiResponse().description("Resource updated"));
-                                                                              responses.addApiResponse("404", new ApiResponse().description("Resource not found"));
-                                                                          }
-                                                                          case DELETE -> {
-                                                                              responses.addApiResponse("204", new ApiResponse().description("Resource deleted"));
-                                                                              responses.addApiResponse("404", new ApiResponse().description("Resource not found"));
-                                                                          }
-                                                                      }
-                                                                  })
+                  // custom for each method
+                  switch (httpMethod) {
+                      case POST -> responses.addApiResponse("201", new ApiResponse().description("Resource created"));
+                      case PUT -> {
+                          responses.addApiResponse("200", new ApiResponse().description("Resource updated"));
+                          responses.addApiResponse("404", new ApiResponse().description("Resource not found"));
+                      }
+                      case DELETE -> {
+                          responses.addApiResponse("204", new ApiResponse().description("Resource deleted"));
+                          responses.addApiResponse("404", new ApiResponse().description("Resource not found"));
+                      }
+                  }
+              })
         );
     }
 }

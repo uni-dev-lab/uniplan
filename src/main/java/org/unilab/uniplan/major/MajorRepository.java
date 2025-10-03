@@ -36,4 +36,6 @@ public interface MajorRepository extends JpaRepository<Major, UUID> {
                 where m.id = :majorId
     """)
     List<MajorCourseDto> findMajorWithCourse(@Param("majorId") final UUID majorId);
+           
+    public List<Major> findAllByFacultyId(UUID facultyId);
 }

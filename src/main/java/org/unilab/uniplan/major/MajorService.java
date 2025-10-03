@@ -44,6 +44,7 @@ public class MajorService {
 
     public List<MajorCourseDto> findMajorWithCourse(@NotNull final UUID majorId) {
         return majorRepository.findMajorWithCourse(majorId);
+    }
       
     public List<MajorDto> findAllMajorByFacultyId(final UUID facultyId) {
         return majorRepository.findAllByFacultyId(facultyId)

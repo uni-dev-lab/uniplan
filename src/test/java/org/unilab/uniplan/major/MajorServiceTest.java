@@ -9,7 +9,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -65,6 +64,28 @@ class MajorServiceTest {
         assertEquals("Informatics", result.majorName());
         assertEquals(facultyId, result.facultyId());
         verify(majorRepository).save(major);
+    }
+
+    @Test
+    void findAllMajorByFacultyIdShouldReturnListOfMajors() {
+        when(majorRepository.findAllByFacultyId(facultyId)).thenReturn(List.of(major));
+        when(majorMapper.toDto(major)).thenReturn(majorDTO);
+
+        List<MajorDto> result =  majorService.findAllMajorByFacultyId(facultyId);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("Informatics", result.getFirst().majorName());
+    }
+
+    @Test
+    void findAllMajorByFacultyIdShouldReturnEmptyList() {
+
+        when(majorRepository.findAllByFacultyId(facultyId)).thenReturn(List.of());
+
+        assertTrue(majorService.findAllMajorByFacultyId(facultyId).isEmpty());
+
+        verify(majorRepository).findAllByFacultyId(facultyId);
     }
 
     @Test

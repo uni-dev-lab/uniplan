@@ -1,8 +1,9 @@
 package org.unilab.uniplan.department;
 
+import static org.springframework.http.ResponseEntity.ok;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -16,19 +17,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import org.unilab.uniplan.department.dto.DepartmentDto;
 import org.unilab.uniplan.department.dto.DepartmentRequestDto;
 import org.unilab.uniplan.department.dto.DepartmentResponseDto;
-
-import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("/departments")
 @RequiredArgsConstructor
 public class DepartmentController {
-
-    private static final String DEPARTMENT_NOT_FOUND = "Department with ID {0} not found.";
 
     private final DepartmentService departmentService;
     private final DepartmentMapper departmentMapper;

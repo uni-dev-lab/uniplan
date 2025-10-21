@@ -6,6 +6,10 @@ spring:
   application:
     name: Plan University Schedule
 
+  mvc:
+    servlet:
+      path: /api
+
   datasource:
     url: ${POSTGRES_URL}
     driver: org.postgresql.Driver

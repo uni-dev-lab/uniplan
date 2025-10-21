@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.unilab.uniplan.major.dto.MajorCoursesResponseDto;
 import org.unilab.uniplan.major.dto.MajorDto;
 import org.unilab.uniplan.major.dto.MajorRequestDto;
 import org.unilab.uniplan.major.dto.MajorResponseDto;
@@ -40,9 +41,19 @@ public class MajorController {
         return ResponseEntity.ok(majorMapper.toResponseDto(majorService.findMajorById(id)));
     }
 
+    @GetMapping("/{id}/courses")
+    public ResponseEntity<MajorCoursesResponseDto> getMajorWithCoursesById(@PathVariable @NotNull final UUID id) {
+        return ResponseEntity.ok(majorMapper.toFullResponseDto(majorService.findMajorWithCoursesById(id)));
+    }
+
     @GetMapping("/faculty/{facultyId}")
     public  List<MajorResponseDto> getMajorsByFacultyId(@PathVariable @NotNull final UUID facultyId) {
         return majorMapper.toResponseDtoList(majorService.findAllMajorByFacultyId(facultyId));
+    }
+
+    @GetMapping("/faculty/{facultyId}/courses")
+    public  List<MajorCoursesResponseDto> getMajorsWithCoursesByFacultyId(@PathVariable @NotNull final UUID facultyId) {
+        return majorMapper.toFullResponseDtoList(majorService.findAllMajorWithCoursesByFacultyId(facultyId));
     }
 
     @GetMapping

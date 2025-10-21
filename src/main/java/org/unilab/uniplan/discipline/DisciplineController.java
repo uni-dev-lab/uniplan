@@ -23,7 +23,7 @@ import org.unilab.uniplan.discipline.dto.DisciplineResponseDto;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/disciplines")
+@RequestMapping("/disciplines")
 public class DisciplineController {
 
     private final DisciplineMapper disciplineMapper;

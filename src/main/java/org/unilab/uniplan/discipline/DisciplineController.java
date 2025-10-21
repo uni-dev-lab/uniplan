@@ -24,7 +24,7 @@ import org.unilab.uniplan.discipline.dto.DisciplineResponseDto;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/disciplines")
+@RequestMapping("/disciplines")
 @Tag(name = "Disciplines", description = "Manage academic disciplines (e.g., Algorithms, Databases) with assigned main lecturers, linked to academic programs")
 public class DisciplineController {
 

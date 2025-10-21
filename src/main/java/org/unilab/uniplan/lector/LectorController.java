@@ -23,7 +23,7 @@ import org.unilab.uniplan.lector.dto.LectorRequestDto;
 import org.unilab.uniplan.lector.dto.LectorResponseDto;
 
 @RestController
-@RequestMapping("/api/lectors")
+@RequestMapping("/lectors")
 @RequiredArgsConstructor
 @Tag(name = "Lectors", description = "Manage lecturers with contact information and associated faculties")
 public class LectorController {

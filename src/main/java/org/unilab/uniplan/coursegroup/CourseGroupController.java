@@ -21,7 +21,7 @@ import org.unilab.uniplan.coursegroup.dto.CourseGroupRequestDto;
 import org.unilab.uniplan.coursegroup.dto.CourseGroupResponseDto;
 
 @RestController
-@RequestMapping("/courseGroups")
+@RequestMapping("/course-groups")
 @RequiredArgsConstructor
 @Tag(name = "Course Groups", description = "Manage student groups within a specific course (e.g., Group A, Group B), including group name and capacity limits")
 public class CourseGroupController {

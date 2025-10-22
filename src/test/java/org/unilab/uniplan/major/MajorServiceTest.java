@@ -1,5 +1,6 @@
 package org.unilab.uniplan.major;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -19,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.major.dto.MajorCoursesDto;
 import org.unilab.uniplan.major.dto.MajorDto;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,6 +35,7 @@ class MajorServiceTest {
     @Mock
     private MajorMapper majorMapper;
 
+    private MajorCoursesDto majorCoursesDto;
     private MajorDto majorDTO;
     private Major major;
     private UUID majorId;
@@ -42,6 +45,7 @@ class MajorServiceTest {
     void setUp() {
         majorId = UUID.randomUUID();
         facultyId = UUID.randomUUID();
+        majorCoursesDto = new MajorCoursesDto(majorId, facultyId, "Informatics", List.of());
         majorDTO = new MajorDto(majorId, facultyId, "Informatics");
         major = new Major();
     }
@@ -83,6 +87,31 @@ class MajorServiceTest {
     }
 
     @Test
+    void findAllMajorWithCoursesByFacultyIdShouldReturnListOfMajorCoursesDto() {
+        when(majorRepository.findAllByFacultyId(facultyId)).thenReturn(List.of(major));
+        when(majorMapper.toFullDto(major)).thenReturn(majorCoursesDto);
+
+        List<MajorCoursesDto> result =  majorService.findAllMajorWithCoursesByFacultyId(facultyId);
+
+        assertAll(
+            () -> assertNotNull(result),
+            () -> assertEquals(1, result.size()),
+            () -> assertEquals("Informatics", result.getFirst().majorName()),
+            () -> assertEquals(List.of(), result.getFirst().courses())
+            );
+    }
+
+    @Test
+    void findAllMajorWithCoursesByFacultyIdShouldReturnEmptyList() {
+
+        when(majorRepository.findAllByFacultyId(facultyId)).thenReturn(List.of());
+
+        assertTrue(majorService.findAllMajorWithCoursesByFacultyId(facultyId).isEmpty());
+
+        verify(majorRepository).findAllByFacultyId(facultyId);
+    }
+
+    @Test
     void findMajorByIdShouldReturnMajorDTOIfFound() {
         when(majorRepository.findById(majorId)).thenReturn(Optional.of(major));
         when(majorMapper.toDto(major)).thenReturn(majorDTO);
@@ -97,6 +126,29 @@ class MajorServiceTest {
         when(majorRepository.findById(majorId)).thenReturn(Optional.empty());
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> majorService.findMajorById(majorId));
+
+        assertTrue(exception.getMessage().contains(String.valueOf(majorId)));
+    }
+
+    @Test
+    void findMajorWithCoursesByIdShouldReturnMajorCoursesDtoIfFound() {
+        when(majorRepository.findById(majorId)).thenReturn(Optional.of(major));
+        when(majorMapper.toFullDto(major)).thenReturn(majorCoursesDto);
+
+        MajorCoursesDto result = majorService.findMajorWithCoursesById(majorId);
+
+        assertAll(
+            () -> assertNotNull(result),
+            () -> assertEquals("Informatics", result.majorName()),
+            () -> assertEquals(List.of(), result.courses())
+        );
+    }
+
+    @Test
+    void findMajorWithCoursesByIdShouldReturnEmptyIfNotFound() {
+        when(majorRepository.findById(majorId)).thenReturn(Optional.empty());
+
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> majorService.findMajorWithCoursesById(majorId));
 
         assertTrue(exception.getMessage().contains(String.valueOf(majorId)));
     }

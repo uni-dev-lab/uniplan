@@ -2,6 +2,7 @@ package org.unilab.uniplan.program;
 
 import static org.springframework.http.ResponseEntity.ok;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +23,7 @@ import org.unilab.uniplan.program.dto.ProgramRequestDto;
 @RestController
 @RequestMapping("/programs")
 @RequiredArgsConstructor
+@Tag(name = "Programs", description = "Manage academic programs (e.g., Software Engineering – Bachelor) linked to a course and composed of multiple disciplines")
 public class ProgramController {
 
     private final ProgramService programService;

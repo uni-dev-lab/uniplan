@@ -1,5 +1,6 @@
 package org.unilab.uniplan.studentgroup;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.unilab.uniplan.studentgroup.dto.StudentGroupResponseDto;
 @RestController
 @RequestMapping("/student-groups")
 @RequiredArgsConstructor
+@Tag(name = "Student Groups", description = "Manage the assignment of students to course groups")
 public class StudentGroupController {
 
     private final StudentGroupService studentGroupService;

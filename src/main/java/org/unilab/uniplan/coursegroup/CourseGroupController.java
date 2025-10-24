@@ -1,5 +1,6 @@
 package org.unilab.uniplan.coursegroup;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.unilab.uniplan.coursegroup.dto.CourseGroupResponseDto;
 @RestController
 @RequestMapping("/course-groups")
 @RequiredArgsConstructor
+@Tag(name = "Course Groups", description = "Manage student groups within a specific course (e.g., Group A, Group B), including group name and capacity limits")
 public class CourseGroupController {
 
     private final CourseGroupService courseGroupService;

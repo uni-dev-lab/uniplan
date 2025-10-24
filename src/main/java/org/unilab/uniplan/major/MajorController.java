@@ -1,5 +1,6 @@
 package org.unilab.uniplan.major;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.unilab.uniplan.major.dto.MajorResponseDto;
 @RestController
 @RequestMapping("/majors")
 @RequiredArgsConstructor
+@Tag(name = "Majors", description = "Manage academic majors (e.g., Informatics, Software Engineering) associated with faculties")
 public class MajorController {
 
     private final MajorService majorService;

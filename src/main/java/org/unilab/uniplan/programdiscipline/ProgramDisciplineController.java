@@ -1,5 +1,6 @@
 package org.unilab.uniplan.programdiscipline;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import static org.springframework.http.ResponseEntity.ok;
 
 import jakarta.validation.Valid;
@@ -24,6 +25,7 @@ import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineResponseDto;
 @RestController
 @RequestMapping("/program-disciplines")
 @RequiredArgsConstructor
+@Tag(name = "Program Disciplines", description = "Assign disciplines to academic programs, including lecture hours, exercise hours, and semester placement")
 public class ProgramDisciplineController {
 
     private final ProgramDisciplineMapper programDisciplineMapper;

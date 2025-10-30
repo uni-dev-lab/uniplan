@@ -2,6 +2,7 @@ package org.unilab.uniplan.room;
 
 import static org.springframework.http.ResponseEntity.ok;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.unilab.uniplan.room.dto.RoomResponseDto;
 @RestController
 @RequestMapping("/rooms")
 @RequiredArgsConstructor
+@Tag(name = "Rooms", description = "Manage classrooms and lecture halls, including room numbers and assigned faculties")
 public class RoomController {
 
     private final RoomService roomService;

@@ -2,6 +2,7 @@ package org.unilab.uniplan.faculty;
 
 import static org.springframework.http.ResponseEntity.ok;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.unilab.uniplan.faculty.dto.FacultyResponseDto;
 @RestController
 @RequestMapping("/faculties")
 @RequiredArgsConstructor
+@Tag(name = "Faculties", description = "Manage faculties within universities, including name and location")
 public class FacultyController {
 
     private final FacultyService facultyService;

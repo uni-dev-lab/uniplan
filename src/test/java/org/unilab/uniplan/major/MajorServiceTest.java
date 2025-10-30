@@ -91,7 +91,7 @@ class MajorServiceTest {
         when(majorRepository.findAllByFacultyId(facultyId)).thenReturn(List.of(major));
         when(majorMapper.toFullDto(major)).thenReturn(majorCoursesDto);
 
-        List<MajorCoursesDto> result =  majorService.findAllMajorWithCoursesByFacultyId(facultyId);
+        final List<MajorCoursesDto> result = majorService.findAllMajorWithCoursesByFacultyId(facultyId);
 
         assertAll(
             () -> assertNotNull(result),
@@ -103,7 +103,6 @@ class MajorServiceTest {
 
     @Test
     void findAllMajorWithCoursesByFacultyIdShouldReturnEmptyList() {
-
         when(majorRepository.findAllByFacultyId(facultyId)).thenReturn(List.of());
 
         assertTrue(majorService.findAllMajorWithCoursesByFacultyId(facultyId).isEmpty());
@@ -135,7 +134,7 @@ class MajorServiceTest {
         when(majorRepository.findById(majorId)).thenReturn(Optional.of(major));
         when(majorMapper.toFullDto(major)).thenReturn(majorCoursesDto);
 
-        MajorCoursesDto result = majorService.findMajorWithCoursesById(majorId);
+        final MajorCoursesDto result = majorService.findMajorWithCoursesById(majorId);
 
         assertAll(
             () -> assertNotNull(result),

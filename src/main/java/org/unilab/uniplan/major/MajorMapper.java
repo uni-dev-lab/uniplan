@@ -29,12 +29,10 @@ public interface MajorMapper {
     @Mapping(target = "id", ignore = true)
     MajorDto toInnerDto(MajorRequestDto requestDto);
 
-    @Mapping(source = "facultyId", target = "facultyId")
     MajorResponseDto toResponseDto(MajorDto innerDto);
 
     List<MajorResponseDto> toResponseDtoList(List<MajorDto> majors);
 
-    @Mapping(source = "facultyId", target = "facultyId")
     MajorCoursesResponseDto toFullResponseDto(MajorCoursesDto innerDto);
 
     List<MajorCoursesResponseDto> toFullResponseDtoList(List<MajorCoursesDto> majors);

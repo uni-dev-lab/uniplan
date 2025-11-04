@@ -6,6 +6,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -34,5 +36,9 @@ public class Major extends BaseEntity {
     //Read-only list of courses
     @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "major")
-    private List<Course> courses = List.of();
+    private List<Course> courses = new ArrayList<>();
+
+    public List<Course> getCourses() {
+        return Collections.unmodifiableList(courses);
+    }
 }

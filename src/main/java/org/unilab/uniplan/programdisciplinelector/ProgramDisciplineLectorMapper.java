@@ -15,28 +15,28 @@ public interface ProgramDisciplineLectorMapper {
     @Mapping(target = "disciplineId", source = "discipline.id")
     @Mapping(target = "lectorId", source = "lector.id")
     @Mapping(target = "programId", source = "program.id")
-    ProgramDisciplineLectorDto toDto(ProgramDisciplineLector programDisciplineLector);
+    ProgramDisciplineLectorDto toDto(final ProgramDisciplineLector programDisciplineLector);
 
     @Mapping(target = "discipline.id", source = "disciplineId")
     @Mapping(target = "lector.id", source = "lectorId")
     @Mapping(target = "program.id", source = "programId")
-    ProgramDisciplineLector toEntity(ProgramDisciplineLectorDto programDisciplineLectorDto);
+    ProgramDisciplineLector toEntity(final ProgramDisciplineLectorDto programDisciplineLectorDto);
 
     @Mapping(target = "id", ignore = true)
     ProgramDisciplineLectorDto toInternalDto(final ProgramDisciplineLectorRequestDto requestDto);
 
     ProgramDisciplineLectorResponseDto toResponseDto(final ProgramDisciplineLectorDto dto);
 
-    List<ProgramDisciplineLectorDto> toDtos(List<ProgramDisciplineLector> programDisciplineLectorList);
+    List<ProgramDisciplineLectorDto> toDtos(final List<ProgramDisciplineLector> programDisciplineLectorList);
 
-    List<ProgramDisciplineLectorResponseDto> toResponseDtoList(List<ProgramDisciplineLectorDto> programDisciplineLectorDtoList);
+    List<ProgramDisciplineLectorResponseDto> toResponseDtoList(final List<ProgramDisciplineLectorDto> programDisciplineLectorDtoList);
 
     @Mapping(target = "lector.id", source = "dto.lectorId")
     @Mapping(target = "discipline.id", source = "dto.disciplineId")
     @Mapping(target = "program.id", source = "dto.programId")
     void updateEntityFromDto(final ProgramDisciplineLectorDto dto, @MappingTarget final ProgramDisciplineLector entity);
 
-    ProgramDisciplineLectorId toProgramDisciplineLectorId(UUID lectorId,
-                                                          UUID programId,
-                                                          UUID disciplineId);
+    ProgramDisciplineLectorId toProgramDisciplineLectorId(final UUID lectorId,
+                                                          final UUID programId,
+                                                          final UUID disciplineId);
 }

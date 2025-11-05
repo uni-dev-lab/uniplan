@@ -12,23 +12,21 @@ import org.unilab.uniplan.faculty.dto.FacultyResponseDto;
 public interface FacultyMapper {
 
     @Mapping(target = "university.id", source = "universityId")
-    Faculty toEntity(FacultyDto facultyDto);
+    Faculty toEntity(final FacultyDto facultyDto);
 
     @Mapping(target = "universityId", source = "university.id")
-    FacultyDto toDto(Faculty faculty);
+    FacultyDto toDto(final Faculty faculty);
 
-    @Mapping(target = "universityId", source = "universityId")
     @Mapping(target = "id", ignore = true)
-    FacultyDto toInternalDto(FacultyRequestDto facultyRequestDto);
+    FacultyDto toInternalDto(final FacultyRequestDto facultyRequestDto);
 
-    @Mapping(target = "universityId", source = "universityId")
-    FacultyResponseDto toResponseDto(FacultyDto facultyDto);
+    FacultyResponseDto toResponseDto(final FacultyDto facultyDto);
 
-    List<FacultyDto> toDtoList(List<Faculty> faculties);
+    List<FacultyDto> toDtoList(final List<Faculty> faculties);
 
-    List<FacultyResponseDto> toResponseDtoList(List<FacultyDto> faculties);
+    List<FacultyResponseDto> toResponseDtoList(final List<FacultyDto> faculties);
 
     @Mapping(target = "university.id", source = "facultyDto.universityId")
     @Mapping(target = "id", ignore = true)
-    void updateEntityFromDto(FacultyDto facultyDto, @MappingTarget Faculty faculty);
+    void updateEntityFromDto(final FacultyDto facultyDto, @MappingTarget final Faculty faculty);
 }

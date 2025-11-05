@@ -12,19 +12,19 @@ import org.unilab.uniplan.lector.dto.LectorResponseDto;
 public interface LectorMapper {
 
     @Mapping(source = "faculty.id", target = "facultyId")
-    LectorDto toDto(Lector lector);
+    LectorDto toDto(final Lector lector);
 
     @Mapping(source = "facultyId", target = "faculty.id")
-    Lector toEntity(LectorDto lectorDto);
+    Lector toEntity(final LectorDto lectorDto);
 
     @Mapping(target = "id", ignore = true)
     LectorDto toInternalDto(final LectorRequestDto lectorRequestDto);
 
     LectorResponseDto toResponseDto(final LectorDto lectorDto);
 
-    List<LectorDto> toDtos(List<Lector> lectors);
+    List<LectorDto> toDtos(final List<Lector> lectors);
 
-    List<LectorResponseDto> toResponseDtoList(List<LectorDto> lectorDtos);
+    List<LectorResponseDto> toResponseDtoList(final List<LectorDto> lectorDtos);
 
     @Mapping(target = "email", source = "lectorDto.email")
     @Mapping(target = "firstName", source = "lectorDto.firstName")

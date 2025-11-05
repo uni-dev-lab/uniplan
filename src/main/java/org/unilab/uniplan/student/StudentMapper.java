@@ -12,21 +12,20 @@ import org.unilab.uniplan.student.dto.StudentResponseDto;
 public interface StudentMapper {
 
     @Mapping(source = "courseId", target = "course.id")
-    Student toEntity(StudentDto studentDto);
+    Student toEntity(final StudentDto studentDto);
 
     @Mapping(source = "course.id", target = "courseId")
-    StudentDto toDto(Student student);
+    StudentDto toDto(final Student student);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "courseId", target = "course.id")
-    void updateEntityFromDto(StudentDto studentDto, @MappingTarget Student student);
+    void updateEntityFromDto(final StudentDto studentDto, @MappingTarget final Student student);
 
     @Mapping(target = "id", ignore = true)
-    StudentDto toInternalDto(StudentRequestDto student);
+    StudentDto toInternalDto(final StudentRequestDto student);
 
-    @Mapping(source = "courseId", target = "courseId")
-    StudentResponseDto toResponseDto(StudentDto studentDto);
+    StudentResponseDto toResponseDto(final StudentDto studentDto);
 
-    List<StudentResponseDto> toResponseDtoList(List<StudentDto> students);
+    List<StudentResponseDto> toResponseDtoList(final List<StudentDto> students);
 
 }

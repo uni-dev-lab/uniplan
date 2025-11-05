@@ -15,20 +15,20 @@ public interface ProgramDisciplineMapper {
 
     @Mapping(source = "discipline.id", target = "disciplineId")
     @Mapping(source = "program.id", target = "programId")
-    ProgramDisciplineDto toDto(ProgramDiscipline programDiscipline);
+    ProgramDisciplineDto toDto(final ProgramDiscipline programDiscipline);
 
     @Mapping(source = "disciplineId", target = "discipline.id")
     @Mapping(source = "programId", target = "program.id")
-    ProgramDiscipline toEntity(ProgramDisciplineDto programDisciplineDto);
+    ProgramDiscipline toEntity(final ProgramDisciplineDto programDisciplineDto);
 
     @Mapping(target = "id", ignore = true)
     ProgramDisciplineDto toInternalDto(final ProgramDisciplineRequestDto programDisciplineRequestDto);
 
     ProgramDisciplineResponseDto toResponseDto(final ProgramDisciplineDto programDisciplineDto);
 
-    List<ProgramDisciplineDto> toDtos(List<ProgramDiscipline> programDisciplines);
+    List<ProgramDisciplineDto> toDtos(final List<ProgramDiscipline> programDisciplines);
 
-    List<ProgramDisciplineResponseDto> toResponseDtoList(List<ProgramDisciplineDto> programDisciplineDtos);
+    List<ProgramDisciplineResponseDto> toResponseDtoList(final List<ProgramDisciplineDto> programDisciplineDtos);
 
     @Mapping(target = "program.id", ignore = true)
     @Mapping(target = "discipline.id", ignore = true)
@@ -41,7 +41,7 @@ public interface ProgramDisciplineMapper {
     @Named("toProgramDisciplineId")
     @Mapping(target = "programId", source = "discipline.id")
     @Mapping(target = "disciplineId", source = "discipline.id")
-    ProgramDisciplineId toProgramDisciplineId(ProgramDiscipline programDiscipline);
+    ProgramDisciplineId toProgramDisciplineId(final ProgramDiscipline programDiscipline);
 
     @Named("toProgramDiscipline")
     @Mapping(target = "id", ignore = true)
@@ -50,5 +50,5 @@ public interface ProgramDisciplineMapper {
     @Mapping(target = "semesterCount", ignore = true)
     @Mapping(target = "program.id", source = "programId")
     @Mapping(target = "discipline.id", source = "disciplineId")
-    ProgramDiscipline toProgramDiscipline(ProgramDisciplineId programDisciplineId);
+    ProgramDiscipline toProgramDiscipline(final ProgramDisciplineId programDisciplineId);
 }

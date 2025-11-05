@@ -12,19 +12,18 @@ import org.unilab.uniplan.major.dto.MajorResponseDto;
 public interface MajorMapper {
 
     @Mapping(source = "facultyId", target = "faculty.id")
-    Major toEntity(MajorDto majorDto);
+    Major toEntity(final MajorDto majorDto);
 
     @Mapping(source = "faculty.id", target = "facultyId")
-    MajorDto toDto(Major major);
+    MajorDto toDto(final Major major);
 
     @Mapping(source = "facultyId", target = "faculty.id")
-    void updateEntityFromDto(MajorDto majorDto, @MappingTarget Major major);
+    void updateEntityFromDto(final MajorDto majorDto, @MappingTarget final Major major);
 
     @Mapping(target = "id", ignore = true)
-    MajorDto toInnerDto(MajorRequestDto requestDto);
+    MajorDto toInnerDto(final MajorRequestDto requestDto);
 
-    @Mapping(source = "facultyId", target = "facultyId")
-    MajorResponseDto toResponseDto(MajorDto innerDto);
+    MajorResponseDto toResponseDto(final MajorDto innerDto);
 
-    List<MajorResponseDto> toResponseDtoList(List<MajorDto> majors);
+    List<MajorResponseDto> toResponseDtoList(final List<MajorDto> majors);
 }

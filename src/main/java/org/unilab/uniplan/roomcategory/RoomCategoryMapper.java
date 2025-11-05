@@ -14,19 +14,19 @@ public interface RoomCategoryMapper {
     @Mapping(target = "id", expression = "java(new RoomCategoryId(dto.roomId(), dto.categoryId()))")
     @Mapping(target = "room", ignore = true)
     @Mapping(target = "category", ignore = true)
-    RoomCategory toEntity(RoomCategoryDto dto);
+    RoomCategory toEntity(final RoomCategoryDto dto);
 
     @Mapping(source = "id.roomId", target = "roomId")
     @Mapping(source = "id.categoryId", target = "categoryId")
-    RoomCategoryDto toDto(RoomCategory entity);
+    RoomCategoryDto toDto(final RoomCategory entity);
     
-    RoomCategoryDto toInternalDto(RoomCategoryRequestDto requestDto);
+    RoomCategoryDto toInternalDto(final RoomCategoryRequestDto requestDto);
 
-    RoomCategoryResponseDto toResponseDto(RoomCategoryDto roomCategoryDto);
+    RoomCategoryResponseDto toResponseDto(final RoomCategoryDto roomCategoryDto);
 
-    List<RoomCategoryDto> toDtoList(List<RoomCategory> entities);
+    List<RoomCategoryDto> toDtoList(final List<RoomCategory> entities);
 
-    List<RoomCategoryResponseDto> toResponseDtoList(List<RoomCategoryDto> roomCategories);
+    List<RoomCategoryResponseDto> toResponseDtoList(final List<RoomCategoryDto> roomCategories);
 
-    RoomCategoryId toRoomCategoryId(UUID roomId, UUID categoryId);
+    RoomCategoryId toRoomCategoryId(final UUID roomId, final UUID categoryId);
 }

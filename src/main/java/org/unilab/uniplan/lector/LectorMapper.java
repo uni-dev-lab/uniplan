@@ -17,9 +17,6 @@ public interface LectorMapper {
     @Mapping(source = "facultyId", target = "faculty.id")
     Lector toEntity(LectorDto lectorDto);
 
-    @Mapping(source = "facultyId", target = "faculty.id")
-    void updateEntity(LectorDto dto, @MappingTarget Lector entity);
-
     @Mapping(target = "id", ignore = true)
     LectorDto toInternalDto(final LectorRequestDto lectorRequestDto);
 
@@ -33,5 +30,6 @@ public interface LectorMapper {
     @Mapping(target = "firstName", source = "lectorDto.firstName")
     @Mapping(target = "lastName", source = "lectorDto.lastName")
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "faculty.id", ignore = true)
     void updateEntityFromDto(final LectorDto lectorDto, @MappingTarget final Lector lector);
 }

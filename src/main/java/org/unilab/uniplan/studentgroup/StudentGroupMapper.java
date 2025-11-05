@@ -17,6 +17,8 @@ public interface StudentGroupMapper {
     StudentGroupDto toDto(StudentGroup studentGroup);
 
     @Mapping(target = "id", source = ".", qualifiedByName = "toStudentGroupId")
+    @Mapping(target = "student.id", source = "studentId")
+    @Mapping(target = "courseGroup.id", source = "courseGroupId")
     StudentGroup toEntity(StudentGroupDto dto);
 
     @Named("toStudentGroupId")
@@ -25,6 +27,8 @@ public interface StudentGroupMapper {
     }
 
     @Mapping(target = "id", source = ".", qualifiedByName = "toStudentGroupId")
+    @Mapping(target = "student.id", ignore = true)
+    @Mapping(target = "courseGroup.id", ignore = true)
     void updateEntityFromDto(StudentGroupDto studentGroupDto,
                              @MappingTarget StudentGroup studentGroup);
 

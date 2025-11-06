@@ -1,5 +1,7 @@
 package org.unilab.uniplan.major;
 
+import org.unilab.uniplan.major.dto.MajorCoursesDto;
+
 import static org.unilab.uniplan.utils.ErrorConstants.MAJOR_NOT_FOUND;
 
 import jakarta.transaction.Transactional;
@@ -30,6 +32,13 @@ public class MajorService {
                                   MAJOR_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
+    public MajorCoursesDto findMajorWithCoursesById(final UUID id) {
+        return majorRepository.findById(id)
+                              .map(majorMapper::toFullDto)
+                              .orElseThrow(() -> new ResourceNotFoundException(
+                                  MAJOR_NOT_FOUND.getMessage(String.valueOf(id))));
+    }
+
     public List<MajorDto> findAll() {
         return majorRepository.findAll()
                               .stream().map(majorMapper::toDto).toList();
@@ -39,6 +48,13 @@ public class MajorService {
         return majorRepository.findAllByFacultyId(facultyId)
                               .stream()
                               .map(majorMapper::toDto)
+                              .toList();
+    }
+
+    public List<MajorCoursesDto> findAllMajorWithCoursesByFacultyId(final UUID facultyId) {
+        return majorRepository.findAllByFacultyId(facultyId)
+                              .stream()
+                              .map(majorMapper::toFullDto)
                               .toList();
     }
 

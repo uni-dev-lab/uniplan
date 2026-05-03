@@ -1,0 +1,133 @@
+name: Claude Code Review
+run-name: "Claude Code Review — PR #${{ inputs.pr_number }} by @${{ github.actor }}"
+
+# Token-spend gate — only @uni-dev-lab/reviewers can cause Claude tokens to be spent.
+#
+# Three independent layers, each must be in place:
+#
+# 1. workflow_dispatch is GitHub-gated to actors with write access on the repo.
+#    Necessary but not sufficient (both `devs` and `reviewers` have write).
+#
+# 2. The `authorize` job below verifies the actor's membership in
+#    @uni-dev-lab/reviewers via the org API and aborts the run otherwise.
+#    Defense in depth, but it runs after the runner is already up.
+#
+# 3. The `claude-review` job uses `environment: reviewers-only`. This is what
+#    actually prevents token spend by anyone else: GitHub blocks the job from
+#    starting until a member of the environment's Required Reviewers approves
+#    it from the Actions UI, and the CLAUDE_CODE_OAUTH_TOKEN secret (scoped to
+#    that environment, not to the repo) is only made available to the runner
+#    after that approval.
+#
+# REQUIRED ONE-TIME REPO SETUP:
+#   Settings → Environments → New environment → name: reviewers-only
+#     → Deployment protection rules → Required reviewers: @uni-dev-lab/reviewers
+#     → Environment secrets → add CLAUDE_CODE_OAUTH_TOKEN here (NOT as a repo secret).
+#   Settings → Secrets and variables → Actions → Repository secrets:
+#     → REVIEWERS_TEAM_READ_TOKEN: PAT/App token with read:org on uni-dev-lab.
+#
+# If CLAUDE_CODE_OAUTH_TOKEN is mistakenly added as a repo-wide secret instead of
+# an environment-scoped one, the gate is defeated — any future workflow could
+# reference it. Keep it environment-scoped.
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'Pull request number to review'
+        required: true
+        type: number
+
+jobs:
+  authorize:
+    runs-on: ubuntu-latest
+    # Read-only — this job exists solely to gate the next one.
+    # Anyone outside @uni-dev-lab/reviewers fails here before the Claude job is reached.
+    permissions:
+      contents: none
+    steps:
+      - name: Verify actor is a member of uni-dev-lab/reviewers
+        env:
+          # PAT (or GitHub App token) with `read:org` scope on the uni-dev-lab org.
+          # `GITHUB_TOKEN` cannot read org team membership, so a separate secret is required.
+          GH_TOKEN: ${{ secrets.REVIEWERS_TEAM_READ_TOKEN }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GH_TOKEN}" ]; then
+            echo "::error::REVIEWERS_TEAM_READ_TOKEN secret is not configured. Add a PAT/App token with read:org scope."
+            exit 1
+          fi
+          status=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            "orgs/uni-dev-lab/teams/reviewers/memberships/${ACTOR}" \
+            --jq '.state' 2>/dev/null || echo "not-found")
+          if [ "${status}" != "active" ]; then
+            echo "::error::User '${ACTOR}' is not an active member of @uni-dev-lab/reviewers (state: ${status}). Aborting before any other job runs."
+            exit 1
+          fi
+          echo "Authorized: ${ACTOR} is an active member of @uni-dev-lab/reviewers."
+
+  claude-review:
+    needs: authorize
+    runs-on: ubuntu-latest
+    # Hard gate: this environment must have @uni-dev-lab/reviewers configured
+    # as Required Reviewers in repo Settings → Environments → reviewers-only.
+    # GitHub will pause the job until a reviewer approves it from the Actions UI;
+    # the CLAUDE_CODE_OAUTH_TOKEN secret is not exposed to the runner until then.
+    # Without this approval, no Claude tokens are spent.
+    environment: reviewers-only
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Claude Code Review
+        uses: anthropics/claude-code-action@v1
+        with:
+          # This secret MUST be defined as an environment-scoped secret on the
+          # `reviewers-only` environment, not as a repo-wide secret. That way it is
+          # only resolvable from a job that names `environment: reviewers-only` and
+          # only after a reviewer approves the run. Repo-wide secrets would be
+          # spendable from any future workflow/job that omits the environment gate.
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          model: claude-sonnet-4-6
+          prompt: |
+            You are orchestrating a code review of PR #${{ inputs.pr_number }} in ${{ github.repository }}.
+
+            Run the project's `/review-pr` skill against this PR. The skill is defined
+            in `.claude/skills/review-pr/SKILL.md` — read it and follow its steps.
+
+            For this CI invocation, override the worktree handling: you are already
+            checked out at the PR branch in the current working directory, so skip
+            the "create a worktree" step and treat the current directory as the
+            worktree path. All other steps apply unchanged.
+
+            The skill will:
+            1. Fetch PR metadata.
+            2. Classify the diff (backend / Other slice).
+            3. Dispatch the `uniplan-be-reviewer` subagent (defined in
+               `.claude/agents/uniplan-be-reviewer.md`) for the backend slice. The
+               subagent's system prompt carries the full ruleset — do NOT inline
+               any rules in your dispatch prompt.
+            4. Review the Other slice yourself (docs / CI / configs / `.claude/`).
+            5. Merge findings into a single review and produce the consolidated
+               output block.
+
+            After the consolidated review block is produced, post it as a single
+            PR review comment using `gh pr review ${{ inputs.pr_number }} --comment --body-file <path>`
+            (write the body to a temp file first to preserve formatting). For
+            Critical and Important findings, also post inline review comments on
+            the affected lines using `gh api repos/${{ github.repository }}/pulls/${{ inputs.pr_number }}/comments`.
+
+            Do NOT skip the subagent dispatch in favor of inlining the review.
+            The whole point of this workflow is for the rules to live in the
+            subagent definition, not in CI YAML — keeping CI and local `/review-pr`
+            in lockstep.

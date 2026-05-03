@@ -82,10 +82,14 @@ Detailed rules live in `.claude/rules/` and should be read before implementing o
 - `.claude/rules/implementation-common.md` — Triage, test-output hygiene, Bash usage rules for agents.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Where rules call out intentional deviations from prior conventions (e.g. no Facade layer, no `@PreAuthorize`, no Keycloak in legacy features), those deviations are explicit in the rules files.
 =======
 The structure mirrors the [eJourney](https://github.com/SAPTCO/ejourney) project's `.claude/` layout so workflow ideas (skills, agents, commands) can be ported across with minimal translation. Where uniplan deviates intentionally (e.g. no Facade layer, no `@PreAuthorize`, no Keycloak), it is called out explicitly in the rules files.
 >>>>>>> 033a30e (Add Claude Code config, Facade-pattern rules, and PR review workflow)
+=======
+Where rules call out intentional deviations from prior conventions (e.g. no Facade layer, no `@PreAuthorize`, no Keycloak in legacy features), those deviations are explicit in the rules files.
+>>>>>>> 1b242bd (Remove eJourney references from Claude Code config)
 
 ## Project Subagents
 

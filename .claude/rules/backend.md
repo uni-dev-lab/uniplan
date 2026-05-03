@@ -11,10 +11,14 @@ Controller → Facade (WebFacade) → Service → Repository → Entity
 ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 uniplan is migrating to a Facade architecture. **All new feature work must use the Facade layer.** Existing features (`major/`, `course/`, `student/`, etc.) where Controllers still call Services directly are pre-existing and will be migrated incrementally — do not refactor them as a side effect of unrelated work.
 =======
 uniplan is migrating to the eJourney-style Facade architecture. **All new feature work must use the Facade layer.** Existing features (`major/`, `course/`, `student/`, etc.) where Controllers still call Services directly are pre-existing and will be migrated incrementally — do not refactor them as a side effect of unrelated work.
 >>>>>>> 033a30e (Add Claude Code config, Facade-pattern rules, and PR review workflow)
+=======
+uniplan is migrating to a Facade architecture. **All new feature work must use the Facade layer.** Existing features (`major/`, `course/`, `student/`, etc.) where Controllers still call Services directly are pre-existing and will be migrated incrementally — do not refactor them as a side effect of unrelated work.
+>>>>>>> 1b242bd (Remove eJourney references from Claude Code config)
 
 ### Controller
 - Thin delegation layer — no business logic, no logging, no entity↔DTO conversion.

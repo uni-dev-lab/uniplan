@@ -9,7 +9,11 @@ You are orchestrating a review of a GitHub pull request. The PR number is: $ARGU
 
 Your role is a **thin dispatcher**: fetch PR metadata, prepare the worktree, classify the diff, spawn the `uniplan-be-reviewer` subagent against the correct scope, and present its findings together with your own review of any non-Java files (docs, CI, infra, root configs). Do not perform the backend review yourself — the subagent pre-loads project rules and produces the per-domain findings.
 
+<<<<<<< HEAD
 uniplan is currently a backend-only project; this skill is structured so a frontend reviewer can be added later as a sibling Agent dispatch without restructuring.
+=======
+uniplan is currently a backend-only project; this skill mirrors eJourney's `review-pr` skill structure so a frontend reviewer can be added later as a sibling Agent dispatch without restructuring.
+>>>>>>> 033a30e (Add Claude Code config, Facade-pattern rules, and PR review workflow)
 
 Follow these steps exactly.
 

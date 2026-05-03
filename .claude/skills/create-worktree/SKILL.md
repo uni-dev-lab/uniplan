@@ -45,4 +45,4 @@ Print the absolute worktree path and state whether it was **created** or **reuse
 
 ## Notes
 
-uniplan does not currently have a `scripts/post_checkout.sh` (eJourney does). When that exists, this skill should invoke it after Step 7 for newly created worktrees only — see eJourney's `create-worktree/SKILL.md` for the reference shape.
+uniplan does not currently have a `scripts/post_checkout.sh`. When that exists, this skill should invoke it after Step 7 for newly created worktrees only.

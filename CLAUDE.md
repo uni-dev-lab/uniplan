@@ -81,7 +81,7 @@ Detailed rules live in `.claude/rules/` and should be read before implementing o
 - `.claude/rules/backend-test.md` — Backend testing conventions.
 - `.claude/rules/implementation-common.md` — Triage, test-output hygiene, Bash usage rules for agents.
 
-The structure mirrors the [eJourney](https://github.com/SAPTCO/ejourney) project's `.claude/` layout so workflow ideas (skills, agents, commands) can be ported across with minimal translation. Where uniplan deviates intentionally (e.g. no Facade layer, no `@PreAuthorize`, no Keycloak), it is called out explicitly in the rules files.
+Where rules call out intentional deviations from prior conventions (e.g. no Facade layer, no `@PreAuthorize`, no Keycloak in legacy features), those deviations are explicit in the rules files.
 
 ## Project Subagents
 

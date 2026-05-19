@@ -1,7 +1,5 @@
 package org.unilab.uniplan.university;
 
-import static org.springframework.http.ResponseEntity.ok;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.unilab.uniplan.university.dto.UniversityDto;
 import org.unilab.uniplan.university.dto.UniversityRequestDto;
 import org.unilab.uniplan.university.dto.UniversityResponseDto;
 
@@ -28,47 +25,39 @@ import org.unilab.uniplan.university.dto.UniversityResponseDto;
 @Tag(name = "Universities", description = "Manage universities, including name, location, accreditation, establishment year, and website")
 public class UniversityController {
 
-    private final UniversityService universityService;
-    private final UniversityMapper universityMapper;
+    private final UniversityWebFacade universityWebFacade;
+
 
     @PostMapping
     public ResponseEntity<UniversityResponseDto> createUniversity(
         @Valid @NotNull @RequestBody final UniversityRequestDto universityRequestDto) {
 
-        UniversityDto universityDto = universityService.createUniversity(
-            universityMapper.toInternalDto(universityRequestDto));
-
-        return new ResponseEntity<>(
-            universityMapper.toResponseDto(universityDto),
-            HttpStatus.CREATED
-        );
+        return new ResponseEntity<>(universityWebFacade.createUniversity(universityRequestDto),
+                                    HttpStatus.CREATED);
     }
 
+
     @GetMapping
-    public List<UniversityResponseDto> getAllUniversities() {
-        return universityMapper.toResponseDtoList(universityService.getAllUniversities());
+    public ResponseEntity<List<UniversityResponseDto>> getAllUniversities() {
+        return ResponseEntity.ok(universityWebFacade.getAllUniversities());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UniversityResponseDto> getUniversityById(@NotNull @PathVariable final UUID id) {
-        final UniversityDto universityDto = universityService.getUniversityById(id);
-
-        return ok(universityMapper.toResponseDto(universityDto));
+        return ResponseEntity.ok(universityWebFacade.getUniversityById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UniversityResponseDto> updateUniversity(
-        @PathVariable final UUID id,
-        @Valid @NotNull @RequestBody final UniversityRequestDto universityRequestDto) {
+    public ResponseEntity<UniversityResponseDto> updateUniversity(@NotNull
+                                                                  @PathVariable final UUID id,
+                                                                  @Valid @NotNull @RequestBody final UniversityRequestDto universityRequestDto) {
 
-        final UniversityDto universityDto = universityMapper.toInternalDto(universityRequestDto);
-
-        return ok(universityMapper.toResponseDto(universityService.updateUniversity(id, universityDto)));
+        return ResponseEntity.ok(universityWebFacade.updateUniversity(id, universityRequestDto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUniversity(@PathVariable final UUID id) {
-        universityService.deleteUniversity(id);
+    public ResponseEntity<Void> deleteUniversity(@NotNull @PathVariable final UUID id) {
+        universityWebFacade.deleteUniversity(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -10,21 +10,21 @@ import org.unilab.uniplan.university.dto.UniversityResponseDto;
 
 @Mapper
 public interface UniversityMapper {
+    @Mapping(target = "id", ignore = true)
+    University toEntity(UniversityRequestDto request);
 
-    University toEntity(final UniversityDto universityDto);
+    UniversityResponseDto toResponseDto(University university);
 
     UniversityDto toDto(final University university);
 
     @Mapping(target = "id", ignore = true)
     UniversityDto toInternalDto(final UniversityRequestDto universityRequestDto);
 
-    UniversityResponseDto toResponseDto(final UniversityDto universityDto);
-
     List<UniversityDto> toDtoList(final List<University> universities);
 
-    List<UniversityResponseDto> toResponseDtoList(final List<UniversityDto> universities);
-  
+    List<UniversityResponseDto> toResponseDtoList(final List<University> universities);
+
     @Mapping(target = "id", ignore = true)
-    void updateEntityFromDto(final UniversityDto universityDto, 
+    void updateEntityFromRequestDto(final UniversityRequestDto request,
                              @MappingTarget final University university);
 }

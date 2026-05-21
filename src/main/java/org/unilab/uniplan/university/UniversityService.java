@@ -10,31 +10,21 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UniversityService {
 
-
     private final UniversityRepository universityRepository;
-
-
-
-    public University createUniversity(final University university) {
-        return universityRepository.save(university);
-    }
-
 
     public List<University> getAllUniversities() {
         return universityRepository.findAll();
     }
 
-
     public Optional<University> getUniversityById(final UUID id) {
         return universityRepository.findById(id);
     }
 
+    public void deleteUniversity(final University university) {
+        universityRepository.delete(university);
+    }
 
-    public University updateUniversity(final University university) {
+    public University saveUniversity(final University university) {
         return universityRepository.save(university);
     }
-    public void deleteUniversity(final University university) {
-         universityRepository.delete(university);
-    }
-
 }

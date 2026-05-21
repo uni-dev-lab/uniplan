@@ -19,12 +19,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class UniversityServiceTest {@Mock
-private UniversityRepository universityRepository;
+class UniversityServiceTest {
 
+    @Mock
+    private UniversityRepository universityRepository;
     @InjectMocks
     private UniversityService universityService;
-
     private UUID id;
     private University entity;
 
@@ -35,16 +35,17 @@ private UniversityRepository universityRepository;
     }
 
     @Test
-    void testCreateUniversityShouldSaveAndReturnDto() {
+    void saveUniversity_shouldSaveAndReturnEntity() {
         when(universityRepository.save(entity)).thenReturn(entity);
 
-        University result = universityService.createUniversity(entity);
+        final var result = universityService.saveUniversity(entity);
 
         assertEquals(entity, result);
+        verify(universityRepository).save(entity);
     }
 
     @Test
-    void testGetAllUniversitiesShouldReturnListOfUniversityDtos() {
+    void getAllUniversities_shouldReturnListOfEntities() {
         List<University> entities = List.of(entity);
 
         when(universityRepository.findAll()).thenReturn(entities);
@@ -55,7 +56,7 @@ private UniversityRepository universityRepository;
     }
 
     @Test
-    void testGetUniversityByIdShouldReturnUniversityDtoIfFound() {
+    void getUniversityById_shouldReturnEntity_whenUniversityExists() {
         when(universityRepository.findById(id)).thenReturn(Optional.of(entity));
 
         Optional<University> result = universityService.getUniversityById(id);
@@ -65,7 +66,7 @@ private UniversityRepository universityRepository;
     }
 
     @Test
-    void testGetUniversityByIdShouldReturnEmptyOptionalIfUniversityNotFound() {
+    void getUniversityById_shouldReturnEmptyOptional_whenUniversityNotFound() {
         when(universityRepository.findById(id)).thenReturn(Optional.empty());
 
         Optional<University> result = universityService.getUniversityById(id);
@@ -74,19 +75,7 @@ private UniversityRepository universityRepository;
     }
 
     @Test
-    void testUpdateUniversityShouldUpdateAndReturnDtoIfFound() {
-        when(universityRepository.save(entity)).thenReturn(entity);
-
-        University result = universityService.updateUniversity(entity);
-
-        assertEquals(entity, result);
-        verify(universityRepository).save(entity);
-    }
-
-    @Test
-    void testDeleteUniversityShouldDeleteUniversityIfFound() {
-        doAnswer(invocation -> null).when(universityRepository).delete(entity);
-
+    void deleteUniversity_shouldDeleteEntity_whenUniversityExists() {
         assertDoesNotThrow(() -> universityService.deleteUniversity(entity));
         verify(universityRepository).delete(entity);
     }

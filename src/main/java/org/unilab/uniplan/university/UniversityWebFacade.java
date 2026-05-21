@@ -17,17 +17,15 @@ import static org.unilab.uniplan.utils.ErrorConstants.UNIVERSITY_NOT_FOUND;
 @RequiredArgsConstructor
 public class UniversityWebFacade {
 
-
     private final UniversityMapper universityMapper;
     private final UniversityService universityService;
-
 
     @Transactional
     public UniversityResponseDto createUniversity(final UniversityRequestDto request) {
         log.info("Creating university {} at {}", request.uniName(), request.location());
 
         final University university = universityMapper.toEntity(request);
-        final University savedUniversity = universityService.createUniversity(university);
+        final University savedUniversity = universityService.saveUniversity(university);
 
         log.info("Created university {} with ID: {}",
                  savedUniversity.getUniName(),
@@ -40,13 +38,10 @@ public class UniversityWebFacade {
                                                   final UniversityRequestDto request) {
         log.info("Updating university with ID: {}", id);
 
-        final University university = universityService.getUniversityById(id)
-                                                       .orElseThrow(() -> new ResourceNotFoundException(
-                                                           UNIVERSITY_NOT_FOUND.getMessage(String.valueOf(
-                                                               id))));
+        final University university = findUniversity(id);
 
         universityMapper.updateEntityFromRequestDto(request, university);
-        final University savedUniversity = universityService.updateUniversity(university);
+        final University savedUniversity = universityService.saveUniversity(university);
         log.info("Updated university with ID: {}", savedUniversity.getId());
         return universityMapper.toResponseDto(savedUniversity);
     }
@@ -56,25 +51,23 @@ public class UniversityWebFacade {
         return universityMapper.toResponseDtoList(universityService.getAllUniversities());
     }
 
-
     @Transactional(readOnly = true)
     public UniversityResponseDto getUniversityById(final UUID id) {
-        final University university = universityService.getUniversityById(id)
-                                                       .orElseThrow(() -> new ResourceNotFoundException
-                                                           (UNIVERSITY_NOT_FOUND.getMessage(String.valueOf(
-                                                               id))));
+        final University university = findUniversity(id);
         return universityMapper.toResponseDto(university);
     }
 
     @Transactional
     public void deleteUniversity(final UUID id) {
         log.info("Deleting university with ID: {}", id);
-        final University university = universityService.getUniversityById(id)
-                                                       .orElseThrow(() -> new ResourceNotFoundException(
-                                                           UNIVERSITY_NOT_FOUND.getMessage(String.valueOf(
-                                                               id))));
+        final University university = findUniversity(id);
         universityService.deleteUniversity(university);
         log.info("Deleted university with ID: {}", id);
     }
 
+    private University findUniversity(final UUID id) {
+        return universityService.getUniversityById(id)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                    UNIVERSITY_NOT_FOUND.getMessage(String.valueOf(id))));
+    }
 }

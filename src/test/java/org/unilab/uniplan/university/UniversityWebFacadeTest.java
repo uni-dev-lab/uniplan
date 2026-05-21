@@ -20,7 +20,6 @@ import org.unilab.uniplan.university.dto.UniversityResponseDto;
 
 @ExtendWith(MockitoExtension.class)
 class UniversityWebFacadeTest {
-
     @Mock
     private UniversityMapper universityMapper;
 
@@ -32,47 +31,51 @@ class UniversityWebFacadeTest {
 
     private UUID id;
     private University entity;
-    private UniversityRequestDto request;
+    private UniversityRequestDto requestDto;
     private UniversityResponseDto responseDto;
 
     @BeforeEach
     void setUp() {
         id = UUID.randomUUID();
         entity = new University();
-        request = new UniversityRequestDto("University of Sofia", "Sofia", (short) 1888,
-                                           "Excellent", "www.uni-sofia.bg");
+        requestDto = new UniversityRequestDto("University of Sofia", "Sofia", (short) 1888,
+                                              "Excellent", "www.uni-sofia.bg");
         responseDto = new UniversityResponseDto(id, "University of Sofia", "Sofia", (short) 1888,
                                                 "Excellent", "www.uni-sofia.bg");
     }
 
     @Test
     void createUniversity_shouldReturnResponseDto_whenRequestIsValid() {
-        when(universityMapper.toEntity(request)).thenReturn(entity);
-        when(universityService.createUniversity(entity)).thenReturn(entity);
+        when(universityMapper.toEntity(requestDto)).thenReturn(entity);
+        when(universityService.saveUniversity(entity)).thenReturn(entity);
         when(universityMapper.toResponseDto(entity)).thenReturn(responseDto);
 
-        final var result = universityWebFacade.createUniversity(request);
+        final var result = universityWebFacade.createUniversity(requestDto);
 
         assertThat(result).isEqualTo(responseDto);
+        verify(universityMapper).toEntity(requestDto);
+        verify(universityService).saveUniversity(entity);
+        verify(universityMapper).toResponseDto(entity);
     }
 
     @Test
     void updateUniversity_shouldReturnResponseDto_whenUniversityExists() {
         when(universityService.getUniversityById(id)).thenReturn(Optional.of(entity));
-        when(universityService.updateUniversity(entity)).thenReturn(entity);
+        when(universityService.saveUniversity(entity)).thenReturn(entity);
         when(universityMapper.toResponseDto(entity)).thenReturn(responseDto);
 
-        final var result = universityWebFacade.updateUniversity(id, request);
+        final var result = universityWebFacade.updateUniversity(id, requestDto);
 
         assertThat(result).isEqualTo(responseDto);
-        verify(universityMapper).updateEntityFromRequestDto(request, entity);
+        verify(universityMapper).updateEntityFromRequestDto(requestDto, entity);
+        verify(universityService).saveUniversity(entity);
     }
 
     @Test
     void updateUniversity_shouldThrowResourceNotFoundException_whenUniversityNotFound() {
         when(universityService.getUniversityById(id)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> universityWebFacade.updateUniversity(id, request))
+        assertThatThrownBy(() -> universityWebFacade.updateUniversity(id, requestDto))
             .isInstanceOf(ResourceNotFoundException.class)
             .hasMessageContaining(id.toString());
     }

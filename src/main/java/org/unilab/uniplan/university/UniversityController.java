@@ -27,15 +27,12 @@ public class UniversityController {
 
     private final UniversityWebFacade universityWebFacade;
 
-
     @PostMapping
     public ResponseEntity<UniversityResponseDto> createUniversity(
         @Valid @NotNull @RequestBody final UniversityRequestDto universityRequestDto) {
-
         return new ResponseEntity<>(universityWebFacade.createUniversity(universityRequestDto),
                                     HttpStatus.CREATED);
     }
-
 
     @GetMapping
     public ResponseEntity<List<UniversityResponseDto>> getAllUniversities() {
@@ -51,7 +48,6 @@ public class UniversityController {
     public ResponseEntity<UniversityResponseDto> updateUniversity(@NotNull
                                                                   @PathVariable final UUID id,
                                                                   @Valid @NotNull @RequestBody final UniversityRequestDto universityRequestDto) {
-
         return ResponseEntity.ok(universityWebFacade.updateUniversity(id, universityRequestDto));
     }
 

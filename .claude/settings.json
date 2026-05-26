@@ -1,0 +1,44 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Edit",
+      "Write",
+      "WebSearch",
+      "Skill",
+      "Monitor",
+      "mcp__ide__getDiagnostics",
+      "Bash(./mvnw *)",
+      "Bash(./mvnw.cmd *)",
+      "Bash(mvn *)",
+      "Bash(git *)",
+      "Bash(gh *)",
+      "Bash(docker *)",
+      "Bash(docker compose *)",
+      "Bash(cd *)",
+      "Bash(ls)",
+      "Bash(ls *)",
+      "Bash(find *)",
+      "Bash(grep *)",
+      "Bash(mkdir *)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(wc *)",
+      "Bash(sort *)",
+      "Bash(jq *)",
+      "Bash(echo *)",
+      "Bash(test *)",
+      "Bash(bash *)"
+    ],
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(git reset --hard*)",
+      "Bash(git clean -f*)",
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf .)",
+      "Bash(curl * | bash*)",
+      "Bash(curl * | sh*)"
+    ]
+  }
+}

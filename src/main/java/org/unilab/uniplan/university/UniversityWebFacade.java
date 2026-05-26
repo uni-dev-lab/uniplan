@@ -22,12 +22,12 @@ public class UniversityWebFacade {
 
     @Transactional
     public UniversityResponseDto createUniversity(final UniversityRequestDto request) {
-        log.info("Creating university {} at {}", request.uniName(), request.location());
+        log.info("creating university {} at {}", request.uniName(), request.location());
 
         final University university = universityMapper.toEntity(request);
         final University savedUniversity = universityService.saveUniversity(university);
 
-        log.info("Created university {} with ID: {}",
+        log.info("created university {} with ID: {}",
                  savedUniversity.getUniName(),
                  savedUniversity.getId());
         return universityMapper.toResponseDto(savedUniversity);
@@ -36,13 +36,13 @@ public class UniversityWebFacade {
     @Transactional
     public UniversityResponseDto updateUniversity(final UUID id,
                                                   final UniversityRequestDto request) {
-        log.info("Updating university with ID: {}", id);
+        log.info("updating university with ID: {}", id);
 
         final University university = findUniversity(id);
 
         universityMapper.updateEntityFromRequestDto(request, university);
         final University savedUniversity = universityService.saveUniversity(university);
-        log.info("Updated university with ID: {}", savedUniversity.getId());
+        log.info("updated university with ID: {}", savedUniversity.getId());
         return universityMapper.toResponseDto(savedUniversity);
     }
 
@@ -59,10 +59,10 @@ public class UniversityWebFacade {
 
     @Transactional
     public void deleteUniversity(final UUID id) {
-        log.info("Deleting university with ID: {}", id);
+        log.info("deleting university with ID: {}", id);
         final University university = findUniversity(id);
         universityService.deleteUniversity(university);
-        log.info("Deleted university with ID: {}", id);
+        log.info("deleted university with ID: {}", id);
     }
 
     private University findUniversity(final UUID id) {
@@ -71,5 +71,4 @@ public class UniversityWebFacade {
                                     UNIVERSITY_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 }
-
 

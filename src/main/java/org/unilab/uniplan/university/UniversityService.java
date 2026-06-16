@@ -12,19 +12,19 @@ public class UniversityService {
 
     private final UniversityRepository universityRepository;
 
-    public List<University> getAllUniversities() {
+    public List<University> findAll() {
         return universityRepository.findAll();
     }
 
-    public Optional<University> getUniversityById(final UUID id) {
+    public Optional<University> findById(final UUID id) {
         return universityRepository.findById(id);
     }
 
-    public void deleteUniversity(final University university) {
+    public void delete(final University university) {
         universityRepository.delete(university);
     }
 
-    public University saveUniversity(final University university) {
+    public University save(final University university) {
         return universityRepository.save(university);
     }
 }

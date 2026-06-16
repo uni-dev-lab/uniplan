@@ -28,10 +28,9 @@ public class UniversityController {
     private final UniversityWebFacade universityWebFacade;
 
     @PostMapping
-    public ResponseEntity<UniversityResponseDto> createUniversity(
-        @Valid @NotNull @RequestBody final UniversityRequestDto universityRequestDto) {
-        return new ResponseEntity<>(universityWebFacade.createUniversity(universityRequestDto),
-                                    HttpStatus.CREATED);
+    public ResponseEntity<UniversityResponseDto> createUniversity(@RequestBody @Valid @NotNull final UniversityRequestDto universityRequestDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(universityWebFacade.createUniversity(
+            universityRequestDto));
     }
 
     @GetMapping
@@ -40,19 +39,18 @@ public class UniversityController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UniversityResponseDto> getUniversityById(@NotNull @PathVariable final UUID id) {
+    public ResponseEntity<UniversityResponseDto> getUniversityById(@PathVariable final UUID id) {
         return ResponseEntity.ok(universityWebFacade.getUniversityById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UniversityResponseDto> updateUniversity(@NotNull
-                                                                  @PathVariable final UUID id,
-                                                                  @Valid @NotNull @RequestBody final UniversityRequestDto universityRequestDto) {
+    public ResponseEntity<UniversityResponseDto> updateUniversity(@PathVariable final UUID id,
+                                                                  @RequestBody @Valid @NotNull final UniversityRequestDto universityRequestDto) {
         return ResponseEntity.ok(universityWebFacade.updateUniversity(id, universityRequestDto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUniversity(@NotNull @PathVariable final UUID id) {
+    public ResponseEntity<Void> deleteUniversity(@PathVariable final UUID id) {
         universityWebFacade.deleteUniversity(id);
         return ResponseEntity.noContent().build();
     }

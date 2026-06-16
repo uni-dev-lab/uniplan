@@ -1,10 +1,6 @@
 package org.unilab.uniplan.university;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doAnswer;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,48 +31,48 @@ class UniversityServiceTest {
     }
 
     @Test
-    void saveUniversity_shouldSaveAndReturnEntity() {
+    void save_shouldSaveAndReturnEntity() {
         when(universityRepository.save(entity)).thenReturn(entity);
 
-        final var result = universityService.saveUniversity(entity);
+        final var result = universityService.save(entity);
 
-        assertEquals(entity, result);
+        assertThat(result).isEqualTo(entity);
         verify(universityRepository).save(entity);
     }
 
     @Test
-    void getAllUniversities_shouldReturnListOfEntities() {
-        List<University> entities = List.of(entity);
+    void findAll_shouldReturnListOfEntities() {
+        final var entities = List.of(entity);
 
         when(universityRepository.findAll()).thenReturn(entities);
 
-        List<University> result = universityService.getAllUniversities();
+        final var result = universityService.findAll();
 
-        assertEquals(entities, result);
+        assertThat(result).isEqualTo(entities);
     }
 
     @Test
-    void getUniversityById_shouldReturnEntity_whenUniversityExists() {
+    void findById_shouldReturnEntity_whenUniversityExists() {
         when(universityRepository.findById(id)).thenReturn(Optional.of(entity));
 
-        Optional<University> result = universityService.getUniversityById(id);
+        final var result = universityService.findById(id);
 
-        assertTrue(result.isPresent());
-        assertEquals(entity, result.get());
+        assertThat(result).contains(entity);
     }
 
     @Test
-    void getUniversityById_shouldReturnEmptyOptional_whenUniversityNotFound() {
+    void findById_shouldReturnEmptyOptional_whenUniversityNotFound() {
         when(universityRepository.findById(id)).thenReturn(Optional.empty());
 
-        Optional<University> result = universityService.getUniversityById(id);
+        final var result = universityService.findById(id);
 
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
-    void deleteUniversity_shouldDeleteEntity_whenUniversityExists() {
-        assertDoesNotThrow(() -> universityService.deleteUniversity(entity));
+    void delete_shouldDeleteEntity_whenUniversityExists() {
+        universityService.delete(entity);
+
         verify(universityRepository).delete(entity);
     }
 }

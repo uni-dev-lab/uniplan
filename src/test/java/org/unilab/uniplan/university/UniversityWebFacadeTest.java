@@ -46,34 +46,35 @@ class UniversityWebFacadeTest {
 
     @Test
     void createUniversity_shouldReturnResponseDto_whenRequestIsValid() {
-        when(universityMapper.toEntity(requestDto)).thenReturn(entity);
-        when(universityService.saveUniversity(entity)).thenReturn(entity);
+        when(universityMapper.createEntity(requestDto)).thenReturn(entity);
+        when(universityService.save(entity)).thenReturn(entity);
         when(universityMapper.toResponseDto(entity)).thenReturn(responseDto);
 
         final var result = universityWebFacade.createUniversity(requestDto);
 
         assertThat(result).isEqualTo(responseDto);
-        verify(universityMapper).toEntity(requestDto);
-        verify(universityService).saveUniversity(entity);
+        verify(universityMapper).createEntity(requestDto);
+        verify(universityService).save(entity);
         verify(universityMapper).toResponseDto(entity);
     }
 
     @Test
     void updateUniversity_shouldReturnResponseDto_whenUniversityExists() {
-        when(universityService.getUniversityById(id)).thenReturn(Optional.of(entity));
-        when(universityService.saveUniversity(entity)).thenReturn(entity);
+        when(universityService.findById(id)).thenReturn(Optional.of(entity));
+        when(universityService.save(entity)).thenReturn(entity);
         when(universityMapper.toResponseDto(entity)).thenReturn(responseDto);
 
         final var result = universityWebFacade.updateUniversity(id, requestDto);
 
         assertThat(result).isEqualTo(responseDto);
-        verify(universityMapper).updateEntityFromRequestDto(requestDto, entity);
-        verify(universityService).saveUniversity(entity);
+        verify(universityMapper).updateEntity(requestDto, entity);
+        verify(universityService).save(entity);
+        verify(universityMapper).toResponseDto(entity);
     }
 
     @Test
     void updateUniversity_shouldThrowResourceNotFoundException_whenUniversityNotFound() {
-        when(universityService.getUniversityById(id)).thenReturn(Optional.empty());
+        when(universityService.findById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> universityWebFacade.updateUniversity(id, requestDto))
             .isInstanceOf(ResourceNotFoundException.class)
@@ -83,7 +84,7 @@ class UniversityWebFacadeTest {
     @Test
     void getAllUniversities_shouldReturnListOfResponseDtos() {
         final var entities = List.of(entity);
-        when(universityService.getAllUniversities()).thenReturn(entities);
+        when(universityService.findAll()).thenReturn(entities);
         when(universityMapper.toResponseDtoList(entities)).thenReturn(List.of(responseDto));
 
         final var result = universityWebFacade.getAllUniversities();
@@ -93,7 +94,7 @@ class UniversityWebFacadeTest {
 
     @Test
     void getUniversityById_shouldReturnResponseDto_whenUniversityExists() {
-        when(universityService.getUniversityById(id)).thenReturn(Optional.of(entity));
+        when(universityService.findById(id)).thenReturn(Optional.of(entity));
         when(universityMapper.toResponseDto(entity)).thenReturn(responseDto);
 
         final var result = universityWebFacade.getUniversityById(id);
@@ -103,7 +104,7 @@ class UniversityWebFacadeTest {
 
     @Test
     void getUniversityById_shouldThrowResourceNotFoundException_whenUniversityNotFound() {
-        when(universityService.getUniversityById(id)).thenReturn(Optional.empty());
+        when(universityService.findById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> universityWebFacade.getUniversityById(id))
             .isInstanceOf(ResourceNotFoundException.class)
@@ -112,16 +113,16 @@ class UniversityWebFacadeTest {
 
     @Test
     void deleteUniversity_shouldDeleteUniversity_whenUniversityExists() {
-        when(universityService.getUniversityById(id)).thenReturn(Optional.of(entity));
+        when(universityService.findById(id)).thenReturn(Optional.of(entity));
 
         universityWebFacade.deleteUniversity(id);
 
-        verify(universityService).deleteUniversity(entity);
+        verify(universityService).delete(entity);
     }
 
     @Test
     void deleteUniversity_shouldThrowResourceNotFoundException_whenUniversityNotFound() {
-        when(universityService.getUniversityById(id)).thenReturn(Optional.empty());
+        when(universityService.findById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> universityWebFacade.deleteUniversity(id))
             .isInstanceOf(ResourceNotFoundException.class)

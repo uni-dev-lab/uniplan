@@ -98,7 +98,7 @@ jobs:
           # only after a reviewer approves the run. Repo-wide secrets would be
           # spendable from any future workflow/job that omits the environment gate.
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          model: claude-sonnet-4-6
+          claude_args: "--model claude-sonnet-4-6"
           prompt: |
             You are orchestrating a code review of PR #${{ inputs.pr_number }} in ${{ github.repository }}.
 

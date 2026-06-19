@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -20,6 +19,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.faculty.Faculty;
+import org.unilab.uniplan.faculty.FacultyRepository;
 import org.unilab.uniplan.major.dto.MajorCoursesDto;
 import org.unilab.uniplan.major.dto.MajorDto;
 
@@ -33,11 +34,15 @@ class MajorServiceTest {
     private MajorRepository majorRepository;
 
     @Mock
+    FacultyRepository facultyRepository;
+
+    @Mock
     private MajorMapper majorMapper;
 
     private MajorCoursesDto majorCoursesDto;
     private MajorDto majorDTO;
     private Major major;
+    private Faculty faculty;
     private UUID majorId;
     private UUID facultyId;
 
@@ -48,6 +53,8 @@ class MajorServiceTest {
         majorCoursesDto = new MajorCoursesDto(majorId, facultyId, "Informatics", List.of());
         majorDTO = new MajorDto(majorId, facultyId, "Informatics");
         major = new Major();
+        faculty = new Faculty();
+        faculty.setId(facultyId);
     }
 
     @Test
@@ -166,7 +173,7 @@ class MajorServiceTest {
     @Test
     void updateMajorShouldReturnUpdatedMajorDTOIfFound() {
         when(majorRepository.findById(majorId)).thenReturn(Optional.of(major));
-        doNothing().when(majorMapper).updateEntityFromDto(majorDTO, major);
+        when(facultyRepository.findById(majorDTO.facultyId())).thenReturn(Optional.of(faculty));
         when(majorRepository.save(major)).thenReturn(major);
         when(majorMapper.toDto(major)).thenReturn(majorDTO);
 

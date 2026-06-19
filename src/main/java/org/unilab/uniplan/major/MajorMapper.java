@@ -23,6 +23,7 @@ public interface MajorMapper {
     @Mapping(source = "faculty.id", target = "facultyId")
     MajorCoursesDto toFullDto(Major major);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(source = "facultyId", target = "faculty.id")
     void updateEntityFromDto(MajorDto majorDto, @MappingTarget Major major);
 

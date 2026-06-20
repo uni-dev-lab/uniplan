@@ -2,6 +2,7 @@ package org.unilab.uniplan.university;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -46,16 +47,18 @@ class UniversityWebFacadeTest {
 
     @Test
     void createUniversity_shouldReturnResponseDto_whenRequestIsValid() {
-        when(universityMapper.createEntity(requestDto)).thenReturn(entity);
+        when(universityMapper.toEntity(requestDto)).thenReturn(entity);
         when(universityService.save(entity)).thenReturn(entity);
         when(universityMapper.toResponseDto(entity)).thenReturn(responseDto);
 
         final var result = universityWebFacade.createUniversity(requestDto);
 
         assertThat(result).isEqualTo(responseDto);
-        verify(universityMapper).createEntity(requestDto);
-        verify(universityService).save(entity);
-        verify(universityMapper).toResponseDto(entity);
+
+        final var inOrder = inOrder(universityMapper, universityService);
+        inOrder.verify(universityMapper).toEntity(requestDto);
+        inOrder.verify(universityService).save(entity);
+        inOrder.verify(universityMapper).toResponseDto(entity);
     }
 
     @Test

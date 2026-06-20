@@ -23,7 +23,7 @@ public class UniversityWebFacade {
 
     @Transactional
     public UniversityResponseDto createUniversity(final UniversityRequestDto request) {
-        final University university = universityMapper.createEntity(request);
+        final University university = universityMapper.toEntity(request);
         final University savedUniversity = universityService.save(university);
         log.info("created university {} with ID: {}",
                  savedUniversity.getUniName(),
@@ -34,7 +34,7 @@ public class UniversityWebFacade {
     @Transactional
     public UniversityResponseDto updateUniversity(final UUID id,
                                                   final UniversityRequestDto request) {
-        final University university = findUniversity(id);
+        final University university = getUniversityOrThrow(id);
 
         universityMapper.updateEntity(request, university);
         final University savedUniversity = universityService.save(university);
@@ -49,18 +49,18 @@ public class UniversityWebFacade {
 
     @Transactional(readOnly = true)
     public UniversityResponseDto getUniversityById(final UUID id) {
-        final University university = findUniversity(id);
+        final University university = getUniversityOrThrow(id);
         return universityMapper.toResponseDto(university);
     }
 
     @Transactional
     public void deleteUniversity(final UUID id) {
-        final University university = findUniversity(id);
+        final University university = getUniversityOrThrow(id);
         universityService.delete(university);
         log.info("deleted university with ID: {}", id);
     }
 
-    private University findUniversity(final UUID id) {
+    private University getUniversityOrThrow(final UUID id) {
         return universityService.findById(id)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                     UNIVERSITY_NOT_FOUND.getMessage(String.valueOf(id))));

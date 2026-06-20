@@ -11,7 +11,7 @@ import org.unilab.uniplan.university.dto.UniversityResponseDto;
 public interface UniversityMapper {
 
     @Mapping(target = "id", ignore = true)
-    University createEntity(UniversityRequestDto request);
+    University toEntity(UniversityRequestDto request);
 
     UniversityResponseDto toResponseDto(University university);
 

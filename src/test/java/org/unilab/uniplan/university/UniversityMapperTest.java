@@ -12,28 +12,18 @@ class UniversityMapperTest {
     private final UniversityMapper mapper = new UniversityMapperImpl();
 
     @Test
-    void createEntity_shouldMapAllFields_whenRequestDtoIsValid() {
+    void toEntity_shouldMapAllFieldsAndIgnoreId_whenRequestDtoIsValid() {
         final var request = new UniversityRequestDto(
             "Sofia University", "Sofia, Bulgaria", (short) 1888, "NEAA", "https://uni-sofia.bg"
         );
 
-        final var result = mapper.createEntity(request);
+        final var result = mapper.toEntity(request);
 
         assertThat(result.getUniName()).isEqualTo("Sofia University");
         assertThat(result.getLocation()).isEqualTo("Sofia, Bulgaria");
         assertThat(result.getEstablishedYear()).isEqualTo((short) 1888);
         assertThat(result.getAccreditation()).isEqualTo("NEAA");
         assertThat(result.getWebsite()).isEqualTo("https://uni-sofia.bg");
-    }
-
-    @Test
-    void createEntity_shouldNotSetId_whenRequestDtoIsProvided() {
-        final var request = new UniversityRequestDto(
-            "Sofia University", "Sofia, Bulgaria", (short) 1888, "NEAA", "https://uni-sofia.bg"
-        );
-
-        final var result = mapper.createEntity(request);
-
         assertThat(result.getId()).isNull();
     }
 

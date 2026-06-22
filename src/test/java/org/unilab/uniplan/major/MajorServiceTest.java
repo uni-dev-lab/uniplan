@@ -184,6 +184,16 @@ class MajorServiceTest {
     }
 
     @Test
+    void updateMajorShouldThrowResourceNotFoundExceptionIfFacultyNotFound() {
+        when(majorRepository.findById(majorId)).thenReturn(Optional.of(major));
+        when(facultyRepository.findById(majorDTO.facultyId())).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> majorService.updateMajor(majorId, majorDTO));
+
+        verify(majorRepository, never()).save(any());
+    }
+
+    @Test
     void updateMajorShouldReturnEmptyIfNotFound() {
         when(majorRepository.findById(majorId)).thenReturn(Optional.empty());
 

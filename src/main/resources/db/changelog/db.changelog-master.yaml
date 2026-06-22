@@ -19,4 +19,5 @@ databaseChangeLog:
       file: db/changelog/2025/08/0009-drop-column-deleted-at-faculty.yaml
   - include:
       file: db/changelog/2025/08/0010-drop-column-deleted-at-major.yaml
-
+  - include:
+      file: db/changelog/2025/08/0011-add-column-is-deleted-to-course.yaml

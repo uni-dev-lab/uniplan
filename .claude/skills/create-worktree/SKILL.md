@@ -45,12 +45,4 @@ Print the absolute worktree path and state whether it was **created** or **reuse
 
 ## Notes
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 uniplan does not currently have a `scripts/post_checkout.sh`. When that exists, this skill should invoke it after Step 7 for newly created worktrees only.
-=======
-uniplan does not currently have a `scripts/post_checkout.sh` (eJourney does). When that exists, this skill should invoke it after Step 7 for newly created worktrees only — see eJourney's `create-worktree/SKILL.md` for the reference shape.
->>>>>>> 033a30e (Add Claude Code config, Facade-pattern rules, and PR review workflow)
-=======
-uniplan does not currently have a `scripts/post_checkout.sh`. When that exists, this skill should invoke it after Step 7 for newly created worktrees only.
->>>>>>> 1b242bd (Remove eJourney references from Claude Code config)

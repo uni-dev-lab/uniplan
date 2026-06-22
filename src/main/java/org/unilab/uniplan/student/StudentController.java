@@ -18,6 +18,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.unilab.uniplan.course.Course;
+import org.unilab.uniplan.course.CourseService;
+import org.unilab.uniplan.course.dto.CourseDto;
+import org.unilab.uniplan.major.MajorService;
+import org.unilab.uniplan.major.dto.MajorDto;
 import org.unilab.uniplan.student.dto.StudentCourseMajorDto;
 import org.unilab.uniplan.student.dto.StudentDto;
 import org.unilab.uniplan.student.dto.StudentRequestDto;
@@ -30,29 +35,48 @@ import org.unilab.uniplan.student.dto.StudentResponseDto;
 public class StudentController {
 
     private final StudentService studentService;
+    private final CourseService courseService;
     private final StudentMapper studentMapper;
+    private final MajorService majorService;
 
     @PostMapping
     public ResponseEntity<StudentResponseDto> createStudent(@RequestBody @NotNull
                                                             @Valid final StudentRequestDto studentRequestDTO) {
         final StudentDto studentDTO = studentMapper.toInternalDto(studentRequestDTO);
         studentService.createStudent(studentDTO);
+
+        CourseDto courseDto = courseService.findCourseById(studentDTO.courseId());
+        MajorDto majorDto = majorService.findMajorById(courseDto.majorId());
+        StudentResponseDto student = studentMapper.toResponseDto(studentDTO, courseDto, majorDto);
+
         return ResponseEntity.status(HttpStatus.CREATED)
-                             .body(studentMapper.toResponseDto(studentDTO));
+                             .body(student);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<StudentResponseDto> getStudent(@PathVariable
                                                          @NotNull final UUID id) {
-        final StudentResponseDto studentResponseDTO = studentMapper.toResponseDto(studentService.findStudentById(
-                                                                                                    id));
+
+        StudentDto studentDTO = studentService.findStudentById(id);
+        CourseDto courseDto = courseService.findCourseById(studentDTO.courseId());
+        MajorDto majorDto = majorService.findMajorById(courseDto.majorId());
+        final StudentResponseDto studentResponseDTO = studentMapper.toResponseDto(studentDTO, courseDto, majorDto);
 
         return ResponseEntity.ok(studentResponseDTO);
     }
 
     @GetMapping
     public List<StudentResponseDto> getAllStudents() {
-        return studentMapper.toResponseDtoList(studentService.findAll());
+        List<StudentDto> students = studentService.findAll();
+        List<StudentResponseDto> responseList = students.stream()
+            .map(studentDto -> {
+                CourseDto courseDto = courseService.findCourseById(studentDto.courseId());
+                MajorDto majorDto = majorService.findMajorById(courseDto.majorId());
+                return studentMapper.toResponseDto(studentDto, courseDto, majorDto);
+            })
+            .toList();
+
+        return responseList;
     }
 
     @GetMapping("/student-course-major/getStudentCourseMajorInfo")
@@ -69,8 +93,10 @@ public class StudentController {
                                                             @RequestBody
                                                             @NotNull @Valid final StudentRequestDto studentRequestDTO) {
         final StudentDto studentDTO = studentMapper.toInternalDto(studentRequestDTO);
-        studentService.updateStudent(id, studentDTO);
-        return ResponseEntity.ok(studentMapper.toResponseDto(studentDTO));
+        StudentDto studentDto = studentService.updateStudent(id, studentDTO);
+        CourseDto courseDto = courseService.findCourseById(studentDto.courseId());
+        MajorDto majorDto = majorService.findMajorById(courseDto.majorId());
+        return ResponseEntity.ok(studentMapper.toResponseDto(studentDTO, courseDto, majorDto));
     }
 
     @DeleteMapping("/{id}")

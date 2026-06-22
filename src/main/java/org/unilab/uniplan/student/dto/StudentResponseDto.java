@@ -13,7 +13,10 @@ public record StudentResponseDto(
     @Size(max = 100)
     String lastName,
     String facultyNumber,
-    UUID courseId
+    String majorName,
+    String courseType,
+    String courseSubtype,
+    int courseYear
 ) {
 
 }

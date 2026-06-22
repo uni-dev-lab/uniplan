@@ -8,6 +8,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,6 +20,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.faculty.dto.FacultyDto;
+import org.unilab.uniplan.major.Major;
+import org.unilab.uniplan.major.MajorRepository;
 
 @ExtendWith(MockitoExtension.class)
 class FacultyServiceTest {
@@ -31,6 +34,9 @@ class FacultyServiceTest {
 
     @InjectMocks
     private FacultyService facultyService;
+
+    @Mock
+    private MajorRepository majorRepository;
 
     private UUID id;
     private UUID universityId;
@@ -114,10 +120,25 @@ class FacultyServiceTest {
 
     @Test
     void testDeleteFacultyShouldDeleteFacultyIfFound() {
-        when(facultyRepository.findById(id)).thenReturn(Optional.of(entity));
-        doAnswer(invocation -> null).when(facultyRepository).delete(entity);
+        final List<Major> majors = List.of(new Major(), new Major());
 
-        assertDoesNotThrow(() -> facultyService.deleteFaculty(id));
+        when(facultyRepository.findById(id)).thenReturn(Optional.of(entity));
+        when(majorRepository.findAllByFaculty(entity)).thenReturn(majors);
+
+        facultyService.deleteFaculty(id);
+
+        verify(facultyRepository).delete(entity);
+        verify(majorRepository).deleteAll(majors);
+    }
+
+    @Test
+    void testDeleteFacultyShouldDeleteFacultyWhenNoMajorFound() {
+        when(facultyRepository.findById(id)).thenReturn(Optional.of(entity));
+        when(majorRepository.findAllByFaculty(entity)).thenReturn(Collections.emptyList());
+
+        facultyService.deleteFaculty(id);
+
+        verify(majorRepository).deleteAll(Collections.emptyList());
         verify(facultyRepository).delete(entity);
     }
 

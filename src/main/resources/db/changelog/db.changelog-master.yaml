@@ -11,3 +11,12 @@ databaseChangeLog:
       file: db/changelog/2025/08/0005-alter-faculty-type-column.yaml
   - include:
       file: db/changelog/2025/08/0006-alter-major-type-column.yaml
+  - include:
+      file: db/changelog/2025/08/0007-add-column-is-deleted-to-faculty.yaml
+  - include:
+      file: db/changelog/2025/08/0008-add-column-is-deleted-to-major.yaml
+  - include:
+      file: db/changelog/2025/08/0009-drop-column-deleted-at-faculty.yaml
+  - include:
+      file: db/changelog/2025/08/0010-drop-column-deleted-at-major.yaml
+

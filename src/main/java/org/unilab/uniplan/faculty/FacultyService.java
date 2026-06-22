@@ -55,14 +55,9 @@ public class FacultyService {
         final Faculty faculty = facultyRepository.findById(id)
                                                  .orElseThrow(() -> new ResourceNotFoundException(
                                                      FACULTY_NOT_FOUND.getMessage(String.valueOf(id))));
-        LocalDateTime now = LocalDateTime.now();
-        List<Major> associatedMajors = majorRepository.findAllByFacultyId(id);
-        for (Major major : associatedMajors) {
-            major.setDeletedAt(now);
-        }
-        if (!associatedMajors.isEmpty()) {
-            majorRepository.saveAll(associatedMajors);
-        }
+
+        majorRepository.deleteAll(majorRepository.findAllByFaculty(faculty));
+
         facultyRepository.delete(faculty);
     }
 

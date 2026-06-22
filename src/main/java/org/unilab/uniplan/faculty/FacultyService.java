@@ -2,6 +2,7 @@ package org.unilab.uniplan.faculty;
 
 import static org.unilab.uniplan.utils.ErrorConstants.FACULTY_NOT_FOUND;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.faculty.dto.FacultyDto;
+import org.unilab.uniplan.major.Major;
+import org.unilab.uniplan.major.MajorRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +19,7 @@ public class FacultyService {
 
     private final FacultyRepository facultyRepository;
     private final FacultyMapper facultyMapper;
+    private final MajorRepository majorRepository;
 
     @Transactional
     public FacultyDto createFaculty(final FacultyDto facultyDto) {
@@ -51,6 +55,14 @@ public class FacultyService {
         final Faculty faculty = facultyRepository.findById(id)
                                                  .orElseThrow(() -> new ResourceNotFoundException(
                                                      FACULTY_NOT_FOUND.getMessage(String.valueOf(id))));
+        LocalDateTime now = LocalDateTime.now();
+        List<Major> associatedMajors = majorRepository.findAllByFacultyId(id);
+        for (Major major : associatedMajors) {
+            major.setDeletedAt(now);
+        }
+        if (!associatedMajors.isEmpty()) {
+            majorRepository.saveAll(associatedMajors);
+        }
         facultyRepository.delete(faculty);
     }
 

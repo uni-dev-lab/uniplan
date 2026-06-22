@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 4
+      author: petya
+      changes:
+        - addColumn:
+            tableName: faculty
+            columns:
+              - column:
+                  name: deleted_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: true

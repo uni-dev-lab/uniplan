@@ -9,7 +9,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.unilab.uniplan.common.model.BaseEntity;
+import org.unilab.uniplan.common.model.SoftDeletableEntity;
 import org.unilab.uniplan.university.University;
 
 @Entity
@@ -18,7 +21,9 @@ import org.unilab.uniplan.university.University;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Faculty extends BaseEntity {
+@SQLDelete(sql = "UPDATE faculty SET deleted_at = NOW() WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")
+public class Faculty extends SoftDeletableEntity {
 
     @ManyToOne
     @JoinColumn(name = "uni_id", referencedColumnName = "id", nullable = false)

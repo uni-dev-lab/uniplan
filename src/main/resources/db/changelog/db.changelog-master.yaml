@@ -5,3 +5,9 @@ databaseChangeLog:
       file: db/changelog/2025/08/0002-seed-university-data-from-csv.yaml
   - include:
       file: db/changelog/2025/08/0003-alter-major-for-soft-delete.yaml
+  - include:
+      file: db/changelog/2025/08/0004-alter-faculty-for-soft-delete.yaml
+  - include:
+      file: db/changelog/2025/08/0005-alter-faculty-type-column.yaml
+  - include:
+      file: db/changelog/2025/08/0006-alter-major-type-column.yaml

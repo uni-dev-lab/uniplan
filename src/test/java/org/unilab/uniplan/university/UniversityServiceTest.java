@@ -1,10 +1,6 @@
 package org.unilab.uniplan.university;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doAnswer;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -17,120 +13,66 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
-import org.unilab.uniplan.university.dto.UniversityDto;
 
 @ExtendWith(MockitoExtension.class)
 class UniversityServiceTest {
 
     @Mock
     private UniversityRepository universityRepository;
-
-    @Mock
-    private UniversityMapper universityMapper;
-
     @InjectMocks
     private UniversityService universityService;
-
     private UUID id;
     private University entity;
-    private UniversityDto dto;
 
     @BeforeEach
     void setUp() {
         id = UUID.randomUUID();
         entity = new University();
-        dto = new UniversityDto(id,
-                                "University of Sofia",
-                                "Sofia",
-                                (short) 1888,
-                                "Excellent",
-                                "www.uni-sofia.bg");
     }
 
     @Test
-    void testCreateUniversityShouldSaveAndReturnDto() {
-        when(universityMapper.toEntity(dto)).thenReturn(entity);
+    void save_shouldSaveAndReturnEntity() {
         when(universityRepository.save(entity)).thenReturn(entity);
-        when(universityMapper.toDto(entity)).thenReturn(dto);
 
-        UniversityDto result = universityService.createUniversity(dto);
+        final var result = universityService.save(entity);
 
-        assertEquals(dto, result);
+        assertThat(result).isEqualTo(entity);
+        verify(universityRepository).save(entity);
     }
 
     @Test
-    void testGetAllUniversitiesShouldReturnListOfUniversityDtos() {
-        List<University> entities = List.of(entity);
-        List<UniversityDto> dtos = List.of(dto);
+    void findAll_shouldReturnListOfEntities() {
+        final var entities = List.of(entity);
 
         when(universityRepository.findAll()).thenReturn(entities);
-        when(universityMapper.toDtoList(entities)).thenReturn(dtos);
 
-        List<UniversityDto> result = universityService.getAllUniversities();
+        final var result = universityService.findAll();
 
-        assertEquals(dtos, result);
+        assertThat(result).isEqualTo(entities);
     }
 
     @Test
-    void testGetUniversityByIdShouldReturnUniversityDtoIfFound() {
+    void findById_shouldReturnEntity_whenUniversityExists() {
         when(universityRepository.findById(id)).thenReturn(Optional.of(entity));
-        when(universityMapper.toDto(entity)).thenReturn(dto);
 
-        UniversityDto result = universityService.getUniversityById(id);
+        final var result = universityService.findById(id);
 
-        assertEquals(dto, result);
+        assertThat(result).contains(entity);
     }
 
     @Test
-    void testGetUniversityByIdShouldReturnEmptyOptionalIfUniversityNotFound() {
+    void findById_shouldReturnEmptyOptional_whenUniversityNotFound() {
         when(universityRepository.findById(id)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
-                                                           () -> universityService.getUniversityById(
-                                                               id));
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
+        final var result = universityService.findById(id);
+
+        assertThat(result).isEmpty();
     }
 
     @Test
-    void testUpdateUniversityShouldUpdateAndReturnDtoIfFound() {
-        when(universityRepository.findById(id)).thenReturn(Optional.of(entity));
-        doAnswer(invocation -> null).when(universityMapper).updateEntityFromDto(dto, entity);
-        when(universityRepository.save(entity)).thenReturn(entity);
-        when(universityMapper.toDto(entity)).thenReturn(dto);
+    void delete_shouldDeleteEntity_whenUniversityExists() {
+        universityService.delete(entity);
 
-        UniversityDto result = universityService.updateUniversity(id, dto);
-
-        assertEquals(dto, result);
-    }
-
-    @Test
-    void testUpdateUniversityShouldReturnEmptyOptionalIfNotFound() {
-        when(universityRepository.findById(id)).thenReturn(Optional.empty());
-
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
-                                                           () -> universityService.updateUniversity(
-                                                               id,
-                                                               dto));
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
-    }
-
-    @Test
-    void testDeleteUniversityShouldDeleteUniversityIfFound() {
-        when(universityRepository.findById(id)).thenReturn(Optional.of(entity));
-        doAnswer(invocation -> null).when(universityRepository).delete(entity);
-
-        assertDoesNotThrow(() -> universityService.deleteUniversity(id));
         verify(universityRepository).delete(entity);
-    }
-
-    @Test
-    void testDeleteUniversityShouldThrowIfNotFound() {
-        when(universityRepository.findById(id)).thenReturn(Optional.empty());
-
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
-                                                  () -> universityService.deleteUniversity(id));
-
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 }

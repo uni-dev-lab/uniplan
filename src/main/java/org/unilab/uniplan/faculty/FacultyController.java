@@ -1,7 +1,5 @@
 package org.unilab.uniplan.faculty;
 
-import static org.springframework.http.ResponseEntity.ok;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -27,46 +25,36 @@ import org.unilab.uniplan.faculty.dto.FacultyResponseDto;
 @Tag(name = "Faculties", description = "Manage faculties within universities, including name and location")
 public class FacultyController {
 
-    private final FacultyService facultyService;
-    private final FacultyMapper facultyMapper;
+    private final FacultyWebFacade facultyWebFacade;
 
     @PostMapping
     public ResponseEntity<FacultyResponseDto> createFaculty(
         @Valid @NotNull @RequestBody final FacultyRequestDto facultyRequestDto) {
-
-        final FacultyDto facultyDto = facultyService.createFaculty(facultyMapper.toInternalDto(
+        return ResponseEntity.status(HttpStatus.CREATED).body(facultyWebFacade.createFaculty(
             facultyRequestDto));
-
-        return new ResponseEntity<>(facultyMapper.toResponseDto(facultyDto),
-                                    HttpStatus.CREATED);
     }
 
     @GetMapping
-    public List<FacultyResponseDto> getAllFaculties() {
-        return facultyMapper.toResponseDtoList(facultyService.getAllFaculties());
+    public ResponseEntity<List<FacultyResponseDto>> getAllFaculties() {
+        return ResponseEntity.ok(facultyWebFacade.getAllFaculties());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<FacultyResponseDto> getFacultyById(@NotNull @PathVariable final UUID id) {
-        final FacultyDto facultyDto = facultyService.getFacultyById(id);
 
-        return ok(facultyMapper.toResponseDto(facultyDto));
+        return ResponseEntity.ok(facultyWebFacade.getFacultyById(id));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<FacultyResponseDto> updateFaculty(
         @PathVariable final UUID id,
         @Valid @NotNull @RequestBody final FacultyRequestDto facultyRequestDto) {
-
-        final FacultyDto internalDto = facultyMapper.toInternalDto(facultyRequestDto);
-
-        return ok(facultyMapper.toResponseDto(facultyService.updateFaculty(id, internalDto)));
+        return ResponseEntity.ok(facultyWebFacade.updateFaculty(id, facultyRequestDto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFaculty(@PathVariable final UUID id) {
-        facultyService.deleteFaculty(id);
-
+        facultyWebFacade.deleteFaculty(id);
         return ResponseEntity.noContent().build();
     }
 }

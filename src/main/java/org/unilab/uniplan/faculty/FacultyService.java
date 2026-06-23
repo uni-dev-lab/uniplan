@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
-import org.unilab.uniplan.faculty.dto.FacultyDto;
+import org.unilab.uniplan.faculty.dto.FacultyRequestDto;
 
 @Service
 @RequiredArgsConstructor
@@ -18,8 +18,8 @@ public class FacultyService {
     private final FacultyMapper facultyMapper;
 
     @Transactional
-    public FacultyDto createFaculty(final FacultyDto facultyDto) {
-        final Faculty faculty = facultyMapper.toEntity(facultyDto);
+    public FacultyRequestDto createFaculty(final FacultyRequestDto facultyDto) {
+        final Faculty faculty = facultyMapper.toEntity(FacultyRequestDto);
 
         return saveEntityAndConvertToDto(faculty);
     }

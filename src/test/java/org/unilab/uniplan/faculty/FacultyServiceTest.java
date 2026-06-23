@@ -18,7 +18,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
-import org.unilab.uniplan.faculty.dto.FacultyDto;
 
 @ExtendWith(MockitoExtension.class)
 class FacultyServiceTest {

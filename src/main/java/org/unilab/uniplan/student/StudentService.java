@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.student.dto.StudentCourseMajorDto;
 import org.unilab.uniplan.student.dto.StudentDto;
+import org.unilab.uniplan.student.dto.StudentResponseDto;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +37,17 @@ public class StudentService {
                                 .stream().map(studentMapper::toDto).toList();
     }
 
+    public List<StudentResponseDto> findAllStudentsWithDetails() {
+        return studentMapper.toResponseDtoList(
+            studentRepository.searchStudents("", "", "", "")
+        );
+    }
+
+    public List<StudentCourseMajorDto> findStudentCourseMajorInfo(final String firstName, final String lastName,
+                                                                  final String facultyNumber, final String majorName){
+        return studentRepository.searchStudents(firstName, lastName, facultyNumber, majorName);
+    }
+
     @Transactional
     public StudentDto updateStudent(final UUID id, final StudentDto studentDTO) {
         return studentRepository.findById(id)
@@ -52,11 +64,6 @@ public class StudentService {
                                                  .orElseThrow(() -> new ResourceNotFoundException(
                                                      STUDENT_NOT_FOUND.getMessage(String.valueOf(id))));
         studentRepository.delete(student);
-    }
-
-    public List<StudentCourseMajorDto> findStudentCourseMajorInfo(final String firstName, final String lastName,
-                                                                  final String facultyNumber, final String majorName){
-        return studentRepository.searchStudents(firstName, lastName, facultyNumber, majorName);
     }
 
     private StudentDto updateEntityAndConvertToDto(final StudentDto dto,

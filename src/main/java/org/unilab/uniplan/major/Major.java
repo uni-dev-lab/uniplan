@@ -1,7 +1,9 @@
 package org.unilab.uniplan.major;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -30,7 +32,7 @@ import org.unilab.uniplan.faculty.Faculty;
 @AllArgsConstructor
 @SoftDelete(strategy = SoftDeleteType.DELETED, columnName = "is_deleted")
 public class Major extends BaseEntity {
-    
+
     @ManyToOne
     @JoinColumn(name = "faculty_id", nullable = false)
     private Faculty faculty;
@@ -40,7 +42,7 @@ public class Major extends BaseEntity {
 
     //Read-only list of courses
     @Setter(AccessLevel.NONE)
-    @OneToMany(mappedBy = "major")
+    @OneToMany(mappedBy = "major", cascade = CascadeType.REMOVE)
     private List<Course> courses = new ArrayList<>();
 
     public List<Course> getCourses() {

@@ -1,67 +1,35 @@
 package org.unilab.uniplan.faculty;
 
-import static org.unilab.uniplan.utils.ErrorConstants.FACULTY_NOT_FOUND;
-
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
-import org.unilab.uniplan.faculty.dto.FacultyRequestDto;
 
 @Service
 @RequiredArgsConstructor
 public class FacultyService {
 
     private final FacultyRepository facultyRepository;
-    private final FacultyMapper facultyMapper;
 
     @Transactional
-    public FacultyRequestDto createFaculty(final FacultyRequestDto facultyDto) {
-        final Faculty faculty = facultyMapper.toEntity(FacultyRequestDto);
-
-        return saveEntityAndConvertToDto(faculty);
+    public Faculty save(final Faculty faculty) {
+        return facultyRepository.save(faculty);
     }
 
-    public List<FacultyDto> getAllFaculties() {
-        final List<Faculty> faculties = facultyRepository.findAll();
-        return facultyMapper.toDtoList(faculties);
+    @Transactional(readOnly = true)
+    public List<Faculty> getAll() {
+       return facultyRepository.findAll();
     }
 
-    public FacultyDto getFacultyById(final UUID id) {
-        return facultyRepository.findById(id)
-                                .map(facultyMapper::toDto)
-                                .orElseThrow(() -> new ResourceNotFoundException(FACULTY_NOT_FOUND.getMessage(
-                                    String.valueOf(id))));
+    @Transactional(readOnly = true)
+    public Optional<Faculty> getById(final UUID id) {
+      return facultyRepository.findById(id);
     }
 
     @Transactional
-    public FacultyDto updateFaculty(final UUID id, final FacultyDto facultyDto) {
-        return facultyRepository.findById(id)
-                                .map(existingFaculty -> updateEntityAndConvertToDto(
-                                    facultyDto,
-                                    existingFaculty))
-                                .orElseThrow(() -> new ResourceNotFoundException(FACULTY_NOT_FOUND.getMessage(
-                                    String.valueOf(id))));
-    }
-
-    @Transactional
-    public void deleteFaculty(final UUID id) {
-        final Faculty faculty = facultyRepository.findById(id)
-                                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                     FACULTY_NOT_FOUND.getMessage(String.valueOf(id))));
+    public void delete(final Faculty faculty) {
         facultyRepository.delete(faculty);
-    }
-
-    private FacultyDto updateEntityAndConvertToDto(final FacultyDto dto,
-                                                   final Faculty entity) {
-        facultyMapper.updateEntityFromDto(dto, entity);
-        return saveEntityAndConvertToDto(entity);
-    }
-
-    private FacultyDto saveEntityAndConvertToDto(final Faculty entity) {
-        final Faculty savedEntity = facultyRepository.save(entity);
-        return facultyMapper.toDto(savedEntity);
     }
 }

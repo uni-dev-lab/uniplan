@@ -69,15 +69,9 @@ public class StudentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StudentResponseDto> updateStudent(@PathVariable
-                                                            @NotNull final UUID id,
-                                                            @RequestBody
-                                                            @NotNull @Valid final StudentRequestDto studentRequestDTO) {
-        final StudentDto studentDTO = studentMapper.toInternalDto(studentRequestDTO);
-
-        StudentDto studentDto = studentService.updateStudent(id, studentDTO);
-
-        return ResponseEntity.ok(null); //studentMapper.toResponseDto()
+    public ResponseEntity<StudentResponseDto> updateStudent(@PathVariable @NotNull final UUID id,
+                                                            @RequestBody @NotNull @Valid final StudentRequestDto studentRequestDTO) {
+        return ResponseEntity.ok(studentService.updateStudent(id, studentRequestDTO));
     }
 
     @DeleteMapping("/{id}")

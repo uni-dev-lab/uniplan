@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.unilab.uniplan.course.Course;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.student.dto.StudentCourseMajorDto;
 import org.unilab.uniplan.student.dto.StudentDto;
@@ -54,13 +55,22 @@ public class StudentService {
     }
 
     @Transactional
-    public StudentDto updateStudent(final UUID id, final StudentDto studentDTO) {
-        return studentRepository.findById(id)
-                                .map(existingStudent -> updateEntityAndConvertToDto(
-                                    studentDTO,
-                                    existingStudent))
-                                .orElseThrow(() -> new ResourceNotFoundException(STUDENT_NOT_FOUND.getMessage(
-                                    String.valueOf(id))));
+    public StudentResponseDto updateStudent(final UUID id, final StudentRequestDto request) {
+        Student existing = studentRepository.findById(id)
+                                            .orElseThrow(() -> new ResourceNotFoundException(STUDENT_NOT_FOUND.getMessage(String.valueOf(id))));
+
+        StudentDto studentDto = studentMapper.toInternalDto(request);
+        studentMapper.updateEntityFromDto(studentDto, existing);
+
+        Course course = new Course();
+        course.setId(studentDto.courseId());
+        existing.setCourse(course);
+
+        studentRepository.save(existing);
+
+        return studentRepository.findStudentWithDetailsById(id)
+                                .map(studentMapper::toResponseDto)
+                                .orElseThrow(() -> new ResourceNotFoundException(STUDENT_NOT_FOUND.getMessage(String.valueOf(id))));
     }
 
     @Transactional
@@ -69,16 +79,5 @@ public class StudentService {
                                                  .orElseThrow(() -> new ResourceNotFoundException(
                                                      STUDENT_NOT_FOUND.getMessage(String.valueOf(id))));
         studentRepository.delete(student);
-    }
-
-    private StudentDto updateEntityAndConvertToDto(final StudentDto dto,
-                                                   final Student entity) {
-        studentMapper.updateEntityFromDto(dto, entity);
-        return saveEntityAndConvertToDto(entity);
-    }
-
-    private StudentDto saveEntityAndConvertToDto(final Student entity) {
-        final Student savedEntity = studentRepository.save(entity);
-        return studentMapper.toDto(savedEntity);
     }
 }

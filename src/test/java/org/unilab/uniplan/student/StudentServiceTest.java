@@ -77,13 +77,13 @@ class StudentServiceTest {
     }
 
     @Test
-    void findStudentByIdShouldReturnStudentDTOIfExists() {
-        when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
-        when(studentMapper.toDto(student)).thenReturn(studentDTO);
+    void findStudentByIdShouldReturnStudentResponseDtoIfExists() {
+        when(studentRepository.findStudentWithDetailsById(studentId)).thenReturn(Optional.of(studentCourseMajorDto));
+        when(studentMapper.toResponseDto(studentCourseMajorDto)).thenReturn(studentResponseDto);
 
-        StudentDto result = studentService.findStudentById(studentId);
+        StudentResponseDto result = studentService.findStudentById(studentId);
 
-        assertEquals(studentDTO, result);
+        assertEquals(studentResponseDto, result);
     }
 
     @Test

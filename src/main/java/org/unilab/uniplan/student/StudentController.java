@@ -36,7 +36,7 @@ public class StudentController {
     public ResponseEntity<StudentResponseDto> createStudent(@RequestBody @NotNull
                                                             @Valid final StudentRequestDto studentRequestDTO) {
         final StudentDto studentDTO = studentMapper.toInternalDto(studentRequestDTO);
-        studentService.createStudent(studentDTO);
+//        studentService.createStudent(studentDTO);
 
 
 
@@ -50,10 +50,9 @@ public class StudentController {
     public ResponseEntity<StudentResponseDto> getStudent(@PathVariable
                                                          @NotNull final UUID id) {
 
-        StudentDto studentDTO = studentService.findStudentById(id);
-//        final StudentResponseDto studentResponseDTO = studentMapper.toResponseDto();
+        StudentResponseDto studentResponseDTO = studentService.findStudentById(id);
 
-        return ResponseEntity.ok(null); //studentResponseDTO
+        return ResponseEntity.ok(studentResponseDTO);
     }
 
     @GetMapping

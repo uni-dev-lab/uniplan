@@ -30,9 +30,9 @@ public class StudentService {
                                     STUDENT_NOT_FOUND.getMessage(String.valueOf(saved.getId()))));
     }
 
-    public StudentDto findStudentById(final UUID id) {
-        return studentRepository.findById(id)
-                                .map(studentMapper::toDto)
+    public StudentResponseDto findStudentById(final UUID id) {
+        return studentRepository.findStudentWithDetailsById(id)
+                                .map(studentMapper::toResponseDto)
                                 .orElseThrow(() -> new ResourceNotFoundException(STUDENT_NOT_FOUND.getMessage(
                                     String.valueOf(id))));
     }

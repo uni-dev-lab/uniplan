@@ -47,15 +47,17 @@ class StudentServiceTest {
     void beforeEach() {
         studentId = UUID.randomUUID();
         UUID courseId = UUID.randomUUID();
+        UUID majorId = UUID.randomUUID();
         studentDTO = new StudentDto(studentId, "Petar", "Petrov", "2301261005", courseId);
         studentRequestDto = new StudentRequestDto("Petar", "Petrov", "2301261005", courseId);
         studentCourseMajorDto = new StudentCourseMajorDto(
             studentId, "Petar", "Petrov", "2301261005",
             courseId, "bachelor", "regular", (byte) 2,
-            UUID.randomUUID(), "Informatics"
+            majorId, "Informatics"
         );
         studentResponseDto = new StudentResponseDto(
-            studentId, "Petar Petrov", "2301261005", "Informatics", "bachelor", "regular", 2
+            studentId, "Petar Petrov", "2301261005", majorId, "Informatics", "bachelor", "regular",
+            (byte) 2
         );
         student = new Student();
         student.setId(studentId);
@@ -109,23 +111,27 @@ class StudentServiceTest {
     }
 
     @Test
-    void updateStudentShouldReturnUpdatedStudentDTOIfExists() {
+    void updateStudentShouldReturnUpdatedStudentResponseDtoIfExists() {
         when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
+        when(studentMapper.toInternalDto(studentRequestDto)).thenReturn(studentDTO);
         doNothing().when(studentMapper).updateEntityFromDto(studentDTO, student);
         when(studentRepository.save(student)).thenReturn(student);
-        when(studentMapper.toDto(student)).thenReturn(studentDTO);
+        when(studentRepository.findStudentWithDetailsById(studentId)).thenReturn(Optional.of(studentCourseMajorDto));
+        when(studentMapper.toResponseDto(studentCourseMajorDto)).thenReturn(studentResponseDto);
 
-        StudentDto result = studentService.updateStudent(studentId, studentDTO);
+        StudentResponseDto result = studentService.updateStudent(studentId, studentRequestDto);
 
-        assertEquals(studentDTO, result);
+        assertEquals(studentResponseDto, result);
         verify(studentRepository).save(student);
+        verify(studentRepository).findStudentWithDetailsById(studentId);
     }
 
     @Test
-    void updateStudentShouldReturnEmptyIfNotFound() {
+    void updateStudentShouldThrowIfNotFound() {
         when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> studentService.updateStudent(studentId, studentDTO));
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+                                                           () -> studentService.updateStudent(studentId, studentRequestDto));
 
         assertTrue(exception.getMessage().contains(String.valueOf(studentId)));
         verify(studentRepository, never()).save(any());

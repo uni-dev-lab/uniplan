@@ -19,12 +19,13 @@ public interface StudentMapper {
     StudentDto toDto(Student student);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(source = "courseId", target = "course.id")
+    @Mapping(target = "course", ignore = true)
     void updateEntityFromDto(StudentDto studentDto, @MappingTarget Student student);
 
     @Mapping(target = "id", ignore = true)
     StudentDto toInternalDto(StudentRequestDto student);
 
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "name", expression = "java(toFullName(dto.firstName(), dto.lastName()))")
     StudentResponseDto toResponseDto(StudentCourseMajorDto dto);
 

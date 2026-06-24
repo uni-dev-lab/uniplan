@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import java.util.UUID;
 
 public record StudentCourseMajorDto(
-    UUID studentId,
+    UUID id,
     @NotBlank
     @Size(max = 100)
     String firstName,

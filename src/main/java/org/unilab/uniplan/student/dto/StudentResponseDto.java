@@ -6,10 +6,11 @@ public record StudentResponseDto(
     UUID id,
     String name,
     String facultyNumber,
+    UUID majorId,
     String majorName,
     String courseType,
     String courseSubtype,
-    int courseYear
+    Byte courseYear
 ) {
 
 }

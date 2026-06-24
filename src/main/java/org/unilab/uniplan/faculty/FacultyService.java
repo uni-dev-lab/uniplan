@@ -1,23 +1,32 @@
 package org.unilab.uniplan.faculty;
 
+<<<<<<< feature/104-add-soft-delete-on-faculty
 import static org.unilab.uniplan.utils.ErrorConstants.FACULTY_NOT_FOUND;
 
 import java.time.LocalDateTime;
+=======
+>>>>>>> main
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+<<<<<<< feature/104-add-soft-delete-on-faculty
 import org.springframework.transaction.annotation.Transactional;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.faculty.dto.FacultyDto;
 import org.unilab.uniplan.major.Major;
 import org.unilab.uniplan.major.MajorRepository;
+=======
+import org.unilab.uniplan.common.model.BaseService;
+>>>>>>> main
 
 @Service
 @RequiredArgsConstructor
-public class FacultyService {
+public class FacultyService implements BaseService<Faculty> {
 
     private final FacultyRepository facultyRepository;
+<<<<<<< feature/104-add-soft-delete-on-faculty
     private final FacultyMapper facultyMapper;
     private final MajorRepository majorRepository;
 
@@ -27,29 +36,25 @@ public class FacultyService {
 
         return saveEntityAndConvertToDto(faculty);
     }
+=======
+>>>>>>> main
 
-    public List<FacultyDto> getAllFaculties() {
-        final List<Faculty> faculties = facultyRepository.findAll();
-        return facultyMapper.toDtoList(faculties);
+    @Override
+    public void save(final Faculty faculty) {
+        facultyRepository.save(faculty);
     }
 
-    public FacultyDto getFacultyById(final UUID id) {
-        return facultyRepository.findById(id)
-                                .map(facultyMapper::toDto)
-                                .orElseThrow(() -> new ResourceNotFoundException(FACULTY_NOT_FOUND.getMessage(
-                                    String.valueOf(id))));
+    @Override
+    public List<Faculty> getAll() {
+        return facultyRepository.findAll();
     }
 
-    @Transactional
-    public FacultyDto updateFaculty(final UUID id, final FacultyDto facultyDto) {
-        return facultyRepository.findById(id)
-                                .map(existingFaculty -> updateEntityAndConvertToDto(
-                                    facultyDto,
-                                    existingFaculty))
-                                .orElseThrow(() -> new ResourceNotFoundException(FACULTY_NOT_FOUND.getMessage(
-                                    String.valueOf(id))));
+    @Override
+    public Optional<Faculty> getById(final UUID id) {
+        return facultyRepository.findById(id);
     }
 
+<<<<<<< feature/104-add-soft-delete-on-faculty
     @Transactional
     public void deleteFaculty(final UUID id) {
         final Faculty faculty = facultyRepository.findById(id)
@@ -58,17 +63,10 @@ public class FacultyService {
 
         majorRepository.deleteAll(majorRepository.findAllByFaculty(faculty));
 
+=======
+    @Override
+    public void delete(final Faculty faculty) {
+>>>>>>> main
         facultyRepository.delete(faculty);
-    }
-
-    private FacultyDto updateEntityAndConvertToDto(final FacultyDto dto,
-                                                   final Faculty entity) {
-        facultyMapper.updateEntityFromDto(dto, entity);
-        return saveEntityAndConvertToDto(entity);
-    }
-
-    private FacultyDto saveEntityAndConvertToDto(final Faculty entity) {
-        final Faculty savedEntity = facultyRepository.save(entity);
-        return facultyMapper.toDto(savedEntity);
     }
 }

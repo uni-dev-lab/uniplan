@@ -1,10 +1,6 @@
 package org.unilab.uniplan.faculty;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doAnswer;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -18,137 +14,78 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+<<<<<<< feature/104-add-soft-delete-on-faculty
 import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.faculty.dto.FacultyDto;
 import org.unilab.uniplan.major.Major;
 import org.unilab.uniplan.major.MajorRepository;
+=======
+import org.unilab.uniplan.faculty.Faculty;
+import org.unilab.uniplan.faculty.FacultyRepository;
+import org.unilab.uniplan.faculty.FacultyService;
+>>>>>>> main
 
 @ExtendWith(MockitoExtension.class)
 class FacultyServiceTest {
-
     @Mock
     private FacultyRepository facultyRepository;
-
-    @Mock
-    private FacultyMapper facultyMapper;
-
     @InjectMocks
     private FacultyService facultyService;
-
-    @Mock
-    private MajorRepository majorRepository;
-
     private UUID id;
-    private UUID universityId;
-    private FacultyDto dto;
     private Faculty entity;
 
     @BeforeEach
     void setUp() {
         id = UUID.randomUUID();
-        universityId = UUID.randomUUID();
-        dto = new FacultyDto(id, universityId, "Faculty of Science", "Sofia");
         entity = new Faculty();
     }
 
     @Test
-    void testCreateFacultyShouldSaveAndReturnDto() {
-        when(facultyMapper.toEntity(dto)).thenReturn(entity);
+    void save_shouldSaveEntity() {
         when(facultyRepository.save(entity)).thenReturn(entity);
-        when(facultyMapper.toDto(entity)).thenReturn(dto);
 
-        FacultyDto result = facultyService.createFaculty(dto);
+        facultyService.save(entity);
 
-        assertEquals(dto, result);
+        verify(facultyRepository).save(entity);
     }
 
     @Test
-    void testGetAllFacultiesShouldReturnListOfFacultyDtos() {
-        List<Faculty> entities = List.of(entity);
-        List<FacultyDto> dtos = List.of(dto);
+    void findAll_shouldReturnListOfEntities() {
+        final List<Faculty> entities = List.of(entity);
 
         when(facultyRepository.findAll()).thenReturn(entities);
-        when(facultyMapper.toDtoList(entities)).thenReturn(dtos);
 
-        List<FacultyDto> result = facultyService.getAllFaculties();
+        final List<Faculty> result = facultyService.getAll();
 
-        assertEquals(dtos, result);
+        assertThat(result).isEqualTo(entities);
+        verify(facultyRepository).findAll();
     }
 
     @Test
-    void testGetFacultyByIdShouldReturnFacultyDtoIfFound() {
+    void findById_shouldReturnEntity_whenFacultyExists() {
         when(facultyRepository.findById(id)).thenReturn(Optional.of(entity));
-        when(facultyMapper.toDto(entity)).thenReturn(dto);
 
-        FacultyDto result = facultyService.getFacultyById(id);
+        final Optional<Faculty> result = facultyService.getById(id);
 
-        assertEquals(dto, result);
+        assertThat(result)
+            .isPresent()
+            .contains(entity);
+        verify(facultyRepository).findById(id);
     }
 
     @Test
-    void testGetFacultyByIdShouldReturnEmptyOptionalIfFacultyNotFound() {
+    void findById_shouldReturnEmptyOptional_whenFacultyNotFound() {
         when(facultyRepository.findById(id)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
-                                                           () -> facultyService.getFacultyById(id));
+        final Optional<Faculty> result = facultyService.getById(id);
 
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
+        assertThat(result).isEmpty();
     }
 
     @Test
-    void testUpdateFacultyShouldUpdateAndReturnDtoIfFound() {
-        when(facultyRepository.findById(id)).thenReturn(Optional.of(entity));
-        doAnswer(invocation -> null).when(facultyMapper).updateEntityFromDto(dto, entity);
-        when(facultyRepository.save(entity)).thenReturn(entity);
-        when(facultyMapper.toDto(entity)).thenReturn(dto);
-
-        FacultyDto result = facultyService.updateFaculty(id, dto);
-
-        assertEquals(dto, result);
-    }
-
-    @Test
-    void testUpdateFacultyShouldReturnEmptyOptionalIfNotFound() {
-        when(facultyRepository.findById(id)).thenReturn(Optional.empty());
-
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
-                                                           () -> facultyService.updateFaculty(id,
-                                                                                              dto));
-
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
-    }
-
-    @Test
-    void testDeleteFacultyShouldDeleteFacultyIfFound() {
-        final List<Major> majors = List.of(new Major(), new Major());
-
-        when(facultyRepository.findById(id)).thenReturn(Optional.of(entity));
-        when(majorRepository.findAllByFaculty(entity)).thenReturn(majors);
-
-        facultyService.deleteFaculty(id);
+    void delete_shouldDeleteEntity_whenFacultyExists() {
+        facultyService.delete(entity);
 
         verify(facultyRepository).delete(entity);
-        verify(majorRepository).deleteAll(majors);
-    }
-
-    @Test
-    void testDeleteFacultyShouldDeleteFacultyWhenNoMajorFound() {
-        when(facultyRepository.findById(id)).thenReturn(Optional.of(entity));
-        when(majorRepository.findAllByFaculty(entity)).thenReturn(Collections.emptyList());
-
-        facultyService.deleteFaculty(id);
-
-        verify(majorRepository).deleteAll(Collections.emptyList());
-        verify(facultyRepository).delete(entity);
-    }
-
-    @Test
-    void testDeleteFacultyShouldThrowIfNotFound() {
-        when(facultyRepository.findById(id)).thenReturn(Optional.empty());
-
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
-                                                  () -> facultyService.deleteFaculty(id));
-
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 }

@@ -1,7 +1,5 @@
 package org.unilab.uniplan.faculty;
 
-import static org.springframework.http.ResponseEntity.ok;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.unilab.uniplan.faculty.dto.FacultyDto;
 import org.unilab.uniplan.faculty.dto.FacultyRequestDto;
 import org.unilab.uniplan.faculty.dto.FacultyResponseDto;
 
@@ -28,46 +25,38 @@ import org.unilab.uniplan.faculty.dto.FacultyResponseDto;
 @Tag(name = "Faculties", description = "Manage faculties within universities, including name and location")
 public class FacultyController {
 
-    private final FacultyService facultyService;
-    private final FacultyMapper facultyMapper;
+    private final FacultyWebFacade facultyWebFacade;
 
     @PostMapping
     public ResponseEntity<FacultyResponseDto> createFaculty(
         @Valid @NotNull @RequestBody final FacultyRequestDto facultyRequestDto) {
-
-        final FacultyDto facultyDto = facultyService.createFaculty(facultyMapper.toInternalDto(
-            facultyRequestDto));
-
-        return new ResponseEntity<>(facultyMapper.toResponseDto(facultyDto),
-                                    HttpStatus.CREATED);
+        facultyWebFacade.createFaculty(
+            facultyRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
-    public List<FacultyResponseDto> getAllFaculties() {
-        return facultyMapper.toResponseDtoList(facultyService.getAllFaculties());
+    public ResponseEntity<List<FacultyResponseDto>> getAllFaculties() {
+        return ResponseEntity.ok(facultyWebFacade.getAllFaculties());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<FacultyResponseDto> getFacultyById(@NotNull @PathVariable final UUID id) {
-        final FacultyDto facultyDto = facultyService.getFacultyById(id);
 
-        return ok(facultyMapper.toResponseDto(facultyDto));
+        return ResponseEntity.ok(facultyWebFacade.getFacultyById(id));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<FacultyResponseDto> updateFaculty(
         @PathVariable final UUID id,
         @Valid @NotNull @RequestBody final FacultyRequestDto facultyRequestDto) {
-
-        final FacultyDto internalDto = facultyMapper.toInternalDto(facultyRequestDto);
-
-        return ok(facultyMapper.toResponseDto(facultyService.updateFaculty(id, internalDto)));
+        facultyWebFacade.updateFaculty(id, facultyRequestDto);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFaculty(@PathVariable final UUID id) {
-        facultyService.deleteFaculty(id);
-
+        facultyWebFacade.deleteFaculty(id);
         return ResponseEntity.noContent().build();
     }
 }

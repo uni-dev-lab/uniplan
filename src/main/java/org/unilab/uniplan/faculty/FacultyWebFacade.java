@@ -34,7 +34,6 @@ public class FacultyWebFacade {
         log.info("created faculty {} with ID: {}",
                  faculty.getFacultyName(),
                  faculty.getId());
-        facultyMapper.toResponseDto(faculty);
     }
 
     @Transactional(readOnly = true)
@@ -64,6 +63,5 @@ public class FacultyWebFacade {
         facultyMapper.updateEntity(request, faculty);
         facultyService.save(faculty);
         log.info("updated faculty with ID: {}", faculty.getId());
-        facultyMapper.toResponseDto(faculty);
     }
 }

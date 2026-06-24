@@ -22,29 +22,27 @@ public class UniversityWebFacade {
     private final UniversityService universityService;
 
     @Transactional
-    public UniversityResponseDto createUniversity(final UniversityRequestDto request) {
+    public void createUniversity(final UniversityRequestDto request) {
         final University university = universityMapper.toEntity(request);
-        final University savedUniversity = universityService.save(university);
+        universityService.save(university);
         log.info("created university {} with ID: {}",
-                 savedUniversity.getUniName(),
-                 savedUniversity.getId());
-        return universityMapper.toResponseDto(savedUniversity);
+                 university.getUniName(),
+                 university.getId());
     }
 
     @Transactional
-    public UniversityResponseDto updateUniversity(final UUID id,
-                                                  final UniversityRequestDto request) {
+    public void updateUniversity(final UUID id,
+                                 final UniversityRequestDto request) {
         final University university = getUniversityOrThrow(id);
 
         universityMapper.updateEntity(request, university);
-        final University savedUniversity = universityService.save(university);
-        log.info("updated university with ID: {}", savedUniversity.getId());
-        return universityMapper.toResponseDto(savedUniversity);
+        universityService.save(university);
+        log.info("updated university with ID: {}", university.getId());
     }
 
     @Transactional(readOnly = true)
     public List<UniversityResponseDto> getAllUniversities() {
-        return universityMapper.toResponseDtoList(universityService.findAll());
+        return universityMapper.toResponseDtoList(universityService.getAll());
     }
 
     @Transactional(readOnly = true)
@@ -61,7 +59,7 @@ public class UniversityWebFacade {
     }
 
     private University getUniversityOrThrow(final UUID id) {
-        return universityService.findById(id)
+        return universityService.getById(id)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                     UNIVERSITY_NOT_FOUND.getMessage(String.valueOf(id))));
     }

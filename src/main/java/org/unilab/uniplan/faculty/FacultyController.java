@@ -28,7 +28,7 @@ public class FacultyController {
     private final FacultyWebFacade facultyWebFacade;
 
     @PostMapping
-    public ResponseEntity<FacultyResponseDto> createFaculty(
+    public ResponseEntity<Void> createFaculty(
         @Valid @NotNull @RequestBody final FacultyRequestDto facultyRequestDto) {
         facultyWebFacade.createFaculty(
             facultyRequestDto);
@@ -47,7 +47,7 @@ public class FacultyController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<FacultyResponseDto> updateFaculty(
+    public ResponseEntity<Void> updateFaculty(
         @PathVariable final UUID id,
         @Valid @NotNull @RequestBody final FacultyRequestDto facultyRequestDto) {
         facultyWebFacade.updateFaculty(id, facultyRequestDto);

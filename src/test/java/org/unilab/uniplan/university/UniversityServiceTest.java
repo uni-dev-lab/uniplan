@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class UniversityServiceTest {
+
     @Mock
     private UniversityRepository universityRepository;
     @InjectMocks
@@ -59,7 +60,7 @@ class UniversityServiceTest {
         assertThat(result)
             .isPresent()
             .contains(entity);
-    verify(universityRepository).findById(id);
+        verify(universityRepository).findById(id);
     }
 
     @Test

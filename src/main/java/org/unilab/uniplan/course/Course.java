@@ -22,9 +22,9 @@ import org.unilab.uniplan.major.Major;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@SoftDelete(strategy = SoftDeleteType.DELETED,columnName = "is_deleted")
+@SoftDelete(strategy = SoftDeleteType.DELETED, columnName = "is_deleted")
 public class Course extends BaseEntity {
-    
+
     @ManyToOne
     @JoinColumn(name = "major_id", nullable = false)
     private Major major;

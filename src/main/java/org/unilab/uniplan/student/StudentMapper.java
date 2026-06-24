@@ -25,12 +25,7 @@ public interface StudentMapper {
     @Mapping(target = "id", ignore = true)
     StudentDto toInternalDto(StudentRequestDto student);
 
-    @Mapping(target = "name",         expression = "java(toFullName(dto.firstName(), dto.lastName()))")
-    @Mapping(target = "facultyNumber", source = "facultyNumber")
-    @Mapping(target = "majorName",     source = "majorName")
-    @Mapping(target = "courseType",    source = "courseType")
-    @Mapping(target = "courseSubtype", source = "courseSubType")
-    @Mapping(target = "courseYear",    source = "courseYear")
+    @Mapping(target = "name", expression = "java(toFullName(dto.firstName(), dto.lastName()))")
     StudentResponseDto toResponseDto(StudentCourseMajorDto dto);
 
     List<StudentResponseDto> toResponseDtoList(List<StudentCourseMajorDto> students);

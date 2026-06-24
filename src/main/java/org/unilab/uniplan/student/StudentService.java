@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.student.dto.StudentCourseMajorDto;
 import org.unilab.uniplan.student.dto.StudentDto;
+import org.unilab.uniplan.student.dto.StudentRequestDto;
 import org.unilab.uniplan.student.dto.StudentResponseDto;
 
 @Service
@@ -20,9 +21,13 @@ public class StudentService {
     private final StudentMapper studentMapper;
 
     @Transactional
-    public StudentDto createStudent(final StudentDto studentDTO) {
-        final Student student = studentMapper.toEntity(studentDTO);
-        return saveEntityAndConvertToDto(student);
+    public StudentResponseDto createStudent(StudentRequestDto request) {
+        StudentDto studentDto = studentMapper.toInternalDto(request);
+        Student saved = studentRepository.save(studentMapper.toEntity(studentDto));
+        return studentRepository.findStudentWithDetailsById(saved.getId())
+                                .map(studentMapper::toResponseDto)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                    STUDENT_NOT_FOUND.getMessage(String.valueOf(saved.getId()))));
     }
 
     public StudentDto findStudentById(final UUID id) {

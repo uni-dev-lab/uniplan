@@ -1,6 +1,7 @@
 package org.unilab.uniplan.student;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,4 +31,17 @@ public interface StudentRepository extends JpaRepository<Student, UUID> {
         @Param("facultyNumber") String facultyNumber,
         @Param("majorName") String majorName
     );
+
+    @Query("""
+    select new org.unilab.uniplan.student.dto.StudentCourseMajorDto(
+        s.id, s.firstName, s.lastName, s.facultyNumber,
+        c.id, c.courseType, c.courseSubtype, c.courseYear,
+        m.id, m.majorName
+    )
+    from Student s
+    join s.course c
+    join c.major m
+    where s.id = :id
+    """)
+    Optional<StudentCourseMajorDto> findStudentWithDetailsById(@Param("id") UUID id);
 }

@@ -20,7 +20,7 @@ public record StudentCourseMajorDto(
     @NotNull
     String courseType,
     @NotNull
-    String courseSubType,
+    String courseSubtype,
     @NotNull
     Byte courseYear,
     @NotNull

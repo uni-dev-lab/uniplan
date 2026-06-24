@@ -19,7 +19,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.student.dto.StudentCourseMajorDto;
 import org.unilab.uniplan.student.dto.StudentDto;
+import org.unilab.uniplan.student.dto.StudentRequestDto;
+import org.unilab.uniplan.student.dto.StudentResponseDto;
 
 @ExtendWith(MockitoExtension.class)
 class StudentServiceTest {
@@ -36,25 +39,41 @@ class StudentServiceTest {
     private UUID studentId;
     private StudentDto studentDTO;
     private Student student;
+    private StudentRequestDto studentRequestDto;
+    private StudentCourseMajorDto studentCourseMajorDto;
+    private StudentResponseDto studentResponseDto;
 
     @BeforeEach
-    void beforeAll() {
+    void beforeEach() {
         studentId = UUID.randomUUID();
         UUID courseId = UUID.randomUUID();
         studentDTO = new StudentDto(studentId, "Petar", "Petrov", "2301261005", courseId);
+        studentRequestDto = new StudentRequestDto("Petar", "Petrov", "2301261005", courseId);
+        studentCourseMajorDto = new StudentCourseMajorDto(
+            studentId, "Petar", "Petrov", "2301261005",
+            courseId, "bachelor", "regular", (byte) 2,
+            UUID.randomUUID(), "Informatics"
+        );
+        studentResponseDto = new StudentResponseDto(
+            studentId, "Petar Petrov", "2301261005", "Informatics", "bachelor", "regular", 2
+        );
         student = new Student();
+        student.setId(studentId);
     }
 
     @Test
-    void createStudentShouldReturnSaveAndReturnStudentDTO() {
+    void createStudentShouldSaveAndReturnStudentResponseDto() {
+        when(studentMapper.toInternalDto(studentRequestDto)).thenReturn(studentDTO);
         when(studentMapper.toEntity(studentDTO)).thenReturn(student);
         when(studentRepository.save(student)).thenReturn(student);
-        when(studentMapper.toDto(student)).thenReturn(studentDTO);
+        when(studentRepository.findStudentWithDetailsById(studentId)).thenReturn(Optional.of(studentCourseMajorDto));
+        when(studentMapper.toResponseDto(studentCourseMajorDto)).thenReturn(studentResponseDto);
 
-        StudentDto result = studentService.createStudent(studentDTO);
+        StudentResponseDto result = studentService.createStudent(studentRequestDto);
 
-        assertEquals(studentDTO, result);
+        assertEquals(studentResponseDto, result);
         verify(studentRepository).save(student);
+        verify(studentRepository).findStudentWithDetailsById(studentId);
     }
 
     @Test

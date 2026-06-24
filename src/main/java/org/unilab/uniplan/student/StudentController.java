@@ -34,16 +34,9 @@ public class StudentController {
 
     @PostMapping
     public ResponseEntity<StudentResponseDto> createStudent(@RequestBody @NotNull
-                                                            @Valid final StudentRequestDto studentRequestDTO) {
-        final StudentDto studentDTO = studentMapper.toInternalDto(studentRequestDTO);
-        studentService.createStudent(studentDTO);
-
-
-
-//        StudentResponseDto student = studentMapper.toResponseDto(new StudentCourseMajorDto());
-
+                                                            @Valid final StudentRequestDto request) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                             .body(null); //student
+                             .body(studentService.createStudent(request));
     }
 
     @GetMapping("/{id}")

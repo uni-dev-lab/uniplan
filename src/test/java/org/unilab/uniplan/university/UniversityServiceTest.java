@@ -66,7 +66,7 @@ class UniversityServiceTest {
     void findById_shouldReturnEmptyOptional_whenUniversityNotFound() {
         when(universityRepository.findById(id)).thenReturn(Optional.empty());
 
-        final var result = universityService.getById(id);
+        final Optional<University> result = universityService.getById(id);
 
         assertThat(result).isEmpty();
     }

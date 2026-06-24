@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -14,16 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-<<<<<<< feature/104-add-soft-delete-on-faculty
-import org.unilab.uniplan.exception.ResourceNotFoundException;
-import org.unilab.uniplan.faculty.dto.FacultyDto;
-import org.unilab.uniplan.major.Major;
-import org.unilab.uniplan.major.MajorRepository;
-=======
-import org.unilab.uniplan.faculty.Faculty;
-import org.unilab.uniplan.faculty.FacultyRepository;
-import org.unilab.uniplan.faculty.FacultyService;
->>>>>>> main
 
 @ExtendWith(MockitoExtension.class)
 class FacultyServiceTest {

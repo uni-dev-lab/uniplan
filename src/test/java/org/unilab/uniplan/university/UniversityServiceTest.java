@@ -16,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class UniversityServiceTest {
-
     @Mock
     private UniversityRepository universityRepository;
     @InjectMocks
@@ -31,40 +30,43 @@ class UniversityServiceTest {
     }
 
     @Test
-    void save_shouldSaveAndReturnEntity() {
+    void save_shouldSaveEntity() {
         when(universityRepository.save(entity)).thenReturn(entity);
 
-        final var result = universityService.save(entity);
+        universityService.save(entity);
 
-        assertThat(result).isEqualTo(entity);
         verify(universityRepository).save(entity);
     }
 
     @Test
     void findAll_shouldReturnListOfEntities() {
-        final var entities = List.of(entity);
+        final List<University> entities = List.of(entity);
 
         when(universityRepository.findAll()).thenReturn(entities);
 
-        final var result = universityService.findAll();
+        final List<University> result = universityService.getAll();
 
         assertThat(result).isEqualTo(entities);
+        verify(universityRepository).findAll();
     }
 
     @Test
     void findById_shouldReturnEntity_whenUniversityExists() {
         when(universityRepository.findById(id)).thenReturn(Optional.of(entity));
 
-        final var result = universityService.findById(id);
+        final Optional<University> result = universityService.getById(id);
 
-        assertThat(result).contains(entity);
+        assertThat(result)
+            .isPresent()
+            .contains(entity);
+    verify(universityRepository).findById(id);
     }
 
     @Test
     void findById_shouldReturnEmptyOptional_whenUniversityNotFound() {
         when(universityRepository.findById(id)).thenReturn(Optional.empty());
 
-        final var result = universityService.findById(id);
+        final Optional<University> result = universityService.getById(id);
 
         assertThat(result).isEmpty();
     }

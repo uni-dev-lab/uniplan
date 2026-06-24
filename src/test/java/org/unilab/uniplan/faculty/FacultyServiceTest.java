@@ -1,7 +1,6 @@
 package org.unilab.uniplan.faculty;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -14,72 +13,71 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.unilab.uniplan.faculty.Faculty;
+import org.unilab.uniplan.faculty.FacultyRepository;
+import org.unilab.uniplan.faculty.FacultyService;
 
 @ExtendWith(MockitoExtension.class)
 class FacultyServiceTest {
-
     @Mock
     private FacultyRepository facultyRepository;
     @InjectMocks
     private FacultyService facultyService;
     private UUID id;
-    private Faculty facultyEntity;
+    private Faculty entity;
 
     @BeforeEach
     void setUp() {
         id = UUID.randomUUID();
-        facultyEntity = new Faculty();
+        entity = new Faculty();
     }
 
     @Test
-    void save_shouldSaveAndReturnEntity() {
-        when(facultyRepository.save(facultyEntity)).thenReturn(facultyEntity);
+    void save_shouldSaveEntity() {
+        when(facultyRepository.save(entity)).thenReturn(entity);
 
-        final var result = facultyService.save(facultyEntity);
+        facultyService.save(entity);
 
-        assertEquals(facultyEntity, result);
-        verify(facultyRepository).save(facultyEntity);
+        verify(facultyRepository).save(entity);
     }
 
     @Test
     void findAll_shouldReturnListOfEntities() {
-        when(facultyRepository.findAll()).thenReturn(List.of(facultyEntity));
+        final List<Faculty> entities = List.of(entity);
 
-        List<Faculty> faculties = facultyService.getAll();
+        when(facultyRepository.findAll()).thenReturn(entities);
 
-        assertThat(faculties)
-            .hasSize(1)
-            .containsExactly(facultyEntity);
+        final List<Faculty> result = facultyService.getAll();
 
+        assertThat(result).isEqualTo(entities);
         verify(facultyRepository).findAll();
     }
 
     @Test
     void findById_shouldReturnEntity_whenFacultyExists() {
-        when(facultyRepository.findById(id)).thenReturn(Optional.of(facultyEntity));
+        when(facultyRepository.findById(id)).thenReturn(Optional.of(entity));
 
-        Optional<Faculty> faculty = facultyService.getById(id);
+        final Optional<Faculty> result = facultyService.getById(id);
 
-        assertThat(faculty)
+        assertThat(result)
             .isPresent()
-            .contains(facultyEntity);
-
+            .contains(entity);
         verify(facultyRepository).findById(id);
-    }
-
-    @Test
-    void delete_shouldDeleteEntity_whenFacultyExists(){
-        facultyService.delete(facultyEntity);
-        
-        verify(facultyRepository).delete(facultyEntity);
     }
 
     @Test
     void findById_shouldReturnEmptyOptional_whenFacultyNotFound() {
         when(facultyRepository.findById(id)).thenReturn(Optional.empty());
 
-        final var result = facultyService.getById(id);
+        final Optional<Faculty> result = facultyService.getById(id);
 
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void delete_shouldDeleteEntity_whenFacultyExists() {
+        facultyService.delete(entity);
+
+        verify(facultyRepository).delete(entity);
     }
 }

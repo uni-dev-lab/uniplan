@@ -28,10 +28,11 @@ public class FacultyController {
     private final FacultyWebFacade facultyWebFacade;
 
     @PostMapping
-    public ResponseEntity<FacultyResponseDto> createFaculty(
+    public ResponseEntity<Void> createFaculty(
         @Valid @NotNull @RequestBody final FacultyRequestDto facultyRequestDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(facultyWebFacade.createFaculty(
-            facultyRequestDto));
+        facultyWebFacade.createFaculty(
+            facultyRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
@@ -46,10 +47,11 @@ public class FacultyController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<FacultyResponseDto> updateFaculty(
+    public ResponseEntity<Void> updateFaculty(
         @PathVariable final UUID id,
         @Valid @NotNull @RequestBody final FacultyRequestDto facultyRequestDto) {
-        return ResponseEntity.ok(facultyWebFacade.updateFaculty(id, facultyRequestDto));
+        facultyWebFacade.updateFaculty(id, facultyRequestDto);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")

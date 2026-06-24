@@ -5,30 +5,30 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.unilab.uniplan.common.model.BaseService;
 
 @Service
 @RequiredArgsConstructor
-public class FacultyService {
+public class FacultyService implements BaseService<Faculty> {
 
     private final FacultyRepository facultyRepository;
 
-    @Transactional
-    public Faculty save(final Faculty faculty) {
-        return facultyRepository.save(faculty);
+    @Override
+    public void save(final Faculty faculty) {
+        facultyRepository.save(faculty);
     }
 
-    @Transactional(readOnly = true)
+    @Override
     public List<Faculty> getAll() {
-       return facultyRepository.findAll();
+        return facultyRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
+    @Override
     public Optional<Faculty> getById(final UUID id) {
-      return facultyRepository.findById(id);
+        return facultyRepository.findById(id);
     }
 
-    @Transactional
+    @Override
     public void delete(final Faculty faculty) {
         facultyRepository.delete(faculty);
     }

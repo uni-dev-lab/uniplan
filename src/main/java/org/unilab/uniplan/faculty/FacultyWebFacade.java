@@ -1,5 +1,6 @@
 package org.unilab.uniplan.faculty;
 
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -27,13 +28,12 @@ public class FacultyWebFacade {
     }
 
     @Transactional
-    public FacultyResponseDto createFaculty(final FacultyRequestDto request) {
+    public void createFaculty(final FacultyRequestDto request) {
         final Faculty faculty = facultyMapper.toEntity(request);
-        final Faculty savedFaculty = facultyService.save(faculty);
+        facultyService.save(faculty);
         log.info("created faculty {} with ID: {}",
-                 savedFaculty.getFacultyName(),
-                 savedFaculty.getId());
-        return facultyMapper.toResponseDto(savedFaculty);
+                 faculty.getFacultyName(),
+                 faculty.getId());
     }
 
     @Transactional(readOnly = true)
@@ -57,12 +57,11 @@ public class FacultyWebFacade {
 
 
     @Transactional
-    public FacultyResponseDto updateFaculty(final UUID id,
-                                            final FacultyRequestDto request) {
+    public void updateFaculty(final UUID id,
+                              final FacultyRequestDto request) {
         final Faculty faculty = getFacultyOrThrow(id);
         facultyMapper.updateEntity(request, faculty);
-        final Faculty savedFaculty = facultyService.save(faculty);
-        log.info("updated faculty with ID: {}", savedFaculty.getId());
-        return facultyMapper.toResponseDto(savedFaculty);
+        facultyService.save(faculty);
+        log.info("updated faculty with ID: {}", faculty.getId());
     }
 }

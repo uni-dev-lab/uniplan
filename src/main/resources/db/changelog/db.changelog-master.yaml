@@ -1,23 +1,23 @@
 databaseChangeLog:
   - include:
-      file: db/changelog/2025/08/0001-baseline-init-changelog.yaml
+      file: db/changelog/20250801144000-baseline-init-changelog.yaml
   - include:
-      file: db/changelog/2025/08/0002-seed-university-data-from-csv.yaml
+      file: db/changelog/20250801144100-seed-university-data-from-csv.yaml
   - include:
-      file: db/changelog/2025/08/0003-alter-major-for-soft-delete.yaml
+      file: db/changelog/20250801144200-alter-major-for-soft-delete.yaml
   - include:
-      file: db/changelog/2025/08/0004-alter-faculty-for-soft-delete.yaml
+      file: db/changelog/20260626143800-alter-faculty-for-soft-delete.yaml
   - include:
-      file: db/changelog/2025/08/0005-alter-faculty-type-column.yaml
+      file: db/changelog/20260626143900-alter-faculty-type-column.yaml
   - include:
-      file: db/changelog/2025/08/0006-alter-major-type-column.yaml
+      file: db/changelog/20260626144000-alter-major-type-column.yaml
   - include:
-      file: db/changelog/2025/08/0007-add-column-is-deleted-to-faculty.yaml
+      file: db/changelog/20260626144100-add-column-is-deleted-to-faculty.yaml
   - include:
-      file: db/changelog/2025/08/0008-add-column-is-deleted-to-major.yaml
+      file: db/changelog/20260626144200-add-column-is-deleted-to-major.yaml
   - include:
-      file: db/changelog/2025/08/0009-drop-column-deleted-at-faculty.yaml
+      file: db/changelog/20260626144300-drop-column-deleted-at-faculty.yaml
   - include:
-      file: db/changelog/2025/08/0010-drop-column-deleted-at-major.yaml
+      file: db/changelog/20260626144400-drop-column-deleted-at-major.yaml
   - include:
-      file: db/changelog/2025/08/0011-add-column-is-deleted-to-course.yaml
+      file: db/changelog/20260626144500-add-column-is-deleted-to-course.yaml

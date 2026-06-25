@@ -10,11 +10,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SoftDeleteType;
 import org.unilab.uniplan.common.model.Person;
 import org.unilab.uniplan.course.Course;
 
 @Entity
 @Table(name = "student")
+@SoftDelete(strategy = SoftDeleteType.DELETED, columnName = "is_deleted")
 @Getter
 @Setter
 @NoArgsConstructor

@@ -22,9 +22,9 @@ public class CategoryWebFacade {
     @Transactional
     public CategoryResponseDto createCategory(final CategoryRequestDto request) {
         final Category category = categoryMapper.toEntity(request);
-        final Category savedCategory = categoryService.save(category);
+        categoryService.save(category);
 
-        return categoryMapper.toResponseDto(savedCategory);
+        return categoryMapper.toResponseDto(category);
     }
 
     @Transactional
@@ -33,8 +33,8 @@ public class CategoryWebFacade {
         final Category category = getCategoryOrThrow(id);
 
         categoryMapper.updateEntityFromDto(request, category);
-        final Category savedCategory = categoryService.save(category);
-        return categoryMapper.toResponseDto(savedCategory);
+        categoryService.save(category);
+        return categoryMapper.toResponseDto(category);
     }
 
     @Transactional(readOnly = true)
@@ -46,15 +46,15 @@ public class CategoryWebFacade {
     @Transactional
     public void deleteCategory(final UUID id) {
         final Category category = getCategoryOrThrow(id);
-        categoryService.deleteCategory(category);
+        categoryService.delete(category);
     }
 
     @Transactional
     public List<CategoryResponseDto> getAllCategories() {
-        return categoryMapper.toResponseDtoList(categoryService.getAllCategories());
+        return categoryMapper.toResponseDtoList(categoryService.getAll());
     }
     private Category getCategoryOrThrow(final UUID id) {
-        return categoryService.getCategoryById(id)
+        return categoryService.getById(id)
             .orElseThrow(() -> new ResourceNotFoundException(
                 CATEGORY_NOT_FOUND.getMessage(String.valueOf(id)))
             );

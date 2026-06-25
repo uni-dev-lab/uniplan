@@ -34,10 +34,7 @@ class CategoryServiceTest {
 
     @Test
     void testCreateCategoryShouldSaveCategory() {
-        when(categoryRepository.save(entity)).thenReturn(entity);
-
-        final Category result = categoryService.save(entity);
-        assertEquals(entity, result);
+        categoryService.save(entity);
         verify(categoryRepository).save(entity);
     }
 
@@ -47,7 +44,7 @@ class CategoryServiceTest {
 
         when(categoryRepository.findAll()).thenReturn(entities);
 
-        final List<Category> result = categoryService.getAllCategories();
+        final List<Category> result = categoryService.getAll();
 
         assertEquals(entities, result);
         verify(categoryRepository).findAll();
@@ -57,7 +54,7 @@ class CategoryServiceTest {
     void testGetCategoryByIdShouldReturnCategoryOptional() {
         when(categoryRepository.findById(id)).thenReturn(Optional.of(entity));
 
-        final Optional<Category> result = categoryService.getCategoryById(id);
+        final Optional<Category> result = categoryService.getById(id);
 
         assertEquals(Optional.of(entity), result);
         verify(categoryRepository).findById(id);
@@ -67,7 +64,7 @@ class CategoryServiceTest {
     void testGetCategoryByIdShouldReturnEmptyOptionalIfCategoryNotFound() {
         when(categoryRepository.findById(id)).thenReturn(Optional.empty());
 
-        final Optional<Category> result = categoryService.getCategoryById(id);
+        final Optional<Category> result = categoryService.getById(id);
 
         assertEquals(Optional.empty(), result);
         verify(categoryRepository).findById(id);
@@ -75,7 +72,7 @@ class CategoryServiceTest {
 
     @Test
     void testDeleteCategoryShouldDeleteCategoryIfFound() {
-        categoryService.deleteCategory(entity);
+        categoryService.delete(entity);
 
         verify(categoryRepository).delete(entity);
     }

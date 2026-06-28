@@ -1,7 +1,9 @@
 package org.unilab.uniplan.major;
 
 import org.unilab.uniplan.faculty.Faculty;
-import org.unilab.uniplan.faculty.FacultyRepository;
+import org.unilab.uniplan.faculty.FacultyMapper;
+import org.unilab.uniplan.faculty.FacultyService;
+import org.unilab.uniplan.faculty.dto.FacultyDto;
 import org.unilab.uniplan.major.dto.MajorCoursesDto;
 
 import static org.unilab.uniplan.utils.ErrorConstants.MAJOR_NOT_FOUND;
@@ -20,7 +22,8 @@ public class MajorService {
 
     private final MajorRepository majorRepository;
     private final MajorMapper majorMapper;
-    private final FacultyRepository facultyRepository;
+    private final FacultyService facultyService;
+    private final FacultyMapper facultyMapper;
 
     @Transactional
     public MajorDto createMajor(final MajorDto majorDTO) {
@@ -80,8 +83,8 @@ public class MajorService {
 
     private MajorDto updateEntityAndConvertToDto(final MajorDto dto,
                                                  final Major entity) {
-        Faculty faculty = facultyRepository.findById(dto.facultyId())
-                                           .orElseThrow(() -> new ResourceNotFoundException("Faculty not found"));
+        FacultyDto facultyDto = facultyService.getFacultyById(dto.facultyId());
+        Faculty faculty = facultyMapper.toEntity(facultyDto);
         entity.setFaculty(faculty);
         entity.setMajorName(dto.majorName());
         return saveEntityAndConvertToDto(entity);

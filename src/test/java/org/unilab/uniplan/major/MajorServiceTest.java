@@ -20,7 +20,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.faculty.Faculty;
-import org.unilab.uniplan.faculty.FacultyRepository;
+import org.unilab.uniplan.faculty.FacultyMapper;
+import org.unilab.uniplan.faculty.FacultyService;
+import org.unilab.uniplan.faculty.dto.FacultyDto;
 import org.unilab.uniplan.major.dto.MajorCoursesDto;
 import org.unilab.uniplan.major.dto.MajorDto;
 
@@ -31,18 +33,22 @@ class MajorServiceTest {
     private MajorService majorService;
 
     @Mock
+    private FacultyService facultyService;
+
+    @Mock
     private MajorRepository majorRepository;
 
     @Mock
-    FacultyRepository facultyRepository;
+    private MajorMapper majorMapper;
 
     @Mock
-    private MajorMapper majorMapper;
+    private FacultyMapper facultyMapper;
 
     private MajorCoursesDto majorCoursesDto;
     private MajorDto majorDTO;
     private Major major;
     private Faculty faculty;
+    private FacultyDto facultyDTO;
     private UUID majorId;
     private UUID facultyId;
 
@@ -52,6 +58,7 @@ class MajorServiceTest {
         facultyId = UUID.randomUUID();
         majorCoursesDto = new MajorCoursesDto(majorId, facultyId, "Informatics", List.of());
         majorDTO = new MajorDto(majorId, facultyId, "Informatics");
+        facultyDTO = new FacultyDto(facultyId, UUID.randomUUID(), "Engineering", "Main Campus");
         major = new Major();
         faculty = new Faculty();
         faculty.setId(facultyId);
@@ -173,7 +180,8 @@ class MajorServiceTest {
     @Test
     void updateMajorShouldReturnUpdatedMajorDTOIfFound() {
         when(majorRepository.findById(majorId)).thenReturn(Optional.of(major));
-        when(facultyRepository.findById(majorDTO.facultyId())).thenReturn(Optional.of(faculty));
+        when(facultyService.getFacultyById(majorDTO.facultyId())).thenReturn(facultyDTO);
+        when(facultyMapper.toEntity(facultyDTO)).thenReturn(faculty);
         when(majorRepository.save(major)).thenReturn(major);
         when(majorMapper.toDto(major)).thenReturn(majorDTO);
 
@@ -186,7 +194,7 @@ class MajorServiceTest {
     @Test
     void updateMajorShouldThrowResourceNotFoundExceptionIfFacultyNotFound() {
         when(majorRepository.findById(majorId)).thenReturn(Optional.of(major));
-        when(facultyRepository.findById(majorDTO.facultyId())).thenReturn(Optional.empty());
+        when(facultyService.getFacultyById(majorDTO.facultyId())).thenThrow(ResourceNotFoundException.class);
 
         assertThrows(ResourceNotFoundException.class, () -> majorService.updateMajor(majorId, majorDTO));
 

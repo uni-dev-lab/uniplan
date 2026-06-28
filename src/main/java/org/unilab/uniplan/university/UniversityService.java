@@ -1,70 +1,35 @@
 package org.unilab.uniplan.university;
 
-import static org.unilab.uniplan.utils.ErrorConstants.UNIVERSITY_NOT_FOUND;
-
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
-import org.unilab.uniplan.university.dto.UniversityDto;
+import org.unilab.uniplan.common.model.BaseService;
 
 @Service
 @RequiredArgsConstructor
-public class UniversityService {
-
+public class UniversityService implements BaseService<University> {
 
     private final UniversityRepository universityRepository;
-    private final UniversityMapper universityMapper;
 
-    @Transactional
-    public UniversityDto createUniversity(final UniversityDto universityDto) {
-        final University university = universityMapper.toEntity(universityDto);
-
-        return saveEntityAndConvertToDto(university);
+    @Override
+    public List<University> getAll() {
+        return universityRepository.findAll();
     }
 
-    public List<UniversityDto> getAllUniversities() {
-        final List<University> universities = universityRepository.findAll();
-
-        return universityMapper.toDtoList(universities);
+    @Override
+    public Optional<University> getById(final UUID id) {
+        return universityRepository.findById(id);
     }
 
-    public UniversityDto getUniversityById(final UUID id) {
-        return universityRepository.findById(id)
-                                   .map(universityMapper::toDto)
-                                   .orElseThrow(() -> new ResourceNotFoundException(
-                                       UNIVERSITY_NOT_FOUND.getMessage(String.valueOf(id))));
-    }
-
-    @Transactional
-    public UniversityDto updateUniversity(final UUID id,
-                                          final UniversityDto universityDto) {
-        return universityRepository.findById(id)
-                                   .map(existingUniversity -> updateEntityAndConvertToDto(
-                                       universityDto,
-                                       existingUniversity))
-                                   .orElseThrow(() -> new ResourceNotFoundException(
-                                       UNIVERSITY_NOT_FOUND.getMessage(String.valueOf(id))));
-    }
-
-    @Transactional
-    public void deleteUniversity(final UUID id) {
-        final University university = universityRepository.findById(id)
-                                                          .orElseThrow(() -> new ResourceNotFoundException(
-                                                              UNIVERSITY_NOT_FOUND.getMessage(String.valueOf(id))));
+    @Override
+    public void delete(final University university) {
         universityRepository.delete(university);
     }
 
-    private UniversityDto updateEntityAndConvertToDto(final UniversityDto dto,
-                                                      final University entity) {
-        universityMapper.updateEntityFromDto(dto, entity);
-        return saveEntityAndConvertToDto(entity);
-    }
-
-    private UniversityDto saveEntityAndConvertToDto(final University entity) {
-        final University savedEntity = universityRepository.save(entity);
-        return universityMapper.toDto(savedEntity);
+    @Override
+    public void save(final University university) {
+        universityRepository.save(university);
     }
 }

@@ -14,17 +14,21 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.unilab.uniplan.common.model.BaseEntity;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import org.unilab.uniplan.common.model.SoftDeletableEntity;
 import org.unilab.uniplan.course.Course;
 import org.unilab.uniplan.faculty.Faculty;
 
 @Entity
 @Table(name = "major")
+@SQLRestriction("deleted_at IS NULL")
+@SQLDelete(sql = "UPDATE major SET deleted_at = NOW() WHERE id = ?")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Major extends BaseEntity {
+public class Major extends SoftDeletableEntity {
     
     @ManyToOne
     @JoinColumn(name = "faculty_id", nullable = false)

@@ -1,6 +1,7 @@
 package org.unilab.uniplan.department;
 
 import static org.unilab.uniplan.utils.ErrorConstants.DEPARTMENT_NOT_FOUND;
+import static org.unilab.uniplan.utils.ErrorConstants.FACULTY_NOT_FOUND;
 
 import java.util.List;
 import java.util.UUID;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.unilab.uniplan.department.dto.DepartmentDto;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.faculty.Faculty;
+import org.unilab.uniplan.faculty.FacultyRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +19,7 @@ public class DepartmentService {
 
     private final DepartmentRepository departmentRepository;
     private final DepartmentMapper departmentMapper;
+    private final FacultyRepository facultyRepository;
 
     @Transactional
     public DepartmentDto createDepartment(final DepartmentDto departmentDto) {
@@ -39,11 +43,15 @@ public class DepartmentService {
 
     @Transactional
     public DepartmentDto updateDepartment(final UUID id,
-                                                    final DepartmentDto departmentDto) {
+                                          final DepartmentDto departmentDto) {
         return departmentRepository.findById(id)
-                                   .map(existingDepartment -> updateEntityAndConvertToDto(
-                                       departmentDto,
-                                       existingDepartment))
+                                   .map(existingDepartment -> {
+                                       final Faculty faculty = facultyRepository.findById(departmentDto.facultyId())
+                                                                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                                                    FACULTY_NOT_FOUND.getMessage(String.valueOf(departmentDto.facultyId()))));
+                                       existingDepartment.setFaculty(faculty);
+                                       return updateEntityAndConvertToDto(departmentDto, existingDepartment);
+                                   })
                                    .orElseThrow(() -> new ResourceNotFoundException(
                                        DEPARTMENT_NOT_FOUND.getMessage(String.valueOf(id))));
     }

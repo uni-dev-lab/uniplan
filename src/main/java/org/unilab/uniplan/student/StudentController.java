@@ -5,7 +5,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.unilab.uniplan.student.dto.StudentCourseMajorDto;
-import org.unilab.uniplan.student.dto.StudentDto;
 import org.unilab.uniplan.student.dto.StudentRequestDto;
 import org.unilab.uniplan.student.dto.StudentResponseDto;
 
@@ -29,54 +25,38 @@ import org.unilab.uniplan.student.dto.StudentResponseDto;
 @Tag(name = "Students", description = "Manage students, including faculty numbers and enrollment in course")
 public class StudentController {
 
-    private final StudentService studentService;
-    private final StudentMapper studentMapper;
+    private final StudentWebFacade studentWebFacade;
 
     @PostMapping
-    public ResponseEntity<StudentResponseDto> createStudent(@RequestBody @NotNull
-                                                            @Valid final StudentRequestDto studentRequestDTO) {
-        final StudentDto studentDTO = studentMapper.toInternalDto(studentRequestDTO);
-        studentService.createStudent(studentDTO);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                             .body(studentMapper.toResponseDto(studentDTO));
+    public ResponseEntity<Void> createStudent(@RequestBody @NotNull @Valid final StudentRequestDto studentRequestDTO) {
+        studentWebFacade.createStudent(studentRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StudentResponseDto> getStudent(@PathVariable
+    public ResponseEntity<StudentResponseDto> getStudentById(@PathVariable
                                                          @NotNull final UUID id) {
-        final StudentResponseDto studentResponseDTO = studentMapper.toResponseDto(studentService.findStudentById(
-                                                                                                    id));
-
-        return ResponseEntity.ok(studentResponseDTO);
+        return ResponseEntity.ok(studentWebFacade.getStudentById(id));
     }
 
     @GetMapping
-    public List<StudentResponseDto> getAllStudents() {
-        return studentMapper.toResponseDtoList(studentService.findAll());
-    }
-
-    @GetMapping("/student-course-major/getStudentCourseMajorInfo")
-    public List<StudentCourseMajorDto> getStudentCourseMajorInfo(@RequestParam(required = false) @Size(max = 100) final String firstName,
-                                                                 @RequestParam(required = false) @Size(max = 100) final String lastName,
-                                                                 @RequestParam(required = false) final String facultyNumber,
-                                                                 @RequestParam(required = false) @Size(max = 200) final String majorName){
-        return studentService.findStudentCourseMajorInfo(firstName, lastName, facultyNumber, majorName);
+    public ResponseEntity<List<StudentResponseDto>> getAllStudents() {
+        return ResponseEntity.ok(studentWebFacade.getAllStudents());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StudentResponseDto> updateStudent(@PathVariable
+    public ResponseEntity<Void> updateStudent(@PathVariable
                                                             @NotNull final UUID id,
                                                             @RequestBody
                                                             @NotNull @Valid final StudentRequestDto studentRequestDTO) {
-        final StudentDto studentDTO = studentMapper.toInternalDto(studentRequestDTO);
-        studentService.updateStudent(id, studentDTO);
-        return ResponseEntity.ok(studentMapper.toResponseDto(studentDTO));
+        studentWebFacade.updateStudent(id, studentRequestDTO);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStudent(@PathVariable
                                               @NotNull final UUID id) {
-        studentService.deleteStudent(id);
+        studentWebFacade.deleteStudent(id);
         return ResponseEntity.noContent().build();
     }
 }

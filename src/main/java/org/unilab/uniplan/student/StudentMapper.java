@@ -22,9 +22,6 @@ public interface StudentMapper {
     @Mapping(source = "courseId", target = "course.id")
     void updateEntity(StudentRequestDto requestDto, @MappingTarget Student student);
 
-    @Mapping(target = "id", ignore = true)
-    StudentDto toInternalDto(StudentRequestDto student);
-
     @Mapping(source = "course.id", target = "courseId")
     StudentResponseDto toResponseDto(Student student);
 

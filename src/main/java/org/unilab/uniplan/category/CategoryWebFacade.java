@@ -46,7 +46,7 @@ public class CategoryWebFacade {
         categoryService.delete(category);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<CategoryResponseDto> getAllCategories() {
         return categoryMapper.toResponseDtoList(categoryService.getAll());
     }

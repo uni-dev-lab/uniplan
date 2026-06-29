@@ -49,9 +49,8 @@ public class StudentController {
                                                             @NotNull final UUID id,
                                                             @RequestBody
                                                             @NotNull @Valid final StudentRequestDto studentRequestDTO) {
-        final StudentDto studentDTO = studentMapper.toInternalDto(studentRequestDTO);
-        studentService.updateStudent(id, studentDTO);
-        return ResponseEntity.ok(studentMapper.toResponseDto(studentDTO));
+        studentWebFacade.updateStudent(id, studentRequestDTO);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")

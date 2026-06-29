@@ -23,7 +23,7 @@ public class RoomCategoryValidator {
         validateRoomExists(requestDto.roomId());
     }
 
-    public void validateForUpdate(final UUID id, final RoomCategoryRequestDto requestDto) {
+    public void validateForUpdate(final RoomCategoryId id, final RoomCategoryRequestDto requestDto) {
         validateCategoryExists(requestDto.categoryId());
         validateRoomExists(requestDto.roomId());
     }

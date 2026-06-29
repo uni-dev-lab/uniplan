@@ -49,28 +49,22 @@ public class CategoryWebFacadeTest {
     @Test
     void testCreateCategoryShouldSaveAndReturnCategory() {
         when(categoryMapper.toEntity(requestDto)).thenReturn(category);
-        when(categoryMapper.toResponseDto(category)).thenReturn(responseDto);
 
-        final CategoryResponseDto result = categoryWebFacade.createCategory(requestDto);
+        categoryWebFacade.createCategory(requestDto);
 
-        assertEquals(responseDto, result);
         verify(categoryMapper).toEntity(requestDto);
-        verify(categoryMapper).toResponseDto(category);
         verify(categoryService).save(category);
     }
 
     @Test
-    void testUpdateCategoryShouldSaveAndReturnResponseDto() {
+    void testUpdateCategoryShouldUpdateAndSaveCategory() {
         when(categoryService.getById(id)).thenReturn(Optional.of(category));
-        when(categoryMapper.toResponseDto(category)).thenReturn(responseDto);
 
-        final  CategoryResponseDto result = categoryWebFacade.updateCategory(id, requestDto);
+        categoryWebFacade.updateCategory(id, requestDto);
 
-        assertEquals(responseDto, result);
-        verify(categoryMapper).toResponseDto(category);
-        verify(categoryService).save(category);
-        verify(categoryMapper).updateEntityFromDto(requestDto, category);
         verify(categoryService).getById(id);
+        verify(categoryMapper).updateEntityFromDto(requestDto, category);
+        verify(categoryService).save(category);
     }
 
     @Test

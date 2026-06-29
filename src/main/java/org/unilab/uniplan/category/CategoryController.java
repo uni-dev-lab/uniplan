@@ -30,8 +30,9 @@ public class CategoryController {
     private final CategoryWebFacade categoryWebFacade;
 
     @PostMapping
-    public ResponseEntity<CategoryResponseDto> createCategory(@Valid @NotNull @RequestBody final CategoryRequestDto categoryRequestDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(categoryWebFacade.createCategory(categoryRequestDto));
+    public ResponseEntity<Void> createCategory(@Valid @NotNull @RequestBody final CategoryRequestDto categoryRequestDto) {
+        categoryWebFacade.createCategory(categoryRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
@@ -45,10 +46,11 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryResponseDto> updateCategory(
+    public ResponseEntity<Void> updateCategory(
         @PathVariable final UUID id,
         @Valid @NotNull @RequestBody final CategoryRequestDto categoryRequestDto) {
-        return ResponseEntity.ok(categoryWebFacade.updateCategory(id, categoryRequestDto));
+        categoryWebFacade.updateCategory(id, categoryRequestDto);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")

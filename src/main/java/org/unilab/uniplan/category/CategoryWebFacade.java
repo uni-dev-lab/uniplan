@@ -20,21 +20,18 @@ public class CategoryWebFacade {
     private final CategoryMapper categoryMapper;
 
     @Transactional
-    public CategoryResponseDto createCategory(final CategoryRequestDto request) {
+    public void createCategory(final CategoryRequestDto request) {
         final Category category = categoryMapper.toEntity(request);
         categoryService.save(category);
-
-        return categoryMapper.toResponseDto(category);
     }
 
     @Transactional
-    public CategoryResponseDto updateCategory(final UUID id,
+    public void updateCategory(final UUID id,
                                                   final CategoryRequestDto request) {
         final Category category = getCategoryOrThrow(id);
 
         categoryMapper.updateEntityFromDto(request, category);
         categoryService.save(category);
-        return categoryMapper.toResponseDto(category);
     }
 
     @Transactional(readOnly = true)

@@ -99,6 +99,7 @@ jobs:
           # spendable from any future workflow/job that omits the environment gate.
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           claude_args: "--model claude-sonnet-4-6"
+          model: claude-sonnet-4-6
           prompt: |
             You are orchestrating a code review of PR #${{ inputs.pr_number }} in ${{ github.repository }}.
 

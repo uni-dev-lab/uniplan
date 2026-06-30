@@ -7,3 +7,12 @@ databaseChangeLog:
         - dropColumn:
             tableName: major
             columnName: deleted_at
+      rollback:
+        - addColumn:
+            tableName: major
+            columns:
+              - column:
+                  name: deleted_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: true

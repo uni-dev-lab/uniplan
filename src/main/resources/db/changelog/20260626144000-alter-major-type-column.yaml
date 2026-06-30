@@ -8,3 +8,8 @@ databaseChangeLog:
             tableName: major
             columnName: deleted_at
             newDataType: TIMESTAMP WITHOUT TIME ZONE
+      rollback:
+        - modifyDataType:
+            tableName: major
+            columnName: deleted_at
+            newDataType: TIMESTAMP WITH TIME ZONE

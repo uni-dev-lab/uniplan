@@ -7,3 +7,12 @@ databaseChangeLog:
         - dropColumn:
             tableName: faculty
             columnName: deleted_at
+      rollback:
+        - addColumn:
+            tableName: faculty
+            columns:
+              - column:
+                  name: deleted_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: true

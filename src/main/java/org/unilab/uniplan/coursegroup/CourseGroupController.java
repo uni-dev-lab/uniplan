@@ -39,7 +39,7 @@ public class CourseGroupController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CourseGroupResponseDto> getCourseGroup(@PathVariable @NotNull final UUID id) {
+    public ResponseEntity<CourseGroupResponseDto> getCourseGroup(@PathVariable final UUID id) {
         return ResponseEntity.ok(courseGroupMapper.toResponseDto(courseGroupService.findCourseGroupById(
             id)));
     }
@@ -50,7 +50,7 @@ public class CourseGroupController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CourseGroupResponseDto> updateCourseGroup(@PathVariable @NotNull final UUID id,
+    public ResponseEntity<CourseGroupResponseDto> updateCourseGroup(@PathVariable final UUID id,
                                                                     @RequestBody @NotNull @Valid final CourseGroupRequestDto courseGroupRequestDTO) {
         final CourseGroupDto courseGroupDTO = courseGroupMapper.toInnerDto(courseGroupRequestDTO);
         return ResponseEntity.ok(courseGroupMapper.toResponseDto(courseGroupService.updateCourseGroup(
@@ -59,7 +59,7 @@ public class CourseGroupController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCourseGroup(@PathVariable @NotNull UUID id) {
+    public ResponseEntity<Void> deleteCourseGroup(@PathVariable UUID id) {
         courseGroupService.deleteCourseGroup(id);
         return ResponseEntity.noContent().build();
     }

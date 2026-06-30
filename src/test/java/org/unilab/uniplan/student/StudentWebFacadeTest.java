@@ -38,6 +38,7 @@ class StudentWebFacadeTest {
 
     private UUID studentId;
     private UUID courseId;
+    private UUID majorId;
     private Student student;
     private StudentRequestDto requestDto;
     private StudentResponseDto responseDto;
@@ -46,9 +47,23 @@ class StudentWebFacadeTest {
     void setUp() {
         studentId = UUID.randomUUID();
         courseId = UUID.randomUUID();
+        majorId = UUID.randomUUID();
         student = new Student();
-        requestDto = new StudentRequestDto("Petar", "Petrov", "2301261005", courseId);
-        responseDto = new StudentResponseDto(studentId, "Petar", "Petrov", "2301261005", courseId);
+        requestDto = new StudentRequestDto(
+            "Petar",
+            "Petrov",
+            "2301261005",
+            courseId);
+        responseDto = new StudentResponseDto(
+            studentId,
+            "Petar Petrov",
+            "2301261005",
+            majorId,
+            "Software Engineering",
+            "FULL_TIME",
+            "редовно",
+            (byte) 2
+        );
     }
 
     @Test

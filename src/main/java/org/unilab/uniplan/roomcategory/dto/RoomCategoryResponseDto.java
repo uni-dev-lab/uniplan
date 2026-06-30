@@ -5,10 +5,10 @@ import java.util.UUID;
 
 public record RoomCategoryResponseDto(
 
-    @NotNull
+    @NotNull(message = "Room ID cannot be null")
     UUID roomId,
 
-    @NotNull
+    @NotNull(message = "Category ID cannot be null")
     UUID categoryId
 ) {
 

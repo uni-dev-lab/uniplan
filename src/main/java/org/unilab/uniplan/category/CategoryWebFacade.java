@@ -26,8 +26,7 @@ public class CategoryWebFacade {
     }
 
     @Transactional
-    public void updateCategory(final UUID id,
-                                                  final CategoryRequestDto request) {
+    public void updateCategory(final UUID id, final CategoryRequestDto request) {
         final Category category = getCategoryOrThrow(id);
 
         categoryMapper.updateEntityFromDto(request, category);

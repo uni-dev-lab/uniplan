@@ -41,7 +41,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryResponseDto> getCategoryById(@NotNull @PathVariable final UUID id) {
+    public ResponseEntity<CategoryResponseDto> getCategoryById(@PathVariable final UUID id) {
         return ResponseEntity.ok(categoryWebFacade.getCategoryById(id));
     }
 

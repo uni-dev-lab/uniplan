@@ -34,8 +34,7 @@ public class StudentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StudentResponseDto> getStudentById(@PathVariable
-                                                         @NotNull final UUID id) {
+    public ResponseEntity<StudentResponseDto> getStudentById(@PathVariable final UUID id) {
         return ResponseEntity.ok(studentWebFacade.getStudentById(id));
     }
 
@@ -45,8 +44,7 @@ public class StudentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateStudent(@PathVariable
-                                                            @NotNull final UUID id,
+    public ResponseEntity<Void> updateStudent(@PathVariable final UUID id,
                                                             @RequestBody
                                                             @NotNull @Valid final StudentRequestDto studentRequestDTO) {
         studentWebFacade.updateStudent(id, studentRequestDTO);
@@ -54,8 +52,7 @@ public class StudentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStudent(@PathVariable
-                                              @NotNull final UUID id) {
+    public ResponseEntity<Void> deleteStudent(@PathVariable final UUID id) {
         studentWebFacade.deleteStudent(id);
         return ResponseEntity.noContent().build();
     }

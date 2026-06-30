@@ -40,6 +40,10 @@ public class CourseService {
                                .stream().map(courseMapper::toDto).toList();
     }
 
+    public Course getReference(UUID id){
+        return courseRepository.getReferenceById(id);
+    }
+
     @Transactional
     public CourseDto updateCourse(final UUID id, final CourseDto courseDTO) {
         return courseRepository.findById(id).map(

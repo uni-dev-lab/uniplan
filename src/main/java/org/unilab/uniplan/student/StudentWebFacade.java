@@ -4,6 +4,8 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.unilab.uniplan.course.Course;
+import org.unilab.uniplan.course.CourseService;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.student.dto.StudentRequestDto;
 import org.unilab.uniplan.student.dto.StudentResponseDto;
@@ -20,6 +22,7 @@ public class StudentWebFacade {
     private final StudentMapper studentMapper;
     private final StudentService studentService;
     private final StudentValidator studentValidator;
+    private final CourseService courseService;
 
     @Transactional
     public void createStudent(final StudentRequestDto request){
@@ -50,8 +53,13 @@ public class StudentWebFacade {
     public void updateStudent(final UUID id,
                               final StudentRequestDto request){
         final Student student = getStudentOrThrow(id);
+
         studentValidator.validate(student);
         studentMapper.updateEntity(request, student);
+        Course updatedCourse = courseService.getReference(request.courseId());
+
+        student.setCourse(updatedCourse);
+
         studentService.save(student);
         log.info("updated student with ID: {}", student.getId());
     }

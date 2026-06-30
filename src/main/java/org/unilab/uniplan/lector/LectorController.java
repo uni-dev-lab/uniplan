@@ -1,7 +1,5 @@
 package org.unilab.uniplan.lector;
 
-import static org.springframework.http.ResponseEntity.ok;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.unilab.uniplan.lector.dto.LectorDto;
 import org.unilab.uniplan.lector.dto.LectorRequestDto;
 import org.unilab.uniplan.lector.dto.LectorResponseDto;
 
@@ -28,39 +25,33 @@ import org.unilab.uniplan.lector.dto.LectorResponseDto;
 @Tag(name = "Lectors", description = "Manage lecturers with contact information and associated faculties")
 public class LectorController {
 
-    private final LectorService lectorService;
-    private final LectorMapper lectorMapper;
+    private final LectorWebFacade lectorWebFacade;
 
     @PostMapping
-    public ResponseEntity<LectorResponseDto> createLector(@Valid @NotNull @RequestBody final LectorRequestDto lectorRequestDto) {
-        final LectorDto lectorDto = lectorService.createLector(lectorMapper.toInternalDto(lectorRequestDto));
-
-        return new ResponseEntity<>(lectorMapper.toResponseDto(lectorDto), HttpStatus.CREATED);
+    public ResponseEntity<Void> createLector(@Valid @NotNull @RequestBody final LectorRequestDto lectorRequestDto) {
+        lectorWebFacade.createLector(lectorRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
-    public List<LectorResponseDto> getAllLectors() {
-        return lectorMapper.toResponseDtoList(lectorService.getAllLectors());
+    public ResponseEntity<List<LectorResponseDto>> getAllLectors() {
+        return ResponseEntity.ok(lectorWebFacade.getAllLectors());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LectorResponseDto> getLectorById(@NotNull @PathVariable UUID id) {
-        final LectorDto lectorDto = lectorService.getLectorById(id);
-
-        return ok(lectorMapper.toResponseDto(lectorDto));
+    public ResponseEntity<LectorResponseDto> getLectorById(@NotNull @PathVariable final UUID id) {
+       return ResponseEntity.ok(lectorWebFacade.getLectorById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<LectorResponseDto> updateLector(@NotNull @PathVariable UUID id, @Valid @NotNull @RequestBody LectorRequestDto lectorRequestDto) {
-        final LectorDto lectorDto =lectorMapper.toInternalDto(lectorRequestDto);
-
-        return ok(lectorMapper.toResponseDto(lectorService.updateLector(id, lectorDto)));
+    public ResponseEntity<Void> updateLector(@NotNull @PathVariable final UUID id, @Valid @NotNull @RequestBody final LectorRequestDto lectorRequestDto) {
+        lectorWebFacade.updateLector(id, lectorRequestDto);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLector(@NotNull @PathVariable UUID id) {
-        lectorService.deleteLector(id);
-
+    public ResponseEntity<Void> deleteLector(@NotNull @PathVariable final UUID id) {
+        lectorWebFacade.deleteLectorById(id);
         return ResponseEntity.noContent().build();
     }
 }

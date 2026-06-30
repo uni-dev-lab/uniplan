@@ -10,6 +10,4 @@ import org.unilab.uniplan.faculty.Faculty;
 public interface MajorRepository extends JpaRepository<Major, UUID> {
 
     List<Major> findAllByFacultyId(UUID facultyId);
-
-    List<Major> findAllByFaculty(Faculty faculty);
 }

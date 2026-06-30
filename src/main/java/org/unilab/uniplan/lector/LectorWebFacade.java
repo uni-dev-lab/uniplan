@@ -25,7 +25,7 @@ public class LectorWebFacade {
     public void createLector(final LectorRequestDto request) {
         final Lector lector = lectorMapper.toEntity(request);
         lectorService.save(lector);
-        log.info("Lector with name {} has been created", lector.getId());
+        log.info("Lector with id {} has been created", lector.getId());
     }
 
     @Transactional(readOnly = true)

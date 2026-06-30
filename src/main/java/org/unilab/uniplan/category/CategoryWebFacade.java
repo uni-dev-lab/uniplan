@@ -32,6 +32,7 @@ public class CategoryWebFacade {
 
         categoryMapper.updateEntityFromDto(request, category);
         categoryService.save(category);
+        log.info("updated category with ID: {}", category.getId());
     }
 
     @Transactional(readOnly = true)
@@ -44,6 +45,7 @@ public class CategoryWebFacade {
     public void deleteCategory(final UUID id) {
         final Category category = getCategoryOrThrow(id);
         categoryService.delete(category);
+        log.info("deleted category with ID: {}", id);
     }
 
     @Transactional(readOnly = true)

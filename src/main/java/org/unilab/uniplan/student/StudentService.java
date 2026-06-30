@@ -20,12 +20,12 @@ public class StudentService implements BaseService<Student> {
 
     @Override
     public List<Student> getAll() {
-        return studentRepository.findAll();
+        return studentRepository.findAllWithCourseAndMajor();
     }
 
     @Override
     public Optional<Student> getById(final UUID id) {
-        return studentRepository.findById(id);
+        return studentRepository.findByIdWithCourseAndMajor(id);
     }
 
     @Override

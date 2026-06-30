@@ -1,7 +1,8 @@
 databaseChangeLog:
   - changeSet:
-      id: 2
+      id: 20250801144200-1
       author: doseff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addColumn:
             tableName: major

@@ -1,7 +1,8 @@
 databaseChangeLog:
   - changeSet:
-      id: 7
-      author: petya
+      id: 20260626144100-1
+      author: pipetkova19
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       preConditions:
         - onFail: MARK_RAN
         - not:

@@ -1,7 +1,8 @@
 databaseChangeLog:
   - changeSet:
-      id: 1
+      id: 20250801144100-1
       author: sideroff
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - loadData:
             tableName: university
@@ -12,7 +13,7 @@ databaseChangeLog:
             quotchar: '"'
 
   - changeSet:
-      id: 2
+      id: 20250801144100-2
       author: sideroff
       changes:
         - loadData:
@@ -23,7 +24,7 @@ databaseChangeLog:
             separator: ","
             quotchar: '"'
   - changeSet:
-      id: 3
+      id: 20250801144100-3
       author: sideroff
       changes:
         - loadData:
@@ -34,7 +35,7 @@ databaseChangeLog:
             separator: ","
             quotchar: '"'
   - changeSet:
-      id: 4
+      id: 20250801144100-4
       author: sideroff
       changes:
         - loadData:
@@ -45,7 +46,7 @@ databaseChangeLog:
             separator: ","
             quotchar: '"'
   - changeSet:
-      id: 5
+      id: 20250801144100-5
       author: sideroff
       changes:
         - loadData:
@@ -56,7 +57,7 @@ databaseChangeLog:
             separator: ","
             quotchar: '"'
   - changeSet:
-      id: 6
+      id: 20250801144100-6
       author: sideroff
       changes:
         - loadData:
@@ -67,7 +68,7 @@ databaseChangeLog:
             separator: ","
             quotchar: '"'
   - changeSet:
-      id: 7
+      id: 20250801144100-7
       author: sideroff
       changes:
         - loadData:
@@ -78,7 +79,7 @@ databaseChangeLog:
             separator: ","
             quotchar: '"'
   - changeSet:
-      id: 8
+      id: 20250801144100-8
       author: sideroff
       changes:
         - loadData:
@@ -89,7 +90,7 @@ databaseChangeLog:
             separator: ","
             quotchar: '"'
   - changeSet:
-      id: 9
+      id: 20250801144100-9
       author: sideroff
       changes:
         - loadData:
@@ -100,7 +101,7 @@ databaseChangeLog:
             separator: ","
             quotchar: '"'
   - changeSet:
-      id: 10
+      id: 20250801144100-10
       author: sideroff
       changes:
         - loadData:
@@ -111,7 +112,7 @@ databaseChangeLog:
             separator: ","
             quotchar: '"'
   - changeSet:
-      id: 11
+      id: 20250801144100-11
       author: sideroff
       changes:
         - loadData:
@@ -122,7 +123,7 @@ databaseChangeLog:
             separator: ","
             quotchar: '"'
   - changeSet:
-      id: 12
+      id: 20250801144100-12
       author: sideroff
       changes:
         - loadData:
@@ -133,7 +134,7 @@ databaseChangeLog:
             separator: ","
             quotchar: '"'
   - changeSet:
-      id: 13
+      id: 20250801144100-13
       author: sideroff
       changes:
         - loadData:
@@ -144,7 +145,7 @@ databaseChangeLog:
             separator: ","
             quotchar: '"'
   - changeSet:
-      id: 14
+      id: 20250801144100-14
       author: sideroff
       changes:
         - loadData:
@@ -155,7 +156,7 @@ databaseChangeLog:
             separator: ","
             quotchar: '"'
   - changeSet:
-      id: 15
+      id: 20250801144100-15
       author: sideroff
       changes:
         - loadData:
@@ -166,7 +167,7 @@ databaseChangeLog:
             separator: ","
             quotchar: '"'
   - changeSet:
-      id: 16
+      id: 20250801144100-16
       author: sideroff
       changes:
         - loadData:

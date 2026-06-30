@@ -1,7 +1,8 @@
 databaseChangeLog:
   - changeSet:
-      id: 9
-      author: petya
+      id: 20260626144300-1
+      author: pipetkova19
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - dropColumn:
             tableName: faculty

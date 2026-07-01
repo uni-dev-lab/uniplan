@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.course.Course;
+import org.unilab.uniplan.major.Major;
 import org.unilab.uniplan.student.dto.StudentRequestDto;
 import org.unilab.uniplan.student.dto.StudentResponseDto;
 
@@ -23,6 +24,7 @@ class StudentMapperTest {
 
     private UUID studentId;
     private UUID courseId;
+    private UUID majorId;
     private Student student;
     private StudentRequestDto requestDto;
 
@@ -30,11 +32,20 @@ class StudentMapperTest {
     void setUp() {
         studentId = UUID.randomUUID();
         courseId = UUID.randomUUID();
+        majorId = UUID.randomUUID();
 
         requestDto = new StudentRequestDto("Petar", "Petrov", "2301261005", courseId);
 
+        Major major = new Major();
+        major.setId(majorId);
+        major.setMajorName("Software Engineering");
+
         Course course = new Course();
         course.setId(courseId);
+        course.setMajor(major);
+        course.setCourseType("FULL_TIME");
+        course.setCourseSubtype("редовно");
+        course.setCourseYear((byte) 2);
 
         student = new Student();
         student.setId(studentId);
@@ -72,7 +83,7 @@ class StudentMapperTest {
         assertEquals("Ivan", student.getFirstName());
         assertEquals("Ivanov", student.getLastName());
         assertEquals("1234567890", student.getFacultyNumber());
-        assertEquals(newCourseId, student.getCourse().getId());
+        assertEquals(courseId, student.getCourse().getId());
     }
 
     @Test
@@ -87,10 +98,13 @@ class StudentMapperTest {
         StudentResponseDto result = studentMapper.toResponseDto(student);
 
         assertEquals(studentId, result.id());
-        assertEquals("Petar", result.firstName());
-        assertEquals("Petrov", result.lastName());
+        assertEquals("Petar Petrov", result.name());
         assertEquals("2301261005", result.facultyNumber());
-        assertEquals(courseId, result.courseId());
+        assertEquals(majorId, result.majorId()); // adjust if majorId comes from major.id
+        assertEquals("Software Engineering", result.majorName());
+        assertEquals("FULL_TIME", result.courseType());
+        assertEquals("редовно", result.courseSubtype());
+        assertEquals((byte) 2, result.courseYear());
     }
 
     @Test

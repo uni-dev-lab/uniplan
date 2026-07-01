@@ -40,7 +40,7 @@ class StudentServiceTest {
     @Test
     void getById_ShouldReturnStudent_IfExists() {
         UUID id = UUID.randomUUID();
-        when(studentRepository.findById(id)).thenReturn(Optional.of(student));
+        when(studentRepository.findByIdWithCourseAndMajor(id)).thenReturn(Optional.of(student));
 
         Optional<Student> result = studentService.getById(id);
 
@@ -51,14 +51,14 @@ class StudentServiceTest {
     @Test
     void getById_ShouldReturnEmpty_IfNotExists() {
         UUID id = UUID.randomUUID();
-        when(studentRepository.findById(id)).thenReturn(Optional.empty());
+        when(studentRepository.findByIdWithCourseAndMajor(id)).thenReturn(Optional.empty());
 
         assertTrue(studentService.getById(id).isEmpty());
     }
 
     @Test
     void getAll_ShouldReturnAllStudents() {
-        when(studentRepository.findAll()).thenReturn(List.of(student));
+        when(studentRepository.findAllWithCourseAndMajor()).thenReturn(List.of(student));
 
         assertEquals(1, studentService.getAll().size());
     }

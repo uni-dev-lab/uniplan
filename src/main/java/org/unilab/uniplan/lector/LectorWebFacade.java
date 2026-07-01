@@ -20,10 +20,12 @@ public class LectorWebFacade {
 
     private final LectorMapper lectorMapper;
     private final LectorService lectorService;
+    private final LectorValidator lectorValidator;
 
     @Transactional
     public void createLector(final LectorRequestDto request) {
         final Lector lector = lectorMapper.toEntity(request);
+        lectorValidator.validate(lector);
         lectorService.save(lector);
         log.info("Lector with id {} has been created", lector.getId());
     }
@@ -51,6 +53,7 @@ public class LectorWebFacade {
                              final LectorRequestDto request) {
         final Lector lector = getLectorOrThrow(id);
         lectorMapper.updateEntity(request, lector);
+        lectorValidator.validate(lector);
         lectorService.save(lector);
         log.info("Lector with id {} has been updated", lector.getId());
     }

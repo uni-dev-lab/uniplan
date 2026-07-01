@@ -6,9 +6,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.unilab.uniplan.course.Course;
 import org.unilab.uniplan.course.CourseRepository;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.student.dto.StudentRequestDto;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -25,31 +25,28 @@ class StudentValidatorTest {
     @InjectMocks
     private StudentValidator studentValidator;
 
-    private Student student;
     private UUID courseId;
+    private StudentRequestDto requestDto;
 
     @BeforeEach
     void setUp() {
         courseId = UUID.randomUUID();
-        Course course = new Course();
-        course.setId(courseId);
-        student = new Student();
-        student.setCourse(course);
+        requestDto = new StudentRequestDto("Petar", "Petrov", "2301261005", courseId);
     }
 
     @Test
-    void validateShouldPassWhenCourseExists() {
+    void validate_ShouldPass_WhenCourseExists() {
         when(courseRepository.existsById(courseId)).thenReturn(true);
 
-        assertDoesNotThrow(() -> studentValidator.validate(student));
+        assertDoesNotThrow(() -> studentValidator.validate(requestDto));
     }
 
     @Test
-    void validateShouldThrowWhenCourseNotFound() {
+    void validate_ShouldThrow_WhenCourseNotFound() {
         when(courseRepository.existsById(courseId)).thenReturn(false);
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
-                                                           () -> studentValidator.validate(student));
+                                                           () -> studentValidator.validate(requestDto));
 
         assertTrue(exception.getMessage().contains(courseId.toString()));
     }

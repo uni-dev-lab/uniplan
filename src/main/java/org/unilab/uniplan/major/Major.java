@@ -39,7 +39,7 @@ public class Major extends BaseEntity {
 
     //Read-only list of courses
     @Setter(AccessLevel.NONE)
-    @OneToMany(mappedBy = "major", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "major")
     private List<Course> courses = new ArrayList<>();
 
     public List<Course> getCourses() {

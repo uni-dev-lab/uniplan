@@ -1,71 +1,36 @@
 package org.unilab.uniplan.category;
 
-import static org.unilab.uniplan.utils.ErrorConstants.CATEGORY_NOT_FOUND;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.preinitialize.BackgroundPreinitializer;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.unilab.uniplan.category.dto.CategoryDto;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.common.model.BaseService;
 
 @Service
 @RequiredArgsConstructor
-public class CategoryService {
+public class CategoryService implements BaseService<Category> {
 
     private final CategoryRepository categoryRepository;
-    private final CategoryMapper categoryMapper;
 
-    @Transactional
-    public CategoryDto createCategory(final CategoryDto categoryDto) {
-        final Category category = categoryMapper.toEntity(categoryDto);
-
-        return saveEntityAndConvertToDto(category);
+    @Override
+    public void save(final Category category) {
+        categoryRepository.save(category);
     }
 
-    public List<CategoryDto> getAllCategories() {
-        final List<Category> categories = categoryRepository.findAll();
-
-        return categoryMapper.toDtoList(categories);
+    @Override
+    public List<Category> getAll() {
+        return categoryRepository.findAll();
     }
 
-    public CategoryDto getCategoryById(final UUID id) {
-        return categoryRepository.findById(id)
-                                 .map(categoryMapper::toDto)
-                                 .orElseThrow(() -> new ResourceNotFoundException(CATEGORY_NOT_FOUND.getMessage(
-                                     String.valueOf(id))));
+    @Override
+    public Optional<Category> getById(final UUID id) {
+        return categoryRepository.findById(id);
     }
 
-    @Transactional
-    public CategoryDto updateCategory(final UUID id, final CategoryDto categoryDto) {
-        return categoryRepository.findById(id)
-                                 .map(existingCategory -> updateEntityAndConvertToDto(
-                                     categoryDto,
-                                     existingCategory))
-                                 .orElseThrow(() -> new ResourceNotFoundException(CATEGORY_NOT_FOUND.getMessage(
-                                     String.valueOf(id))));
-    }
-
-
-    @Transactional
-    public void deleteCategory(final UUID id) {
-        final Category category = categoryRepository.findById(id)
-                                                    .orElseThrow(() -> new ResourceNotFoundException(
-                                                        CATEGORY_NOT_FOUND.getMessage(String.valueOf(id))));
+    @Override
+    public void delete(Category category) {
         categoryRepository.delete(category);
-    }
-
-
-    private CategoryDto updateEntityAndConvertToDto(final CategoryDto dto,
-                                                    final Category entity) {
-        categoryMapper.updateEntityFromDto(dto, entity);
-        return saveEntityAndConvertToDto(entity);
-    }
-
-    private CategoryDto saveEntityAndConvertToDto(final Category entity) {
-        final Category savedEntity = categoryRepository.save(entity);
-        return categoryMapper.toDto(savedEntity);
     }
 }

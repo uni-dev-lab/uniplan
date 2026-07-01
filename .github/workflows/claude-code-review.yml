@@ -98,8 +98,13 @@ jobs:
           # only after a reviewer approves the run. Repo-wide secrets would be
           # spendable from any future workflow/job that omits the environment gate.
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          claude_args: "--model claude-sonnet-4-6"
-          model: claude-sonnet-4-6
+          # Headless runs are default-deny: every tool the prompt uses must be
+          # allow-listed here, or the call is auto-denied (no interactive approver).
+          # The prompt posts via `gh` and dispatches the uniplan-be-reviewer
+          # subagent (Task) + the /review-pr skill (Skill) — all must be granted.
+          claude_args: >-
+            --model claude-sonnet-4-6
+            --allowedTools "Bash(gh pr review:*),Bash(gh api:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(git:*),Task,Read,Glob,Grep,Skill"
           prompt: |
             You are orchestrating a code review of PR #${{ inputs.pr_number }} in ${{ github.repository }}.
 

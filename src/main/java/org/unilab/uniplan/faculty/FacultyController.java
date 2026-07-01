@@ -41,7 +41,7 @@ public class FacultyController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FacultyResponseDto> getFacultyById(@NotNull @PathVariable final UUID id) {
+    public ResponseEntity<FacultyResponseDto> getFacultyById(@PathVariable final UUID id) {
 
         return ResponseEntity.ok(facultyWebFacade.getFacultyById(id));
     }

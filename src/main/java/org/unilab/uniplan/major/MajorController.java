@@ -39,22 +39,22 @@ public class MajorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MajorResponseDto> getMajorById(@PathVariable @NotNull final UUID id) {
+    public ResponseEntity<MajorResponseDto> getMajorById(@PathVariable final UUID id) {
         return ResponseEntity.ok(majorMapper.toResponseDto(majorService.findMajorById(id)));
     }
 
     @GetMapping("/{id}/courses")
-    public ResponseEntity<MajorCoursesResponseDto> getMajorWithCoursesById(@PathVariable @NotNull final UUID id) {
+    public ResponseEntity<MajorCoursesResponseDto> getMajorWithCoursesById(@PathVariable final UUID id) {
         return ResponseEntity.ok(majorMapper.toFullResponseDto(majorService.findMajorWithCoursesById(id)));
     }
 
     @GetMapping("/faculty/{facultyId}")
-    public  List<MajorResponseDto> getMajorsByFacultyId(@PathVariable @NotNull final UUID facultyId) {
+    public  List<MajorResponseDto> getMajorsByFacultyId(@PathVariable final UUID facultyId) {
         return majorMapper.toResponseDtoList(majorService.findAllMajorByFacultyId(facultyId));
     }
 
     @GetMapping("/faculty/{facultyId}/courses")
-    public  List<MajorCoursesResponseDto> getMajorsWithCoursesByFacultyId(@PathVariable @NotNull final UUID facultyId) {
+    public  List<MajorCoursesResponseDto> getMajorsWithCoursesByFacultyId(@PathVariable final UUID facultyId) {
         return majorMapper.toFullResponseDtoList(majorService.findAllMajorWithCoursesByFacultyId(facultyId));
     }
 
@@ -64,14 +64,14 @@ public class MajorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MajorResponseDto> updateMajor(@PathVariable @NotNull final UUID id,
+    public ResponseEntity<MajorResponseDto> updateMajor(@PathVariable final UUID id,
                                                         @RequestBody @NotNull @Valid MajorRequestDto majorRequestDTO) {
         final MajorDto majorDTO = majorMapper.toInnerDto(majorRequestDTO);
         return ResponseEntity.ok(majorMapper.toResponseDto(majorService.updateMajor(id, majorDTO)));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMajor(@PathVariable @NotNull final UUID id) {
+    public ResponseEntity<Void> deleteMajor(@PathVariable final UUID id) {
         majorService.deleteMajor(id);
         return ResponseEntity.noContent().build();
     }

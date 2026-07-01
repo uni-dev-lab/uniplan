@@ -21,7 +21,7 @@ import org.unilab.uniplan.course.Course;
 @AllArgsConstructor
 public class Student extends Person {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 

@@ -19,3 +19,7 @@ databaseChangeLog:
                   defaultValueBoolean: false
                   constraints:
                     nullable: false
+      rollback:
+        - dropColumn:
+            tableName: faculty
+            columnName: is_deleted

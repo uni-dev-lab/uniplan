@@ -13,3 +13,7 @@ databaseChangeLog:
                   defaultValueBoolean: false
                   constraints:
                     nullable: false
+      rollback:
+        - dropColumn:
+            tableName: course
+            columnName: is_deleted

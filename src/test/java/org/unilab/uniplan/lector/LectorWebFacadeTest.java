@@ -61,7 +61,7 @@ class LectorWebFacadeTest {
         final var inOrder = inOrder(lectorMapper, lectorValidator, lectorService);
 
         inOrder.verify(lectorMapper).toEntity(requestDto);
-        inOrder.verify(lectorValidator).validate(entity);
+        inOrder.verify(lectorValidator).validate(requestDto);
         inOrder.verify(lectorService).save(entity);
     }
 
@@ -69,7 +69,7 @@ class LectorWebFacadeTest {
     void createLector_shouldNotSaveLector_whenValidationFails() {
         when(lectorMapper.toEntity(requestDto)).thenReturn(entity);
         doThrow(new ResourceNotFoundException("faculty missing"))
-            .when(lectorValidator).validate(entity);
+            .when(lectorValidator).validate(requestDto);
 
         assertThatThrownBy(() -> lectorWebFacade.createLector(requestDto))
             .isInstanceOf(ResourceNotFoundException.class);
@@ -116,7 +116,7 @@ class LectorWebFacadeTest {
         final var inOrder = inOrder(lectorMapper, lectorValidator, lectorService);
 
         inOrder.verify(lectorMapper).updateEntity(requestDto, entity);
-        inOrder.verify(lectorValidator).validate(entity);
+        inOrder.verify(lectorValidator).validate(requestDto);
         inOrder.verify(lectorService).save(entity);
     }
 
@@ -124,7 +124,7 @@ class LectorWebFacadeTest {
     void updateLector_shouldNotSaveLector_whenValidationFails() {
         when(lectorService.getById(id)).thenReturn(Optional.of(entity));
         doThrow(new ResourceNotFoundException("faculty missing"))
-            .when(lectorValidator).validate(entity);
+            .when(lectorValidator).validate(requestDto);
 
         assertThatThrownBy(() -> lectorWebFacade.updateLector(id, requestDto))
             .isInstanceOf(ResourceNotFoundException.class);

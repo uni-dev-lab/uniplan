@@ -14,7 +14,6 @@ public class LectorService implements BaseService<Lector> {
 
     private final LectorRepository lectorRepository;
 
-
     @Override
     public void save(final Lector entity) {
         lectorRepository.save(entity);

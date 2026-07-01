@@ -25,7 +25,7 @@ public class LectorWebFacade {
     @Transactional
     public void createLector(final LectorRequestDto request) {
         final Lector lector = lectorMapper.toEntity(request);
-        lectorValidator.validate(lector);
+        lectorValidator.validate(request);
         lectorService.save(lector);
         log.info("Lector with id {} has been created", lector.getId());
     }
@@ -41,11 +41,11 @@ public class LectorWebFacade {
         return lectorMapper.toResponseDto(lector);
     }
 
-    private Lector getLectorOrThrow(final UUID id) {
+    private Lector getLectorOrThrow(final UUID id){
         return lectorService.getById(id)
-            .orElseThrow(()-> new ResourceNotFoundException(
-                LECTOR_NOT_FOUND.getMessage(String.valueOf(id))
-            ));
+                             .orElseThrow(() -> new ResourceNotFoundException(
+                                 LECTOR_NOT_FOUND.getMessage(String.valueOf(id))
+                             ));
     }
 
     @Transactional
@@ -53,7 +53,7 @@ public class LectorWebFacade {
                              final LectorRequestDto request) {
         final Lector lector = getLectorOrThrow(id);
         lectorMapper.updateEntity(request, lector);
-        lectorValidator.validate(lector);
+        lectorValidator.validate(request);
         lectorService.save(lector);
         log.info("Lector with id {} has been updated", lector.getId());
     }

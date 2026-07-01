@@ -12,8 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
-import org.unilab.uniplan.faculty.Faculty;
 import org.unilab.uniplan.faculty.FacultyRepository;
+import org.unilab.uniplan.lector.dto.LectorRequestDto;
 
 @ExtendWith(MockitoExtension.class)
 class LectorValidatorTest {
@@ -25,24 +25,20 @@ class LectorValidatorTest {
     private LectorValidator lectorValidator;
 
     private UUID facultyId;
-    private Lector lector;
+    private LectorRequestDto request;
 
     @BeforeEach
     void setUp() {
         facultyId = UUID.randomUUID();
 
-        final Faculty faculty = new Faculty();
-        faculty.setId(facultyId);
-
-        lector = new Lector();
-        lector.setFaculty(faculty);
+        request = new LectorRequestDto(facultyId, "jane.doe@example.com", "Jane", "Doe");
     }
 
     @Test
     void validate_shouldPass_whenFacultyExists() {
         when(facultyRepository.existsById(facultyId)).thenReturn(true);
 
-        assertThatCode(() -> lectorValidator.validate(lector))
+        assertThatCode(() -> lectorValidator.validate(request))
             .doesNotThrowAnyException();
     }
 
@@ -50,7 +46,7 @@ class LectorValidatorTest {
     void validate_shouldThrowResourceNotFoundException_whenFacultyDoesNotExist() {
         when(facultyRepository.existsById(facultyId)).thenReturn(false);
 
-        assertThatThrownBy(() -> lectorValidator.validate(lector))
+        assertThatThrownBy(() -> lectorValidator.validate(request))
             .isInstanceOf(ResourceNotFoundException.class)
             .hasMessageContaining(facultyId.toString());
     }

@@ -26,98 +26,59 @@ class RoomCategoryServiceTest {
     @Mock
     private RoomCategoryRepository roomCategoryRepository;
 
-    @Mock
-    private RoomCategoryMapper roomCategoryMapper;
-
     @InjectMocks
     private RoomCategoryService roomCategoryService;
 
-    private UUID roomId;
-    private UUID categoryId;
-    private RoomCategoryDto dto;
+    private RoomCategoryId id;
     private RoomCategory entity;
 
     @BeforeEach
     void setUp() {
-        roomId = UUID.randomUUID();
-        categoryId = UUID.randomUUID();
-        dto = new RoomCategoryDto(roomId, categoryId);
+        id = new RoomCategoryId(UUID.randomUUID(), UUID.randomUUID());
         entity = new RoomCategory();
     }
 
     @Test
-    void testCreateRoomCategoryShouldSaveAndReturnDto() {
-        when(roomCategoryMapper.toEntity(dto)).thenReturn(entity);
-        when(roomCategoryRepository.save(entity)).thenReturn(entity);
-        when(roomCategoryMapper.toDto(entity)).thenReturn(dto);
+    void testSaveShouldSaveRoomCategory() {
+        roomCategoryService.save(entity);
 
-        RoomCategoryDto result = roomCategoryService.createRoomCategory(dto);
-
-        assertEquals(dto, result);
+        verify(roomCategoryRepository).save(entity);
     }
 
     @Test
-    void testGetAllRoomCategoriesShouldReturnListOfRoomCategoryDtos() {
-        List<RoomCategory> entities = List.of(entity);
-        List<RoomCategoryDto> dtos = List.of(dto);
+    void testGetAllRoomCategoriesShouldReturnListOfRoomCategory() {
+        final List<RoomCategory> entities = List.of(entity);
 
         when(roomCategoryRepository.findAll()).thenReturn(entities);
-        when(roomCategoryMapper.toDtoList(entities)).thenReturn(dtos);
 
-        List<RoomCategoryDto> result = roomCategoryService.getAllRoomCategories();
+        final List<RoomCategory> result = roomCategoryService.getAll();
 
-        assertEquals(dtos, result);
+        assertEquals(entities, result);
+        verify(roomCategoryRepository).findAll();
     }
 
     @Test
-    void testGetRoomCategoryByIdShouldReturnRoomCategoryDtoIfFound() {
-        RoomCategoryId id = new RoomCategoryId(roomId, categoryId);
-
-        when(roomCategoryMapper.toRoomCategoryId(roomId, categoryId)).thenReturn(id);
+    void testGetByIdShouldReturnRoomCategoryOptional() {
         when(roomCategoryRepository.findById(id)).thenReturn(Optional.of(entity));
-        when(roomCategoryMapper.toDto(entity)).thenReturn(dto);
 
-        RoomCategoryDto result = roomCategoryService.getRoomCategoryById(roomId,
-                                                                                   categoryId);
-        assertEquals(dto, result);
+        final Optional<RoomCategory> result = roomCategoryService.getById(id);
+        assertEquals((Optional.of(entity)), result);
     }
 
     @Test
-    void testGetRoomCategoryByIdShouldReturnEmptyOptionalIfNotFound() {
-        RoomCategoryId id = new RoomCategoryId(roomId, categoryId);
-
-        when(roomCategoryMapper.toRoomCategoryId(roomId, categoryId)).thenReturn(id);
+    void testGetIdShouldReturnEmptyOptionalIfNotFound() {
         when(roomCategoryRepository.findById(id)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> roomCategoryService.getRoomCategoryById(roomId,
-                                                                                      categoryId));
+        final Optional<RoomCategory> result = roomCategoryService.getById(id);
 
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
+        assertEquals(Optional.empty(), result);
+        verify(roomCategoryRepository).findById(id);
     }
 
     @Test
-    void testDeleteRoomCategoryShouldDeleteIfFound() {
-        RoomCategoryId id = new RoomCategoryId(roomId, categoryId);
+    void testDeleteShouldDeleteIfFound() {
+       roomCategoryService.delete(entity);
 
-        when(roomCategoryMapper.toRoomCategoryId(roomId, categoryId)).thenReturn(id);
-        when(roomCategoryRepository.findById(id)).thenReturn(Optional.of(entity));
-        doAnswer(invocation -> null).when(roomCategoryRepository).delete(entity);
-
-        assertDoesNotThrow(() -> roomCategoryService.deleteRoomCategory(roomId, categoryId));
         verify(roomCategoryRepository).delete(entity);
-    }
-
-    @Test
-    void testDeleteRoomCategoryShouldThrowIfNotFound() {
-        RoomCategoryId id = new RoomCategoryId(roomId, categoryId);
-
-        when(roomCategoryMapper.toRoomCategoryId(roomId, categoryId)).thenReturn(id);
-        when(roomCategoryRepository.findById(id)).thenReturn(Optional.empty());
-
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
-            roomCategoryService.deleteRoomCategory(roomId, categoryId));
-
-        assertTrue(exception.getMessage().contains(String.valueOf(roomId)));
-        assertTrue(exception.getMessage().contains(String.valueOf(categoryId)));
     }
 }

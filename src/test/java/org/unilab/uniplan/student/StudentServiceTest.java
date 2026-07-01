@@ -1,11 +1,7 @@
 package org.unilab.uniplan.student;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -18,8 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
-import org.unilab.uniplan.student.dto.StudentDto;
 
 @ExtendWith(MockitoExtension.class)
 class StudentServiceTest {
@@ -27,108 +21,51 @@ class StudentServiceTest {
     @Mock
     private StudentRepository studentRepository;
 
-    @Mock
-    private StudentMapper studentMapper;
-
     @InjectMocks
     private StudentService studentService;
 
-    private UUID studentId;
-    private StudentDto studentDTO;
     private Student student;
 
     @BeforeEach
-    void beforeAll() {
-        studentId = UUID.randomUUID();
-        UUID courseId = UUID.randomUUID();
-        studentDTO = new StudentDto(studentId, "Petar", "Petrov", "2301261005", courseId);
+    void setUp() {
         student = new Student();
     }
 
     @Test
-    void createStudentShouldReturnSaveAndReturnStudentDTO() {
-        when(studentMapper.toEntity(studentDTO)).thenReturn(student);
-        when(studentRepository.save(student)).thenReturn(student);
-        when(studentMapper.toDto(student)).thenReturn(studentDTO);
-
-        StudentDto result = studentService.createStudent(studentDTO);
-
-        assertEquals(studentDTO, result);
+    void save_ShouldDelegateToRepository() {
+        studentService.save(student);
         verify(studentRepository).save(student);
     }
 
     @Test
-    void findStudentByIdShouldReturnStudentDTOIfExists() {
-        when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
-        when(studentMapper.toDto(student)).thenReturn(studentDTO);
+    void getById_ShouldReturnStudent_IfExists() {
+        UUID id = UUID.randomUUID();
+        when(studentRepository.findById(id)).thenReturn(Optional.of(student));
 
-        StudentDto result = studentService.findStudentById(studentId);
+        Optional<Student> result = studentService.getById(id);
 
-        assertEquals(studentDTO, result);
+        assertTrue(result.isPresent());
+        assertEquals(student, result.get());
     }
 
     @Test
-    void findStudentByIdShouldReturnEmptyIfNotExists() {
-        when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
+    void getById_ShouldReturnEmpty_IfNotExists() {
+        UUID id = UUID.randomUUID();
+        when(studentRepository.findById(id)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> studentService.findStudentById(studentId));
-
-        assertTrue(exception.getMessage().contains(String.valueOf(studentId)));
+        assertTrue(studentService.getById(id).isEmpty());
     }
 
     @Test
-    void findAllShouldReturnMappedStudentDTOList() {
-        List<Student> students = List.of(student);
-        when(studentRepository.findAll()).thenReturn(students);
-        when(studentMapper.toDto(any(Student.class))).thenReturn(studentDTO);
+    void getAll_ShouldReturnAllStudents() {
+        when(studentRepository.findAll()).thenReturn(List.of(student));
 
-        List<StudentDto> result = studentService.findAll();
-
-        assertEquals(1, result.size());
-        assertEquals(studentDTO, result.getFirst());
-        verify(studentRepository).findAll();
+        assertEquals(1, studentService.getAll().size());
     }
 
     @Test
-    void updateStudentShouldReturnUpdatedStudentDTOIfExists() {
-        when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
-        doNothing().when(studentMapper).updateEntityFromDto(studentDTO, student);
-        when(studentRepository.save(student)).thenReturn(student);
-        when(studentMapper.toDto(student)).thenReturn(studentDTO);
-
-        StudentDto result = studentService.updateStudent(studentId, studentDTO);
-
-        assertEquals(studentDTO, result);
-        verify(studentRepository).save(student);
-    }
-
-    @Test
-    void updateStudentShouldReturnEmptyIfNotFound() {
-        when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
-
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> studentService.updateStudent(studentId, studentDTO));
-
-        assertTrue(exception.getMessage().contains(String.valueOf(studentId)));
-        verify(studentRepository, never()).save(any());
-    }
-
-    @Test
-    void deleteStudentShouldRemoveStudentDTOIfExists() {
-        when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
-
-        studentService.deleteStudent(studentId);
-
+    void delete_ShouldDelegateToRepository() {
+        studentService.delete(student);
         verify(studentRepository).delete(student);
-    }
-
-    @Test
-    void deleteStudentShouldThrowIfNotFound() {
-        when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
-
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
-                                                  () -> studentService.deleteStudent(studentId));
-
-        assertTrue(exception.getMessage().contains(String.valueOf(studentId)));
-        verify(studentRepository, never()).delete(any());
     }
 }

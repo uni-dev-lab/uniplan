@@ -28,45 +28,33 @@ import org.unilab.uniplan.department.dto.DepartmentResponseDto;
 @Tag(name = "Departments", description = "Manage university departments (e.g., Computer Systems) associated with faculties")
 public class DepartmentController {
 
-    private final DepartmentService departmentService;
-    private final DepartmentMapper departmentMapper;
+    private final DepartmentWebFacade departmentWebFacade;
 
     @PostMapping
-    public ResponseEntity<DepartmentResponseDto> createDepartment(
-        @Valid @NotNull @RequestBody final DepartmentRequestDto departmentRequestDto) {
-
-        final DepartmentDto departmentDto = departmentService.createDepartment(departmentMapper.toInternalDto(
-            departmentRequestDto));
-
-        return new ResponseEntity<>(departmentMapper.toResponseDto(departmentDto),
-                                    HttpStatus.CREATED);
+    public ResponseEntity<Void> createDepartment(@Valid @NotNull @RequestBody final DepartmentRequestDto departmentRequestDto) {
+        departmentWebFacade.createDepartment(departmentRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
-    public List<DepartmentResponseDto> getAllDepartments() {
-        return departmentMapper.toResponseDtoList(departmentService.getAllDepartments());
+    public ResponseEntity<List<DepartmentResponseDto>> getAllDepartments() {
+        return ResponseEntity.ok(departmentWebFacade.getAllDepartments());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DepartmentResponseDto> getDepartmentById(@NotNull @PathVariable final UUID id) {
-        final DepartmentDto departmentDto = departmentService.getDepartmentById(id);
-
-        return ok(departmentMapper.toResponseDto(departmentDto));
-    }
+        public ResponseEntity<DepartmentResponseDto> getDepartmentById(@NotNull @PathVariable final UUID id) {
+            return ResponseEntity.ok(departmentWebFacade.getDepartmentById(id));
+        }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DepartmentResponseDto> updateDepartment(
-        @PathVariable final UUID id,
-        @Valid @NotNull @RequestBody final DepartmentRequestDto departmentRequestDto) {
-
-        final DepartmentDto departmentDto = departmentMapper.toInternalDto(departmentRequestDto);
-
-        return ok(departmentMapper.toResponseDto(departmentService.updateDepartment(id, departmentDto)));
+    public ResponseEntity<Void> updateLector(@NotNull @PathVariable final UUID id, @Valid @NotNull @RequestBody final DepartmentRequestDto departmentRequestDto) {
+        departmentWebFacade.updateDepartment(id, departmentRequestDto);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDepartment(@PathVariable final UUID id) {
-        departmentService.deleteDepartment(id);
+    public ResponseEntity<Void> deleteDepartment(@NotNull @PathVariable final UUID id) {
+        departmentWebFacade.deleteDepartment(id);
         return ResponseEntity.noContent().build();
     }
 }

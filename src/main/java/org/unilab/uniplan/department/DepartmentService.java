@@ -4,10 +4,12 @@ import static org.unilab.uniplan.utils.ErrorConstants.DEPARTMENT_NOT_FOUND;
 import static org.unilab.uniplan.utils.ErrorConstants.FACULTY_NOT_FOUND;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.unilab.uniplan.common.model.BaseService;
 import org.unilab.uniplan.department.dto.DepartmentDto;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.faculty.Faculty;
@@ -15,63 +17,28 @@ import org.unilab.uniplan.faculty.FacultyRepository;
 
 @Service
 @RequiredArgsConstructor
-public class DepartmentService {
+public class DepartmentService implements BaseService<Department> {
 
     private final DepartmentRepository departmentRepository;
-    private final DepartmentMapper departmentMapper;
-    private final FacultyRepository facultyRepository;
 
-    @Transactional
-    public DepartmentDto createDepartment(final DepartmentDto departmentDto) {
-        final Department department = departmentMapper.toEntity(departmentDto);
 
-        return saveEntityAndConvertToDto(department);
+    @Override
+    public void save(final Department entity) {
+        departmentRepository.save(entity);
     }
 
-    public List<DepartmentDto> getAllDepartments() {
-        final List<Department> departments = departmentRepository.findAll();
-
-        return departmentMapper.toDtoList(departments);
+    @Override
+    public List<Department> getAll() {
+        return departmentRepository.findAll();
     }
 
-    public DepartmentDto getDepartmentById(final UUID id) {
-        return departmentRepository.findById(id)
-                                   .map(departmentMapper::toDto)
-                                   .orElseThrow(() -> new ResourceNotFoundException(
-                                       DEPARTMENT_NOT_FOUND.getMessage(String.valueOf(id))));
+    @Override
+    public Optional<Department> getById(final UUID id) {
+        return departmentRepository.findById(id);
     }
 
-    @Transactional
-    public DepartmentDto updateDepartment(final UUID id,
-                                          final DepartmentDto departmentDto) {
-        return departmentRepository.findById(id)
-                                   .map(existingDepartment -> {
-                                       final Faculty faculty = facultyRepository.findById(departmentDto.facultyId())
-                                                                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                                                    FACULTY_NOT_FOUND.getMessage(String.valueOf(departmentDto.facultyId()))));
-                                       existingDepartment.setFaculty(faculty);
-                                       return updateEntityAndConvertToDto(departmentDto, existingDepartment);
-                                   })
-                                   .orElseThrow(() -> new ResourceNotFoundException(
-                                       DEPARTMENT_NOT_FOUND.getMessage(String.valueOf(id))));
-    }
-
-    @Transactional
-    public void deleteDepartment(final UUID id) {
-        final Department department = departmentRepository.findById(id)
-                                                          .orElseThrow(() -> new ResourceNotFoundException(
-                                                              DEPARTMENT_NOT_FOUND.getMessage(String.valueOf(id))));
-        departmentRepository.delete(department);
-    }
-
-    private DepartmentDto updateEntityAndConvertToDto(final DepartmentDto dto,
-                                                      final Department entity) {
-        departmentMapper.updateEntityFromDto(dto, entity);
-        return saveEntityAndConvertToDto(entity);
-    }
-
-    private DepartmentDto saveEntityAndConvertToDto(final Department entity) {
-        final Department savedEntity = departmentRepository.save(entity);
-        return departmentMapper.toDto(savedEntity);
+    @Override
+    public void delete(final Department entity) {
+        departmentRepository.delete(entity);
     }
 }

@@ -3,7 +3,6 @@ package org.unilab.uniplan.major;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.unilab.uniplan.course.CourseMapper;
 import org.unilab.uniplan.major.dto.MajorCoursesDto;
 import org.unilab.uniplan.major.dto.MajorCoursesResponseDto;
@@ -22,9 +21,6 @@ public interface MajorMapper {
 
     @Mapping(source = "faculty.id", target = "facultyId")
     MajorCoursesDto toFullDto(Major major);
-
-    @Mapping(source = "facultyId", target = "faculty.id")
-    void updateEntityFromDto(MajorDto majorDto, @MappingTarget Major major);
 
     @Mapping(target = "id", ignore = true)
     MajorDto toInnerDto(MajorRequestDto requestDto);

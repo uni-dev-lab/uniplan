@@ -67,19 +67,19 @@ class StudentWebFacadeTest {
     }
 
     @Test
-    void createStudentShouldMapValidateAndSave() {
+    void createStudent_ShouldMapValidateAndSave() {
         when(studentMapper.toEntity(requestDto)).thenReturn(student);
 
         studentWebFacade.createStudent(requestDto);
 
-        InOrder order = inOrder(studentMapper, studentValidator, studentService);
+        InOrder order = inOrder(studentValidator, studentMapper, studentService);
+        order.verify(studentValidator).validate(requestDto);
         order.verify(studentMapper).toEntity(requestDto);
-        order.verify(studentValidator).validate(student);
         order.verify(studentService).save(student);
     }
 
     @Test
-    void updateStudentShouldThrowIfNotFound() {
+    void updateStudent_ShouldThrow_IfNotFound() {
         when(studentService.getById(studentId)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class,
@@ -89,19 +89,19 @@ class StudentWebFacadeTest {
     }
 
     @Test
-    void updateStudentShouldValidateAndSave() {
+    void updateStudent_ShouldValidateAndSave() {
         when(studentService.getById(studentId)).thenReturn(Optional.of(student));
 
         studentWebFacade.updateStudent(studentId, requestDto);
 
         InOrder order = inOrder(studentValidator, studentMapper, studentService);
-        order.verify(studentValidator).validate(student);
+        order.verify(studentValidator).validate(requestDto);
         order.verify(studentMapper).updateEntity(requestDto, student);
         order.verify(studentService).save(student);
     }
 
     @Test
-    void getStudentByIdShouldReturnMappedDto() {
+    void getStudentById_ShouldReturnMappedDto() {
         when(studentService.getById(studentId)).thenReturn(Optional.of(student));
         when(studentMapper.toResponseDto(student)).thenReturn(responseDto);
 
@@ -109,7 +109,7 @@ class StudentWebFacadeTest {
     }
 
     @Test
-    void getStudentByIdShouldThrowIfNotFound() {
+    void getStudentById_ShouldThrow_IfNotFound() {
         when(studentService.getById(studentId)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class,
@@ -117,7 +117,7 @@ class StudentWebFacadeTest {
     }
 
     @Test
-    void deleteStudentShouldDelegateIfExists() {
+    void deleteStudent_ShouldDelegateIfExists() {
         when(studentService.getById(studentId)).thenReturn(Optional.of(student));
 
         studentWebFacade.deleteStudent(studentId);
@@ -126,7 +126,7 @@ class StudentWebFacadeTest {
     }
 
     @Test
-    void deleteStudentShouldThrowIfNotFound() {
+    void deleteStudent_ShouldThrow_IfNotFound() {
         when(studentService.getById(studentId)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class,

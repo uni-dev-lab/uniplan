@@ -12,6 +12,7 @@ public record StudentRequestDto(
     @NotBlank
     @Size(max = 100)
     String lastName,
+    @NotBlank
     @Size(max = 40)
     String facultyNumber,
     @NotNull

@@ -59,7 +59,7 @@ class UniversityServiceTest {
         assertThat(result)
             .isPresent()
             .contains(entity);
-    verify(universityRepository).findById(id);
+        verify(universityRepository).findById(id);
     }
 
     @Test

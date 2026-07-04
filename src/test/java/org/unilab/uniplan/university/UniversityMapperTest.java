@@ -16,11 +16,15 @@ class UniversityMapperTest {
     private University university;
     private University university2;
     private UUID id;
+    private UniversityRequestDto updateRequest;
 
     @BeforeEach
     void setUp() {
         request = new UniversityRequestDto(
             "Sofia University", "Sofia, Bulgaria", (short) 1888, "NEAA", "https://uni-sofia.bg"
+        );
+        updateRequest = new UniversityRequestDto(
+            "New Name", "New Location", (short) 2000, "New Acc", "https://new.bg"
         );
         university = new University(
             "Sofia University", "Sofia, Bulgaria", (short) 1888, "NEAA", "https://uni-sofia.bg"
@@ -82,11 +86,8 @@ class UniversityMapperTest {
     @Test
     void updateEntity_shouldUpdateAllFields_whenRequestDtoIsValid() {
         university.setId(id);
-        final UniversityRequestDto request = new UniversityRequestDto(
-            "New Name", "New Location", (short) 2000, "New Acc", "https://new.bg"
-        );
 
-        mapper.updateEntity(request, university);
+        mapper.updateEntity(updateRequest, university);
 
         assertThat(university.getUniName()).isEqualTo("New Name");
         assertThat(university.getLocation()).isEqualTo("New Location");
@@ -98,11 +99,8 @@ class UniversityMapperTest {
     @Test
     void updateEntity_shouldNotChangeId_whenUpdating() {
         university.setId(id);
-        final UniversityRequestDto request = new UniversityRequestDto(
-            "New Name", "New Location", (short) 2000, "New Acc", "https://new.bg"
-        );
 
-        mapper.updateEntity(request, university);
+        mapper.updateEntity(updateRequest, university);
 
         assertThat(university.getId()).isEqualTo(id);
     }

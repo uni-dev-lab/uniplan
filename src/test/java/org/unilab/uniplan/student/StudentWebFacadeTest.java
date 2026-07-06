@@ -7,6 +7,7 @@ import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.unilab.uniplan.course.CourseService;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.student.dto.StudentRequestDto;
 import org.unilab.uniplan.student.dto.StudentResponseDto;
@@ -29,6 +30,9 @@ class StudentWebFacadeTest {
 
     @Mock
     private StudentService studentService;
+
+    @Mock
+    private CourseService courseService;
 
     @Mock
     private StudentValidator studentValidator;

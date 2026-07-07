@@ -5,13 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
-import org.unilab.uniplan.faculty.Faculty;
 import org.unilab.uniplan.room.dto.RoomRequestDto;
 import org.unilab.uniplan.room.dto.RoomResponseDto;
 import java.util.List;
 import java.util.UUID;
-
-import static org.unilab.uniplan.utils.ErrorConstants.FACULTY_NOT_FOUND;
 import static org.unilab.uniplan.utils.ErrorConstants.ROOM_NOT_FOUND;
 
 @Component
@@ -19,8 +16,8 @@ import static org.unilab.uniplan.utils.ErrorConstants.ROOM_NOT_FOUND;
 @RequiredArgsConstructor
 public class RoomWebFacade {
 
-    private RoomMapper roomMapper;
-    private RoomService roomService;
+    private final RoomMapper roomMapper;
+    private final RoomService roomService;
 
     private Room getRoomOrThrow(final UUID id) {
         return roomService.getById(id)
@@ -29,7 +26,7 @@ public class RoomWebFacade {
     }
 
     @Transactional
-    public void saveRoom(RoomRequestDto roomRequestDto) {
+    public void createRoom(RoomRequestDto roomRequestDto) {
         Room room = roomMapper.toEntity(roomRequestDto);
         roomService.save(room);
         log.info("created room {} with ID: {}",

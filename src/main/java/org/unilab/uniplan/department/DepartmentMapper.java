@@ -5,7 +5,6 @@ import java.util.UUID;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.unilab.uniplan.department.dto.DepartmentDto;
 import org.unilab.uniplan.department.dto.DepartmentRequestDto;
 import org.unilab.uniplan.department.dto.DepartmentResponseDto;
 import org.unilab.uniplan.faculty.Faculty;
@@ -17,10 +16,7 @@ public interface DepartmentMapper {
     @Mapping(target = "id", ignore = true)
     Department toEntity(final DepartmentRequestDto requestDto);
 
-    @Mapping(target = "facultyId", source = "faculty.id")
-    DepartmentDto toDto(Department department);
-
-    @Mapping(source="faculty.id", target = "facultyId")
+    @Mapping(source = "faculty.id", target = "facultyId")
     DepartmentResponseDto toResponseDto(Department department);
 
     List<DepartmentResponseDto> toResponseDtoList(final List<Department> departments);

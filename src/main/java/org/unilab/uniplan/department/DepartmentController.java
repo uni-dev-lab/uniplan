@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.unilab.uniplan.department.dto.DepartmentDto;
 import org.unilab.uniplan.department.dto.DepartmentRequestDto;
 import org.unilab.uniplan.department.dto.DepartmentResponseDto;
 
@@ -42,7 +41,7 @@ public class DepartmentController {
     }
 
     @GetMapping("/{id}")
-        public ResponseEntity<DepartmentResponseDto> getDepartmentById(@NotNull @PathVariable final UUID id) {
+        public ResponseEntity<DepartmentResponseDto> getDepartmentById(@PathVariable final UUID id) {
             return ResponseEntity.ok(departmentWebFacade.getDepartmentById(id));
         }
 

@@ -55,6 +55,7 @@ public class RoomWebFacade {
     @Transactional
     public void updateRoom(final UUID id, final RoomRequestDto roomRequestDto) {
         final Room room = getRoomOrThrow(id);
+        roomMapper.updateEntityFromDto(roomRequestDto, room);
         roomService.save(room);
         log.info("updated room with id {}", id);
     }

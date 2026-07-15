@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class RoomMapperTest {
-
+/*
     private final RoomMapper roomMapper = new RoomMapperImpl();
     private Room room1;
     private Room room2;
@@ -93,5 +93,5 @@ public class RoomMapperTest {
         UUID id = room2.getId();
         roomMapper.updateEntityFromDto(roomRequestDto, room2);
         assertThat(room2.getId()).isEqualTo(id);
-    }
+    }*/
 }

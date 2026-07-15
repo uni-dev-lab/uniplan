@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.unilab.uniplan.common.model.BaseService;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.room.dto.RoomRequestDto;
+import org.unilab.uniplan.room.dto.RoomResponseDto;
 
 @Service
 @RequiredArgsConstructor
@@ -36,5 +37,13 @@ public class RoomService implements BaseService<Room> {
     @Override
     public void delete(final Room room) {
         roomRepository.delete(room);
+    }
+
+    public List<RoomResponseDto> getAllRoomResponses() {
+        return roomRepository.findAllRoomResponses();
+    }
+
+    public Optional<RoomResponseDto> getRoomResponseById(final UUID id) {
+        return roomRepository.findRoomResponseById(id);
     }
 }

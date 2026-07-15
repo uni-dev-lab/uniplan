@@ -8,7 +8,8 @@ public record RoomResponseDto(
 
     UUID facultyId,
 
-    String roomNumber
-) {
+    String roomNumber,
 
-}
+    UUID categoryId
+
+) { }

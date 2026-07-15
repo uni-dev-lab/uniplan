@@ -34,9 +34,9 @@ public class RoomWebFacade {
                  room.getId());
     }
 
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     public List<RoomResponseDto> getAllRooms() {
-        return roomMapper.toResponseDtoList(roomService.getAll());
+        return roomService.getAllRoomResponses();
     }
 
     @Transactional
@@ -46,10 +46,11 @@ public class RoomWebFacade {
         log.info("deleted room with id {}", id);
     }
 
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     public RoomResponseDto getRoomById(final UUID id) {
-        final Room room = getRoomOrThrow(id);
-        return roomMapper.toResponseDto(room);
+        return roomService.getRoomResponseById(id)
+                          .orElseThrow(() -> new ResourceNotFoundException(ROOM_NOT_FOUND.getMessage(
+                              String.valueOf(id))));
     }
 
     @Transactional

@@ -11,27 +11,14 @@ import org.unilab.uniplan.lector.dto.LectorResponseDto;
 @Mapper
 public interface LectorMapper {
 
+    @Mapping(source = "facultyId", target = "faculty.id")
+    Lector toEntity(LectorRequestDto lectorRequestDto);
+
     @Mapping(source = "faculty.id", target = "facultyId")
-    LectorDto toDto(Lector lector);
+    LectorResponseDto toResponseDto(final Lector lector);
 
-    @Mapping(source = "facultyId", target = "faculty.id")
-    Lector toEntity(LectorDto lectorDto);
-
-    @Mapping(source = "facultyId", target = "faculty.id")
-    void updateEntity(LectorDto dto, @MappingTarget Lector entity);
+    List<LectorResponseDto> toResponseDtoList(List<Lector> lectors);
 
     @Mapping(target = "id", ignore = true)
-    LectorDto toInternalDto(final LectorRequestDto lectorRequestDto);
-
-    LectorResponseDto toResponseDto(final LectorDto lectorDto);
-
-    List<LectorDto> toDtos(List<Lector> lectors);
-
-    List<LectorResponseDto> toResponseDtoList(List<LectorDto> lectorDtos);
-
-    @Mapping(target = "email", source = "lectorDto.email")
-    @Mapping(target = "firstName", source = "lectorDto.firstName")
-    @Mapping(target = "lastName", source = "lectorDto.lastName")
-    @Mapping(target = "id", ignore = true)
-    void updateEntityFromDto(final LectorDto lectorDto, @MappingTarget final Lector lector);
+    void updateEntityFromDto(final LectorRequestDto lectorRequestDto, @MappingTarget final Lector lector);
 }

@@ -82,6 +82,8 @@ class StudentMapperTest {
         assertEquals("Ivan", student.getFirstName());
         assertEquals("Ivanov", student.getLastName());
         assertEquals("1234567890", student.getFacultyNumber());
+        assertEquals(courseId, student.getCourse().getId());
+        //courseId should be unchanged, because course is ignored by the mapper
         //updating courseId logic belongs in Facade, not Mapper
     }
 

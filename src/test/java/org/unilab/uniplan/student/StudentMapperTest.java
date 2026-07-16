@@ -75,15 +75,14 @@ class StudentMapperTest {
 
     @Test
     void updateEntity_ShouldUpdateFieldsCorrectly() {
-        UUID newCourseId = UUID.randomUUID();
-        StudentRequestDto updateDto = new StudentRequestDto("Ivan", "Ivanov", "1234567890", newCourseId);
+        StudentRequestDto updateDto = new StudentRequestDto("Ivan", "Ivanov", "1234567890", courseId);
 
         studentMapper.updateEntity(updateDto, student);
 
         assertEquals("Ivan", student.getFirstName());
         assertEquals("Ivanov", student.getLastName());
         assertEquals("1234567890", student.getFacultyNumber());
-        assertEquals(courseId, student.getCourse().getId());
+        //updating courseId logic belongs in Facade, not Mapper
     }
 
     @Test

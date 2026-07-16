@@ -32,4 +32,12 @@ public class MajorService implements BaseService<Major> {
     public void delete(final Major major) {
         majorRepository.delete(major);
     }
+
+    public List<Major> findAllMajorByFacultyId(final UUID facultyId) {
+        return majorRepository.findAllMajorByFacultyId(facultyId);
+    }
+
+    public List<Major> findAllMajorWithCoursesByFacultyId(final UUID facultyId) {
+        return majorRepository.findAllMajorWithCoursesByFacultyId(facultyId);
+    }
 }

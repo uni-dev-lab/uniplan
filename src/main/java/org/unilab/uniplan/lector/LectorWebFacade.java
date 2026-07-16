@@ -48,7 +48,7 @@ public class LectorWebFacade {
         lectorValidator.validateForUpdate(request);
 
         final Lector lector = getLectorOrThrow(id);
-        lectorMapper.updateEntity(request, lector);
+        lectorMapper.updateEntityFromDto(request, lector);
         lectorService.save(lector);
 
         log.info("Updated lector with ID: {}", id);

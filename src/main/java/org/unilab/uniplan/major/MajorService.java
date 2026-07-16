@@ -34,7 +34,7 @@ public class MajorService implements BaseService<Major> {
     }
 
     public List<Major> findAllMajorByFacultyId(final UUID facultyId) {
-        return majorRepository.findAllMajorByFacultyId(facultyId);
+        return majorRepository.findAllByFacultyId(facultyId);
     }
 
     public List<Major> findAllMajorWithCoursesByFacultyId(final UUID facultyId) {

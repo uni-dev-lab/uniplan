@@ -27,133 +27,86 @@ class CourseServiceTest {
     @Mock
     private CourseRepository courseRepository;
 
-    @Mock
-    private CourseMapper courseMapper;
-
     @InjectMocks
     private CourseService courseService;
 
     private UUID courseId;
     private UUID majorId;
     private Course course;
-    private CourseDto courseDTO;
 
     @BeforeEach
     void setUp() {
         courseId = UUID.randomUUID();
         majorId = UUID.randomUUID();
-        courseDTO = new CourseDto(courseId, majorId, (byte) 2, "bachelor", "regular education");
         course = new Course();
     }
 
 
     @Test
-    void createCourseShouldReturnAndSavedCourseDTO() {
-        when(courseMapper.toEntity(courseDTO)).thenReturn(course);
-        when(courseRepository.save(course)).thenReturn(course);
-        when(courseMapper.toDto(course)).thenReturn(courseDTO);
+    void saveShouldSaveCourse() {
+        courseService.save(course);
 
-        CourseDto result = courseService.createCourse(courseDTO);
-
-        assertEquals(courseDTO, result);
         verify(courseRepository).save(course);
     }
 
 
     @Test
     void findAllByMajorIdShouldReturnListOfCourses() {
+        final List<Course> courses = List.of(course);
+
         when(courseRepository.findAllByMajorId(majorId)).thenReturn(List.of(course));
-        when(courseMapper.toDto(course)).thenReturn(courseDTO);
 
-        List<CourseDto> result =  courseService.findAllByMajorId(majorId);
+        final List<Course> result =  courseService.findAllByMajorId(majorId);
 
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals("bachelor", result.getFirst().courseType());
-    }
+        assertEquals(courses, result);
+        verify(courseRepository).findAllByMajorId(majorId);    }
 
     @Test
     void findAllByMajorIdShouldReturnEmptyList() {
 
         when(courseRepository.findAllByMajorId(majorId)).thenReturn(List.of());
 
-        assertTrue(courseService.findAllByMajorId(majorId).isEmpty());
+        final List<Course> result =  courseService.findAllByMajorId(majorId);
 
+        assertTrue(result.isEmpty());
         verify(courseRepository).findAllByMajorId(majorId);
     }
 
     @Test
-    void findCourseByIdShouldReturnEmptyIfNotFound() {
+    void getByIdShouldReturnEmptyOptionalIfCourseDoesNotExist() {
         when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> courseService.findCourseById(courseId));
+        final Optional<Course> result = courseService.getById(courseId);
 
-        assertTrue(exception.getMessage().contains(String.valueOf(courseId)));
+        assertEquals(Optional.empty(), result);
+        verify(courseRepository).findById(courseId);
     }
 
     @Test
-    void findByIdShouldReturnCourseDTOIfFound() {
+    void getByIdShouldReturnCourseOptionalIfCourseExists() {
         when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
-        when(courseMapper.toDto(course)).thenReturn(courseDTO);
 
-        CourseDto result = courseService.findCourseById(courseId);
+        final Optional<Course> result = courseService.getById(courseId);
 
-        assertEquals(courseDTO, result);
+        assertEquals(Optional.of(course), result);
+        verify(courseRepository).findById(courseId);
     }
 
     @Test
-    void findAllShouldReturnListOfCourseDTOs() {
-        List<Course> courseList = List.of(course);
+    void getAllShouldReturnListOfCourses() {
+        final List<Course> courseList = List.of(course);
         when(courseRepository.findAll()).thenReturn(courseList);
-        when(courseMapper.toDto(course)).thenReturn(courseDTO);
 
-        List<CourseDto> result = courseService.findAll();
+        final List<Course> result = courseService.getAll();
 
-        assertEquals(1, result.size());
-        assertEquals(courseDTO, result.getFirst());
-    }
-
-    @Test
-    void updateCourseShouldReturnUpdatedCourseDTOIfFound() {
-        when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
-        doNothing().when(courseMapper).updateEntityFromDto(courseDTO, course);
-        when(courseRepository.save(course)).thenReturn(course);
-        when(courseMapper.toDto(course)).thenReturn(courseDTO);
-
-        CourseDto result = courseService.updateCourse(courseId, courseDTO);
-
-        assertEquals(courseDTO, result);
-        verify(courseRepository).save(course);
-        verify(courseMapper).updateEntityFromDto(courseDTO, course);
-    }
-
-    @Test
-    void updateCourseShouldReturnEmptyIfNotFound() {
-        when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
-
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> courseService.updateCourse(courseId, courseDTO));
-
-        assertTrue(exception.getMessage().contains(String.valueOf(courseId)));
-        verify(courseRepository, never()).save(any());
+        assertEquals(courseList, result);
+        verify(courseRepository).findAll();
     }
 
     @Test
     void deleteCourseShouldDeleteIfFound() {
-        when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
-
-        courseService.deleteCourse(courseId);
+        courseService.delete(course);
 
         verify(courseRepository).delete(course);
-    }
-
-    @Test
-    void deleteCourseShouldThrowIfNotFound() {
-        when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
-
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
-            courseService.deleteCourse(courseId));
-
-        assertTrue(exception.getMessage().contains(String.valueOf(courseId)));
-        verify(courseRepository, never()).delete(any());
     }
 }

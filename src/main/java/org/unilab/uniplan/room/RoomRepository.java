@@ -20,8 +20,8 @@ public interface RoomRepository extends JpaRepository<Room, UUID> {
             c.id
         )
         FROM Room r
-        JOIN RoomCategory rc ON rc.room = r
-        JOIN rc.category c
+        LEFT JOIN RoomCategory rc ON rc.room = r
+        LEFT JOIN rc.category c
         """)
     List<RoomResponseDto> findAllRoomResponses();
 
@@ -32,9 +32,9 @@ public interface RoomRepository extends JpaRepository<Room, UUID> {
             r.roomNumber,
             c.id
         )
-        FROM RoomCategory rc
-        JOIN rc.room r
-        JOIN rc.category c
+        FROM Room r
+        LEFT JOIN RoomCategory rc ON rc.room = r
+        LEFT JOIN rc.category c
         WHERE r.id = :id
         """)
     Optional<RoomResponseDto> findRoomResponseById(@Param("id") UUID id);

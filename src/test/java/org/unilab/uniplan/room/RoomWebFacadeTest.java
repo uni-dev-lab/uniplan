@@ -25,7 +25,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class RoomWebFacadeTest {
-/*
     @Mock
     private RoomMapper roomMapper;
     @Mock
@@ -36,11 +35,13 @@ public class RoomWebFacadeTest {
     private Room entity;
     private RoomResponseDto responseDto;
     private UUID id;
+private UUID categoryId;
 
     @BeforeEach
     void setUp() {
         id = UUID.randomUUID();
         UUID facultyId = UUID.randomUUID();
+         categoryId = UUID.randomUUID();
         University university = new University("Sofia University",
                                                "Sofia, Bulgaria",
                                                (short) 1888,
@@ -53,7 +54,7 @@ public class RoomWebFacadeTest {
         requestDto = new RoomRequestDto(facultyId, "222");
         entity = new Room(faculty, roomNumber);
         entity.setId(id);
-        responseDto = new RoomResponseDto(id, facultyId, roomNumber);
+        responseDto = new RoomResponseDto(id, facultyId, roomNumber, categoryId);
     }
 
     @Test
@@ -70,16 +71,23 @@ public class RoomWebFacadeTest {
     @Test
     void getAllRooms_shouldReturnListOfResponseDtos() {
         List<RoomResponseDto> rooms = List.of(responseDto);
-        List<Room> roomEntities=List.of(entity);
-        when(roomService.getAll()).thenReturn(roomEntities);
-        when(roomMapper.toResponseDtoList(roomEntities))
-            .thenReturn(rooms);
+        when(roomService.getAllRoomResponses()).thenReturn(rooms);
 
         List<RoomResponseDto> results = roomWebFacade.getAllRooms();
 
         assertEquals(rooms, results);
-        verify(roomService).getAll();
-        verify(roomMapper).toResponseDtoList(roomEntities);
+        assertThat(results.getFirst().categoryId()).isEqualTo(categoryId);
+        verify(roomService).getAllRoomResponses();
+    }
+
+    @Test
+    void getRoomById_shouldReturnResponseDto_whenRoomExists() {
+        when(roomService.getRoomResponseById(id)).thenReturn(Optional.of(responseDto));
+
+        RoomResponseDto result = roomWebFacade.getRoomById(id);
+
+        assertEquals(result, responseDto);
+        verify(roomService).getRoomResponseById(id);
     }
 
     @Test
@@ -101,28 +109,6 @@ public class RoomWebFacadeTest {
     }
 
     @Test
-    void getRoomById_shouldReturnResponseDto_whenRoomExists() {
-        when(roomService.getById(id)).thenReturn(Optional.of(entity));
-        when(roomMapper.toResponseDto(entity)).thenReturn(responseDto);
-
-        RoomResponseDto result = roomWebFacade.getRoomById(id);
-
-        assertThat(result.roomNumber()).isEqualTo(entity.getRoomNumber());
-        verify(roomService).getById(id);
-        verify(roomMapper).toResponseDto(entity);
-    }
-
-    @Test
-    void getRoomById_shouldThrowResourceNotFoundException_whenRoomNotFound() {
-        when(roomService.getById(id)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> roomWebFacade.getRoomById(id))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(id.toString());
-        verify(roomService).getById(id);
-    }
-
-    @Test
     void updateRoom_shouldUpdateRoom_whenRoomExists() {
         when(roomService.getById(id)).thenReturn(Optional.of(entity));
 
@@ -139,5 +125,5 @@ public class RoomWebFacadeTest {
         assertThatThrownBy(() -> roomWebFacade.updateRoom(id, requestDto))
             .isInstanceOf(ResourceNotFoundException.class)
             .hasMessageContaining(id.toString());
-    }*/
+    }
 }

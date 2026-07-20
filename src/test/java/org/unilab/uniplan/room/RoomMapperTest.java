@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class RoomMapperTest {
-/*
+
     private final RoomMapper roomMapper = new RoomMapperImpl();
     private Room room1;
     private Room room2;
@@ -27,7 +27,6 @@ public class RoomMapperTest {
     @BeforeEach
     void setUp() {
         facultyId = UUID.randomUUID();
-
         University university = new University("Sofia University",
                                                "Sofia, Bulgaria",
                                                (short) 1888,
@@ -43,8 +42,8 @@ public class RoomMapperTest {
         room2 = new Room(faculty, roomNumber2);
         room2.setId(UUID.randomUUID());
         roomRequestDto = new RoomRequestDto(facultyId, roomNumber1);
-        roomResponseDto1 = new RoomResponseDto(room1.getId(), facultyId, roomNumber1);
-        roomResponseDto2 = new RoomResponseDto(room2.getId(), facultyId, roomNumber2);
+        roomResponseDto1 = new RoomResponseDto(room1.getId(), facultyId, roomNumber1,null);
+        roomResponseDto2 = new RoomResponseDto(room2.getId(), facultyId, roomNumber2,null);
 
     }
 
@@ -93,5 +92,12 @@ public class RoomMapperTest {
         UUID id = room2.getId();
         roomMapper.updateEntityFromDto(roomRequestDto, room2);
         assertThat(room2.getId()).isEqualTo(id);
-    }*/
+    }
+
+    @Test
+    void toResponseDto_shouldSetCategoryIdToNull_whenMappingFromRoomEntity() {
+        RoomResponseDto result = roomMapper.toResponseDto(room1);
+
+        assertThat(result.categoryId()).isNull();
+    }
 }

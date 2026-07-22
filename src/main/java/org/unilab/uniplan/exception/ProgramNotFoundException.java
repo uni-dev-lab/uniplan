@@ -1,5 +1,11 @@
 package org.unilab.uniplan.exception;
 
-public class ProgramNotFoundException {
+import java.util.UUID;
+
+public class ProgramNotFoundException extends ResourceNotFoundException {
+
+    public ProgramNotFoundException(final UUID id) {
+        super(String.format("Program with ID %s not found.", id));
+    }
 
 }

@@ -1,5 +1,11 @@
 package org.unilab.uniplan.exception;
 
-public class CategoryNotFoundException {
+import java.util.UUID;
+
+public class CategoryNotFoundException extends ResourceNotFoundException {
+
+    public CategoryNotFoundException(final UUID id) {
+        super(String.format("Category with ID %s not found.", id));
+    }
 
 }

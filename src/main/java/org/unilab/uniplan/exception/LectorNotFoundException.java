@@ -1,5 +1,11 @@
 package org.unilab.uniplan.exception;
 
-public class LectorNotFoundException {
+import java.util.UUID;
+
+public class LectorNotFoundException extends ResourceNotFoundException {
+
+    public LectorNotFoundException(final UUID id) {
+        super(String.format("Lector with ID %s not found.", id));
+    }
 
 }

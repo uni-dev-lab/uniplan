@@ -1,5 +1,10 @@
 package org.unilab.uniplan.exception;
 
-public class ProgramDisciplineNotFoundException {
+import java.util.UUID;
 
+public class ProgramDisciplineNotFoundException extends ResourceNotFoundException {
+
+    public ProgramDisciplineNotFoundException(final UUID id) {
+        super(String.format("Program discipline with ID %s not found.", id));
+    }
 }

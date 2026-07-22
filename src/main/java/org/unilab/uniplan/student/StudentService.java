@@ -1,13 +1,11 @@
 package org.unilab.uniplan.student;
 
-import static org.unilab.uniplan.utils.ErrorConstants.STUDENT_NOT_FOUND;
-
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.StudentNotFoundException;
 import org.unilab.uniplan.student.dto.StudentCourseMajorDto;
 import org.unilab.uniplan.student.dto.StudentDto;
 
@@ -27,8 +25,7 @@ public class StudentService {
     public StudentDto findStudentById(final UUID id) {
         return studentRepository.findById(id)
                                 .map(studentMapper::toDto)
-                                .orElseThrow(() -> new ResourceNotFoundException(STUDENT_NOT_FOUND.getMessage(
-                                    String.valueOf(id))));
+                                .orElseThrow(() -> new StudentNotFoundException(id));
     }
 
     public List<StudentDto> findAll() {
@@ -42,15 +39,13 @@ public class StudentService {
                                 .map(existingStudent -> updateEntityAndConvertToDto(
                                     studentDTO,
                                     existingStudent))
-                                .orElseThrow(() -> new ResourceNotFoundException(STUDENT_NOT_FOUND.getMessage(
-                                    String.valueOf(id))));
+                                .orElseThrow(() -> new StudentNotFoundException(id));
     }
 
     @Transactional
     public void deleteStudent(final UUID id) {
         final Student student = studentRepository.findById(id)
-                                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                     STUDENT_NOT_FOUND.getMessage(String.valueOf(id))));
+                                                 .orElseThrow(() -> new StudentNotFoundException(id));
         studentRepository.delete(student);
     }
 

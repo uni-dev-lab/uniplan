@@ -7,5 +7,5 @@ public class StudentNotFoundException extends ResourceNotFoundException {
     public StudentNotFoundException(final UUID id) {
         super(String.format("Student with ID %s not found.", id));
     }
-    
+
 }

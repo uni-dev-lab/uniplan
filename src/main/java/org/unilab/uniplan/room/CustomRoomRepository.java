@@ -10,5 +10,5 @@ public interface CustomRoomRepository {
 
     List<RoomResponseDto> findAllRoomResponses();
 
-    Optional<RoomResponseDto> findRoomResponseById(@Param("id") UUID id);
+    Optional<RoomResponseDto> findRoomResponseById(UUID id);
 }

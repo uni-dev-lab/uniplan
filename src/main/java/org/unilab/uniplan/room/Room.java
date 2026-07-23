@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +22,7 @@ import org.unilab.uniplan.faculty.Faculty;
 public class Room extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "faculty_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "faculty_id", referencedColumnName = "id", nullable = true)
     private Faculty faculty;
 
     @Column(name = "room_number", nullable = false, length = 50)
@@ -29,4 +30,5 @@ public class Room extends BaseEntity {
 
     @Column(name = "available_seats", nullable = false)
     private int availableSeats;
+
 }

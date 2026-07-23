@@ -8,7 +8,6 @@ import java.util.UUID;
 
 public record RoomRequestDto(
 
-    @NotNull(message = "Faculty ID cannot be null")
     UUID facultyId,
 
     @NotNull(message = "Room number cannot be null")

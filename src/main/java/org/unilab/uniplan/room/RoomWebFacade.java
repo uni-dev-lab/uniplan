@@ -28,10 +28,13 @@ public class RoomWebFacade {
     @Transactional
     public void createRoom(RoomRequestDto roomRequestDto) {
         Room room = roomMapper.toEntity(roomRequestDto);
+
+        roomService.setFaculty(room, roomRequestDto.facultyId());
+
         roomService.save(room);
         log.info("created room {} with ID: {}",
-                 room.getRoomNumber(),
-                 room.getId());
+                room.getRoomNumber(),
+                room.getId());
     }
 
     @Transactional(readOnly = true)
@@ -57,6 +60,7 @@ public class RoomWebFacade {
     public void updateRoom(final UUID id, final RoomRequestDto roomRequestDto) {
         final Room room = getRoomOrThrow(id);
         roomMapper.updateEntityFromDto(roomRequestDto, room);
+        roomService.setFaculty(room, roomRequestDto.facultyId());
         roomService.save(room);
         log.info("updated room with id {}", id);
     }

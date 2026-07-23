@@ -21,4 +21,6 @@ public class Category extends BaseEntity {
     private String roomType;
     @Column(name = "capacity", nullable = false)
     private short capacity;
+    @Column(name = "description", nullable = true, length = 100)
+    private String description;
 }

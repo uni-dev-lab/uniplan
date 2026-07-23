@@ -28,7 +28,8 @@ public class RoomMapperTest {
                                                "Sofia, Bulgaria",
                                                (short) 1888,
                                                "NEAA",
-                                               "https://uni-sofia.bg"
+                                               "https://uni-sofia.bg",
+                                        null
         );
         roomNumber1 = "111";
         String roomNumber2 = "222";

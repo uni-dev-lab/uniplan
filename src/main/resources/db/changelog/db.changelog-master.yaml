@@ -19,3 +19,5 @@ databaseChangeLog:
       file: db/changelog/20260723134100-drop-not-null-constraint-faculty-room.yaml
   - include:
       file: db/changelog/20260723141400-add-description-column-to-category.yaml
+  - include:
+      file: db/changelog/20260723144301-create-building-table.yaml

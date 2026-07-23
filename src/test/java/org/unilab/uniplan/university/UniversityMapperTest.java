@@ -27,10 +27,10 @@ class UniversityMapperTest {
             "New Name", "New Location", (short) 2000, "New Acc", "https://new.bg"
         );
         university = new University(
-            "Sofia University", "Sofia, Bulgaria", (short) 1888, "NEAA", "https://uni-sofia.bg"
+            "Sofia University", "Sofia, Bulgaria", (short) 1888, "NEAA", "https://uni-sofia.bg", null
         );
         university2 = new University(
-            "Plovdiv University", "Plovdiv", (short) 1961, "NEAA", "https://uni-plovdiv.bg"
+            "Plovdiv University", "Plovdiv", (short) 1961, "NEAA", "https://uni-plovdiv.bg", null
         );
         id = UUID.randomUUID();
     }

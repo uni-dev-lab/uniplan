@@ -41,6 +41,7 @@ public class CustomRoomRepositoryImpl implements CustomRoomRepository {
             room.get("id"),
             room.get("faculty").get("id"),
             room.get("roomNumber"),
+            room.get("availableSeats"),
             category.get("id")
         ));
 
@@ -67,6 +68,7 @@ public class CustomRoomRepositoryImpl implements CustomRoomRepository {
             room.get("id"),
             room.get("faculty").get("id"),
             room.get("roomNumber"),
+            room.get("availableSeats"),
             category.get("id")
         )).where(cb.equal(room.get("id"), id));
 

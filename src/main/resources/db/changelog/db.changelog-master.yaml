@@ -13,3 +13,5 @@ databaseChangeLog:
       file: db/changelog/20260626144400-drop-column-deleted-at-major.yaml
   - include:
       file: db/changelog/20260626144500-add-column-is-deleted-to-course.yaml
+  - include:
+      file: db/changelog/20260723130700-add-available-seats-to-room.yaml

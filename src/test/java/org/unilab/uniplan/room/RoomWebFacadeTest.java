@@ -51,10 +51,10 @@ private UUID categoryId;
         Faculty faculty = new Faculty(university, "FMI", "Faculty Name");
         faculty.setId(facultyId);
         String roomNumber = "111";
-        requestDto = new RoomRequestDto(facultyId, "222");
-        entity = new Room(faculty, roomNumber);
+        requestDto = new RoomRequestDto(facultyId, "222", 20);
+        entity = new Room(faculty, roomNumber, 20);
         entity.setId(id);
-        responseDto = new RoomResponseDto(id, facultyId, roomNumber, categoryId);
+        responseDto = new RoomResponseDto(id, facultyId, roomNumber, 20, categoryId);
     }
 
     @Test

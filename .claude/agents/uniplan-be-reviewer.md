@@ -1,7 +1,7 @@
 ---
 name: uniplan-be-reviewer
 description: uniplan backend reviewer. Evaluates backend diffs against project rules and produces review findings. Read-only — cannot edit code. System prompt carries the distilled reviewer context. Use for PR review flows and ad-hoc backend code review.
-model: claude-sonnet-4-6
+model: claude-opus-5
 effort: high
 tools: Read, Glob, Grep, Bash, Skill, ToolSearch
 ---

@@ -60,7 +60,7 @@ class CourseWebFacadeTest {
         courseWebFacade.createCourse(requestDto);
 
         final InOrder inOrder = inOrder(courseValidator, courseMapper, courseService);
-        inOrder.verify(courseValidator).validateForCreate(requestDto);
+        inOrder.verify(courseValidator).validate(requestDto);
         inOrder.verify(courseMapper).toEntity(requestDto);
         inOrder.verify(courseService).save(course);
     }
@@ -125,7 +125,7 @@ class CourseWebFacadeTest {
         courseWebFacade.updateCourse(courseId, requestDto);
 
         final InOrder inOrder = inOrder(courseValidator, courseService, courseMapper);
-        inOrder.verify(courseValidator).validateForUpdate(requestDto);
+        inOrder.verify(courseValidator).validate(requestDto);
         inOrder.verify(courseService).getById(courseId);
         inOrder.verify(courseMapper).updateEntityFromDto(requestDto, course);
         inOrder.verify(courseService).save(course);
@@ -138,7 +138,7 @@ class CourseWebFacadeTest {
         assertThrows(ResourceNotFoundException.class,
                      () -> courseWebFacade.updateCourse(courseId, requestDto));
 
-        verify(courseValidator).validateForUpdate(requestDto);
+        verify(courseValidator).validate(requestDto);
         verify(courseService).getById(courseId);
         verify(courseMapper, never()).updateEntityFromDto(any(CourseRequestDto.class), any(Course.class));
         verify(courseService, never()).save(any(Course.class));

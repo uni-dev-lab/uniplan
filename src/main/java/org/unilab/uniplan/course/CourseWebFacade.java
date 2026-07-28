@@ -23,7 +23,7 @@ public class CourseWebFacade {
 
     @Transactional
     public void createCourse(final CourseRequestDto requestDto) {
-        courseValidator.validateForCreate(requestDto);
+        courseValidator.validate(requestDto);
 
         final Course course = courseMapper.toEntity(requestDto);
         courseService.save(course);
@@ -51,7 +51,7 @@ public class CourseWebFacade {
     @Transactional
     public void updateCourse(final UUID id,
                              final CourseRequestDto requestDto) {
-        courseValidator.validateForUpdate(requestDto);
+        courseValidator.validate(requestDto);
 
         final Course course = getCourseOrThrow(id);
         courseMapper.updateEntityFromDto(requestDto, course);

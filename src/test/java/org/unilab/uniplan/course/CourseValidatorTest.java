@@ -38,39 +38,20 @@ class CourseValidatorTest {
     }
 
     @Test
-    void validateForCreateShouldPassWhenMajorExists() {
+    void validate_shouldPass_whenMajorExists() {
         when(majorRepository.existsById(majorId)).thenReturn(true);
 
-        assertDoesNotThrow(() -> courseValidator.validateForCreate(requestDto));
+        assertDoesNotThrow(() -> courseValidator.validate(requestDto));
 
         verify(majorRepository).existsById(majorId);
     }
 
     @Test
-    void validateForCreateShouldThrowWhenMajorDoesNotExist() {
+    void validate_shouldThrow_whenMajorDoesNotExist() {
         when(majorRepository.existsById(majorId)).thenReturn(false);
 
         assertThrows(ResourceNotFoundException.class,
-                     () -> courseValidator.validateForCreate(requestDto));
-
-        verify(majorRepository).existsById(majorId);
-    }
-
-    @Test
-    void validateForUpdateShouldPassWhenMajorExists() {
-        when(majorRepository.existsById(majorId)).thenReturn(true);
-
-        assertDoesNotThrow(() -> courseValidator.validateForUpdate(requestDto));
-
-        verify(majorRepository).existsById(majorId);
-    }
-
-    @Test
-    void validateForUpdateShouldThrowWhenMajorDoesNotExist() {
-        when(majorRepository.existsById(majorId)).thenReturn(false);
-
-        assertThrows(ResourceNotFoundException.class,
-                     () -> courseValidator.validateForUpdate(requestDto));
+                     () -> courseValidator.validate(requestDto));
 
         verify(majorRepository).existsById(majorId);
     }

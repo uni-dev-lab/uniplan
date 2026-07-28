@@ -39,12 +39,12 @@ public class CourseController {
     }
 
     @GetMapping("/major/{majorId}")
-    public  ResponseEntity<List<CourseResponseDto>> getCoursesByMajorId(@PathVariable @NotNull final UUID majorId) {
+    public  ResponseEntity<List<CourseResponseDto>> getCoursesByMajorId(@PathVariable final UUID majorId) {
         return ResponseEntity.ok(courseWebFacade.getCoursesByMajorId(majorId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CourseResponseDto> getCourseById(@PathVariable @NotNull final UUID id) {
+    public ResponseEntity<CourseResponseDto> getCourseById(@PathVariable final UUID id) {
         return ResponseEntity.ok(courseWebFacade.getCourseById(id));
     }
 
@@ -54,14 +54,14 @@ public class CourseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CourseResponseDto> updateCourse(@PathVariable @NotNull final UUID id,
+    public ResponseEntity<CourseResponseDto> updateCourse(@PathVariable final UUID id,
                                                           @RequestBody @NotNull @Valid final CourseRequestDto courseRequestDTO) {
         courseWebFacade.updateCourse(id, courseRequestDTO);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCourse(@PathVariable @NotNull final UUID id) {
+    public ResponseEntity<Void> deleteCourse(@PathVariable final UUID id) {
         courseWebFacade.deleteCourse(id);
         return ResponseEntity.noContent().build();
     }

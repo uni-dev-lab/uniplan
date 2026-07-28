@@ -24,7 +24,7 @@ public class MajorWebFacade {
 
     @Transactional
     public void createMajor(final MajorRequestDto requestDto) {
-        majorValidator.validateForCreate(requestDto);
+        majorValidator.validate(requestDto);
 
         final Major major = majorMapper.toEntity(requestDto);
         majorService.save(major);
@@ -47,7 +47,7 @@ public class MajorWebFacade {
     @Transactional
     public void updateMajor(final UUID id,
                             final MajorRequestDto requestDto) {
-        majorValidator.validateForUpdate(requestDto);
+        majorValidator.validate(requestDto);
 
         final Major major = getMajorOrThrow(id);
         majorMapper.updateEntityFromDto(requestDto, major);

@@ -15,11 +15,7 @@ public class MajorValidator {
 
     private final FacultyRepository facultyRepository;
 
-    public void validateForCreate(final MajorRequestDto requestDto) {
-        validateFacultyExists(requestDto.facultyId());
-    }
-
-    public void validateForUpdate(final MajorRequestDto requestDto) {
+    public void validate(final MajorRequestDto requestDto) {
         validateFacultyExists(requestDto.facultyId());
     }
 

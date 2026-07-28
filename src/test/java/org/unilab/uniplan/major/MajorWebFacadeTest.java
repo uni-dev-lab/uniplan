@@ -63,7 +63,7 @@ class MajorWebFacadeTest {
         majorWebFacade.createMajor(requestDto);
 
         final InOrder inOrder = inOrder(majorValidator, majorMapper, majorService);
-        inOrder.verify(majorValidator).validateForCreate(requestDto);
+        inOrder.verify(majorValidator).validate(requestDto);
         inOrder.verify(majorMapper).toEntity(requestDto);
         inOrder.verify(majorService).save(major);
     }
@@ -167,7 +167,7 @@ class MajorWebFacadeTest {
         majorWebFacade.updateMajor(majorId, requestDto);
 
         final InOrder inOrder = inOrder(majorValidator, majorService, majorMapper);
-        inOrder.verify(majorValidator).validateForUpdate(requestDto);
+        inOrder.verify(majorValidator).validate(requestDto);
         inOrder.verify(majorService).getById(majorId);
         inOrder.verify(majorMapper).updateEntityFromDto(requestDto, major);
         inOrder.verify(majorService).save(major);
@@ -180,7 +180,7 @@ class MajorWebFacadeTest {
         assertThrows(ResourceNotFoundException.class,
                      () -> majorWebFacade.updateMajor(majorId, requestDto));
 
-        verify(majorValidator).validateForUpdate(requestDto);
+        verify(majorValidator).validate(requestDto);
         verify(majorService).getById(majorId);
         verify(majorMapper, never()).updateEntityFromDto(any(MajorRequestDto.class), any(Major.class));
         verify(majorService, never()).save(any(Major.class));

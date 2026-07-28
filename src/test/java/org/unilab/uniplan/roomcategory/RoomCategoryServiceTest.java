@@ -39,14 +39,14 @@ class RoomCategoryServiceTest {
     }
 
     @Test
-    void testSaveShouldSaveRoomCategory() {
+    void save_shouldSaveRoomCategory() {
         roomCategoryService.save(entity);
 
         verify(roomCategoryRepository).save(entity);
     }
 
     @Test
-    void testGetAllRoomCategoriesShouldReturnListOfRoomCategory() {
+    void getAll_shouldReturnListOfRoomCategories() {
         final List<RoomCategory> entities = List.of(entity);
 
         when(roomCategoryRepository.findAll()).thenReturn(entities);
@@ -58,7 +58,7 @@ class RoomCategoryServiceTest {
     }
 
     @Test
-    void testGetByIdShouldReturnRoomCategoryOptional() {
+    void getById_shouldReturnOptional_whenRoomCategoryExists() {
         when(roomCategoryRepository.findById(id)).thenReturn(Optional.of(entity));
 
         final Optional<RoomCategory> result = roomCategoryService.getById(id);
@@ -66,7 +66,7 @@ class RoomCategoryServiceTest {
     }
 
     @Test
-    void testGetIdShouldReturnEmptyOptionalIfNotFound() {
+    void getById_shouldReturnEmptyOptional_whenRoomCategoryDoesNotExist() {
         when(roomCategoryRepository.findById(id)).thenReturn(Optional.empty());
 
         final Optional<RoomCategory> result = roomCategoryService.getById(id);
@@ -76,7 +76,7 @@ class RoomCategoryServiceTest {
     }
 
     @Test
-    void testDeleteShouldDeleteIfFound() {
+    void delete_shouldDeleteRoomCategory() {
        roomCategoryService.delete(entity);
 
         verify(roomCategoryRepository).delete(entity);

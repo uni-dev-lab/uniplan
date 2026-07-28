@@ -56,7 +56,7 @@ class RoomCategoryWebFacadeTest {
     }
 
     @Test
-    void testCreateRoomCategoryShouldValidateMapAndSaveRoomCategory() {
+    void createRoomCategory_shouldValidateMapAndSaveRoomCategory() {
         when(roomCategoryMapper.toEntity(requestDto)).thenReturn(roomCategory);
 
         roomCategoryWebFacade.createRoomCategory(requestDto);
@@ -69,7 +69,7 @@ class RoomCategoryWebFacadeTest {
     }
 
     @Test
-    void testGetAllRoomCategoriesShouldReturnResponseDtoList() {
+    void getAllRoomCategories_shouldReturnResponseDtoList() {
         final List<RoomCategory> roomCategories = List.of(roomCategory);
         final List<RoomCategoryResponseDto> responseDtos = List.of(responseDto);
 
@@ -84,7 +84,7 @@ class RoomCategoryWebFacadeTest {
     }
 
     @Test
-    void testGetRoomCategoryByIdShouldReturnResponseDtoIfFound() {
+    void getRoomCategoryById_shouldReturnResponseDto_whenRoomCategoryExists() {
         when(roomCategoryMapper.toRoomCategoryId(roomId, categoryId)).thenReturn(id);
         when(roomCategoryService.getById(id)).thenReturn(Optional.of(roomCategory));
         when(roomCategoryMapper.toResponseDto(roomCategory)).thenReturn(responseDto);
@@ -98,7 +98,7 @@ class RoomCategoryWebFacadeTest {
     }
 
     @Test
-    void testGetRoomCategoryByIdShouldThrowIfNotFound() {
+    void getRoomCategoryById_shouldThrow_whenRoomCategoryNotExist() {
         when(roomCategoryMapper.toRoomCategoryId(roomId, categoryId)).thenReturn(id);
         when(roomCategoryService.getById(id)).thenReturn(Optional.empty());
 
@@ -111,7 +111,7 @@ class RoomCategoryWebFacadeTest {
     }
 
     @Test
-    void testUpdateRoomCategoryShouldValidateUpdateAndSaveRoomCategoryIfFound() {
+    void updateRoomCategory_shouldValidateUpdateAndSaveRoomCategory_whenRoomCategoryExists() {
         when(roomCategoryMapper.toRoomCategoryId(roomId, categoryId)).thenReturn(id);
         when(roomCategoryService.getById(id)).thenReturn(Optional.of(roomCategory));
 
@@ -127,7 +127,7 @@ class RoomCategoryWebFacadeTest {
     }
 
     @Test
-    void testUpdateRoomCategoryShouldThrowIfNotFound() {
+    void updateRoomCategory_shouldThrow_whenRoomCategoryDoesNotExist() {
         when(roomCategoryMapper.toRoomCategoryId(roomId, categoryId)).thenReturn(id);
         when(roomCategoryService.getById(id)).thenReturn(Optional.empty());
 
@@ -142,7 +142,7 @@ class RoomCategoryWebFacadeTest {
     }
 
     @Test
-    void testDeleteRoomCategoryShouldDeleteRoomCategoryIfFound() {
+    void deleteRoomCategory_shouldDeleteRoomCategory_whenRoomCategoryExists() {
         when(roomCategoryMapper.toRoomCategoryId(roomId, categoryId)).thenReturn(id);
         when(roomCategoryService.getById(id)).thenReturn(Optional.of(roomCategory));
 
@@ -154,7 +154,7 @@ class RoomCategoryWebFacadeTest {
     }
 
     @Test
-    void testDeleteRoomCategoryShouldThrowIfNotFound() {
+    void deleteRoomCategory_shouldThrow_whenRoomCategoryDoesNotExist() {
         when(roomCategoryMapper.toRoomCategoryId(roomId, categoryId)).thenReturn(id);
         when(roomCategoryService.getById(id)).thenReturn(Optional.empty());
 

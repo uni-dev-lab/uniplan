@@ -43,7 +43,7 @@ class RoomCategoryValidatorTest {
     }
 
     @Test
-    void testValidateForCreateShouldPassWhenCategoryAndRoomExist() {
+    void validateForCreate_shouldPass_whenCategoryAndRoomExist() {
         when(categoryRepository.existsById(categoryId)).thenReturn(true);
         when(roomRepository.existsById(roomId)).thenReturn(true);
 
@@ -54,7 +54,7 @@ class RoomCategoryValidatorTest {
     }
 
     @Test
-    void testValidateForCreateShouldThrowWhenCategoryDoesNotExist() {
+    void ValidateForCreateShouldThrowWhenCategoryDoesNotExist() {
         when(categoryRepository.existsById(categoryId)).thenReturn(false);
 
         assertThrows(ResourceNotFoundException.class,
@@ -64,7 +64,7 @@ class RoomCategoryValidatorTest {
     }
 
     @Test
-    void testValidateForCreateShouldThrowWhenRoomDoesNotExist() {
+    void validateForCreate_shouldThrow_whenCategoryDoesNotExist() {
         when(categoryRepository.existsById(categoryId)).thenReturn(true);
         when(roomRepository.existsById(roomId)).thenReturn(false);
 
@@ -76,7 +76,7 @@ class RoomCategoryValidatorTest {
     }
 
     @Test
-    void testValidateForUpdateShouldPassWhenCategoryAndRoomExist() {
+    void validateForUpdate_shouldPass_whenCategoryAndRoomExist() {
         when(categoryRepository.existsById(categoryId)).thenReturn(true);
         when(roomRepository.existsById(roomId)).thenReturn(true);
 
@@ -87,7 +87,7 @@ class RoomCategoryValidatorTest {
     }
 
     @Test
-    void testValidateForUpdateShouldThrowWhenCategoryDoesNotExist() {
+    void validateForUpdate_shouldThrow_whenCategoryDoesNotExist() {
         when(categoryRepository.existsById(categoryId)).thenReturn(false);
 
         assertThrows(ResourceNotFoundException.class,
@@ -97,7 +97,7 @@ class RoomCategoryValidatorTest {
     }
 
     @Test
-    void testValidateForUpdateShouldThrowWhenRoomDoesNotExist() {
+    void validateForUpdate_shouldThrow_whenRoomDoesNotExist() {
         when(categoryRepository.existsById(categoryId)).thenReturn(true);
         when(roomRepository.existsById(roomId)).thenReturn(false);
 
@@ -109,7 +109,7 @@ class RoomCategoryValidatorTest {
     }
 
     @Test
-    void testValidateCategoryExistsShouldPassWhenCategoryExists() {
+    void validateCategoryExists_shouldPass_whenCategoryExists() {
         when(categoryRepository.existsById(categoryId)).thenReturn(true);
 
         assertDoesNotThrow(() -> roomCategoryValidator.validateCategoryExists(categoryId));
@@ -118,7 +118,7 @@ class RoomCategoryValidatorTest {
     }
 
     @Test
-    void testValidateCategoryExistsShouldThrowWhenCategoryDoesNotExist() {
+    void validateCategoryExists_shouldThrow_whenCategoryDoesNotExist() {
         when(categoryRepository.existsById(categoryId)).thenReturn(false);
 
         assertThrows(ResourceNotFoundException.class,
@@ -128,7 +128,7 @@ class RoomCategoryValidatorTest {
     }
 
     @Test
-    void testValidateRoomExistsShouldPassWhenRoomExists() {
+    void validateRoomExists_shouldPass_whenRoomExists() {
         when(roomRepository.existsById(roomId)).thenReturn(true);
 
         assertDoesNotThrow(() -> roomCategoryValidator.validateRoomExists(roomId));
@@ -137,7 +137,7 @@ class RoomCategoryValidatorTest {
     }
     
     @Test
-    void testValidateRoomExistsShouldThrowWhenRoomDoesNotExist() {
+    void validateRoomExists_shouldThrow_whenRoomDoesNotExist() {
         when(roomRepository.existsById(roomId)).thenReturn(false);
 
         assertThrows(ResourceNotFoundException.class,

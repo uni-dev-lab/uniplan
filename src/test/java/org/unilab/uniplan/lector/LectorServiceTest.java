@@ -4,7 +4,6 @@ package org.unilab.uniplan.lector;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,7 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.LectorNotFoundException;
 import org.unilab.uniplan.lector.dto.LectorDto;
 
 @ExtendWith(MockitoExtension.class)
@@ -90,10 +89,10 @@ class LectorServiceTest {
     void testGetLectorByIdShouldReturnEmptyOptionalIfLectorNotFound() {
         when(lectorRepository.findById(id)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+        LectorNotFoundException exception = assertThrows(LectorNotFoundException.class,
                                                            () -> lectorService.getLectorById(id));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
+        assertEquals("lector_not_found", exception.getMessageKey());
     }
 
     @Test
@@ -112,11 +111,11 @@ class LectorServiceTest {
     void testUpdateLectorShouldReturnEmptyOptionalIfNotFound() {
         when(lectorRepository.findById(id)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+        LectorNotFoundException exception = assertThrows(LectorNotFoundException.class,
                                                            () -> lectorService.updateLector(id,
                                                                                             lectorDto));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
+        assertEquals("lector_not_found", exception.getMessageKey());
     }
 
     @Test
@@ -132,9 +131,9 @@ class LectorServiceTest {
     void testDeleteLectorShouldThrowIfNotFound() {
         when(lectorRepository.findById(id)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
+        LectorNotFoundException exception = assertThrows(LectorNotFoundException.class, () ->
             lectorService.deleteLector(id));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
+        assertEquals("lector_not_found", exception.getMessageKey());
     }
 }

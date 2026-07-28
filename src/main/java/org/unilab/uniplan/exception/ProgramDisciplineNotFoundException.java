@@ -6,6 +6,6 @@ import org.unilab.uniplan.programdiscipline.ProgramDisciplineId;
 public class ProgramDisciplineNotFoundException extends ResourceNotFoundException {
 
     public ProgramDisciplineNotFoundException(final ProgramDisciplineId id) {
-        super(String.format("Program discipline with ID %s not found.", id));
+        super("program_discipline_not_found", id);
     }
 }

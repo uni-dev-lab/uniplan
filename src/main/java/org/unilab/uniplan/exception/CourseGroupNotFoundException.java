@@ -5,7 +5,7 @@ import java.util.UUID;
 public class CourseGroupNotFoundException extends ResourceNotFoundException {
 
     public CourseGroupNotFoundException(final UUID id) {
-        super(String.format("Course group with ID %s not found.", id));
+        super("course_group_not_found", id);
     }
 
 }

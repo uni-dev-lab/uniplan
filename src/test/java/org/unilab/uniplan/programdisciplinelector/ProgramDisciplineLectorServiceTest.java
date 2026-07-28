@@ -3,7 +3,6 @@ package org.unilab.uniplan.programdisciplinelector;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -17,7 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.ProgramDisciplineLectorNotFoundException;
 import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorDto;
 
 @ExtendWith(MockitoExtension.class)
@@ -104,13 +103,13 @@ class ProgramDisciplineLectorServiceTest {
                                                                        disciplineId)).thenReturn(
             programDisciplineLectorId);
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+        ProgramDisciplineLectorNotFoundException exception = assertThrows(ProgramDisciplineLectorNotFoundException.class,
                                                            () -> programDisciplineLectorService.getProgramDisciplineLectorById(
                                                                lectorId,
                                                                programId,
                                                                disciplineId));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(programDisciplineLectorId)));
+        assertEquals("program_discipline_lector_not_found", exception.getMessageKey());
     }
 
     @Test
@@ -141,14 +140,14 @@ class ProgramDisciplineLectorServiceTest {
                                                                        disciplineId)).thenReturn(
             programDisciplineLectorId);
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+        ProgramDisciplineLectorNotFoundException exception = assertThrows(ProgramDisciplineLectorNotFoundException.class,
                                                            () -> programDisciplineLectorService.updateProgramDisciplineLector(
                                                                lectorId,
                                                                programId,
                                                                disciplineId,
                                                                programDisciplineLectorDto));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(programDisciplineLectorId)));
+        assertEquals("program_discipline_lector_not_found", exception.getMessageKey());
     }
 
     @Test
@@ -172,11 +171,9 @@ class ProgramDisciplineLectorServiceTest {
                                                                        disciplineId)).thenReturn(
             programDisciplineLectorId);
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
+        ProgramDisciplineLectorNotFoundException exception = assertThrows(ProgramDisciplineLectorNotFoundException.class, () ->
             programDisciplineLectorService.deleteProgramDisciplineLector(lectorId,programId,disciplineId));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(lectorId)));
-        assertTrue(exception.getMessage().contains(String.valueOf(programId)));
-        assertTrue(exception.getMessage().contains(String.valueOf(disciplineId)));
+        assertEquals("program_discipline_lector_not_found", exception.getMessageKey());
     }
 }

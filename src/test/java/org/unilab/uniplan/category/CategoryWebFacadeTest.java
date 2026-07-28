@@ -8,7 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.category.dto.CategoryRequestDto;
 import org.unilab.uniplan.category.dto.CategoryResponseDto;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.CategoryNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -71,7 +71,7 @@ public class CategoryWebFacadeTest {
     void testUpdateShouldThrowCategoryNotFound() {
         when(categoryService.getById(id)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class,
+        assertThrows(CategoryNotFoundException.class,
                      () -> categoryWebFacade.updateCategory(id, requestDto));
 
         verify(categoryService).getById(id);
@@ -95,7 +95,7 @@ public class CategoryWebFacadeTest {
     void getCategoryByIdShouldThrowCategoryNotFound() {
         when(categoryService.getById(id)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class,
+        assertThrows(CategoryNotFoundException.class,
                      () -> categoryWebFacade.getCategoryById(id));
 
         verify(categoryService).getById(id);
@@ -116,7 +116,7 @@ public class CategoryWebFacadeTest {
     void deleteCategoryShouldThrowCategoryNotFound() {
         when(categoryService.getById(id)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class,
+        assertThrows(CategoryNotFoundException.class,
                      () -> categoryWebFacade.deleteCategory(id));
 
         verify(categoryService).getById(id);

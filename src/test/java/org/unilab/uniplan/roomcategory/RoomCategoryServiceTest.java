@@ -17,7 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.RoomCategoryNotFoundException;
 import org.unilab.uniplan.roomcategory.dto.RoomCategoryDto;
 
 @ExtendWith(MockitoExtension.class)
@@ -89,10 +89,10 @@ class RoomCategoryServiceTest {
         when(roomCategoryMapper.toRoomCategoryId(roomId, categoryId)).thenReturn(id);
         when(roomCategoryRepository.findById(id)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> roomCategoryService.getRoomCategoryById(roomId,
+        RoomCategoryNotFoundException exception = assertThrows(RoomCategoryNotFoundException.class, () -> roomCategoryService.getRoomCategoryById(roomId,
                                                                                       categoryId));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
+        assertEquals("room_category_not_found", exception.getMessageKey());
     }
 
     @Test
@@ -114,10 +114,10 @@ class RoomCategoryServiceTest {
         when(roomCategoryMapper.toRoomCategoryId(roomId, categoryId)).thenReturn(id);
         when(roomCategoryRepository.findById(id)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
+        RoomCategoryNotFoundException exception = assertThrows(RoomCategoryNotFoundException.class, () ->
             roomCategoryService.deleteRoomCategory(roomId, categoryId));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(roomId)));
-        assertTrue(exception.getMessage().contains(String.valueOf(categoryId)));
+        assertEquals("room_category_not_found", exception.getMessageKey());
+
     }
 }

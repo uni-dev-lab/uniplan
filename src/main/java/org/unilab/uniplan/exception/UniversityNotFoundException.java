@@ -5,7 +5,7 @@ import java.util.UUID;
 public class UniversityNotFoundException extends ResourceNotFoundException {
 
     public UniversityNotFoundException(final UUID id) {
-        super(String.format("University with ID %s not found.", id));
+        super("university_not_found" , id);
     }
 
 }

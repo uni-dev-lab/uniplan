@@ -21,3 +21,5 @@ databaseChangeLog:
       file: db/changelog/20260723141400-add-description-column-to-category.yaml
   - include:
       file: db/changelog/20260723144301-create-building-table.yaml
+  - include:
+      file: db/changelog/20260728113500-add-building-column-to-room.yaml

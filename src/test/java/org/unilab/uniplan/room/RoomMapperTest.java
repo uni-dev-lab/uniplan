@@ -33,13 +33,13 @@ public class RoomMapperTest {
         );
         roomNumber1 = "111";
         String roomNumber2 = "222";
-        room1 = new Room(null, roomNumber1, 20);
+        room1 = new Room(null, roomNumber1, 20, null);
         room1.setId(UUID.randomUUID());
-        room2 = new Room(null, roomNumber2, 20);
+        room2 = new Room(null, roomNumber2, 20, null);
         room2.setId(UUID.randomUUID());
         roomRequestDto = new RoomRequestDto(null, roomNumber1, 20);
-        roomResponseDto1 = new RoomResponseDto(room1.getId(), null, roomNumber1,20,null);
-        roomResponseDto2 = new RoomResponseDto(room2.getId(), null, roomNumber2,20,null);
+        roomResponseDto1 = new RoomResponseDto(room1.getId(), null, roomNumber1,20,null, null);
+        roomResponseDto2 = new RoomResponseDto(room2.getId(), null, roomNumber2,20,null, null);
 
     }
 

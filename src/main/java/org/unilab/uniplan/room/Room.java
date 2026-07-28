@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.unilab.uniplan.building.Building;
 import org.unilab.uniplan.common.model.BaseEntity;
 import org.unilab.uniplan.faculty.Faculty;
 
@@ -31,4 +32,7 @@ public class Room extends BaseEntity {
     @Column(name = "available_seats", nullable = false)
     private int availableSeats;
 
+    @ManyToOne
+    @JoinColumn(name = "building_id")
+    private Building building;
 }

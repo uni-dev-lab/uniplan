@@ -42,7 +42,8 @@ public class CustomRoomRepositoryImpl implements CustomRoomRepository {
             room.get("faculty").get("id"),
             room.get("roomNumber"),
             room.get("availableSeats"),
-            category.get("id")
+            category.get("id"),
+            room.get("building").get("id")
         ));
 
         return entityManager.createQuery(query).getResultList();
@@ -69,7 +70,8 @@ public class CustomRoomRepositoryImpl implements CustomRoomRepository {
             room.get("faculty").get("id"),
             room.get("roomNumber"),
             room.get("availableSeats"),
-            category.get("id")
+            category.get("id"),
+            room.get("building").get("id")
         )).where(cb.equal(room.get("id"), id));
 
         return entityManager.createQuery(query)

@@ -52,9 +52,9 @@ private UUID categoryId;
         faculty.setId(facultyId);
         String roomNumber = "111";
         requestDto = new RoomRequestDto(facultyId, "222", 20);
-        entity = new Room(faculty, roomNumber, 20);
+        entity = new Room(faculty, roomNumber, 20, null);
         entity.setId(id);
-        responseDto = new RoomResponseDto(id, facultyId, roomNumber, 20, categoryId);
+        responseDto = new RoomResponseDto(id, facultyId, roomNumber, 20, categoryId, null);
     }
 
     @Test

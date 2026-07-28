@@ -36,4 +36,7 @@ public class Building extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "university_id", referencedColumnName = "id")
     private University university;
+
+    @OneToMany(mappedBy = "building")
+    private List<Room> rooms = new ArrayList<>();
 }

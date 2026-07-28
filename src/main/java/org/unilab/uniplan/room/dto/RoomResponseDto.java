@@ -12,5 +12,7 @@ public record RoomResponseDto(
 
     int availableSeats,
 
-    UUID categoryId
+    UUID categoryId,
+
+    UUID buildingId
 ) { }

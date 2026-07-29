@@ -7,7 +7,6 @@ import org.hibernate.query.criteria.HibernateCriteriaBuilder;
 import org.hibernate.query.criteria.JpaCriteriaQuery;
 import org.hibernate.query.criteria.JpaEntityJoin;
 import org.hibernate.query.criteria.JpaRoot;
-import org.springframework.data.repository.query.Param;
 import org.unilab.uniplan.category.Category;
 import org.unilab.uniplan.room.dto.RoomResponseDto;
 import org.unilab.uniplan.roomcategory.RoomCategory;

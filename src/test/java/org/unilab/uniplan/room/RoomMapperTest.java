@@ -11,7 +11,6 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 public class RoomMapperTest {
 
     private final RoomMapper roomMapper = new RoomMapperImpl();
@@ -20,7 +19,6 @@ public class RoomMapperTest {
     private RoomRequestDto roomRequestDto;
     private RoomResponseDto roomResponseDto1;
     private RoomResponseDto roomResponseDto2;
-
     private String roomNumber1;
     private UUID facultyId;
 
@@ -42,14 +40,15 @@ public class RoomMapperTest {
         room2 = new Room(faculty, roomNumber2);
         room2.setId(UUID.randomUUID());
         roomRequestDto = new RoomRequestDto(facultyId, roomNumber1);
-        roomResponseDto1 = new RoomResponseDto(room1.getId(), facultyId, roomNumber1,null);
-        roomResponseDto2 = new RoomResponseDto(room2.getId(), facultyId, roomNumber2,null);
+        roomResponseDto1 = new RoomResponseDto(room1.getId(), facultyId, roomNumber1, null);
+        roomResponseDto2 = new RoomResponseDto(room2.getId(), facultyId, roomNumber2, null);
 
     }
 
     @Test
     void toEntity_shouldMapAllFieldsAndIgnoreId_whenRequestDtoIsValid() {
         final Room result = roomMapper.toEntity(roomRequestDto);
+
         assertThat(result.getFaculty().getId()).isEqualTo(facultyId);
         assertThat(result.getRoomNumber()).isEqualTo(roomNumber1);
         assertThat(result.getId()).isNull();
@@ -58,6 +57,7 @@ public class RoomMapperTest {
     @Test
     void toResponseDto_shouldMapAllFields_whenFacultyIsValid() {
         RoomResponseDto result = roomMapper.toResponseDto(room1);
+
         assertThat(result.id()).isEqualTo(room1.getId());
         assertThat(result.facultyId()).isEqualTo(facultyId);
         assertThat(result.roomNumber()).isEqualTo(roomNumber1);
@@ -84,6 +84,7 @@ public class RoomMapperTest {
     @Test
     void updateEntity_shouldUpdateAllFields_whenRequestDtoIsValid() {
         roomMapper.updateEntityFromDto(roomRequestDto, room2);
+
         assertThat(room2.getRoomNumber()).isEqualTo(roomNumber1);
     }
 
@@ -91,6 +92,7 @@ public class RoomMapperTest {
     void updateEntity_shouldNotChangeId_whenUpdating() {
         UUID id = room2.getId();
         roomMapper.updateEntityFromDto(roomRequestDto, room2);
+
         assertThat(room2.getId()).isEqualTo(id);
     }
 

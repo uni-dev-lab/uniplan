@@ -54,7 +54,7 @@ public class CourseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CourseResponseDto> updateCourse(@PathVariable final UUID id,
+    public ResponseEntity<Void> updateCourse(@PathVariable final UUID id,
                                                           @RequestBody @NotNull @Valid final CourseRequestDto courseRequestDTO) {
         courseWebFacade.updateCourse(id, courseRequestDTO);
         return ResponseEntity.noContent().build();

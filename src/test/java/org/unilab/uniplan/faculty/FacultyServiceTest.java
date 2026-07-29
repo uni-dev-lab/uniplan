@@ -13,9 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.unilab.uniplan.faculty.Faculty;
-import org.unilab.uniplan.faculty.FacultyRepository;
-import org.unilab.uniplan.faculty.FacultyService;
 
 @ExtendWith(MockitoExtension.class)
 class FacultyServiceTest {

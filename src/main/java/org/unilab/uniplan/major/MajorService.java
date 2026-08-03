@@ -1,7 +1,7 @@
 package org.unilab.uniplan.major;
 
+import org.unilab.uniplan.faculty.Faculty;
 import org.unilab.uniplan.major.dto.MajorCoursesDto;
-
 import static org.unilab.uniplan.utils.ErrorConstants.MAJOR_NOT_FOUND;
 
 import jakarta.transaction.Transactional;
@@ -77,7 +77,10 @@ public class MajorService {
 
     private MajorDto updateEntityAndConvertToDto(final MajorDto dto,
                                                  final Major entity) {
-        majorMapper.updateEntityFromDto(dto, entity);
+        Faculty faculty = new Faculty();
+        faculty.setId(dto.facultyId());
+        entity.setFaculty(faculty);
+        entity.setMajorName(dto.majorName());
         return saveEntityAndConvertToDto(entity);
     }
 

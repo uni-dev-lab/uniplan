@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20260626144200-1
+      author: pipetkova19
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - columnExists:
+                tableName: major
+                columnName: is_deleted
+      changes:
+        - addColumn:
+            tableName: major
+            columns:
+              - column:
+                  name: is_deleted
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropColumn:
+            tableName: major
+            columnName: is_deleted

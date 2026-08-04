@@ -31,7 +31,8 @@ class FacultyMapperTest {
             "Burgas",
             (short) 1999,
             "accreditation",
-            "www.pu.com"
+            "www.pu.com",
+            null
         );
         university.setId(universityId);
 

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MajorRepository extends JpaRepository<Major, UUID> {
 
-    public List<Major> findAllByFacultyId(UUID facultyId);
-    List<Major> findAllMajorByFacultyId(UUID facultyId);
+    List<Major> findAllByFacultyId(UUID facultyId);
     List<Major> findAllMajorWithCoursesByFacultyId(UUID facultyId);
 }

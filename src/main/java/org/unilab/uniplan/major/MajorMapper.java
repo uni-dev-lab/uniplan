@@ -19,10 +19,12 @@ public interface MajorMapper {
     @Mapping(source = "facultyId", target = "faculty.id")
     void updateEntityFromDto(MajorRequestDto majorRequestDto, @MappingTarget Major major);
 
+    @Mapping(source = "faculty.id", target = "facultyId")
     MajorResponseDto toResponseDto(Major major);
 
     List<MajorResponseDto> toResponseDtoList(List<Major> majors);
 
+    @Mapping(source = "faculty.id", target = "facultyId")
     MajorCoursesResponseDto toFullResponseDto(Major major);
 
     List<MajorCoursesResponseDto> toFullResponseDtoList(List<Major> majors);

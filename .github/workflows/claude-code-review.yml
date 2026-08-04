@@ -91,6 +91,10 @@ jobs:
 
       - name: Run Claude Code Review
         uses: anthropics/claude-code-action@v1
+        env:
+          # Trips the `/review-pr` skill's CI override so it skips worktree
+          # creation instead of relying on the prompt to contradict the skill.
+          CI: "true"
         with:
           # This secret MUST be defined as an environment-scoped secret on the
           # `reviewers-only` environment, not as a repo-wide secret. That way it is
@@ -103,7 +107,7 @@ jobs:
           # The prompt posts via `gh` and dispatches the uniplan-be-reviewer
           # subagent (Task) + the /review-pr skill (Skill) — all must be granted.
           claude_args: >-
-            --model claude-sonnet-4-6
+            --model claude-opus-5
             --allowedTools "Bash(gh pr review:*),Bash(gh api:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(git:*),Task,Read,Glob,Grep,Skill"
           prompt: |
             You are orchestrating a code review of PR #${{ inputs.pr_number }} in ${{ github.repository }}.
@@ -111,10 +115,15 @@ jobs:
             Run the project's `/review-pr` skill against this PR. The skill is defined
             in `.claude/skills/review-pr/SKILL.md` — read it and follow its steps.
 
-            For this CI invocation, override the worktree handling: you are already
-            checked out at the PR branch in the current working directory, so skip
-            the "create a worktree" step and treat the current directory as the
-            worktree path. All other steps apply unchanged.
+            For this CI invocation, the skill's own CI override applies (CI=true is
+            set in the environment): you are already checked out at the PR branch in
+            the current working directory, so skip the "create a worktree" step and
+            treat the current directory as the worktree path. All other steps apply
+            unchanged.
+
+            This run is review-only. Do not push commits, do not edit any files, and
+            do not open new PRs — the only write you make is the review comment
+            described below.
 
             The skill will:
             1. Fetch PR metadata.

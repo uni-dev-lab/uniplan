@@ -24,8 +24,8 @@ public class LectorWebFacade {
 
     @Transactional
     public void createLector(final LectorRequestDto request) {
-        final Lector lector = lectorMapper.toEntity(request);
         lectorValidator.validate(request);
+        final Lector lector = lectorMapper.toEntity(request);
         lectorService.save(lector);
         log.info("Lector with id {} has been created", lector.getId());
     }
@@ -35,7 +35,7 @@ public class LectorWebFacade {
         return lectorMapper.toResponseDtoList(lectorService.getAll());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public LectorResponseDto getLectorById(final UUID id) {
         final Lector lector = getLectorOrThrow(id);
         return lectorMapper.toResponseDto(lector);

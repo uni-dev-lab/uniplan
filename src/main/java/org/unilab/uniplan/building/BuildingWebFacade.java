@@ -22,16 +22,23 @@ public class BuildingWebFacade {
     private final BuildingService buildingService;
     private final BuildingMapper buildingMapper;
     private final UniversityService universityService;
+    private final BuildingValidator buildingValidator;
 
     @Transactional
     public void createBuilding(final BuildingRequestDto request) {
+        buildingValidator.validate(request);
+
         final Building building = buildingMapper.toEntity(request);
         building.setUniversity(getUniversityOrThrow(request.universityId()));
         buildingService.save(building);
+
+        log.info("created building with ID: {}", building.getId());
     }
 
     @Transactional
     public void updateBuilding(final UUID id, final BuildingRequestDto request) {
+        buildingValidator.validate(request);
+
         final Building building = getBuildingOrThrow(id);
         buildingMapper.updateEntityFromDto(request, building);
         building.setUniversity(getUniversityOrThrow(request.universityId()));

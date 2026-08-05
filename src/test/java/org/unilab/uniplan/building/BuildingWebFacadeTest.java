@@ -37,6 +37,9 @@ class BuildingWebFacadeTest {
     @Mock
     private UniversityService universityService;
 
+    @Mock
+    private BuildingValidator buildingValidator;
+
     @InjectMocks
     private BuildingWebFacade buildingWebFacade;
 
@@ -65,7 +68,8 @@ class BuildingWebFacadeTest {
 
         buildingWebFacade.createBuilding(requestDto);
 
-        final InOrder inOrder = inOrder(buildingMapper, universityService, buildingService);
+        final InOrder inOrder = inOrder(buildingValidator, buildingMapper, universityService, buildingService);
+        inOrder.verify(buildingValidator).validate(requestDto);
         inOrder.verify(buildingMapper).toEntity(requestDto);
         inOrder.verify(universityService).getById(universityId);
         inOrder.verify(buildingService).save(building);
@@ -81,6 +85,7 @@ class BuildingWebFacadeTest {
         assertThrows(ResourceNotFoundException.class,
                      () -> buildingWebFacade.createBuilding(requestDto));
 
+        verify(buildingValidator).validate(requestDto);
         verify(buildingService, never()).save(any(Building.class));
     }
 
@@ -130,7 +135,8 @@ class BuildingWebFacadeTest {
 
         buildingWebFacade.updateBuilding(buildingId, requestDto);
 
-        final InOrder inOrder = inOrder(buildingService, buildingMapper, universityService);
+        final InOrder inOrder = inOrder(buildingValidator, buildingService, buildingMapper, universityService);
+        inOrder.verify(buildingValidator).validate(requestDto);
         inOrder.verify(buildingService).getById(buildingId);
         inOrder.verify(buildingMapper).updateEntityFromDto(requestDto, building);
         inOrder.verify(universityService).getById(universityId);
@@ -145,6 +151,7 @@ class BuildingWebFacadeTest {
         assertThrows(ResourceNotFoundException.class,
                      () -> buildingWebFacade.updateBuilding(buildingId, requestDto));
 
+        verify(buildingValidator).validate(requestDto);
         verify(buildingService).getById(buildingId);
         verify(buildingMapper, never()).updateEntityFromDto(any(BuildingRequestDto.class), any(Building.class));
         verify(buildingService, never()).save(any(Building.class));

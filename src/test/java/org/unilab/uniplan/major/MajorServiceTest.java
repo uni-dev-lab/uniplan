@@ -100,4 +100,25 @@ class MajorServiceTest {
 
         verify(majorRepository).delete(major);
     }
+
+    @Test
+    void findAllMajorWithCoursesByFacultyIdShouldReturnListOfMajors() {
+        final List<Major> majors = List.of(major);
+
+        when(majorRepository.findAllMajorWithCoursesByFacultyId(facultyId)).thenReturn(List.of(major));
+
+        final List<Major> result = majorService.findAllMajorWithCoursesByFacultyId(facultyId);
+
+        assertEquals(majors, result);
+        verify(majorRepository).findAllMajorWithCoursesByFacultyId(facultyId);
+    }
+
+    @Test
+    void findAllMajorWithCoursesByFacultyIdShouldReturnEmptyList() {
+        when(majorRepository.findAllMajorWithCoursesByFacultyId(facultyId)).thenReturn(List.of());
+
+        assertTrue(majorService.findAllMajorWithCoursesByFacultyId(facultyId).isEmpty());
+
+        verify(majorRepository).findAllMajorWithCoursesByFacultyId(facultyId);
+    }
 }

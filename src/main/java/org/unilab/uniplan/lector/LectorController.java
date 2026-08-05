@@ -39,18 +39,20 @@ public class LectorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LectorResponseDto> getLectorById(@NotNull @PathVariable final UUID id) {
+    public ResponseEntity<LectorResponseDto> getLectorById(@PathVariable final UUID id) {
        return ResponseEntity.ok(lectorWebFacade.getLectorById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateLector(@NotNull @PathVariable final UUID id, @Valid @NotNull @RequestBody final LectorRequestDto lectorRequestDto) {
+    public ResponseEntity<Void> updateLector(@PathVariable final UUID id,
+                                             @Valid @NotNull @RequestBody
+                                             final LectorRequestDto lectorRequestDto) {
         lectorWebFacade.updateLector(id, lectorRequestDto);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLector(@NotNull @PathVariable final UUID id) {
+    public ResponseEntity<Void> deleteLector(@PathVariable final UUID id) {
         lectorWebFacade.deleteLectorById(id);
         return ResponseEntity.noContent().build();
     }

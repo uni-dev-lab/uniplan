@@ -17,9 +17,6 @@ public interface LectorMapper {
     @Mapping(target = "id", ignore = true)
     Lector toEntity(LectorRequestDto requestDto);
 
-    @Mapping(source = "faculty.id", target = "facultyId")
-    LectorDto toDto(Lector lector);
-
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "facultyId", target = "faculty")
     void updateEntity(LectorRequestDto requestDto, @MappingTarget Lector lector);

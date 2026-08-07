@@ -22,45 +22,48 @@ public class StudentWebFacade {
     private final StudentValidator studentValidator;
 
     @Transactional
-    public void createStudent(final StudentRequestDto request){
+    public void createStudent(final StudentRequestDto request) {
         studentValidator.validate(request);
-        final Student student = studentMapper.toEntity(request);
-        studentService.save(student);
-        log.info("created student with ID: {}", student.getId());
+        final Student entity = studentMapper.toEntity(request);
+        studentService.save(entity);
+
+        log.info("Created student with faculty number: {}", request.facultyNumber());
     }
 
     @Transactional(readOnly = true)
-    public List<StudentResponseDto> getAllStudents(){
+    public List<StudentResponseDto> getAllStudents() {
         return studentMapper.toResponseDtoList(studentService.getAll());
     }
 
     @Transactional(readOnly = true)
-    public StudentResponseDto getStudentById(final UUID id){
+    public StudentResponseDto getStudentById(final UUID id) {
         final Student student = getStudentOrThrow(id);
         return studentMapper.toResponseDto(student);
     }
 
     @Transactional
     public void updateStudent(final UUID id,
-                              final StudentRequestDto request){
+                              final StudentRequestDto request) {
         studentValidator.validate(request);
+
         final Student student = getStudentOrThrow(id);
         studentMapper.updateEntity(request, student);
         studentService.save(student);
-        log.info("updated student with ID: {}", student.getId());
+
+        log.info("Updated student with faculty number: {}", request.facultyNumber());
     }
 
     @Transactional
-    public void deleteStudent(final UUID id){
+    public void deleteStudent(final UUID id) {
         final Student student = getStudentOrThrow(id);
         studentService.delete(student);
         log.info("deleted student with ID: {}", id);
     }
 
-    private Student getStudentOrThrow(final UUID id){
+    private Student getStudentOrThrow(final UUID id) {
         return studentService.getById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(
-                STUDENT_NOT_FOUND.getMessage(String.valueOf(id))
-            ));
+                             .orElseThrow(() -> new ResourceNotFoundException(
+                                 STUDENT_NOT_FOUND.getMessage(String.valueOf(id))
+                             ));
     }
 }

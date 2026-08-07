@@ -32,13 +32,13 @@ class StudentServiceTest {
     }
 
     @Test
-    void save_ShouldDelegateToRepository() {
+    void save_shouldDelegateToRepository() {
         studentService.save(student);
         verify(studentRepository).save(student);
     }
 
     @Test
-    void getById_ShouldReturnStudent_IfExists() {
+    void getById_shouldReturnStudent_ifExists() {
         UUID id = UUID.randomUUID();
         when(studentRepository.findById(id)).thenReturn(Optional.of(student));
 
@@ -49,7 +49,7 @@ class StudentServiceTest {
     }
 
     @Test
-    void getById_ShouldReturnEmpty_IfNotExists() {
+    void getById_shouldReturnEmpty_ifNotExists() {
         UUID id = UUID.randomUUID();
         when(studentRepository.findById(id)).thenReturn(Optional.empty());
 
@@ -57,14 +57,14 @@ class StudentServiceTest {
     }
 
     @Test
-    void getAll_ShouldReturnAllStudents() {
+    void getAll_shouldReturnAllStudents() {
         when(studentRepository.findAll()).thenReturn(List.of(student));
 
         assertEquals(1, studentService.getAll().size());
     }
 
     @Test
-    void delete_ShouldDelegateToRepository() {
+    void delete_shouldDelegateToRepository() {
         studentService.delete(student);
         verify(studentRepository).delete(student);
     }

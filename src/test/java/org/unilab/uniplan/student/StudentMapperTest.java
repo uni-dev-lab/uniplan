@@ -45,7 +45,7 @@ class StudentMapperTest {
     }
 
     @Test
-    void toEntity_ShouldMapFieldsCorrectly() {
+    void toEntity_shouldMapFieldsCorrectly() {
         Student result = studentMapper.toEntity(requestDto);
 
         assertNull(result.getId());
@@ -56,14 +56,7 @@ class StudentMapperTest {
     }
 
     @Test
-    void toEntity_ShouldIgnoreId() {
-        Student result = studentMapper.toEntity(requestDto);
-
-        assertNull(result.getId());
-    }
-
-    @Test
-    void updateEntity_ShouldUpdateFieldsCorrectly() {
+    void updateEntity_shouldUpdateFieldsCorrectly() {
         UUID newCourseId = UUID.randomUUID();
         StudentRequestDto updateDto = new StudentRequestDto("Ivan", "Ivanov", "1234567890", newCourseId);
 
@@ -76,14 +69,14 @@ class StudentMapperTest {
     }
 
     @Test
-    void updateEntity_ShouldNotAlterStudentId() {
+    void updateEntity_shouldNotAlterStudentId() {
         studentMapper.updateEntity(requestDto, student);
 
         assertEquals(studentId, student.getId());
     }
 
     @Test
-    void toResponseDto_ShouldMapFieldsCorrectly() {
+    void toResponseDto_shouldMapFieldsCorrectly() {
         StudentResponseDto result = studentMapper.toResponseDto(student);
 
         assertEquals(studentId, result.id());
@@ -94,7 +87,7 @@ class StudentMapperTest {
     }
 
     @Test
-    void toResponseDtoList_ShouldMapAllElements() {
+    void toResponseDtoList_shouldMapAllElements() {
         List<StudentResponseDto> result = studentMapper.toResponseDtoList(List.of(student));
 
         assertEquals(1, result.size());
@@ -102,7 +95,7 @@ class StudentMapperTest {
     }
 
     @Test
-    void toResponseDtoList_ShouldReturnEmptyForEmptyInput() {
+    void toResponseDtoList_shouldReturnEmptyForEmptyInput() {
         List<StudentResponseDto> result = studentMapper.toResponseDtoList(List.of());
 
         assertTrue(result.isEmpty());

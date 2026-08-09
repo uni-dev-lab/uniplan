@@ -12,6 +12,7 @@ public record StudentRequestDto(
     @Size(max = 100)
     String lastName,
     String facultyNumber,
+    @NotNull
     UUID courseId
 ) {
 

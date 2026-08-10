@@ -14,7 +14,10 @@ public record CategoryResponseDto(
     String roomType,
 
     @Positive
-    short capacity
+    short capacity,
+
+    @Size(min = 1, max = 100, message = "Description must be between 1 and 100 characters")
+    String description
 ) {
 
 }

@@ -1,17 +1,22 @@
 package org.unilab.uniplan.room.dto;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import java.util.UUID;
 
 public record RoomRequestDto(
 
-    @NotNull(message = "Faculty ID cannot be null")
     UUID facultyId,
 
     @NotNull(message = "Room number cannot be null")
     @Size(max = 50, message = "Room number cannot exceed 50 characters")
-    String roomNumber
+    String roomNumber,
+
+    @NotNull(message="Available seats cannot be null")
+    @PositiveOrZero
+    int availableSeats
 ) {
 
 }

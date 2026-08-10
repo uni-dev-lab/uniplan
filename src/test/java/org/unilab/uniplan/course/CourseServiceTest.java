@@ -19,7 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.course.dto.CourseDto;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.CourseNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class CourseServiceTest {
@@ -86,9 +86,9 @@ class CourseServiceTest {
     void findCourseByIdShouldReturnEmptyIfNotFound() {
         when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> courseService.findCourseById(courseId));
+        CourseNotFoundException exception = assertThrows(CourseNotFoundException.class, () -> courseService.findCourseById(courseId));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(courseId)));
+        assertEquals("course_not_found", exception.getMessageKey());
     }
 
     @Test
@@ -131,9 +131,9 @@ class CourseServiceTest {
     void updateCourseShouldReturnEmptyIfNotFound() {
         when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> courseService.updateCourse(courseId, courseDTO));
+        CourseNotFoundException exception = assertThrows(CourseNotFoundException.class, () -> courseService.updateCourse(courseId, courseDTO));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(courseId)));
+        assertEquals("course_not_found", exception.getMessageKey());
         verify(courseRepository, never()).save(any());
     }
 
@@ -150,10 +150,10 @@ class CourseServiceTest {
     void deleteCourseShouldThrowIfNotFound() {
         when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
+        CourseNotFoundException exception = assertThrows(CourseNotFoundException.class, () ->
             courseService.deleteCourse(courseId));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(courseId)));
+        assertEquals("course_not_found", exception.getMessageKey());
         verify(courseRepository, never()).delete(any());
     }
 }

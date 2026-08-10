@@ -1,14 +1,11 @@
 package org.unilab.uniplan.program;
 
-
-import static org.unilab.uniplan.utils.ErrorConstants.PROGRAM_NOT_FOUND;
-
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.ProgramNotFoundException;
 import org.unilab.uniplan.program.dto.ProgramDto;
 
 @Service
@@ -33,8 +30,7 @@ public class ProgramService{
     public ProgramDto getProgramById(UUID id) {
         return programRepository.findById(id)
                                 .map(programMapper::toDto)
-                                .orElseThrow(() -> new ResourceNotFoundException(PROGRAM_NOT_FOUND.getMessage(
-                                    String.valueOf(id))));
+                                .orElseThrow(() -> new ProgramNotFoundException(id));
     }
 
     @Transactional
@@ -43,14 +39,12 @@ public class ProgramService{
                                 .map(existingCategory -> updateEntityAndConvertToDto(
                                     programDto,
                                     existingCategory))
-                                .orElseThrow(() -> new ResourceNotFoundException(PROGRAM_NOT_FOUND.getMessage(
-                                    String.valueOf(id))));
+                                .orElseThrow(() -> new ProgramNotFoundException(id));
     }
 
     public void deleteProgram(UUID id) {
         final Program program = programRepository.findById(id)
-                                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                     PROGRAM_NOT_FOUND.getMessage(String.valueOf(id))));
+                                                 .orElseThrow(() -> new ProgramNotFoundException(id));
 
         programRepository.delete(program);
     }

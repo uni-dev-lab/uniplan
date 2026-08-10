@@ -1,13 +1,11 @@
 package org.unilab.uniplan.room;
 
-import static org.unilab.uniplan.utils.ErrorConstants.ROOM_NOT_FOUND;
-
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.RoomNotFoundException;
 import org.unilab.uniplan.room.dto.RoomDto;
 
 @Service
@@ -31,8 +29,7 @@ public class RoomService {
     public RoomDto getRoomById(final UUID id) {
         return roomRepository.findById(id)
                              .map(roomMapper::toDto)
-                             .orElseThrow(() -> new ResourceNotFoundException(ROOM_NOT_FOUND.getMessage(
-                                 String.valueOf(id))));
+                             .orElseThrow(() -> new RoomNotFoundException(id));
     }
 
     @Transactional
@@ -40,15 +37,13 @@ public class RoomService {
         return roomRepository.findById(id)
                              .map(existingRoom -> updateEntityAndConvertToDto(
                                  roomDto,
-                                 existingRoom)).orElseThrow(() -> new ResourceNotFoundException(
-                ROOM_NOT_FOUND.getMessage(String.valueOf(id))));
+                                 existingRoom)).orElseThrow(() -> new RoomNotFoundException(id));
     }
 
     @Transactional
     public void deleteRoom(final UUID id) {
         final Room room = roomRepository.findById(id)
-                                        .orElseThrow(() -> new ResourceNotFoundException(
-                                            ROOM_NOT_FOUND.getMessage(String.valueOf(id))));
+                                        .orElseThrow(() -> new RoomNotFoundException(id));
         roomRepository.delete(room);
     }
 

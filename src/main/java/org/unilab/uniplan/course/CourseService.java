@@ -1,13 +1,12 @@
 package org.unilab.uniplan.course;
 
-import static org.unilab.uniplan.utils.ErrorConstants.COURSE_NOT_FOUND;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.unilab.uniplan.course.dto.CourseDto;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.CourseNotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -25,8 +24,7 @@ public class CourseService {
     public CourseDto findCourseById(final UUID id) {
         return courseRepository.findById(id)
                                .map(courseMapper::toDto)
-                               .orElseThrow(() -> new ResourceNotFoundException(COURSE_NOT_FOUND.getMessage(
-                                   String.valueOf(id))));
+                               .orElseThrow(() -> new CourseNotFoundException(id));
     }
 
     public List<CourseDto> findAllByMajorId(final UUID majorId) {
@@ -46,15 +44,13 @@ public class CourseService {
             existingCourse -> updateEntityAndConvertToDto(
                 courseDTO,
                 existingCourse))
-                               .orElseThrow(() -> new ResourceNotFoundException(COURSE_NOT_FOUND.getMessage(
-                                   String.valueOf(id))));
+                               .orElseThrow(() -> new CourseNotFoundException(id));
     }
 
     @Transactional
     public void deleteCourse(final UUID id) {
         final Course course = courseRepository.findById(id)
-                                              .orElseThrow(() -> new ResourceNotFoundException(
-                                                  COURSE_NOT_FOUND.getMessage(String.valueOf(id))));
+                                              .orElseThrow(() -> new CourseNotFoundException(id));
         courseRepository.delete(course);
     }
 

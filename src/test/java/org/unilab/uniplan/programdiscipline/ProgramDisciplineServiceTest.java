@@ -17,7 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.ProgramDisciplineNotFoundException;
 import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineDto;
 
 @ExtendWith(MockitoExtension.class)
@@ -101,11 +101,11 @@ class ProgramDisciplineServiceTest {
         when(programDisciplineRepository.findById(id)).thenReturn(Optional.empty());
         when(programDisciplineMapper.toProgramDisciplineId(disciplineId, programId)).thenReturn(id);
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> programDisciplineService.getProgramDisciplineById(
+        ProgramDisciplineNotFoundException exception = assertThrows(ProgramDisciplineNotFoundException.class, () -> programDisciplineService.getProgramDisciplineById(
             disciplineId,
             programId));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
+        assertEquals("program_discipline_not_found", exception.getMessageKey());
     }
 
     @Test
@@ -129,12 +129,12 @@ class ProgramDisciplineServiceTest {
         when(programDisciplineRepository.findById(id)).thenReturn(Optional.empty());
         when(programDisciplineMapper.toProgramDisciplineId(disciplineId, programId)).thenReturn(id);
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> programDisciplineService.updateProgramDiscipline(
+        ProgramDisciplineNotFoundException exception = assertThrows(ProgramDisciplineNotFoundException.class, () -> programDisciplineService.updateProgramDiscipline(
             disciplineId,
             programId,
             programDisciplineDto));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
+        assertEquals("program_discipline_not_found", exception.getMessageKey());
     }
 
     @Test
@@ -153,10 +153,9 @@ class ProgramDisciplineServiceTest {
         when(programDisciplineRepository.findById(id)).thenReturn(Optional.empty());
         when(programDisciplineMapper.toProgramDisciplineId(disciplineId, programId)).thenReturn(id);
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
+        ProgramDisciplineNotFoundException exception = assertThrows(ProgramDisciplineNotFoundException.class, () ->
             programDisciplineService.deleteProgramDiscipline(disciplineId, programId));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(disciplineId)));
-        assertTrue(exception.getMessage().contains(String.valueOf(programId)));
+        assertEquals("program_discipline_not_found", exception.getMessageKey());
     }
 }

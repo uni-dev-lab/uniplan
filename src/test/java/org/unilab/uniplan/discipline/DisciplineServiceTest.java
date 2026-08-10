@@ -19,7 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.discipline.dto.DisciplineDto;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.DisciplineNotFoundException;
 import org.unilab.uniplan.programdiscipline.ProgramDisciplineId;
 
 @ExtendWith(MockitoExtension.class)
@@ -92,11 +92,11 @@ class DisciplineServiceTest {
     void testGetDisciplineByIdShouldReturnEmptyOptionalIfDisciplineNotFound() {
         when(disciplineRepository.findById(id)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+        DisciplineNotFoundException exception = assertThrows(DisciplineNotFoundException.class,
                                                            () -> disciplineService.getDisciplineById(
                                                                id));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
+        assertEquals("discipline_not_found", exception.getMessageKey());
     }
 
     @Test
@@ -115,11 +115,11 @@ class DisciplineServiceTest {
     void testUpdateDisciplineShouldReturnEmptyOptionalIfNotFound() {
         when(disciplineRepository.findById(id)).thenReturn(Optional.empty());
 
-        org.unilab.uniplan.exception.ResourceNotFoundException exception = assertThrows(
-            ResourceNotFoundException.class,
+        DisciplineNotFoundException exception = assertThrows(
+            DisciplineNotFoundException.class,
             () -> disciplineService.updateDiscipline(id, disciplineDto));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
+        assertEquals("discipline_not_found", exception.getMessageKey());
     }
 
     @Test
@@ -135,9 +135,9 @@ class DisciplineServiceTest {
     void testDeleteDisciplineShouldThrowIfNotFound() {
         when(disciplineRepository.findById(id)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
+        DisciplineNotFoundException exception = assertThrows(DisciplineNotFoundException.class, () ->
             disciplineService.deleteDiscipline(id));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
+        assertEquals("discipline_not_found", exception.getMessageKey());
     }
 }

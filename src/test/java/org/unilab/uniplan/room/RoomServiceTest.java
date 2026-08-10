@@ -17,7 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.RoomNotFoundException;
 import org.unilab.uniplan.room.dto.RoomDto;
 
 @ExtendWith(MockitoExtension.class)
@@ -83,9 +83,9 @@ class RoomServiceTest {
     void testGetRoomByIdShouldReturnEmptyOptionalIfRoomNotFound() {
         when(roomRepository.findById(id)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> roomService.getRoomById(id));
+        RoomNotFoundException exception = assertThrows(RoomNotFoundException.class, () -> roomService.getRoomById(id));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
+        assertEquals("room_not_found", exception.getMessageKey());
     }
 
     @Test
@@ -104,9 +104,9 @@ class RoomServiceTest {
     void testUpdateRoomShouldReturnEmptyOptionalIfNotFound() {
         when(roomRepository.findById(id)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> roomService.updateRoom(id, dto));
+        RoomNotFoundException exception = assertThrows(RoomNotFoundException.class, () -> roomService.updateRoom(id, dto));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
+        assertEquals("room_not_found", exception.getMessageKey());
     }
 
     @Test
@@ -122,9 +122,9 @@ class RoomServiceTest {
     void testDeleteRoomShouldThrowIfNotFound() {
         when(roomRepository.findById(id)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
+        RoomNotFoundException exception = assertThrows(RoomNotFoundException.class, () ->
             roomService.deleteRoom(id));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
+        assertEquals("room_not_found", exception.getMessageKey());
     }
 }

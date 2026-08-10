@@ -1,13 +1,11 @@
 package org.unilab.uniplan.roomcategory;
 
-import static org.unilab.uniplan.utils.ErrorConstants.ROOM_CATEGORY_NOT_FOUND;
-
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.RoomCategoryNotFoundException;
 import org.unilab.uniplan.roomcategory.dto.RoomCategoryDto;
 
 @Service
@@ -34,8 +32,7 @@ public class RoomCategoryService {
 
         return roomCategoryRepository.findById(id)
                                      .map(roomCategoryMapper::toDto)
-                                     .orElseThrow(() -> new ResourceNotFoundException(
-                                         ROOM_CATEGORY_NOT_FOUND.getMessage(String.valueOf(id))));
+                                     .orElseThrow(() -> new RoomCategoryNotFoundException(id));
     }
 
     @Transactional
@@ -43,9 +40,7 @@ public class RoomCategoryService {
         final RoomCategoryId id = roomCategoryMapper.toRoomCategoryId(roomId, categoryId);
 
         final RoomCategory roomCategory = roomCategoryRepository.findById(id)
-                                                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                                    ROOM_CATEGORY_NOT_FOUND.getMessage(
-                                                                        String.valueOf(id))));
+                                                                .orElseThrow(() ->new RoomCategoryNotFoundException(id));
 
         roomCategoryRepository.delete(roomCategory);
     }

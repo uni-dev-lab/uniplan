@@ -19,7 +19,8 @@ public enum ErrorConstants {
     STUDENT_GROUP_NOT_FOUND("Student group with ID {0} not found."),
     ROOM_CATEGORY_NOT_FOUND("Room category with ID {0} not found."),
     PROGRAM_DISCIPLINE_NOT_FOUND("Program discipline with ID {0} not found."),
-    PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND("Program discipline lector with ID {0} not found.");
+    PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND("Program discipline lector with ID {0} not found."),
+    BUILDING_NOT_FOUND("Building with ID {0} not found.");
 
     private final String message;
 

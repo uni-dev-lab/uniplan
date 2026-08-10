@@ -6,12 +6,11 @@ import jakarta.validation.constraints.Size;
 import java.util.UUID;
 
 public record BuildingRequestDto (
-    UUID id,
     @NotBlank(message="Name is required")
-    @Size(max = 100)
+    @Size(max = 50)
     String name,
     @NotBlank(message="Address is required")
-    @Size(max = 100)
+    @Size(max = 50)
     String address,
     @NotNull(message = "University is required")
     UUID universityId

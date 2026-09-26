@@ -29,42 +29,40 @@ import org.unilab.uniplan.course.dto.CourseResponseDto;
 )
 public class CourseController {
 
-    private final CourseService courseService;
-    private final CourseMapper courseMapper;
+    private final CourseWebFacade courseWebFacade;
 
     @PostMapping
-    public ResponseEntity<CourseResponseDto> addCourse(@RequestBody @NotNull
+    public ResponseEntity<Void> addCourse(@RequestBody @NotNull
                                                        @Valid final CourseRequestDto courseRequestDTO) {
-        final CourseDto courseDTO = courseMapper.toInnerDto(courseRequestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                             .body(courseMapper.toResponseDto(courseService.createCourse(courseDTO)));
+        courseWebFacade.createCourse(courseRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/major/{majorId}")
-    public  List<CourseResponseDto> getCoursesByMajorId(@PathVariable @NotNull final UUID majorId) {
-        return courseMapper.toResponseDtoList(courseService.findAllByMajorId(majorId));
+    public  ResponseEntity<List<CourseResponseDto>> getCoursesByMajorId(@PathVariable final UUID majorId) {
+        return ResponseEntity.ok(courseWebFacade.getCoursesByMajorId(majorId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CourseResponseDto> getMajorById(@PathVariable @NotNull final UUID id) {
-        return ResponseEntity.ok(courseMapper.toResponseDto(courseService.findCourseById(id)));
+    public ResponseEntity<CourseResponseDto> getCourseById(@PathVariable final UUID id) {
+        return ResponseEntity.ok(courseWebFacade.getCourseById(id));
     }
 
     @GetMapping
-    public List<CourseResponseDto> getAllCourses() {
-        return courseMapper.toResponseDtoList(courseService.findAll());
+    public ResponseEntity<List<CourseResponseDto>> getAllCourses() {
+        return ResponseEntity.ok(courseWebFacade.getAllCourses());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CourseResponseDto> updateCourse(@PathVariable @NotNull final UUID id,
+    public ResponseEntity<Void> updateCourse(@PathVariable final UUID id,
                                                           @RequestBody @NotNull @Valid final CourseRequestDto courseRequestDTO) {
-        final CourseDto courseDTO = courseMapper.toInnerDto(courseRequestDTO);
-        return ResponseEntity.ok(courseMapper.toResponseDto(courseService.updateCourse(id, courseDTO)));
+        courseWebFacade.updateCourse(id, courseRequestDTO);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCourse(@PathVariable @NotNull final UUID id) {
-        courseService.deleteCourse(id);
+    public ResponseEntity<Void> deleteCourse(@PathVariable final UUID id) {
+        courseWebFacade.deleteCourse(id);
         return ResponseEntity.noContent().build();
     }
 }

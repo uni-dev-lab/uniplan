@@ -23,7 +23,7 @@ public class Room extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "faculty_id", referencedColumnName = "id", nullable = false)
     private Faculty faculty;
+
     @Column(name = "room_number", nullable = false, length = 50)
     private String roomNumber;
-
 }

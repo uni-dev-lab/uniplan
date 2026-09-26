@@ -12,6 +12,4 @@ public record RoomRequestDto(
     @NotNull(message = "Room number cannot be null")
     @Size(max = 50, message = "Room number cannot exceed 50 characters")
     String roomNumber
-) {
-
-}
+) { }

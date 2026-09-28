@@ -10,9 +10,6 @@ public record RoomResponseDto(
 
     String roomNumber,
 
-    int availableSeats,
+    UUID categoryId
 
-    UUID categoryId,
-
-    UUID buildingId
 ) { }

@@ -2,6 +2,7 @@ package org.unilab.uniplan.room;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.unilab.uniplan.faculty.Faculty;
 import org.unilab.uniplan.room.dto.RoomRequestDto;
 import org.unilab.uniplan.room.dto.RoomResponseDto;
 import org.unilab.uniplan.university.University;
@@ -24,6 +25,12 @@ public class RoomMapperTest {
 
     @BeforeEach
     void setUp() {
+    private String roomNumber1;
+    private UUID facultyId;
+
+    @BeforeEach
+    void setUp() {
+        facultyId = UUID.randomUUID();
         University university = new University("Sofia University",
                                                "Sofia, Bulgaria",
                                                (short) 1888,
@@ -40,12 +47,27 @@ public class RoomMapperTest {
         roomRequestDto = new RoomRequestDto(null, roomNumber1, 20);
         roomResponseDto1 = new RoomResponseDto(room1.getId(), null, roomNumber1,20,null, null);
         roomResponseDto2 = new RoomResponseDto(room2.getId(), null, roomNumber2,20,null, null);
+                                               "https://uni-sofia.bg"
+        );
+        Faculty faculty = new Faculty(university, "FMI", "Faculty Name");
+        faculty.setId(facultyId);
+        roomNumber1 = "111";
+        String roomNumber2 = "222";
+        room1 = new Room(faculty, roomNumber1);
+        room1.setId(UUID.randomUUID());
+        room2 = new Room(faculty, roomNumber2);
+        room2.setId(UUID.randomUUID());
+        roomRequestDto = new RoomRequestDto(facultyId, roomNumber1);
+        roomResponseDto1 = new RoomResponseDto(room1.getId(), facultyId, roomNumber1, null);
+        roomResponseDto2 = new RoomResponseDto(room2.getId(), facultyId, roomNumber2, null);
 
     }
 
     @Test
     void toEntity_shouldMapAllFieldsAndIgnoreId_whenRequestDtoIsValid() {
         final Room result = roomMapper.toEntity(roomRequestDto);
+
+        assertThat(result.getFaculty().getId()).isEqualTo(facultyId);
         assertThat(result.getRoomNumber()).isEqualTo(roomNumber1);
         assertThat(result.getId()).isNull();
     }
@@ -54,6 +76,9 @@ public class RoomMapperTest {
     void toResponseDto_shouldMapAllFields_whenFacultyIsValid() {
         RoomResponseDto result = roomMapper.toResponseDto(room1);
         assertThat(result.id()).isEqualTo(room1.getId());
+
+        assertThat(result.id()).isEqualTo(room1.getId());
+        assertThat(result.facultyId()).isEqualTo(facultyId);
         assertThat(result.roomNumber()).isEqualTo(roomNumber1);
     }
 
@@ -78,6 +103,7 @@ public class RoomMapperTest {
     @Test
     void updateEntity_shouldUpdateAllFields_whenRequestDtoIsValid() {
         roomMapper.updateEntityFromDto(roomRequestDto, room2);
+
         assertThat(room2.getRoomNumber()).isEqualTo(roomNumber1);
     }
 
@@ -85,6 +111,7 @@ public class RoomMapperTest {
     void updateEntity_shouldNotChangeId_whenUpdating() {
         UUID id = room2.getId();
         roomMapper.updateEntityFromDto(roomRequestDto, room2);
+
         assertThat(room2.getId()).isEqualTo(id);
     }
 

@@ -6,9 +6,6 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.unilab.uniplan.common.model.BaseService;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
-import org.unilab.uniplan.faculty.Faculty;
-import org.unilab.uniplan.faculty.FacultyRepository;
 import org.unilab.uniplan.room.dto.RoomResponseDto;
 
 @Service
@@ -16,20 +13,6 @@ import org.unilab.uniplan.room.dto.RoomResponseDto;
 public class RoomService implements BaseService<Room> {
 
     private final RoomRepository roomRepository;
-    private final FacultyRepository facultyRepository;
-
-    public void setFaculty(Room room, UUID facultyId) {
-        if (facultyId == null) {
-            room.setFaculty(null);
-            return;
-        }
-
-        //TODO: Change to FacultyNotFoundException after pr is approved
-        Faculty faculty = facultyRepository.findById(facultyId)
-                                           .orElseThrow(() -> new ResourceNotFoundException("Faculty not found"));
-
-        room.setFaculty(faculty);
-    }
 
     @Override
     public void save(final Room room) {

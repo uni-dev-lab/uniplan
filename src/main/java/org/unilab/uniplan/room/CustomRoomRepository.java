@@ -1,6 +1,5 @@
 package org.unilab.uniplan.room;
 
-import org.springframework.data.repository.query.Param;
 import org.unilab.uniplan.room.dto.RoomResponseDto;
 import java.util.List;
 import java.util.Optional;

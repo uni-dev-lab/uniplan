@@ -10,7 +10,7 @@ import org.unilab.uniplan.room.dto.RoomResponseDto;
 @Mapper
 public interface RoomMapper {
 
-    @Mapping(target = "faculty", ignore = true)
+    @Mapping(source = "facultyId", target = "faculty.id")
     Room toEntity(final RoomRequestDto roomRequestDto);
 
     @Mapping(target = "facultyId", source = "faculty.id")
@@ -18,7 +18,7 @@ public interface RoomMapper {
 
     List<RoomResponseDto> toResponseDtoList(final List<Room> rooms);
 
-    @Mapping(target = "faculty", ignore = true)
+    @Mapping(source = "facultyId", target = "faculty.id")
     @Mapping(target = "id", ignore = true)
     void updateEntityFromDto(final RoomRequestDto roomRequestDto, @MappingTarget final Room room);
 }

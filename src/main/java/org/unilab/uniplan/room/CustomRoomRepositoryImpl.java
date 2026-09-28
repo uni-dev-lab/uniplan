@@ -7,7 +7,6 @@ import org.hibernate.query.criteria.HibernateCriteriaBuilder;
 import org.hibernate.query.criteria.JpaCriteriaQuery;
 import org.hibernate.query.criteria.JpaEntityJoin;
 import org.hibernate.query.criteria.JpaRoot;
-import org.springframework.data.repository.query.Param;
 import org.unilab.uniplan.category.Category;
 import org.unilab.uniplan.room.dto.RoomResponseDto;
 import org.unilab.uniplan.roomcategory.RoomCategory;
@@ -41,9 +40,7 @@ public class CustomRoomRepositoryImpl implements CustomRoomRepository {
             room.get("id"),
             room.get("faculty").get("id"),
             room.get("roomNumber"),
-            room.get("availableSeats"),
-            category.get("id"),
-            room.get("building").get("id")
+            category.get("id")
         ));
 
         return entityManager.createQuery(query).getResultList();
@@ -69,9 +66,7 @@ public class CustomRoomRepositoryImpl implements CustomRoomRepository {
             room.get("id"),
             room.get("faculty").get("id"),
             room.get("roomNumber"),
-            room.get("availableSeats"),
-            category.get("id"),
-            room.get("building").get("id")
+            category.get("id")
         )).where(cb.equal(room.get("id"), id));
 
         return entityManager.createQuery(query)

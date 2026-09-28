@@ -11,11 +11,9 @@ import org.unilab.uniplan.faculty.Faculty;
 import org.unilab.uniplan.room.dto.RoomRequestDto;
 import org.unilab.uniplan.room.dto.RoomResponseDto;
 import org.unilab.uniplan.university.University;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,6 +23,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class RoomWebFacadeTest {
+
     @Mock
     private RoomMapper roomMapper;
     @Mock
@@ -35,26 +34,26 @@ public class RoomWebFacadeTest {
     private Room entity;
     private RoomResponseDto responseDto;
     private UUID id;
-private UUID categoryId;
+    private UUID categoryId;
 
     @BeforeEach
     void setUp() {
         id = UUID.randomUUID();
         UUID facultyId = UUID.randomUUID();
-         categoryId = UUID.randomUUID();
+        categoryId = UUID.randomUUID();
         University university = new University("Sofia University",
                                                "Sofia, Bulgaria",
                                                (short) 1888,
                                                "NEAA",
-                                               "https://uni-sofia.bg", null
+                                               "https://uni-sofia.bg"
         );
         Faculty faculty = new Faculty(university, "FMI", "Faculty Name");
         faculty.setId(facultyId);
         String roomNumber = "111";
-        requestDto = new RoomRequestDto(facultyId, "222", 20);
-        entity = new Room(faculty, roomNumber, 20, null);
+        requestDto = new RoomRequestDto(facultyId, "222");
+        entity = new Room(faculty, roomNumber);
         entity.setId(id);
-        responseDto = new RoomResponseDto(id, facultyId, roomNumber, 20, categoryId, null);
+        responseDto = new RoomResponseDto(id, facultyId, roomNumber, categoryId);
     }
 
     @Test

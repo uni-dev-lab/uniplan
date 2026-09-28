@@ -52,7 +52,7 @@ public class RoomWebFacadeTest {
         faculty.setId(facultyId);
         String roomNumber = "111";
         requestDto = new RoomRequestDto(facultyId, "222");
-        entity = new Room(faculty, roomNumber);
+        entity = new Room(faculty, roomNumber, null);
         entity.setId(id);
         responseDto = new RoomResponseDto(id, facultyId, roomNumber, categoryId);
     }

@@ -28,4 +28,8 @@ public class Room extends BaseEntity {
 
     @Column(name = "room_number", nullable = false, length = 50)
     private String roomNumber;
+
+    @ManyToOne
+    @JoinColumn(name = "building_id")
+    private Building building;
 }

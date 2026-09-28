@@ -38,9 +38,9 @@ public class RoomMapperTest {
         faculty.setId(facultyId);
         roomNumber1 = "111";
         final String roomNumber2 = "222";
-        room1 = new Room(faculty, roomNumber1);
+        room1 = new Room(faculty, roomNumber1, null);
         room1.setId(UUID.randomUUID());
-        room2 = new Room(faculty, roomNumber2);
+        room2 = new Room(faculty, roomNumber2, null);
         room2.setId(UUID.randomUUID());
         roomRequestDto = new RoomRequestDto(facultyId, roomNumber1);
         roomResponseDto1 = new RoomResponseDto(room1.getId(), facultyId, roomNumber1, null);

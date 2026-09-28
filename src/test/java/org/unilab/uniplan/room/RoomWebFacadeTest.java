@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.RoomNotFoundException;
 import org.unilab.uniplan.faculty.Faculty;
 import org.unilab.uniplan.room.dto.RoomRequestDto;
 import org.unilab.uniplan.room.dto.RoomResponseDto;
@@ -103,8 +103,8 @@ public class RoomWebFacadeTest {
         when(roomService.getById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> roomWebFacade.deleteRoom(id))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(id.toString());
+            .isInstanceOf(RoomNotFoundException.class)
+            .satisfies(ex -> assertThat(((RoomNotFoundException) ex).getArgs()).contains(id));
     }
 
     @Test
@@ -122,7 +122,7 @@ public class RoomWebFacadeTest {
         when(roomService.getById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> roomWebFacade.updateRoom(id, requestDto))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(id.toString());
+            .isInstanceOf(RoomNotFoundException.class)
+            .satisfies(ex -> assertThat(((RoomNotFoundException) ex).getArgs()).contains(id));
     }
 }

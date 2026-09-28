@@ -1,7 +1,5 @@
 package org.unilab.uniplan.discipline;
 
-import static org.unilab.uniplan.utils.ErrorConstants.DISCIPLINE_NOT_FOUND;
-
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
@@ -10,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.unilab.uniplan.discipline.dto.DisciplineDto;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.DisciplineNotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -36,8 +34,7 @@ public class DisciplineService {
     public DisciplineDto getDisciplineById(@NotNull UUID id) {
         return disciplineRepository.findById(id)
                                    .map(disciplineMapper::toDto)
-                                   .orElseThrow(() -> new ResourceNotFoundException(
-                                       DISCIPLINE_NOT_FOUND.getMessage(String.valueOf(id))));
+                                   .orElseThrow(() -> new DisciplineNotFoundException(id));
     }
 
     @Transactional
@@ -46,15 +43,13 @@ public class DisciplineService {
                                    .map(existingDiscipline -> updateEntityAndConvertToDto(
                                        disciplineDto,
                                        existingDiscipline))
-                                   .orElseThrow(() -> new ResourceNotFoundException(
-                                       DISCIPLINE_NOT_FOUND.getMessage(String.valueOf(id))));
+                                   .orElseThrow(() -> new DisciplineNotFoundException(id));
     }
 
     @Transactional
     public void deleteDiscipline(UUID id) {
         final Discipline discipline = disciplineRepository.findById(id)
-                                                         .orElseThrow(() -> new ResourceNotFoundException(
-                                                             DISCIPLINE_NOT_FOUND.getMessage(String.valueOf(id))));
+                                                          .orElseThrow(() -> new DisciplineNotFoundException(id));
         disciplineRepository.delete(discipline);
     }
 

@@ -19,7 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.coursegroup.dto.CourseGroupDto;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.CourseGroupNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class CourseGroupServiceTest {
@@ -62,11 +62,11 @@ class CourseGroupServiceTest {
     void findCourseGroupByIdShouldReturnCourseGroupDTOIfNotExists() {
         when(courseGroupRepository.findById(courseGroupId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+        CourseGroupNotFoundException exception = assertThrows(CourseGroupNotFoundException.class,
                                                            () -> courseGroupService.findCourseGroupById(
                                                                courseGroupId));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(courseGroupId)));
+        assertEquals("course_group_not_found", exception.getMessageKey());
     }
 
     @Test
@@ -109,12 +109,12 @@ class CourseGroupServiceTest {
     void updateCourseGroupShouldReturnEmptyIfNotFound() {
         when(courseGroupRepository.findById(courseGroupId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
-                                                           () -> courseGroupService.updateCourseGroup(
+        CourseGroupNotFoundException exception = assertThrows(CourseGroupNotFoundException.class,
+                                                              () -> courseGroupService.updateCourseGroup(
                                                                courseGroupId,
                                                                courseGroupDTO));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(courseGroupId)));
+        assertEquals("course_group_not_found", exception.getMessageKey());
         verify(courseGroupRepository, never()).save(any());
     }
 
@@ -131,11 +131,11 @@ class CourseGroupServiceTest {
     void deleteCourseGroupShouldThrowIfNotFound() {
         when(courseGroupRepository.findById(courseGroupId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+        CourseGroupNotFoundException exception = assertThrows(CourseGroupNotFoundException.class,
                                                   () -> courseGroupService.deleteCourseGroup(
                                                       courseGroupId));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(courseGroupId)));
+        assertEquals("course_group_not_found", exception.getMessageKey());
         verify(courseGroupRepository, never()).delete(any());
     }
 }

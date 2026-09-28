@@ -1,7 +1,5 @@
 package org.unilab.uniplan.course;
 
-import static org.unilab.uniplan.utils.ErrorConstants.COURSE_NOT_FOUND;
-
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.unilab.uniplan.course.dto.CourseRequestDto;
 import org.unilab.uniplan.course.dto.CourseResponseDto;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.CourseNotFoundException;
 
 @Component
 @Slf4j
@@ -71,8 +69,6 @@ public class CourseWebFacade {
 
     private Course getCourseOrThrow(final UUID id) {
         return courseService.getById(id)
-                            .orElseThrow(() -> new ResourceNotFoundException(
-                                COURSE_NOT_FOUND.getMessage(String.valueOf(id))
-                            ));
+                            .orElseThrow(() -> new CourseNotFoundException(id));
     }
 }

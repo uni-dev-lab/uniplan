@@ -4,7 +4,6 @@ package org.unilab.uniplan.program;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,7 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.ProgramNotFoundException;
 import org.unilab.uniplan.program.dto.ProgramDto;
 import org.unilab.uniplan.programdiscipline.ProgramDisciplineId;
 
@@ -91,10 +90,10 @@ class ProgramServiceTest {
     void testGetProgramByIdShouldReturnEmptyOptionalIfProgramNotFound() {
         when(programRepository.findById(id)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+        ProgramNotFoundException exception = assertThrows(ProgramNotFoundException.class,
                                                            () -> programService.getProgramById(id));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
+        assertEquals("program_not_found", exception.getMessageKey());
     }
 
     @Test
@@ -113,11 +112,11 @@ class ProgramServiceTest {
     void testUpdateProgramShouldReturnEmptyOptionalIfNotFound() {
         when(programRepository.findById(id)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+        ProgramNotFoundException exception = assertThrows(ProgramNotFoundException.class,
                                                            () -> programService.updateProgram(id,
                                                                                               programDto));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
+        assertEquals("program_not_found", exception.getMessageKey());
     }
 
     @Test
@@ -133,9 +132,9 @@ class ProgramServiceTest {
     void testDeleteProgramShouldThrowIfNotFound() {
         when(programRepository.findById(id)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
+        ProgramNotFoundException exception = assertThrows(ProgramNotFoundException.class, () ->
             programService.deleteProgram(id));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
+        assertEquals("program_not_found", exception.getMessageKey());
     }
 }

@@ -19,7 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.MajorNotFoundException;
 import org.unilab.uniplan.major.dto.MajorCoursesDto;
 import org.unilab.uniplan.major.dto.MajorDto;
 
@@ -124,9 +124,9 @@ class MajorServiceTest {
     void findMajorByIdShouldReturnEmptyIfNotFound() {
         when(majorRepository.findById(majorId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> majorService.findMajorById(majorId));
+        MajorNotFoundException exception = assertThrows(MajorNotFoundException.class, () -> majorService.findMajorById(majorId));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(majorId)));
+        assertEquals("major_not_found", exception.getMessageKey());
     }
 
     @Test
@@ -147,9 +147,9 @@ class MajorServiceTest {
     void findMajorWithCoursesByIdShouldReturnEmptyIfNotFound() {
         when(majorRepository.findById(majorId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> majorService.findMajorWithCoursesById(majorId));
+        MajorNotFoundException exception = assertThrows(MajorNotFoundException.class, () -> majorService.findMajorWithCoursesById(majorId));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(majorId)));
+        assertEquals("major_not_found", exception.getMessageKey());
     }
 
     @Test
@@ -180,9 +180,9 @@ class MajorServiceTest {
     void updateMajorShouldReturnEmptyIfNotFound() {
         when(majorRepository.findById(majorId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> majorService.updateMajor(majorId, majorDTO));
+        MajorNotFoundException exception = assertThrows(MajorNotFoundException.class, () -> majorService.updateMajor(majorId, majorDTO));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(majorId)));
+        assertEquals("major_not_found", exception.getMessageKey());
         verify(majorRepository, never()).save(any());
     }
 
@@ -199,10 +199,10 @@ class MajorServiceTest {
     void deleteMajorShouldThrowIfNotExists() {
         when(majorRepository.findById(majorId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+        MajorNotFoundException exception = assertThrows(MajorNotFoundException.class,
                                                   () -> majorService.deleteMajor(majorId));
 
-        assertTrue(exception.getMessage().contains("Major with ID"));
+        assertEquals("major_not_found", exception.getMessageKey());
         verify(majorRepository, never()).delete(any());
     }
 
@@ -221,9 +221,9 @@ class MajorServiceTest {
     void findByIdShouldReturnEmptyIfNotFound() {
         when(majorRepository.findById(majorId)).thenReturn(Optional.empty());
 
-        org.unilab.uniplan.exception.ResourceNotFoundException exception = assertThrows(
-            ResourceNotFoundException.class, () -> majorService.findMajorById(majorId));
+        MajorNotFoundException exception = assertThrows(
+            MajorNotFoundException.class, () -> majorService.findMajorById(majorId));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(majorId)));
+        assertEquals("major_not_found", exception.getMessageKey());
     }
 }

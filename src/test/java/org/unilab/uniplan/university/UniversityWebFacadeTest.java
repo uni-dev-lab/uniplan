@@ -15,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.UniversityNotFoundException;
 import org.unilab.uniplan.university.dto.UniversityRequestDto;
 import org.unilab.uniplan.university.dto.UniversityResponseDto;
 
@@ -72,9 +72,10 @@ class UniversityWebFacadeTest {
     void updateUniversity_shouldThrowResourceNotFoundException_whenUniversityNotFound() {
         when(universityService.getById(id)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> universityWebFacade.updateUniversity(id, requestDto))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(id.toString());
+        assertThatThrownBy(() -> universityWebFacade.updateUniversity(id,requestDto))
+            .isInstanceOf(UniversityNotFoundException.class)
+            .satisfies(ex -> assertThat(((UniversityNotFoundException) ex).getArgs()).contains(id));
+
     }
 
     @Test
@@ -103,8 +104,8 @@ class UniversityWebFacadeTest {
         when(universityService.getById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> universityWebFacade.getUniversityById(id))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(id.toString());
+            .isInstanceOf(UniversityNotFoundException.class)
+            .satisfies(ex -> assertThat(((UniversityNotFoundException) ex).getArgs()).contains(id));
     }
 
     @Test
@@ -117,11 +118,11 @@ class UniversityWebFacadeTest {
     }
 
     @Test
-    void deleteUniversity_shouldThrowResourceNotFoundException_whenUniversityNotFound() {
+    void deleteUniversity_shouldThrowUniversityNotFoundException_whenUniversityNotFound() {
         when(universityService.getById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> universityWebFacade.deleteUniversity(id))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(id.toString());
+            .isInstanceOf(UniversityNotFoundException.class)
+            .satisfies(ex -> assertThat(((UniversityNotFoundException) ex).getArgs()).contains(id));
     }
 }

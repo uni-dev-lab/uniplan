@@ -1,13 +1,11 @@
 package org.unilab.uniplan.lector;
 
-import static org.unilab.uniplan.utils.ErrorConstants.LECTOR_NOT_FOUND;
-
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.LectorNotFoundException;
 import org.unilab.uniplan.faculty.FacultyService;
 import org.unilab.uniplan.lector.dto.LectorDto;
 
@@ -36,8 +34,7 @@ public class LectorService {
     public LectorDto getLectorById(UUID id) {
         return lectorRepository.findById(id)
                                .map(lectorMapper::toDto)
-                               .orElseThrow(() -> new ResourceNotFoundException(LECTOR_NOT_FOUND.getMessage(
-                                   String.valueOf(id))));
+                               .orElseThrow(() -> new LectorNotFoundException(id));
     }
 
     @Transactional
@@ -45,15 +42,12 @@ public class LectorService {
         return lectorRepository.findById(id)
                                .map(existingLector -> updateEntityAndConvertToDto(
                                    lectorDto,
-                                   existingLector)).orElseThrow(() -> new ResourceNotFoundException(
-                LECTOR_NOT_FOUND.getMessage(String.valueOf(id))));
+                                   existingLector)).orElseThrow(() -> new LectorNotFoundException(id));
     }
 
     public void deleteLector(UUID id) {
        final Lector lector =lectorRepository.findById(id)
-                                            .orElseThrow(() -> new ResourceNotFoundException(
-                                                LECTOR_NOT_FOUND.getMessage(String.valueOf(id))
-                                           ));
+                                            .orElseThrow(() -> new LectorNotFoundException(id));
        lectorRepository.delete(lector);
     }
 

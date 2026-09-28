@@ -1,12 +1,10 @@
 package org.unilab.uniplan.course;
 
-import static org.unilab.uniplan.utils.ErrorConstants.MAJOR_NOT_FOUND;
-
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.unilab.uniplan.course.dto.CourseRequestDto;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.MajorNotFoundException;
 import org.unilab.uniplan.major.MajorRepository;
 
 @Component
@@ -21,9 +19,7 @@ public class CourseValidator {
 
     private void validateMajorExists(final UUID majorId) {
         if (!majorRepository.existsById(majorId)) {
-            throw new ResourceNotFoundException(
-                MAJOR_NOT_FOUND.getMessage(String.valueOf(majorId))
-            );
+            throw new MajorNotFoundException(majorId);
         }
     }
 }

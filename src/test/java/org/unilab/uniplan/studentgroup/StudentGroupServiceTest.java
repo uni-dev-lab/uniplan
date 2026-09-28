@@ -91,7 +91,7 @@ class StudentGroupServiceTest {
                                                                studentId,
                                                                groupId,
                                                                studentGroupDTO));
-        assertTrue(exception.getMessage().contains(String.valueOf(studentGroupId)));
+        assertEquals("student_group_not_found", exception.getMessageKey());
         verify(studentGroupRepository, never()).save(any());
     }
 
@@ -111,7 +111,7 @@ class StudentGroupServiceTest {
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
             studentGroupService.deleteStudentGroup(studentId, groupId));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(studentGroupId)));
+        assertEquals("student_group_not_found", exception.getMessageKey());
         verify(studentGroupRepository, never()).delete(any());
     }
 
@@ -136,7 +136,7 @@ class StudentGroupServiceTest {
                                                                studentId,
                                                                groupId));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(studentGroupId)));
+        assertEquals("student_group_not_found", exception.getMessageKey());
     }
 
     @Test

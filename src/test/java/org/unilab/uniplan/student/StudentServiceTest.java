@@ -18,7 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.StudentNotFoundException;
 import org.unilab.uniplan.student.dto.StudentDto;
 
 @ExtendWith(MockitoExtension.class)
@@ -71,9 +71,9 @@ class StudentServiceTest {
     void findStudentByIdShouldReturnEmptyIfNotExists() {
         when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> studentService.findStudentById(studentId));
+        StudentNotFoundException exception = assertThrows(StudentNotFoundException.class, () -> studentService.findStudentById(studentId));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(studentId)));
+        assertEquals("student_not_found", exception.getMessageKey());
     }
 
     @Test
@@ -106,9 +106,9 @@ class StudentServiceTest {
     void updateStudentShouldReturnEmptyIfNotFound() {
         when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> studentService.updateStudent(studentId, studentDTO));
+        StudentNotFoundException exception = assertThrows(StudentNotFoundException.class, () -> studentService.updateStudent(studentId, studentDTO));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(studentId)));
+        assertEquals("student_not_found", exception.getMessageKey());
         verify(studentRepository, never()).save(any());
     }
 
@@ -125,10 +125,10 @@ class StudentServiceTest {
     void deleteStudentShouldThrowIfNotFound() {
         when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+        StudentNotFoundException exception = assertThrows(StudentNotFoundException.class,
                                                   () -> studentService.deleteStudent(studentId));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(studentId)));
+        assertEquals("student_not_found", exception.getMessageKey());
         verify(studentRepository, never()).delete(any());
     }
 }

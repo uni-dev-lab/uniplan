@@ -6,12 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.UniversityNotFoundException;
 import org.unilab.uniplan.university.dto.UniversityRequestDto;
 import org.unilab.uniplan.university.dto.UniversityResponseDto;
 import java.util.List;
 import java.util.UUID;
-
-import static org.unilab.uniplan.utils.ErrorConstants.UNIVERSITY_NOT_FOUND;
 
 @Component
 @Slf4j
@@ -60,7 +59,6 @@ public class UniversityWebFacade {
 
     private University getUniversityOrThrow(final UUID id) {
         return universityService.getById(id)
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                    UNIVERSITY_NOT_FOUND.getMessage(String.valueOf(id))));
+                                .orElseThrow(() -> new UniversityNotFoundException(id));
     }
 }

@@ -45,7 +45,8 @@ public class RoomWebFacadeTest {
                                                "Sofia, Bulgaria",
                                                (short) 1888,
                                                "NEAA",
-                                               "https://uni-sofia.bg"
+                                               "https://uni-sofia.bg",
+                                               null
         );
         Faculty faculty = new Faculty(university, "FMI", "Faculty Name");
         faculty.setId(facultyId);

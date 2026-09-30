@@ -11,7 +11,7 @@ Your role is a **thin dispatcher**: fetch PR metadata, prepare the worktree, cla
 
 uniplan is currently a backend-only project; this skill is structured so a frontend reviewer can be added later as a sibling Agent dispatch without restructuring.
 
-> **CI override:** if the environment variable `CI=true` is set OR the invoking prompt explicitly says "running in CI / runner is already at the PR branch", **skip Step 2 (worktree creation) entirely**. In CI the runner has already checked out the PR branch into the working directory — set `<worktree-path>` to the current working directory (`git rev-parse --show-toplevel`) and proceed. In CI the run is review-only: do not edit files, do not commit, do not push.
+> **CI override:** if the environment variable `CI=true` is set OR the invoking prompt explicitly says "running in CI / runner is already at the PR branch", **skip Step 2 (worktree creation) entirely**. In CI the runner has already checked out the PR branch — set `<worktree-path>` to the absolute path of `$PR_WORKTREE` when that variable is set (the gate workflow checks out `main` at the root and the PR head into that subdirectory, so the reviewer rules come from `main`), otherwise to the current working directory (`git rev-parse --show-toplevel`), and proceed. In CI the run is review-only: do not edit source files, do not commit, do not push. If the invoking prompt names output files (review body, inline comments), write them exactly as described there instead of posting anything — the workflow parses the Step 5 block to decide whether the bot approves, so keep the section headings exactly as specified.
 
 Follow these steps exactly.
 

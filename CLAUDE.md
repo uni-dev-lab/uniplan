@@ -16,6 +16,8 @@ The project uses the Maven wrapper. Use `./mvnw` (Linux/macOS) or `mvnw.cmd` (Wi
 
 CI (`.github/workflows/build.yml`) runs `mvn -B clean verify` on PRs against `main`. Tests must pass for merge.
 
+Merging requires one approval from a code owner (`@uni-dev-lab/reviewers`, see `.github/CODEOWNERS`) — either a human or the `uniplan-gandalf` machine user, which is a member of that team. Requesting `uniplan-gandalf` as a reviewer (or re-requesting it after a push) runs `.github/workflows/claude-code-review.yml` (`pull_request_target`, so the workflow and review rules always come from `main`): it runs `/review-pr` and posts the result as the bot — APPROVE when there are no Critical/Important findings, otherwise a COMMENT review with inline comments. Stale approvals are dismissed on push.
+
 ## Runtime configuration
 
 - All API endpoints are served under the `/api` context path (`spring.mvc.servlet.path` in `application.yaml`).
@@ -85,7 +87,7 @@ Where rules call out intentional deviations from prior conventions (e.g. no Faca
 
 ## Project Subagents
 
-- `uniplan-be-reviewer` — backend reviewer (read-only); produces review findings against project rules. Cannot edit code. Defined in `.claude/agents/uniplan-be-reviewer.md`. Invoke via the Agent tool with `subagent_type: uniplan-be-reviewer`. Used by the `/review-pr` skill and the `Claude Code Review` GitHub Actions workflow.
+- `uniplan-be-reviewer` — backend reviewer (read-only); produces review findings against project rules. Cannot edit code. Defined in `.claude/agents/uniplan-be-reviewer.md`. Invoke via the Agent tool with `subagent_type: uniplan-be-reviewer`. Used by the `/review-pr` skill and the `Claude Code Review` GitHub Actions workflow, where a clean review is posted as an approval from `uniplan-gandalf`.
 
 No implementer subagent yet — implementations happen in the main session, where CLAUDE.md preloading already gives the conversational loop access to project conventions. Add an implementer when (a) the codebase grows beyond what fits comfortably in the rules files, or (b) a second backend dev / frontend / auth module starts requiring orchestrated multi-task work.
 

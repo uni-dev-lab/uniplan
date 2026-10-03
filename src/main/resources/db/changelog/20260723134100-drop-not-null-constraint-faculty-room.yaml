@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20260723134100-1
+      author: pipetkova19
+      changes:
+        - dropNotNullConstraint:
+            tableName: room
+            columnName: faculty_id
+            columnDataType: uuid
+      rollback:
+        - addNotNullConstraint:
+            tableName: room
+            columnName: faculty_id
+            columnDataType: uuid

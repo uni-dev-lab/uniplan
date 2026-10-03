@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20260723141400-1
+      author: pipetkova19
+      changes:
+        - addColumn:
+            tableName: category
+            columns:
+              - column:
+                  name: description
+                  type: varchar(100)
+                  defaultValue: "-"
+      rollback:
+        - dropColumn:
+            tableName: category
+            columnName: description

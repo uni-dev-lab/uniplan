@@ -45,13 +45,14 @@ public class RoomWebFacadeTest {
                                                "Sofia, Bulgaria",
                                                (short) 1888,
                                                "NEAA",
-                                               "https://uni-sofia.bg"
+                                               "https://uni-sofia.bg",
+                                               null
         );
         Faculty faculty = new Faculty(university, "FMI", "Faculty Name");
         faculty.setId(facultyId);
         String roomNumber = "111";
         requestDto = new RoomRequestDto(facultyId, "222");
-        entity = new Room(faculty, roomNumber);
+        entity = new Room(faculty, roomNumber, null);
         entity.setId(id);
         responseDto = new RoomResponseDto(id, facultyId, roomNumber, categoryId);
     }

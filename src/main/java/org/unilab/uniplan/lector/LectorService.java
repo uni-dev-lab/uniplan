@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
-import org.unilab.uniplan.faculty.FacultyService;
+import org.unilab.uniplan.faculty.FacultyRepository;
 import org.unilab.uniplan.lector.dto.LectorDto;
 
 @Service
@@ -19,11 +19,15 @@ public class LectorService {
 
     private final LectorMapper lectorMapper;
 
-    private final FacultyService facultyService;
+    private final FacultyRepository facultyRepository;
 
     @Transactional
     public LectorDto createLector(LectorDto lectorDto) {
         final Lector lector = lectorMapper.toEntity(lectorDto);
+
+        if (lectorDto.facultyId() != null) {
+            lector.setFaculty(facultyRepository.getReferenceById(lectorDto.facultyId()));
+        }
 
         return saveEntityAndConvertToDto(lector);
     }
@@ -58,8 +62,13 @@ public class LectorService {
     }
 
     private LectorDto updateEntityAndConvertToDto(final LectorDto dto,
-                                                  final Lector entity) {
+                                                   final Lector entity) {
         lectorMapper.updateEntityFromDto(dto, entity);
+
+        if (dto.facultyId() != null) {
+            entity.setFaculty(facultyRepository.getReferenceById(dto.facultyId()));
+        }
+
         return saveEntityAndConvertToDto(entity);
     }
 

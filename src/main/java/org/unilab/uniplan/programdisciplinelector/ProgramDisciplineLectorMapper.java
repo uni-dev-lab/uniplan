@@ -1,42 +1,41 @@
 package org.unilab.uniplan.programdisciplinelector;
 
 import java.util.List;
-import java.util.UUID;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorDto;
 import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorRequestDto;
 import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorResponseDto;
 
 @Mapper
 public interface ProgramDisciplineLectorMapper {
 
-    @Mapping(target = "disciplineId", source = "discipline.id")
-    @Mapping(target = "lectorId", source = "lector.id")
-    @Mapping(target = "programId", source = "program.id")
-    ProgramDisciplineLectorDto toDto(ProgramDisciplineLector programDisciplineLector);
+    /*Mapping directly to id using the dto's fields to create a new id object
+     * ignoring the discipline, lector and program on mapping since they are
+     * insertable = false and updatable = false and Hibernate would ignore them on insert*/
+    @Mapping(target = "discipline", ignore = true)
+    @Mapping(target = "lector", ignore = true)
+    @Mapping(target = "program", ignore = true)
+    @Mapping(target = "id", expression = "java(new ProgramDisciplineLectorId(request.lectorId(),"
+                                         + " request.programId(),"
+                                         + " request.disciplineId()))")
+    ProgramDisciplineLector toEntity(ProgramDisciplineLectorRequestDto request);
 
-    @Mapping(target = "discipline.id", source = "disciplineId")
-    @Mapping(target = "lector.id", source = "lectorId")
-    @Mapping(target = "program.id", source = "programId")
-    ProgramDisciplineLector toEntity(ProgramDisciplineLectorDto programDisciplineLectorDto);
+    /*After creating relationships are still null. Until they are fetched they would be null
+     * and that would put nulls in the Create response*/
+    @Mapping(target = "lectorId", source = "id.lectorId")
+    @Mapping(target = "programId", source = "id.programId")
+    @Mapping(target = "disciplineId", source = "id.disciplineId")
+    ProgramDisciplineLectorResponseDto toResponseDto(final ProgramDisciplineLector programDisciplineLector);
 
+    List<ProgramDisciplineLectorResponseDto> toResponseDtoList(List<ProgramDisciplineLector> programDisciplineLectorList);
+
+    /*Ignoring id, lector program and discipline since changing them would also
+     * mean changing the ids connected to the object which would change the id of our entity */
     @Mapping(target = "id", ignore = true)
-    ProgramDisciplineLectorDto toInternalDto(final ProgramDisciplineLectorRequestDto requestDto);
-
-    ProgramDisciplineLectorResponseDto toResponseDto(final ProgramDisciplineLectorDto dto);
-
-    List<ProgramDisciplineLectorDto> toDtos(List<ProgramDisciplineLector> programDisciplineLectorList);
-
-    List<ProgramDisciplineLectorResponseDto> toResponseDtoList(List<ProgramDisciplineLectorDto> programDisciplineLectorDtoList);
-
-    @Mapping(target = "lector.id", source = "dto.lectorId")
-    @Mapping(target = "discipline.id", source = "dto.disciplineId")
-    @Mapping(target = "program.id", source = "dto.programId")
-    void updateEntityFromDto(final ProgramDisciplineLectorDto dto, @MappingTarget final ProgramDisciplineLector entity);
-
-    ProgramDisciplineLectorId toProgramDisciplineLectorId(UUID lectorId,
-                                                          UUID programId,
-                                                          UUID disciplineId);
+    @Mapping(target = "lector", ignore = true)
+    @Mapping(target = "program", ignore = true)
+    @Mapping(target = "discipline", ignore = true)
+    void updateEntityFromDto(final ProgramDisciplineLectorRequestDto request,
+                             @MappingTarget final ProgramDisciplineLector entity);
 }

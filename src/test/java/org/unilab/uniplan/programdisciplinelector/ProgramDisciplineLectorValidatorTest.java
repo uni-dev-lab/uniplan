@@ -51,14 +51,17 @@ class ProgramDisciplineLectorValidatorTest {
         lectorId = UUID.randomUUID();
         programId = UUID.randomUUID();
         disciplineId = UUID.randomUUID();
+
         programDisciplineLectorId = new ProgramDisciplineLectorId(
             lectorId,
             programId,
             disciplineId);
-        request = new ProgramDisciplineLectorRequestDto(lectorId,
-                                                        programId,
-                                                        disciplineId,
-                                                        LectorType.BOTH);
+
+        request = new ProgramDisciplineLectorRequestDto(
+            lectorId,
+            programId,
+            disciplineId,
+            LectorType.BOTH);
     }
 
     @Test

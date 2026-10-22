@@ -31,7 +31,7 @@ public class ProgramDisciplineLectorValidator {
         validateNotAlreadyAssigned(request);
     }
 
-    public void validateNotAlreadyAssigned(final ProgramDisciplineLectorRequestDto request) {
+    void validateNotAlreadyAssigned(final ProgramDisciplineLectorRequestDto request) {
         final ProgramDisciplineLectorId id = new ProgramDisciplineLectorId(
             request.lectorId(),
             request.programId(),
@@ -45,7 +45,7 @@ public class ProgramDisciplineLectorValidator {
         }
     }
 
-    public void validateLectorExists(final UUID lectorId) {
+    void validateLectorExists(final UUID lectorId) {
         if (!lectorRepository.existsById(lectorId)) {
             throw new ResourceNotFoundException(
                 LECTOR_NOT_FOUND.getMessage(String.valueOf(lectorId))
@@ -53,7 +53,7 @@ public class ProgramDisciplineLectorValidator {
         }
     }
 
-    public void validateProgramExists(final UUID programId) {
+    void validateProgramExists(final UUID programId) {
         if (!programRepository.existsById(programId)) {
             throw new ResourceNotFoundException(
                 PROGRAM_NOT_FOUND.getMessage(String.valueOf(programId))
@@ -61,7 +61,7 @@ public class ProgramDisciplineLectorValidator {
         }
     }
 
-    public void validateDisciplineExists(final UUID disciplineId) {
+    void validateDisciplineExists(final UUID disciplineId) {
         if (!disciplineRepository.existsById(disciplineId)) {
             throw new ResourceNotFoundException(
                 DISCIPLINE_NOT_FOUND.getMessage(String.valueOf(disciplineId))

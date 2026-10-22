@@ -1,6 +1,5 @@
 package org.unilab.uniplan.programdisciplinelector;
 
-import static org.springframework.http.ResponseEntity.ok;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -18,66 +17,68 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorDto;
 import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorRequestDto;
 import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorResponseDto;
 
 @RestController
 @RequestMapping("/program-discipline-lectors")
 @RequiredArgsConstructor
-@Tag(name = "Program Discipline Lectors", description = "Assign lecturers to program disciplines with specific roles (e.g., Main Lecturer, Assistant)")
+@Tag(name = "Program Discipline Lectors",
+    description = "Assign lecturers to program disciplines with specific roles (e.g., Main Lecturer, Assistant)")
 public class ProgramDisciplineLectorController {
 
-    private final ProgramDisciplineLectorMapper programDisciplineLectorMapper;
-    private final ProgramDisciplineLectorService programDisciplineLectorService;
+    private final ProgramDisciplineLectorWebFacade programDisciplineLectorWebFacade;
 
     @PostMapping("/add")
-    public ResponseEntity<ProgramDisciplineLectorResponseDto> createProgramDiscipline(@Valid @NotNull @RequestBody final
-                                                                                      ProgramDisciplineLectorRequestDto programDisciplineLectorRequestDto){
-        final ProgramDisciplineLectorDto programDisciplineLectorDto = programDisciplineLectorService
-            .createProgramDisciplineLector(programDisciplineLectorMapper
-                                               .toInternalDto(programDisciplineLectorRequestDto));
+    public ResponseEntity<ProgramDisciplineLectorResponseDto> createProgramDisciplineLector(
+        @Valid @NotNull @RequestBody final ProgramDisciplineLectorRequestDto request) {
 
-        return new ResponseEntity<>(programDisciplineLectorMapper.toResponseDto(programDisciplineLectorDto),
-                                    HttpStatus.CREATED);
+        final ProgramDisciplineLectorResponseDto response =
+            programDisciplineLectorWebFacade.createProgramDisciplineLector(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/getAll")
-    public List<ProgramDisciplineLectorResponseDto> getAllProgramDisciplineLectors(){
-        return programDisciplineLectorMapper.toResponseDtoList(programDisciplineLectorService.getAllProgramDisciplineLectors());
+    public ResponseEntity<List<ProgramDisciplineLectorResponseDto>> getAllProgramDisciplineLectors() {
+        return ResponseEntity.ok(programDisciplineLectorWebFacade.getAllProgramDisciplineLectors());
     }
 
     @GetMapping("/getById")
-    public ResponseEntity<ProgramDisciplineLectorResponseDto> getProgramDisciplineLectorById(@NotNull @RequestParam final UUID lectorId,
-                                                                                             @NotNull @RequestParam final UUID programId,
-                                                                                             @NotNull @RequestParam final UUID disciplineId) {
-        final ProgramDisciplineLectorDto programDisciplineLectorDto = programDisciplineLectorService
-            .getProgramDisciplineLectorById(lectorId, programId, disciplineId);
+    public ResponseEntity<ProgramDisciplineLectorResponseDto> getProgramDisciplineLectorById(
+        @NotNull @RequestParam final UUID lectorId,
+        @NotNull @RequestParam final UUID programId,
+        @NotNull @RequestParam final UUID disciplineId) {
 
-        return ok(programDisciplineLectorMapper.toResponseDto(programDisciplineLectorDto));
+        return ResponseEntity.ok(programDisciplineLectorWebFacade.getProgramDisciplineLectorById(
+            lectorId,
+            programId,
+            disciplineId));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<ProgramDisciplineLectorResponseDto> updateProgramDisciplineLector(@NotNull @RequestParam final UUID lectorId,
-                                                                                            @NotNull @RequestParam final UUID programId,
-                                                                                            @NotNull @RequestParam final UUID disciplineId,
-                                                                                            @Valid @NotNull @RequestBody ProgramDisciplineLectorRequestDto programDisciplineLectorRequestDto){
-        final ProgramDisciplineLectorDto programDisciplineLectorDto = programDisciplineLectorMapper.toInternalDto(programDisciplineLectorRequestDto);
+    public ResponseEntity<ProgramDisciplineLectorResponseDto> updateProgramDisciplineLector(
+        @NotNull @RequestParam final UUID lectorId,
+        @NotNull @RequestParam final UUID programId,
+        @NotNull @RequestParam final UUID disciplineId,
+        @Valid @NotNull @RequestBody final ProgramDisciplineLectorRequestDto request) {
 
-        return ok(programDisciplineLectorMapper.toResponseDto(programDisciplineLectorService.updateProgramDisciplineLector(
+        return ResponseEntity.ok(programDisciplineLectorWebFacade.updateProgramDisciplineLector(
             lectorId,
             programId,
             disciplineId,
-            programDisciplineLectorDto)));
+            request));
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteProgramDisciplineLector(@NotNull @RequestParam final UUID lectorId,
-                                                              @NotNull @RequestParam final UUID programId,
-                                                              @NotNull @RequestParam final UUID disciplineId) {
-        programDisciplineLectorService.deleteProgramDisciplineLector(lectorId,
-                                                                     programId,
-                                                                     disciplineId);
+    public ResponseEntity<Void> deleteProgramDisciplineLector(
+        @NotNull @RequestParam final UUID lectorId,
+        @NotNull @RequestParam final UUID programId,
+        @NotNull @RequestParam final UUID disciplineId) {
+
+        programDisciplineLectorWebFacade.deleteProgramDisciplineLector(lectorId,
+                                                                       programId,
+                                                                       disciplineId);
 
         return ResponseEntity.noContent().build();
     }

@@ -12,8 +12,8 @@ public class ProgramDisciplineLectorService {
 
     private final ProgramDisciplineLectorRepository programDisciplineLectorRepository;
 
-    public void save(final ProgramDisciplineLector programDisciplineLector) {
-        programDisciplineLectorRepository.save(programDisciplineLector);
+    public ProgramDisciplineLector save(final ProgramDisciplineLector programDisciplineLector) {
+        return programDisciplineLectorRepository.save(programDisciplineLector);
     }
 
     public List<ProgramDisciplineLector> getAll() {

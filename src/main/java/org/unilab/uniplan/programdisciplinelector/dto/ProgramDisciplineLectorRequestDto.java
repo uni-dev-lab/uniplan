@@ -5,13 +5,13 @@ import org.unilab.uniplan.programdisciplinelector.LectorType;
 import java.util.UUID;
 
 public record ProgramDisciplineLectorRequestDto(
-    @NotNull
+    @NotNull(message = "Lector ID cannot be null")
     UUID lectorId,
-    @NotNull
+    @NotNull(message = "Program ID cannot be null")
     UUID programId,
-    @NotNull
+    @NotNull(message = "Discipline ID cannot be null")
     UUID disciplineId,
-    @NotNull
+    @NotNull(message = "Lector Type cannot be null")
     LectorType lectorType
 ) {
 

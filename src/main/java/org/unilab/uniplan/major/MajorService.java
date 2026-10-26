@@ -14,8 +14,8 @@ public class MajorService implements BaseService<Major> {
     private final MajorRepository majorRepository;
 
     @Override
-    public void save(final Major major) {
-        majorRepository.save(major);
+    public Major save(final Major major) {
+        return majorRepository.save(major);
     }
 
     @Override

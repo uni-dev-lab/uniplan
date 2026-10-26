@@ -14,8 +14,8 @@ public class DisciplineService implements BaseService<Discipline> {
     private final DisciplineRepository disciplineRepository;
 
     @Override
-    public void save(final Discipline discipline) {
-        disciplineRepository.save(discipline);
+    public Discipline save(final Discipline discipline) {
+        return disciplineRepository.save(discipline);
     }
 
     @Override

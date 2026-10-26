@@ -14,8 +14,8 @@ public class CourseService implements BaseService<Course> {
     private final CourseRepository courseRepository;
 
     @Override
-    public void save(final Course entity) {
-         courseRepository.save(entity);
+    public Course save(final Course entity) {
+        return courseRepository.save(entity);
     }
 
     @Override

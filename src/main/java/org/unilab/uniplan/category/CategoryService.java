@@ -15,8 +15,8 @@ public class CategoryService implements BaseService<Category> {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public void save(final Category category) {
-        categoryRepository.save(category);
+    public Category save(final Category category) {
+        return categoryRepository.save(category);
     }
 
     @Override

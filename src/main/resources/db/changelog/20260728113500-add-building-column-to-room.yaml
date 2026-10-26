@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20260728113500-1
+      author: pipetkova19
+      changes:
+        - addColumn:
+            tableName: room
+            columns:
+              - column:
+                  name: building_id
+                  type: uuid
+      rollback:
+        - dropColumn:
+            tableName: building
+            columnName: room_id

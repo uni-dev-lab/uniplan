@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: 202607231307000-1
+      author: pipetkova19
+      changes:
+        - addColumn:
+            tableName: room
+            columns:
+              - column:
+                  name: available_seats
+                  type: int
+                  defaultValueNumeric: "0"
+                  constraints:
+                    nullable: false
+        - sql:
+            sql: >
+              ALTER TABLE room
+              ADD CONSTRAINT chk_room_available_seats_positive
+              CHECK (available_seats >= 0);
+      rollback:
+        - sql:
+            sql: >
+              ALTER TABLE room
+              DROP CONSTRAINT chk_room_available_seats_positive;
+        - dropColumn:
+            tableName: room
+            columnName: available_seats

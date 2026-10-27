@@ -1,8 +1,13 @@
 databaseChangeLog:
   - changeSet:
-      id: 2
-      author: doseff
+      id: 20260626144400-1
+      author: pipetkova19
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
+        - dropColumn:
+            tableName: major
+            columnName: deleted_at
+      rollback:
         - addColumn:
             tableName: major
             columns:

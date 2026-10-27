@@ -5,26 +5,31 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.unilab.uniplan.common.model.BaseService;
 
 @Service
 @RequiredArgsConstructor
-public class UniversityService {
+public class UniversityService implements BaseService<University> {
 
     private final UniversityRepository universityRepository;
 
-    public List<University> findAll() {
+    @Override
+    public List<University> getAll() {
         return universityRepository.findAll();
     }
 
-    public Optional<University> findById(final UUID id) {
+    @Override
+    public Optional<University> getById(final UUID id) {
         return universityRepository.findById(id);
     }
 
+    @Override
     public void delete(final University university) {
         universityRepository.delete(university);
     }
 
-    public University save(final University university) {
-        return universityRepository.save(university);
+    @Override
+    public void save(final University university) {
+        universityRepository.save(university);
     }
 }

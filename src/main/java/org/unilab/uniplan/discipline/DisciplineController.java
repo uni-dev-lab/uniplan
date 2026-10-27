@@ -45,14 +45,14 @@ public class DisciplineController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DisciplineResponseDto> getDisciplineById(@NotNull @PathVariable final UUID id) {
+    public ResponseEntity<DisciplineResponseDto> getDisciplineById(@PathVariable final UUID id) {
         final DisciplineDto disciplineDto = disciplineService.getDisciplineById(id);
 
         return ok(disciplineMapper.toResponseDto(disciplineDto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DisciplineResponseDto> update(@NotNull @PathVariable UUID id, @Valid @NotNull @RequestBody DisciplineRequestDto disciplineRequestDto) {
+    public ResponseEntity<DisciplineResponseDto> update(@PathVariable UUID id, @Valid @NotNull @RequestBody DisciplineRequestDto disciplineRequestDto) {
        final DisciplineDto internalDto = disciplineMapper.toInternalDto(disciplineRequestDto);
 
         return ok(disciplineMapper.toResponseDto(disciplineService.updateDiscipline(id,
@@ -60,7 +60,7 @@ public class DisciplineController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDiscipline(@NotNull @PathVariable UUID id) {
+    public ResponseEntity<Void> deleteDiscipline(@PathVariable UUID id) {
         disciplineService.deleteDiscipline(id);
 
         return ResponseEntity.noContent().build();

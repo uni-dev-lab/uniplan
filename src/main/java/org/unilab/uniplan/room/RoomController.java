@@ -1,7 +1,5 @@
 package org.unilab.uniplan.room;
 
-import static org.springframework.http.ResponseEntity.ok;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.unilab.uniplan.room.dto.RoomDto;
 import org.unilab.uniplan.room.dto.RoomRequestDto;
 import org.unilab.uniplan.room.dto.RoomResponseDto;
 
@@ -28,39 +25,34 @@ import org.unilab.uniplan.room.dto.RoomResponseDto;
 @Tag(name = "Rooms", description = "Manage classrooms and lecture halls, including room numbers and assigned faculties")
 public class RoomController {
 
-    private final RoomService roomService;
-    private final RoomMapper roomMapper;
+    private final RoomWebFacade roomWebFacade;
 
     @PostMapping
-    public ResponseEntity<RoomResponseDto> createRoom(@Valid @NotNull @RequestBody final RoomRequestDto roomRequestDto) {
-        final RoomDto roomDto = roomService.createRoom(roomMapper.toInternalDto(roomRequestDto));
-
-        return new ResponseEntity<>(roomMapper.toResponseDto(roomDto), HttpStatus.CREATED);
+    public ResponseEntity<Void> createRoom(@Valid @NotNull @RequestBody final RoomRequestDto roomRequestDto) {
+        roomWebFacade.createRoom(roomRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
-    public List<RoomResponseDto> getAllRooms() {
-        return roomMapper.toResponseDtoList(roomService.getAllRooms());
+    public ResponseEntity<List<RoomResponseDto>> getAllRooms() {
+        return ResponseEntity.ok(roomWebFacade.getAllRooms());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RoomResponseDto> getRoomById(@PathVariable final UUID id) {
-        final RoomDto roomDto = roomService.getRoomById(id);
-
-        return ok(roomMapper.toResponseDto(roomDto));
+        return ResponseEntity.ok(roomWebFacade.getRoomById(id));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<RoomResponseDto> updateRoom(@PathVariable final UUID id,
                                                       @Valid @NotNull @RequestBody final RoomRequestDto roomRequestDto) {
-        final RoomDto internalDto = roomMapper.toInternalDto(roomRequestDto);
-
-        return ok(roomMapper.toResponseDto(roomService.updateRoom(id, internalDto)));
+        roomWebFacade.updateRoom(id, roomRequestDto);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRoom(@PathVariable final UUID id) {
-        roomService.deleteRoom(id);
+        roomWebFacade.deleteRoom(id);
 
         return ResponseEntity.noContent().build();
     }

@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SoftDeleteType;
 import org.unilab.uniplan.common.model.BaseEntity;
 import org.unilab.uniplan.university.University;
 
@@ -18,6 +20,7 @@ import org.unilab.uniplan.university.University;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SoftDelete(strategy = SoftDeleteType.DELETED, columnName = "is_deleted")
 public class Faculty extends BaseEntity {
 
     @ManyToOne

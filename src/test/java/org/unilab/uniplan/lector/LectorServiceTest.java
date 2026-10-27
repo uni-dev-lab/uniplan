@@ -1,12 +1,12 @@
 package org.unilab.uniplan.lector;
 
-
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -19,6 +19,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.faculty.Faculty;
+import org.unilab.uniplan.faculty.FacultyRepository;
 import org.unilab.uniplan.lector.dto.LectorDto;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,37 +32,73 @@ class LectorServiceTest {
     @Mock
     private LectorMapper lectorMapper;
 
+    @Mock
+    private FacultyRepository facultyRepository;
+
     @InjectMocks
     private LectorService lectorService;
 
     private UUID id;
     private String firstName;
-    private  String lastName;
+    private String lastName;
     private UUID facultyId;
     private String email;
     private LectorDto lectorDto;
+    private LectorDto lectorDtoWithoutFaculty;
+
+    @Mock
     private Lector lector;
 
+    @Mock
+    private Faculty faculty;
+
     @BeforeEach
-    void setUp(){
+    void setUp() {
         id = UUID.randomUUID();
         facultyId = UUID.randomUUID();
         firstName = "Ivan";
         lastName = "Ivanov";
         email = "i.ivanov@gmail.com";
         lectorDto = new LectorDto(id, facultyId, email, firstName, lastName);
-        lector = new Lector();
+        lectorDtoWithoutFaculty = new LectorDto(id, null, email, firstName, lastName);
     }
 
     @Test
     void testCreateLectorShouldSaveAndReturnDto() {
+        when(lectorMapper.toEntity(lectorDtoWithoutFaculty)).thenReturn(lector);
+        when(lectorRepository.save(lector)).thenReturn(lector);
+        when(lectorMapper.toDto(lector)).thenReturn(lectorDtoWithoutFaculty);
+
+        LectorDto result = lectorService.createLector(lectorDtoWithoutFaculty);
+
+        assertEquals(lectorDtoWithoutFaculty, result);
+        verifyNoInteractions(facultyRepository);
+    }
+
+    @Test
+    void testCreateLectorShouldSetFacultyWhenFacultyIdIsNotNull() {
         when(lectorMapper.toEntity(lectorDto)).thenReturn(lector);
+        when(facultyRepository.getReferenceById(facultyId)).thenReturn(faculty);
         when(lectorRepository.save(lector)).thenReturn(lector);
         when(lectorMapper.toDto(lector)).thenReturn(lectorDto);
 
         LectorDto result = lectorService.createLector(lectorDto);
 
         assertEquals(lectorDto, result);
+        verify(facultyRepository).getReferenceById(facultyId);
+        verify(lector).setFaculty(faculty);
+    }
+
+    @Test
+    void testCreateLectorShouldNotSetFacultyWhenFacultyIdIsNull() {
+        when(lectorMapper.toEntity(lectorDtoWithoutFaculty)).thenReturn(lector);
+        when(lectorRepository.save(lector)).thenReturn(lector);
+        when(lectorMapper.toDto(lector)).thenReturn(lectorDtoWithoutFaculty);
+
+        LectorDto result = lectorService.createLector(lectorDtoWithoutFaculty);
+
+        assertEquals(lectorDtoWithoutFaculty, result);
+        verifyNoInteractions(facultyRepository);
     }
 
     @Test
@@ -87,7 +125,7 @@ class LectorServiceTest {
     }
 
     @Test
-    void testGetLectorByIdShouldReturnEmptyOptionalIfLectorNotFound() {
+    void testGetLectorByIdShouldThrowIfNotFound() {
         when(lectorRepository.findById(id)).thenReturn(Optional.empty());
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
@@ -99,22 +137,50 @@ class LectorServiceTest {
     @Test
     void testUpdateLectorShouldUpdateAndReturnDtoIfFound() {
         when(lectorRepository.findById(id)).thenReturn(Optional.of(lector));
+        doAnswer(invocation -> null).when(lectorMapper).updateEntityFromDto(lectorDtoWithoutFaculty, lector);
+        when(lectorRepository.save(lector)).thenReturn(lector);
+        when(lectorMapper.toDto(lector)).thenReturn(lectorDtoWithoutFaculty);
+
+        LectorDto result = lectorService.updateLector(id, lectorDtoWithoutFaculty);
+
+        assertEquals(lectorDtoWithoutFaculty, result);
+        verifyNoInteractions(facultyRepository);
+    }
+
+    @Test
+    void testUpdateLectorShouldSetFacultyWhenFacultyIdIsNotNull() {
+        when(lectorRepository.findById(id)).thenReturn(Optional.of(lector));
         doAnswer(invocation -> null).when(lectorMapper).updateEntityFromDto(lectorDto, lector);
+        when(facultyRepository.getReferenceById(facultyId)).thenReturn(faculty);
         when(lectorRepository.save(lector)).thenReturn(lector);
         when(lectorMapper.toDto(lector)).thenReturn(lectorDto);
 
         LectorDto result = lectorService.updateLector(id, lectorDto);
 
         assertEquals(lectorDto, result);
+        verify(facultyRepository).getReferenceById(facultyId);
+        verify(lector).setFaculty(faculty);
     }
 
     @Test
-    void testUpdateLectorShouldReturnEmptyOptionalIfNotFound() {
+    void testUpdateLectorShouldNotSetFacultyWhenFacultyIdIsNull() {
+        when(lectorRepository.findById(id)).thenReturn(Optional.of(lector));
+        doAnswer(invocation -> null).when(lectorMapper).updateEntityFromDto(lectorDtoWithoutFaculty, lector);
+        when(lectorRepository.save(lector)).thenReturn(lector);
+        when(lectorMapper.toDto(lector)).thenReturn(lectorDtoWithoutFaculty);
+
+        LectorDto result = lectorService.updateLector(id, lectorDtoWithoutFaculty);
+
+        assertEquals(lectorDtoWithoutFaculty, result);
+        verifyNoInteractions(facultyRepository);
+    }
+
+    @Test
+    void testUpdateLectorShouldThrowIfNotFound() {
         when(lectorRepository.findById(id)).thenReturn(Optional.empty());
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
-                                                           () -> lectorService.updateLector(id,
-                                                                                            lectorDto));
+                                                           () -> lectorService.updateLector(id, lectorDto));
 
         assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
@@ -132,8 +198,8 @@ class LectorServiceTest {
     void testDeleteLectorShouldThrowIfNotFound() {
         when(lectorRepository.findById(id)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
-            lectorService.deleteLector(id));
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
+                                                           () -> lectorService.deleteLector(id));
 
         assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }

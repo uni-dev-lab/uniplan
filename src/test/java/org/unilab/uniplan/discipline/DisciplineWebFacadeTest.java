@@ -46,9 +46,7 @@ class DisciplineWebFacadeTest {
 
         request = new DisciplineRequestDto(
             "name",
-            "lector",
-            List.of(new ProgramDisciplineId(UUID.randomUUID(), UUID.randomUUID()))
-        );
+            "lector");
 
         response = new DisciplineResponseDto(
             id,

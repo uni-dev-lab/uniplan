@@ -43,8 +43,7 @@ class DisciplineMapperTest {
 
         request = new DisciplineRequestDto(
             "Databases",
-            "Petar Petrov",
-            List.of(new ProgramDisciplineId(UUID.randomUUID(), UUID.randomUUID())));
+            "Petar Petrov");
 
         response = new DisciplineResponseDto(
             id,

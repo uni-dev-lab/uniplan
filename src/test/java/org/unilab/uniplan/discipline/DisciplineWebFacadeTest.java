@@ -19,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.discipline.dto.DisciplineRequestDto;
 import org.unilab.uniplan.discipline.dto.DisciplineResponseDto;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
-import org.unilab.uniplan.programdiscipline.ProgramDisciplineId;
 
 @ExtendWith(MockitoExtension.class)
 class DisciplineWebFacadeTest {
@@ -52,7 +51,7 @@ class DisciplineWebFacadeTest {
             id,
             "name",
             "lector",
-            List.of(new ProgramDisciplineId(UUID.randomUUID(), UUID.randomUUID()))
+            List.of()
         );
     }
 

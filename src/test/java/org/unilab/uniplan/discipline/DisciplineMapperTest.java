@@ -1,6 +1,7 @@
 package org.unilab.uniplan.discipline;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import java.util.UUID;
@@ -54,38 +55,29 @@ class DisciplineMapperTest {
     }
 
     @Test
-    void toEntity_shouldCopyNameAndLector_whenCalled() {
+    void toEntity_shouldMapFieldsAndIgnoreIdAndProgramDisciplines_whenCalled() {
         final Discipline result = disciplineMapper.toEntity(request);
 
-        assertThat(result.getName()).isEqualTo(request.name());
-        assertThat(result.getMainLector()).isEqualTo(request.mainLector());
+        assertAll(
+            () -> assertThat(result.getName()).isEqualTo(request.name()),
+            () -> assertThat(result.getMainLector()).isEqualTo(request.mainLector()),
+            () -> assertThat(result.getId()).isNull(),
+            () -> assertThat(result.getProgramDisciplines()).isEmpty()
+        );
     }
 
     @Test
-    void toEntity_shouldIgnoreIdAndProgramDisciplines_whenCalled() {
-        final Discipline result = disciplineMapper.toEntity(request);
-
-        assertThat(result.getId()).isNull();
-        assertThat(result.getProgramDisciplines()).isEmpty();
-    }
-
-    @Test
-    void toResponseDto_shouldCopyIdNameAndMainLector_whenCalled() {
+    void toResponseDto_shouldCopyIdNameAndMainLectorAndProgramDisciplinesMatch_whenCalled() {
         final DisciplineResponseDto result =
             disciplineMapper.toResponseDto(discipline);
 
-        assertThat(result.id()).isEqualTo(discipline.getId());
-        assertThat(result.name()).isEqualTo(discipline.getName());
-        assertThat(result.mainLector()).isEqualTo(discipline.getMainLector());
-    }
-
-    @Test
-    void toResponseDto_shouldContainOnlyProgramDisciplineIdsEntityHas_whenCalled() {
-        final DisciplineResponseDto result =
-            disciplineMapper.toResponseDto(discipline);
-
-        assertThat(result.programDisciplinesIds())
-            .containsExactly(firstLinkId, secondLinkId);
+        assertAll(
+            () -> assertThat(result.id()).isEqualTo(discipline.getId()),
+            () -> assertThat(result.name()).isEqualTo(discipline.getName()),
+            () -> assertThat(result.mainLector()).isEqualTo(discipline.getMainLector()),
+            () -> assertThat(result.programDisciplinesIds())
+                .containsExactly(firstLinkId, secondLinkId)
+        );
     }
 
     @Test
@@ -115,21 +107,17 @@ class DisciplineMapperTest {
     }
 
     @Test
-    void updateEntityFromDto_shouldUpdateNameAndLector_whenCalled() {
+    void updateEntityFromDto_shouldUpdateNameAndLectorAndNotUpdateIdAndProgramDisciplines_whenCalled() {
         disciplineMapper.updateEntityFromDto(request, discipline);
 
-        assertThat(discipline.getName()).isEqualTo(request.name());
-        assertThat(discipline.getMainLector()).isEqualTo(request.mainLector());
-    }
-
-    @Test
-    void updateEntityFromDto_shouldNotUpdateIdAndProgramDisciplines_whenCalled() {
-        disciplineMapper.updateEntityFromDto(request, discipline);
-
-        assertThat(discipline.getId()).isEqualTo(id);
-        assertThat(discipline.getProgramDisciplines()
-                             .stream()
-                             .map(ProgramDiscipline::getId))
-            .containsExactly(firstLinkId, secondLinkId);
+        assertAll(
+            () -> assertThat(discipline.getName()).isEqualTo(request.name()),
+            () -> assertThat(discipline.getMainLector()).isEqualTo(request.mainLector()),
+            () -> assertThat(discipline.getId()).isEqualTo(id),
+            () -> assertThat(discipline.getProgramDisciplines()
+                                       .stream()
+                                       .map(ProgramDiscipline::getId))
+                .containsExactly(firstLinkId, secondLinkId)
+        );
     }
 }

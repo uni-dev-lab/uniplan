@@ -8,7 +8,6 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.unilab.uniplan.utils.ErrorConstants.LECTOR_NOT_FOUND;
 
 import java.util.List;
 import java.util.Optional;
@@ -98,7 +97,7 @@ class ProgramDisciplineLectorWebFacadeTest {
 
     @Test
     void createProgramDisciplineLector_shouldNotSave_whenValidationFails() {
-        doThrow(new ResourceNotFoundException(LECTOR_NOT_FOUND.getMessage(String.valueOf(lectorId))))
+        doThrow(new ResourceNotFoundException(""))
             .when(programDisciplineLectorValidator).validateForCreate(request);
 
         assertThatThrownBy(() -> programDisciplineLectorWebFacade.createProgramDisciplineLector(

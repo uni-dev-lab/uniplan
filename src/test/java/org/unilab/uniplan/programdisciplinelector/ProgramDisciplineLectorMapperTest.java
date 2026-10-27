@@ -1,6 +1,7 @@
 package org.unilab.uniplan.programdisciplinelector;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import java.util.UUID;
@@ -14,9 +15,6 @@ class ProgramDisciplineLectorMapperTest {
     private final ProgramDisciplineLectorMapper programDisciplineLectorMapper =
         new ProgramDisciplineLectorMapperImpl();
 
-    private UUID lectorId;
-    private UUID programId;
-    private UUID disciplineId;
     private ProgramDisciplineLectorId id;
     private ProgramDisciplineLector entity;
     private ProgramDisciplineLectorRequestDto request;
@@ -25,9 +23,10 @@ class ProgramDisciplineLectorMapperTest {
 
     @BeforeEach
     void setUp() {
-        lectorId = UUID.randomUUID();
-        programId = UUID.randomUUID();
-        disciplineId = UUID.randomUUID();
+        final UUID lectorId = UUID.randomUUID();
+        final UUID programId = UUID.randomUUID();
+        final UUID disciplineId = UUID.randomUUID();
+
         id = new ProgramDisciplineLectorId(lectorId, programId, disciplineId);
 
         entity = new ProgramDisciplineLector();
@@ -55,32 +54,24 @@ class ProgramDisciplineLectorMapperTest {
     }
 
     @Test
-    void toEntity_shouldBuildCompositeIdAndCopyLectorType_whenCalled() {
+    void toEntity_shouldBuildCompositeIdAndIgnoreRelationships_whenCalled() {
         final ProgramDisciplineLector result = programDisciplineLectorMapper.toEntity(request);
 
-        assertThat(result.getId()).isEqualTo(id);
-        assertThat(result.getLectorType()).isEqualTo(request.lectorType());
+        assertAll(
+            () -> assertThat(result.getId()).isEqualTo(id),
+            () -> assertThat(result.getLectorType()).isEqualTo(request.lectorType()),
+            () -> assertThat(result.getLector()).isNull(),
+            () -> assertThat(result.getProgram()).isNull(),
+            () -> assertThat(result.getDiscipline()).isNull()
+        );
     }
 
     @Test
-    void toEntity_shouldIgnoreRelationships_whenCalled() {
-        final ProgramDisciplineLector result = programDisciplineLectorMapper.toEntity(request);
-
-        assertThat(result.getLector()).isNull();
-        assertThat(result.getProgram()).isNull();
-        assertThat(result.getDiscipline()).isNull();
-    }
-
-    @Test
-    void toResponseDto_shouldReadIdsFromEntityIdAndCopyIdAndLectorType_whenCalled() {
+    void toResponseDto_shouldMapAllFields_whenCalled() {
         final ProgramDisciplineLectorResponseDto result =
             programDisciplineLectorMapper.toResponseDto(entity);
 
-        assertThat(result.lectorId()).isEqualTo(lectorId);
-        assertThat(result.programId()).isEqualTo(programId);
-        assertThat(result.disciplineId()).isEqualTo(disciplineId);
-        assertThat(result.id()).isEqualTo(entity.getId());
-        assertThat(result.lectorType()).isEqualTo(entity.getLectorType());
+        assertThat(result).isEqualTo(response);
     }
 
     @Test
@@ -100,19 +91,15 @@ class ProgramDisciplineLectorMapperTest {
     }
 
     @Test
-    void updateEntityFromDto_shouldUpdateLectorType_whenCalled() {
-        programDisciplineLectorMapper.updateEntityFromDto(request, entity);
-
-        assertThat(entity.getLectorType()).isEqualTo(LectorType.BOTH);
-    }
-
-    @Test
-    void updateEntityFromDto_shouldKeepIdAndRelationships_whenCalled() {
+    void updateEntityFromDto_shouldUpdateLectorTypeAndKeepIdAndRelationships_whenRequestHasOtherIds() {
         programDisciplineLectorMapper.updateEntityFromDto(requestWithOtherIds, entity);
 
-        assertThat(entity.getId()).isEqualTo(id);
-        assertThat(entity.getLector()).isNull();
-        assertThat(entity.getProgram()).isNull();
-        assertThat(entity.getDiscipline()).isNull();
+        assertAll(
+            () -> assertThat(entity.getLectorType()).isEqualTo(LectorType.EXERCISE),
+            () -> assertThat(entity.getId()).isEqualTo(id),
+            () -> assertThat(entity.getLector()).isNull(),
+            () -> assertThat(entity.getProgram()).isNull(),
+            () -> assertThat(entity.getDiscipline()).isNull()
+        );
     }
 }

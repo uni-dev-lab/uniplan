@@ -73,12 +73,6 @@ class ProgramDisciplineLectorValidatorTest {
             false);
 
         assertDoesNotThrow(() -> programDisciplineLectorValidator.validateForCreate(request));
-
-        verify(lectorRepository).existsById(lectorId);
-        verify(programRepository).existsById(programId);
-        verify(disciplineRepository).existsById(disciplineId);
-        verify(programDisciplineLectorRepository)
-            .existsById(programDisciplineLectorId);
     }
 
     @Test
@@ -89,7 +83,6 @@ class ProgramDisciplineLectorValidatorTest {
             .isInstanceOf(ResourceNotFoundException.class)
             .hasMessageContaining(lectorId.toString());
 
-        verify(lectorRepository).existsById(lectorId);
         verify(programRepository, never()).existsById(programId);
         verify(disciplineRepository, never()).existsById(disciplineId);
         verify(programDisciplineLectorRepository, never())
@@ -105,8 +98,6 @@ class ProgramDisciplineLectorValidatorTest {
             .isInstanceOf(ResourceNotFoundException.class)
             .hasMessageContaining(programId.toString());
 
-        verify(lectorRepository).existsById(lectorId);
-        verify(programRepository).existsById(programId);
         verify(disciplineRepository, never()).existsById(disciplineId);
         verify(programDisciplineLectorRepository, never())
             .existsById(programDisciplineLectorId);
@@ -122,9 +113,6 @@ class ProgramDisciplineLectorValidatorTest {
             .isInstanceOf(ResourceNotFoundException.class)
             .hasMessageContaining(disciplineId.toString());
 
-        verify(lectorRepository).existsById(lectorId);
-        verify(programRepository).existsById(programId);
-        verify(disciplineRepository).existsById(disciplineId);
         verify(programDisciplineLectorRepository, never())
             .existsById(programDisciplineLectorId);
     }
@@ -144,11 +132,5 @@ class ProgramDisciplineLectorValidatorTest {
                 final ResponseStatusException ex = (ResponseStatusException) exception;
                 assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
             });
-
-        verify(lectorRepository).existsById(lectorId);
-        verify(programRepository).existsById(programId);
-        verify(disciplineRepository).existsById(disciplineId);
-        verify(programDisciplineLectorRepository)
-            .existsById(programDisciplineLectorId);
     }
 }

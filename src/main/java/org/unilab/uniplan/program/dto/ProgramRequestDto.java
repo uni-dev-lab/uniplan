@@ -7,9 +7,7 @@ import java.util.UUID;
 
 public record ProgramRequestDto(
     @NotNull(message = "Course cannot be null")
-    UUID courseId,
-    @NotNull
-    List<ProgramDisciplineId> programDisciplinesId
+    UUID courseId
 ) {
 
 }

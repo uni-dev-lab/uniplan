@@ -1,15 +1,9 @@
 package org.unilab.uniplan.program;
 
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doAnswer;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,9 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
-import org.unilab.uniplan.program.dto.ProgramDto;
-import org.unilab.uniplan.programdiscipline.ProgramDisciplineId;
 
 @ExtendWith(MockitoExtension.class)
 class ProgramServiceTest {
@@ -29,113 +20,58 @@ class ProgramServiceTest {
     @Mock
     private ProgramRepository programRepository;
 
-    @Mock
-    private ProgramMapper programMapper;
-
     @InjectMocks
     private ProgramService programService;
 
     private UUID id;
-    private UUID courseId;
-    private List<ProgramDisciplineId> programDisciplineIds = new ArrayList<>();
-    private ProgramDto programDto;
     private Program program;
 
     @BeforeEach
-    void setUp(){
-        int programDisciplineCount = 3;
+    void setUp() {
         id = UUID.randomUUID();
-        courseId = UUID.randomUUID();
-        for (int i = 0; i < programDisciplineCount; i++) {
-            programDisciplineIds.add(new ProgramDisciplineId(UUID.randomUUID(),UUID.randomUUID()));
-        }
-        programDto = new ProgramDto(id, courseId, programDisciplineIds);
         program = new Program();
     }
 
     @Test
-    void testCreateProgramShouldSaveAndReturnDto() {
-        when(programMapper.toEntity(programDto)).thenReturn(program);
+    void save_shouldReturnSavedEntity_whenCalled() {
         when(programRepository.save(program)).thenReturn(program);
-        when(programMapper.toDto(program)).thenReturn(programDto);
 
-        ProgramDto result = programService.createProgram(programDto);
+        final var result = programService.save(program);
 
-        assertEquals(programDto, result);
+        assertThat(result).isSameAs(program);
     }
 
     @Test
-    void testGetAllProgramsShouldReturnListOfProgramDtos() {
-        List<Program> entities = List.of(program);
-        List<ProgramDto> dtos = List.of(programDto);
+    void getAll_shouldReturnAllEntities_whenCalled() {
+        when(programRepository.findAll()).thenReturn(List.of(program));
 
-        when(programRepository.findAll()).thenReturn(entities);
-        when(programMapper.toDtoList(entities)).thenReturn(dtos);
+        final var result = programService.getAll();
 
-        List<ProgramDto> result = programService.getAllPrograms();
-
-        assertEquals(dtos, result);
+        assertThat(result).containsExactly(program);
     }
 
     @Test
-    void testGetProgramByIdShouldReturnProgramDtoIfFound() {
+    void getById_shouldReturnEntity_whenItExists() {
         when(programRepository.findById(id)).thenReturn(Optional.of(program));
-        when(programMapper.toDto(program)).thenReturn(programDto);
 
-        ProgramDto result = programService.getProgramById(id);
+        final var result = programService.getById(id);
 
-        assertEquals(programDto, result);
+        assertThat(result).contains(program);
     }
 
     @Test
-    void testGetProgramByIdShouldReturnEmptyOptionalIfProgramNotFound() {
+    void getById_shouldReturnEmpty_whenEntityDoesNotExist() {
         when(programRepository.findById(id)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
-                                                           () -> programService.getProgramById(id));
+        final var result = programService.getById(id);
 
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
+        assertThat(result).isEmpty();
     }
 
     @Test
-    void testUpdateProgramShouldUpdateAndReturnDtoIfFound() {
-        when(programRepository.findById(id)).thenReturn(Optional.of(program));
-        doAnswer(invocation -> null).when(programMapper).updateEntityFromDto(programDto, program);
-        when(programRepository.save(program)).thenReturn(program);
-        when(programMapper.toDto(program)).thenReturn(programDto);
+    void delete_shouldDelete_whenCalled() {
+        programService.delete(program);
 
-        ProgramDto result = programService.updateProgram(id, programDto);
-
-        assertEquals(programDto, result);
-    }
-
-    @Test
-    void testUpdateProgramShouldReturnEmptyOptionalIfNotFound() {
-        when(programRepository.findById(id)).thenReturn(Optional.empty());
-
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
-                                                           () -> programService.updateProgram(id,
-                                                                                              programDto));
-
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
-    }
-
-    @Test
-    void testDeleteProgramShouldDeleteProgramIfFound() {
-        when(programRepository.findById(id)).thenReturn(Optional.of(program));
-        doAnswer(invocation -> null).when(programRepository).delete(program);
-
-        assertDoesNotThrow(() -> programService.deleteProgram(id));
         verify(programRepository).delete(program);
-    }
-
-    @Test
-    void testDeleteProgramShouldThrowIfNotFound() {
-        when(programRepository.findById(id)).thenReturn(Optional.empty());
-
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
-            programService.deleteProgram(id));
-
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 }

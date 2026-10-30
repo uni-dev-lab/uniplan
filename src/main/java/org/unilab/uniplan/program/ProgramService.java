@@ -1,68 +1,34 @@
 package org.unilab.uniplan.program;
 
-
-import static org.unilab.uniplan.utils.ErrorConstants.PROGRAM_NOT_FOUND;
-
-import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
-import org.unilab.uniplan.program.dto.ProgramDto;
-
+import org.unilab.uniplan.common.model.BaseService;
 @Service
 @RequiredArgsConstructor
-public class ProgramService{
+public class ProgramService implements BaseService<Program> {
 
     private final ProgramRepository programRepository;
-    private final ProgramMapper programMapper;
 
-    @Transactional
-    public ProgramDto createProgram(ProgramDto request) {
-        final Program program = programMapper.toEntity(request);
-        return saveEntityAndConvertToDto(program);
+    @Override
+    public Program save(final Program entity) {
+        return programRepository.save(entity);
     }
 
-    public List<ProgramDto> getAllPrograms() {
-       final List<Program> programs = programRepository.findAll();
-
-       return programMapper.toDtoList(programs);
+    @Override
+    public List<Program> getAll() {
+        return programRepository.findAll();
     }
 
-    public ProgramDto getProgramById(UUID id) {
-        return programRepository.findById(id)
-                                .map(programMapper::toDto)
-                                .orElseThrow(() -> new ResourceNotFoundException(PROGRAM_NOT_FOUND.getMessage(
-                                    String.valueOf(id))));
+    @Override
+    public Optional<Program> getById(final UUID id) {
+        return programRepository.findById(id);
     }
 
-    @Transactional
-    public ProgramDto updateProgram(UUID id, ProgramDto programDto) {
-        return programRepository.findById(id)
-                                .map(existingCategory -> updateEntityAndConvertToDto(
-                                    programDto,
-                                    existingCategory))
-                                .orElseThrow(() -> new ResourceNotFoundException(PROGRAM_NOT_FOUND.getMessage(
-                                    String.valueOf(id))));
-    }
-
-    public void deleteProgram(UUID id) {
-        final Program program = programRepository.findById(id)
-                                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                     PROGRAM_NOT_FOUND.getMessage(String.valueOf(id))));
-
-        programRepository.delete(program);
-    }
-
-    private ProgramDto updateEntityAndConvertToDto(final ProgramDto dto,
-                                                   final Program entity) {
-        programMapper.updateEntityFromDto(dto, entity);
-        return saveEntityAndConvertToDto(entity);
-    }
-
-    private ProgramDto saveEntityAndConvertToDto(final Program entity) {
-        final Program savedEntity = programRepository.save(entity);
-        return programMapper.toDto(savedEntity);
+    @Override
+    public void delete(final Program entity) {
+        programRepository.delete(entity);
     }
 }

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.preinitialize.BackgroundPreinitializer;
 import org.springframework.stereotype.Service;
 import org.unilab.uniplan.common.model.BaseService;
 
@@ -15,8 +14,8 @@ public class CategoryService implements BaseService<Category> {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public void save(final Category category) {
-        categoryRepository.save(category);
+    public Category save(final Category category) {
+        return categoryRepository.save(category);
     }
 
     @Override

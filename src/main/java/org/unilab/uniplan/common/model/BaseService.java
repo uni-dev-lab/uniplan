@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public interface BaseService<T> {
 
-    void save(final T entity);
+    T save(final T entity);
 
     List<T> getAll();
 

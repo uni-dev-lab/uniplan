@@ -33,34 +33,32 @@ class ProgramValidatorTest {
     @InjectMocks
     private ProgramValidator programValidator;
 
-    private UUID programId;
     private UUID courseId;
     private ProgramRequestDto request;
 
     @BeforeEach
     void setUp() {
-        programId = UUID.randomUUID();
         courseId = UUID.randomUUID();
-
         request = new ProgramRequestDto(courseId);
     }
 
     @Test
     void validateForCreate_shouldNotThrow_whenValid() {
         when(courseRepository.existsById(courseId)).thenReturn(true);
-        when(programRepository.existsByCourse_Id(courseId)).thenReturn(false);
 
         assertDoesNotThrow(() -> programValidator.validateForCreate(request));
+
+        verify(courseRepository).existsById(courseId);
+        verify(programRepository).existsByCourse_Id(courseId);
     }
 
     @Test
     void validateForCreate_shouldThrowNotFound_whenCourseDoesNotExist() {
-        when(courseRepository.existsById(courseId)).thenReturn(false);
-
         assertThatThrownBy(() -> programValidator.validateForCreate(request))
             .isInstanceOf(ResourceNotFoundException.class)
             .hasMessageContaining(courseId.toString());
 
+        verify(courseRepository).existsById(courseId);
         verify(programRepository, never()).existsByCourse_Id(any());
     }
 
@@ -76,30 +74,37 @@ class ProgramValidatorTest {
                 final ResponseStatusException ex = (ResponseStatusException) exception;
                 assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
             });
+
+        verify(courseRepository).existsById(courseId);
+        verify(programRepository).existsByCourse_Id(courseId);
     }
 
     @Test
     void validateForUpdate_shouldNotThrow_whenValid() {
+        final UUID programId = UUID.randomUUID();
         when(courseRepository.existsById(courseId)).thenReturn(true);
-        when(programRepository.existsByCourse_IdAndIdNot(courseId, programId))
-            .thenReturn(false);
 
         assertDoesNotThrow(() -> programValidator.validateForUpdate(programId, request));
+
+        verify(courseRepository).existsById(courseId);
+        verify(programRepository).existsByCourse_IdAndIdNot(courseId, programId);
     }
 
     @Test
     void validateForUpdate_shouldThrowNotFound_whenCourseDoesNotExist() {
-        when(courseRepository.existsById(courseId)).thenReturn(false);
+        final UUID programId = UUID.randomUUID();
 
         assertThatThrownBy(() -> programValidator.validateForUpdate(programId, request))
             .isInstanceOf(ResourceNotFoundException.class)
             .hasMessageContaining(courseId.toString());
 
+        verify(courseRepository).existsById(courseId);
         verify(programRepository, never()).existsByCourse_IdAndIdNot(any(), any());
     }
 
     @Test
     void validateForUpdate_shouldThrowConflict_whenOtherProgramExistsWithCourseId() {
+        final UUID programId = UUID.randomUUID();
         when(courseRepository.existsById(courseId)).thenReturn(true);
         when(programRepository.existsByCourse_IdAndIdNot(courseId, programId))
             .thenReturn(true);
@@ -111,5 +116,8 @@ class ProgramValidatorTest {
                 final ResponseStatusException ex = (ResponseStatusException) exception;
                 assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
             });
+
+        verify(courseRepository).existsById(courseId);
+        verify(programRepository).existsByCourse_IdAndIdNot(courseId, programId);
     }
 }

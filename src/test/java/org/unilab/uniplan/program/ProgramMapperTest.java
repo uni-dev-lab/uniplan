@@ -3,9 +3,9 @@ package org.unilab.uniplan.program;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.unilab.uniplan.course.Course;
 import org.unilab.uniplan.program.dto.ProgramRequestDto;
@@ -17,40 +17,9 @@ class ProgramMapperTest {
 
     private final ProgramMapper programMapper = new ProgramMapperImpl();
 
-    private UUID id;
-    private UUID courseId;
-    private ProgramDisciplineId firstLinkId;
-    private ProgramDisciplineId secondLinkId;
-    private Program entity;
-    private ProgramDiscipline firstLink;
-    private ProgramDiscipline secondLink;
-    private Course course;
-
-    @BeforeEach
-    void setUp() {
-        id = UUID.randomUUID();
-        courseId = UUID.randomUUID();
-        firstLinkId = new ProgramDisciplineId(UUID.randomUUID(), id);
-        secondLinkId = new ProgramDisciplineId(UUID.randomUUID(), id);
-
-        entity = new Program();
-        course = new Course();
-
-        course.setId(courseId);
-
-        firstLink = new ProgramDiscipline();
-        secondLink = new ProgramDiscipline();
-
-        firstLink.setId(firstLinkId);
-        secondLink.setId(secondLinkId);
-
-        entity.setId(id);
-        entity.setCourse(course);
-        entity.setProgramDisciplines(List.of(firstLink, secondLink));
-    }
-
     @Test
     void toEntity_shouldMapFieldsAndIgnoreIdAndProgramDisciplines_whenCalled() {
+        final UUID courseId = UUID.randomUUID();
         final ProgramRequestDto request = new ProgramRequestDto(courseId);
 
         final Program result = programMapper.toEntity(request);
@@ -64,13 +33,20 @@ class ProgramMapperTest {
 
     @Test
     void toResponseDto_shouldCopyAllFields_whenCalled() {
-        final ProgramResponseDto result = programMapper.toResponseDto(entity);
+        final UUID id = UUID.randomUUID();
+        final UUID courseId = UUID.randomUUID();
+        final ProgramDisciplineId firstLinkId = createProgramDisciplineId(id);
+        final ProgramDisciplineId secondLinkId = createProgramDisciplineId(id);
+        final Program program =
+            createProgram(id, createCourse(courseId), firstLinkId, secondLinkId);
+
+        final ProgramResponseDto result = programMapper.toResponseDto(program);
 
         assertAll(
-            () -> assertThat(result.id()).isEqualTo(entity.getId()),
-            () -> assertThat(result.courseId()).isEqualTo(entity.getCourse().getId()),
-            () -> assertThat(result.programDisciplinesIds()).containsExactly(firstLinkId,
-                                                                             secondLinkId)
+            () -> assertThat(result.id()).isEqualTo(id),
+            () -> assertThat(result.courseId()).isEqualTo(courseId),
+            () -> assertThat(result.programDisciplinesIds())
+                .containsExactly(firstLinkId, secondLinkId)
         );
     }
 
@@ -85,6 +61,12 @@ class ProgramMapperTest {
 
     @Test
     void toResponseDtoList_shouldMapEveryElement_whenCalled() {
+        final UUID id = UUID.randomUUID();
+        final UUID courseId = UUID.randomUUID();
+        final ProgramDisciplineId firstLinkId = createProgramDisciplineId(id);
+        final ProgramDisciplineId secondLinkId = createProgramDisciplineId(id);
+        final Program program =
+            createProgram(id, createCourse(courseId), firstLinkId, secondLinkId);
         final ProgramResponseDto response = new ProgramResponseDto(
             id,
             courseId,
@@ -92,7 +74,7 @@ class ProgramMapperTest {
         );
 
         final List<ProgramResponseDto> result =
-            programMapper.toResponseDtoList(List.of(entity));
+            programMapper.toResponseDtoList(List.of(program));
 
         assertThat(result).containsExactly(response);
     }
@@ -107,19 +89,53 @@ class ProgramMapperTest {
 
     @Test
     void updateEntityFromDto_shouldUpdateCourseLinkAndNothingElse_whenCalled() {
-        final ProgramRequestDto requestDifferentCourse =
-            new ProgramRequestDto(UUID.randomUUID());
+        final UUID id = UUID.randomUUID();
+        final UUID courseId = UUID.randomUUID();
+        final ProgramDisciplineId firstLinkId = createProgramDisciplineId(id);
+        final ProgramDisciplineId secondLinkId = createProgramDisciplineId(id);
+        final Course originalCourse = createCourse(courseId);
+        final Program program = createProgram(id, originalCourse, firstLinkId, secondLinkId);
+        final ProgramRequestDto request = new ProgramRequestDto(UUID.randomUUID());
 
-        programMapper.updateEntityFromDto(requestDifferentCourse, entity);
+        programMapper.updateEntityFromDto(request, program);
 
         assertAll(
-            () -> assertThat(entity.getCourse().getId())
-                .isEqualTo(requestDifferentCourse.courseId()),
-            () -> assertThat(entity.getProgramDisciplines())
-                .containsExactly(firstLink, secondLink),
-            () -> assertThat(entity.getCourse()).isNotSameAs(course),
-            () -> assertThat(entity.getId()).isEqualTo(id),
-            () -> assertThat(course.getId()).isEqualTo(courseId)
+            () -> assertThat(program.getCourse().getId()).isEqualTo(request.courseId()),
+            () -> assertThat(program.getCourse()).isNotSameAs(originalCourse),
+            () -> assertThat(originalCourse.getId()).isEqualTo(courseId),
+            () -> assertThat(program.getId()).isEqualTo(id),
+            () -> assertThat(program.getProgramDisciplines()
+                                    .stream()
+                                    .map(ProgramDiscipline::getId))
+                .containsExactly(firstLinkId, secondLinkId)
         );
+    }
+
+    private Program createProgram(final UUID id,
+                                  final Course course,
+                                  final ProgramDisciplineId... programDisciplineIds) {
+        final Program program = new Program();
+        program.setId(id);
+        program.setCourse(course);
+        program.setProgramDisciplines(Arrays.stream(programDisciplineIds)
+                                            .map(this::createProgramDiscipline)
+                                            .toList());
+        return program;
+    }
+
+    private ProgramDisciplineId createProgramDisciplineId(final UUID programId) {
+        return new ProgramDisciplineId(UUID.randomUUID(), programId);
+    }
+
+    private Course createCourse(final UUID id) {
+        final Course course = new Course();
+        course.setId(id);
+        return course;
+    }
+
+    private ProgramDiscipline createProgramDiscipline(final ProgramDisciplineId id) {
+        final ProgramDiscipline programDiscipline = new ProgramDiscipline();
+        programDiscipline.setId(id);
+        return programDiscipline;
     }
 }

@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorRequestDto;
 import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorResponseDto;
@@ -15,46 +14,11 @@ class ProgramDisciplineLectorMapperTest {
     private final ProgramDisciplineLectorMapper programDisciplineLectorMapper =
         new ProgramDisciplineLectorMapperImpl();
 
-    private ProgramDisciplineLectorId id;
-    private ProgramDisciplineLector entity;
-    private ProgramDisciplineLectorRequestDto request;
-    private ProgramDisciplineLectorRequestDto requestWithOtherIds;
-    private ProgramDisciplineLectorResponseDto response;
-
-    @BeforeEach
-    void setUp() {
-        final UUID lectorId = UUID.randomUUID();
-        final UUID programId = UUID.randomUUID();
-        final UUID disciplineId = UUID.randomUUID();
-
-        id = new ProgramDisciplineLectorId(lectorId, programId, disciplineId);
-
-        entity = new ProgramDisciplineLector();
-        entity.setId(id);
-        entity.setLectorType(LectorType.LECTURE);
-
-        request = new ProgramDisciplineLectorRequestDto(
-            lectorId,
-            programId,
-            disciplineId,
-            LectorType.BOTH);
-
-        requestWithOtherIds = new ProgramDisciplineLectorRequestDto(
-            UUID.randomUUID(),
-            UUID.randomUUID(),
-            UUID.randomUUID(),
-            LectorType.EXERCISE);
-
-        response = new ProgramDisciplineLectorResponseDto(
-            id,
-            lectorId,
-            programId,
-            disciplineId,
-            LectorType.LECTURE);
-    }
-
     @Test
     void toEntity_shouldBuildCompositeIdAndIgnoreRelationships_whenCalled() {
+        final ProgramDisciplineLectorId id = createId();
+        final ProgramDisciplineLectorRequestDto request = createRequest(id, LectorType.BOTH);
+
         final ProgramDisciplineLector result = programDisciplineLectorMapper.toEntity(request);
 
         assertAll(
@@ -68,18 +32,28 @@ class ProgramDisciplineLectorMapperTest {
 
     @Test
     void toResponseDto_shouldMapAllFields_whenCalled() {
+        final ProgramDisciplineLectorId id = createId();
+        final ProgramDisciplineLector entity = createEntity(id, LectorType.LECTURE);
+
         final ProgramDisciplineLectorResponseDto result =
             programDisciplineLectorMapper.toResponseDto(entity);
 
-        assertThat(result).isEqualTo(response);
+        assertThat(result).isEqualTo(createResponse(id, LectorType.LECTURE));
     }
 
     @Test
     void toResponseDtoList_shouldMapEveryElement_whenCalled() {
-        final List<ProgramDisciplineLectorResponseDto> result =
-            programDisciplineLectorMapper.toResponseDtoList(List.of(entity));
+        final ProgramDisciplineLectorId firstId = createId();
+        final ProgramDisciplineLectorId secondId = createId();
+        final List<ProgramDisciplineLector> entities = List.of(
+            createEntity(firstId, LectorType.LECTURE),
+            createEntity(secondId, LectorType.EXERCISE));
 
-        assertThat(result).containsExactly(response);
+        final List<ProgramDisciplineLectorResponseDto> result =
+            programDisciplineLectorMapper.toResponseDtoList(entities);
+
+        assertThat(result).containsExactly(createResponse(firstId, LectorType.LECTURE),
+                                           createResponse(secondId, LectorType.EXERCISE));
     }
 
     @Test
@@ -92,14 +66,50 @@ class ProgramDisciplineLectorMapperTest {
 
     @Test
     void updateEntityFromDto_shouldUpdateLectorTypeAndKeepIdAndRelationships_whenRequestHasOtherIds() {
-        programDisciplineLectorMapper.updateEntityFromDto(requestWithOtherIds, entity);
+        final ProgramDisciplineLectorId id = createId();
+        final ProgramDisciplineLector entity = createEntity(id, LectorType.LECTURE);
+        final ProgramDisciplineLectorRequestDto request =
+            createRequest(createId(), LectorType.EXERCISE);
+
+        programDisciplineLectorMapper.updateEntityFromDto(request, entity);
 
         assertAll(
-            () -> assertThat(entity.getLectorType()).isEqualTo(LectorType.EXERCISE),
+            () -> assertThat(entity.getLectorType()).isEqualTo(request.lectorType()),
             () -> assertThat(entity.getId()).isEqualTo(id),
             () -> assertThat(entity.getLector()).isNull(),
             () -> assertThat(entity.getProgram()).isNull(),
             () -> assertThat(entity.getDiscipline()).isNull()
         );
+    }
+
+    private ProgramDisciplineLectorId createId() {
+        return new ProgramDisciplineLectorId(UUID.randomUUID(),
+                                             UUID.randomUUID(),
+                                             UUID.randomUUID());
+    }
+
+    private ProgramDisciplineLector createEntity(final ProgramDisciplineLectorId id,
+                                                 final LectorType lectorType) {
+        final ProgramDisciplineLector entity = new ProgramDisciplineLector();
+        entity.setId(id);
+        entity.setLectorType(lectorType);
+        return entity;
+    }
+
+    private ProgramDisciplineLectorRequestDto createRequest(final ProgramDisciplineLectorId id,
+                                                            final LectorType lectorType) {
+        return new ProgramDisciplineLectorRequestDto(id.getLectorId(),
+                                                     id.getProgramId(),
+                                                     id.getDisciplineId(),
+                                                     lectorType);
+    }
+
+    private ProgramDisciplineLectorResponseDto createResponse(final ProgramDisciplineLectorId id,
+                                                              final LectorType lectorType) {
+        return new ProgramDisciplineLectorResponseDto(id,
+                                                      id.getLectorId(),
+                                                      id.getProgramId(),
+                                                      id.getDisciplineId(),
+                                                      lectorType);
     }
 }

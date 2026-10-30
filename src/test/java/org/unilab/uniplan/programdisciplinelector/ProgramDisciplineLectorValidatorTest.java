@@ -1,5 +1,14 @@
 package org.unilab.uniplan.programdisciplinelector;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,14 +22,6 @@ import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.lector.LectorRepository;
 import org.unilab.uniplan.program.ProgramRepository;
 import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorRequestDto;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProgramDisciplineLectorValidatorTest {
@@ -40,97 +41,97 @@ class ProgramDisciplineLectorValidatorTest {
     @InjectMocks
     private ProgramDisciplineLectorValidator programDisciplineLectorValidator;
 
-    private UUID lectorId;
-    private UUID programId;
-    private UUID disciplineId;
-    private ProgramDisciplineLectorId programDisciplineLectorId;
     private ProgramDisciplineLectorRequestDto request;
 
     @BeforeEach
     void setUp() {
-        lectorId = UUID.randomUUID();
-        programId = UUID.randomUUID();
-        disciplineId = UUID.randomUUID();
-
-        programDisciplineLectorId = new ProgramDisciplineLectorId(
-            lectorId,
-            programId,
-            disciplineId);
-
-        request = new ProgramDisciplineLectorRequestDto(
-            lectorId,
-            programId,
-            disciplineId,
-            LectorType.BOTH);
+        request = new ProgramDisciplineLectorRequestDto(UUID.randomUUID(),
+                                                        UUID.randomUUID(),
+                                                        UUID.randomUUID(),
+                                                        LectorType.BOTH);
     }
 
     @Test
     void validateForCreate_shouldNotThrow_whenValid() {
-        when(lectorRepository.existsById(lectorId)).thenReturn(true);
-        when(programRepository.existsById(programId)).thenReturn(true);
-        when(disciplineRepository.existsById(disciplineId)).thenReturn(true);
-        when(programDisciplineLectorRepository.existsById(programDisciplineLectorId)).thenReturn(
-            false);
+        final ProgramDisciplineLectorId id = createId(request);
+        when(lectorRepository.existsById(request.lectorId())).thenReturn(true);
+        when(programRepository.existsById(request.programId())).thenReturn(true);
+        when(disciplineRepository.existsById(request.disciplineId())).thenReturn(true);
 
         assertDoesNotThrow(() -> programDisciplineLectorValidator.validateForCreate(request));
+
+        verify(lectorRepository).existsById(request.lectorId());
+        verify(programRepository).existsById(request.programId());
+        verify(disciplineRepository).existsById(request.disciplineId());
+        verify(programDisciplineLectorRepository).existsById(id);
     }
 
     @Test
     void validateForCreate_shouldThrowResourceNotFoundException_whenLectorMissing() {
-        when(lectorRepository.existsById(lectorId)).thenReturn(false);
-
         assertThatThrownBy(() -> programDisciplineLectorValidator.validateForCreate(request))
             .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(lectorId.toString());
+            .hasMessageContaining(request.lectorId().toString());
 
-        verify(programRepository, never()).existsById(programId);
-        verify(disciplineRepository, never()).existsById(disciplineId);
-        verify(programDisciplineLectorRepository, never())
-            .existsById(programDisciplineLectorId);
+        verify(lectorRepository).existsById(request.lectorId());
+        verify(programRepository, never()).existsById(any());
+        verify(disciplineRepository, never()).existsById(any());
+        verify(programDisciplineLectorRepository, never()).existsById(any());
     }
 
     @Test
     void validateForCreate_shouldThrowResourceNotFoundException_whenProgramMissing() {
-        when(lectorRepository.existsById(lectorId)).thenReturn(true);
-        when(programRepository.existsById(programId)).thenReturn(false);
+        when(lectorRepository.existsById(request.lectorId())).thenReturn(true);
 
         assertThatThrownBy(() -> programDisciplineLectorValidator.validateForCreate(request))
             .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(programId.toString());
+            .hasMessageContaining(request.programId().toString());
 
-        verify(disciplineRepository, never()).existsById(disciplineId);
-        verify(programDisciplineLectorRepository, never())
-            .existsById(programDisciplineLectorId);
+        verify(lectorRepository).existsById(request.lectorId());
+        verify(programRepository).existsById(request.programId());
+        verify(disciplineRepository, never()).existsById(any());
+        verify(programDisciplineLectorRepository, never()).existsById(any());
     }
 
     @Test
     void validateForCreate_shouldThrowResourceNotFoundException_whenDisciplineMissing() {
-        when(lectorRepository.existsById(lectorId)).thenReturn(true);
-        when(programRepository.existsById(programId)).thenReturn(true);
-        when(disciplineRepository.existsById(disciplineId)).thenReturn(false);
+        when(lectorRepository.existsById(request.lectorId())).thenReturn(true);
+        when(programRepository.existsById(request.programId())).thenReturn(true);
 
         assertThatThrownBy(() -> programDisciplineLectorValidator.validateForCreate(request))
             .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(disciplineId.toString());
+            .hasMessageContaining(request.disciplineId().toString());
 
-        verify(programDisciplineLectorRepository, never())
-            .existsById(programDisciplineLectorId);
+        verify(lectorRepository).existsById(request.lectorId());
+        verify(programRepository).existsById(request.programId());
+        verify(disciplineRepository).existsById(request.disciplineId());
+        verify(programDisciplineLectorRepository, never()).existsById(any());
     }
 
     @Test
     void validateForCreate_shouldThrowResponseStatusException_whenAlreadyAssigned() {
-        when(lectorRepository.existsById(lectorId)).thenReturn(true);
-        when(programRepository.existsById(programId)).thenReturn(true);
-        when(disciplineRepository.existsById(disciplineId)).thenReturn(true);
-        when(programDisciplineLectorRepository.existsById(programDisciplineLectorId)).thenReturn(
-            true);
+        final ProgramDisciplineLectorId id = createId(request);
+        when(lectorRepository.existsById(request.lectorId())).thenReturn(true);
+        when(programRepository.existsById(request.programId())).thenReturn(true);
+        when(disciplineRepository.existsById(request.disciplineId())).thenReturn(true);
+        when(programDisciplineLectorRepository.existsById(id)).thenReturn(true);
 
         assertThatThrownBy(() -> programDisciplineLectorValidator.validateForCreate(request))
             .isInstanceOf(ResponseStatusException.class)
-            .hasMessageContaining(programDisciplineLectorId.toString())
+            .hasMessageContaining(id.toString())
             .satisfies(exception -> {
                 final ResponseStatusException ex = (ResponseStatusException) exception;
                 assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
             });
+
+        verify(lectorRepository).existsById(request.lectorId());
+        verify(programRepository).existsById(request.programId());
+        verify(disciplineRepository).existsById(request.disciplineId());
+        verify(programDisciplineLectorRepository).existsById(id);
+    }
+
+    private ProgramDisciplineLectorId createId(final ProgramDisciplineLectorRequestDto request) {
+        return new ProgramDisciplineLectorId(request.lectorId(),
+                                             request.programId(),
+                                             request.disciplineId());
     }
 }

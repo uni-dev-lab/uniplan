@@ -1,13 +1,13 @@
 package org.unilab.uniplan.programdisciplinelector;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,65 +23,63 @@ class ProgramDisciplineLectorServiceTest {
     @InjectMocks
     private ProgramDisciplineLectorService programDisciplineLectorService;
 
-    private ProgramDisciplineLectorId programDisciplineLectorId;
-    private ProgramDisciplineLector programDisciplineLector;
-
-    @BeforeEach
-    void setUp() {
-        programDisciplineLectorId = new ProgramDisciplineLectorId(
-            UUID.randomUUID(),
-            UUID.randomUUID(),
-            UUID.randomUUID());
-
-        programDisciplineLector = new ProgramDisciplineLector();
-    }
-
     @Test
     void save_shouldReturnSavedEntity_whenCalled() {
-        when(programDisciplineLectorRepository.save(programDisciplineLector)).thenReturn(
-            programDisciplineLector);
+        final ProgramDisciplineLector entity = mock(ProgramDisciplineLector.class);
+        final ProgramDisciplineLector saved = mock(ProgramDisciplineLector.class);
+        when(programDisciplineLectorRepository.save(entity)).thenReturn(saved);
 
-        final var result = programDisciplineLectorService.save(
-            programDisciplineLector);
+        final var result = programDisciplineLectorService.save(entity);
 
-        assertThat(result).isSameAs(programDisciplineLector);
+        verify(programDisciplineLectorRepository).save(entity);
+        assertThat(result).isSameAs(saved);
     }
 
     @Test
     void getAll_shouldReturnAllEntities_whenCalled() {
-        when(programDisciplineLectorRepository.findAll()).thenReturn(
-            List.of(programDisciplineLector)
-        );
+        final List<ProgramDisciplineLector> entities = mock();
+        when(programDisciplineLectorRepository.findAll()).thenReturn(entities);
 
         final var result = programDisciplineLectorService.getAll();
 
-        assertThat(result).containsExactly(programDisciplineLector);
+        verify(programDisciplineLectorRepository).findAll();
+        assertThat(result).isSameAs(entities);
     }
 
     @Test
     void getById_shouldReturnEntity_whenItExists() {
-        when(programDisciplineLectorRepository.findById(programDisciplineLectorId)).thenReturn(
-            Optional.of(programDisciplineLector));
+        final ProgramDisciplineLectorId id = createId();
+        final ProgramDisciplineLector entity = mock(ProgramDisciplineLector.class);
+        when(programDisciplineLectorRepository.findById(id)).thenReturn(Optional.of(entity));
 
-        final var result = programDisciplineLectorService.getById(programDisciplineLectorId);
+        final var result = programDisciplineLectorService.getById(id);
 
-        assertThat(result).contains(programDisciplineLector);
+        verify(programDisciplineLectorRepository).findById(id);
+        assertThat(result).contains(entity);
     }
 
     @Test
     void getById_shouldReturnEmpty_whenEntityDoesntExist() {
-        when(programDisciplineLectorRepository.findById(programDisciplineLectorId)).thenReturn(
-            Optional.empty());
+        final ProgramDisciplineLectorId id = createId();
 
-        final var result = programDisciplineLectorService.getById(programDisciplineLectorId);
+        final var result = programDisciplineLectorService.getById(id);
 
+        verify(programDisciplineLectorRepository).findById(id);
         assertThat(result).isEmpty();
     }
 
     @Test
     void delete_shouldDelete_whenCalled() {
-        programDisciplineLectorService.delete(programDisciplineLector);
+        final ProgramDisciplineLector entity = mock(ProgramDisciplineLector.class);
 
-        verify(programDisciplineLectorRepository).delete(programDisciplineLector);
+        programDisciplineLectorService.delete(entity);
+
+        verify(programDisciplineLectorRepository).delete(entity);
+    }
+
+    private ProgramDisciplineLectorId createId() {
+        return new ProgramDisciplineLectorId(UUID.randomUUID(),
+                                             UUID.randomUUID(),
+                                             UUID.randomUUID());
     }
 }

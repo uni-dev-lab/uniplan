@@ -1,182 +1,85 @@
 package org.unilab.uniplan.programdisciplinelector;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doAnswer;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
-import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorDto;
 
 @ExtendWith(MockitoExtension.class)
 class ProgramDisciplineLectorServiceTest {
-    @Mock
-    private ProgramDisciplineLectorRepository programDisciplineLectorRepository;
 
     @Mock
-    private ProgramDisciplineLectorMapper programDisciplineLectorMapper;
+    private ProgramDisciplineLectorRepository programDisciplineLectorRepository;
 
     @InjectMocks
     private ProgramDisciplineLectorService programDisciplineLectorService;
 
-    private ProgramDisciplineLectorId programDisciplineLectorId;
-    private UUID lectorId;
-    private UUID programId;
-    private UUID disciplineId;
-    private LectorType lectorType;
-    private ProgramDisciplineLectorDto programDisciplineLectorDto;
-    private ProgramDisciplineLector  programDisciplineLector;
+    @Test
+    void save_shouldReturnSavedEntity_whenCalled() {
+        final ProgramDisciplineLector entity = mock(ProgramDisciplineLector.class);
+        final ProgramDisciplineLector saved = mock(ProgramDisciplineLector.class);
+        when(programDisciplineLectorRepository.save(entity)).thenReturn(saved);
 
-    @BeforeEach
-    void setUp() {
-        lectorId = UUID.randomUUID();
-        programId = UUID.randomUUID();
-        disciplineId = UUID.randomUUID();
-        programDisciplineLectorId = new ProgramDisciplineLectorId(lectorId, programId, disciplineId);
+        final var result = programDisciplineLectorService.save(entity);
 
-        lectorType = LectorType.BOTH;
-        programDisciplineLectorDto = new ProgramDisciplineLectorDto(programDisciplineLectorId,
-                                                                    lectorId,
-                                                                    programId,
-                                                                    disciplineId,
-                                                                    lectorType);
-         programDisciplineLector = new ProgramDisciplineLector();
+        verify(programDisciplineLectorRepository).save(entity);
+        assertThat(result).isSameAs(saved);
     }
 
     @Test
-    void testCreateProgramDisciplineShouldSaveAndReturnDto() {
-        when(programDisciplineLectorMapper.toEntity(programDisciplineLectorDto)).thenReturn(programDisciplineLector);
-        when(programDisciplineLectorRepository.save(programDisciplineLector)).thenReturn(programDisciplineLector);
-        when(programDisciplineLectorMapper.toDto(programDisciplineLector)).thenReturn(programDisciplineLectorDto);
-
-        ProgramDisciplineLectorDto result = programDisciplineLectorService.createProgramDisciplineLector(programDisciplineLectorDto);
-
-        assertEquals(programDisciplineLectorDto, result);
-    }
-
-    @Test
-    void testGetAllProgramDisciplinesShouldReturnListOfProgramDisciplineDtos() {
-        List<ProgramDisciplineLector> entities = List.of(programDisciplineLector);
-        List<ProgramDisciplineLectorDto> dtos = List.of(programDisciplineLectorDto);
-
+    void getAll_shouldReturnAllEntities_whenCalled() {
+        final List<ProgramDisciplineLector> entities = mock();
         when(programDisciplineLectorRepository.findAll()).thenReturn(entities);
-        when(programDisciplineLectorMapper.toDtos(entities)).thenReturn(dtos);
 
-        List<ProgramDisciplineLectorDto> result = programDisciplineLectorService.getAllProgramDisciplineLectors();
+        final var result = programDisciplineLectorService.getAll();
 
-        assertEquals(dtos, result);
+        verify(programDisciplineLectorRepository).findAll();
+        assertThat(result).isSameAs(entities);
     }
 
     @Test
-    void testGetProgramDisciplineByIdShouldReturnProgramDisciplineDtoIfFound() {
-        when(programDisciplineLectorRepository.findById(programDisciplineLectorId)).thenReturn(Optional.of(programDisciplineLector));
-        when(programDisciplineLectorMapper.toDto(programDisciplineLector)).thenReturn(programDisciplineLectorDto);
-        when(programDisciplineLectorMapper.toProgramDisciplineLectorId(lectorId,
-                                                                       programId,
-                                                                       disciplineId)).thenReturn(
-            programDisciplineLectorId);
+    void getById_shouldReturnEntity_whenItExists() {
+        final ProgramDisciplineLectorId id = createId();
+        final ProgramDisciplineLector entity = mock(ProgramDisciplineLector.class);
+        when(programDisciplineLectorRepository.findById(id)).thenReturn(Optional.of(entity));
 
-        ProgramDisciplineLectorDto result = programDisciplineLectorService.getProgramDisciplineLectorById(
-            lectorId,
-            programId,
-            disciplineId);
+        final var result = programDisciplineLectorService.getById(id);
 
-        assertEquals(programDisciplineLectorDto, result);
+        verify(programDisciplineLectorRepository).findById(id);
+        assertThat(result).contains(entity);
     }
 
     @Test
-    void testGetProgramDisciplineByIdShouldReturnEmptyOptionalIfProgramDisciplineNotFound() {
-        when(programDisciplineLectorRepository.findById(programDisciplineLectorId)).thenReturn(Optional.empty());
-        when(programDisciplineLectorMapper.toProgramDisciplineLectorId(lectorId,
-                                                                       programId,
-                                                                       disciplineId)).thenReturn(
-            programDisciplineLectorId);
+    void getById_shouldReturnEmpty_whenEntityDoesntExist() {
+        final ProgramDisciplineLectorId id = createId();
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
-                                                           () -> programDisciplineLectorService.getProgramDisciplineLectorById(
-                                                               lectorId,
-                                                               programId,
-                                                               disciplineId));
+        final var result = programDisciplineLectorService.getById(id);
 
-        assertTrue(exception.getMessage().contains(String.valueOf(programDisciplineLectorId)));
+        verify(programDisciplineLectorRepository).findById(id);
+        assertThat(result).isEmpty();
     }
 
     @Test
-    void testUpdateProgramDisciplineShouldUpdateAndReturnDtoIfFound() {
-        when(programDisciplineLectorRepository.findById(programDisciplineLectorId)).thenReturn(Optional.of(programDisciplineLector));
-        doAnswer(invocation -> null).when(programDisciplineLectorMapper).updateEntityFromDto(programDisciplineLectorDto, programDisciplineLector);
-        when(programDisciplineLectorRepository.save(programDisciplineLector)).thenReturn(programDisciplineLector);
-        when(programDisciplineLectorMapper.toDto(programDisciplineLector)).thenReturn(programDisciplineLectorDto);
-        when(programDisciplineLectorMapper.toProgramDisciplineLectorId(lectorId,
-                                                                       programId,
-                                                                       disciplineId)).thenReturn(
-            programDisciplineLectorId);
+    void delete_shouldDelete_whenCalled() {
+        final ProgramDisciplineLector entity = mock(ProgramDisciplineLector.class);
 
-        ProgramDisciplineLectorDto result = programDisciplineLectorService.updateProgramDisciplineLector(
-            lectorId,
-            programId,
-            disciplineId,
-            programDisciplineLectorDto);
+        programDisciplineLectorService.delete(entity);
 
-        assertEquals(programDisciplineLectorDto, result);
+        verify(programDisciplineLectorRepository).delete(entity);
     }
 
-    @Test
-    void testUpdateProgramDisciplineShouldReturnEmptyOptionalIfNotFound() {
-        when(programDisciplineLectorRepository.findById(programDisciplineLectorId)).thenReturn(Optional.empty());
-        when(programDisciplineLectorMapper.toProgramDisciplineLectorId(lectorId,
-                                                                       programId,
-                                                                       disciplineId)).thenReturn(
-            programDisciplineLectorId);
-
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
-                                                           () -> programDisciplineLectorService.updateProgramDisciplineLector(
-                                                               lectorId,
-                                                               programId,
-                                                               disciplineId,
-                                                               programDisciplineLectorDto));
-
-        assertTrue(exception.getMessage().contains(String.valueOf(programDisciplineLectorId)));
-    }
-
-    @Test
-    void testDeleteProgramDisciplineShouldDeleteProgramDisciplineIfFound() {
-        when(programDisciplineLectorRepository.findById(programDisciplineLectorId)).thenReturn(Optional.of(programDisciplineLector));
-        when(programDisciplineLectorMapper.toProgramDisciplineLectorId(lectorId,
-                                                                       programId,
-                                                                       disciplineId)).thenReturn(
-            programDisciplineLectorId);
-        doAnswer(invocation -> null).when(programDisciplineLectorRepository).delete(programDisciplineLector);
-
-        assertDoesNotThrow(() -> programDisciplineLectorService.deleteProgramDisciplineLector(lectorId,programId,disciplineId));
-        verify(programDisciplineLectorRepository).delete(programDisciplineLector);
-    }
-
-    @Test
-    void testDeleteProgramDisciplineShouldThrowIfNotFound() {
-        when(programDisciplineLectorRepository.findById(programDisciplineLectorId)).thenReturn(Optional.empty());
-        when(programDisciplineLectorMapper.toProgramDisciplineLectorId(lectorId,
-                                                                       programId,
-                                                                       disciplineId)).thenReturn(
-            programDisciplineLectorId);
-
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
-            programDisciplineLectorService.deleteProgramDisciplineLector(lectorId,programId,disciplineId));
-
-        assertTrue(exception.getMessage().contains(String.valueOf(lectorId)));
-        assertTrue(exception.getMessage().contains(String.valueOf(programId)));
-        assertTrue(exception.getMessage().contains(String.valueOf(disciplineId)));
+    private ProgramDisciplineLectorId createId() {
+        return new ProgramDisciplineLectorId(UUID.randomUUID(),
+                                             UUID.randomUUID(),
+                                             UUID.randomUUID());
     }
 }

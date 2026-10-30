@@ -3,9 +3,9 @@ package org.unilab.uniplan.discipline;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.unilab.uniplan.discipline.dto.DisciplineRequestDto;
 import org.unilab.uniplan.discipline.dto.DisciplineResponseDto;
@@ -16,46 +16,10 @@ class DisciplineMapperTest {
 
     private final DisciplineMapper disciplineMapper = new DisciplineMapperImpl();
 
-    private UUID id;
-    private ProgramDisciplineId firstLinkId;
-    private ProgramDisciplineId secondLinkId;
-    private Discipline discipline;
-    private DisciplineRequestDto request;
-    private DisciplineResponseDto response;
-
-    @BeforeEach
-    void setUp() {
-        id = UUID.randomUUID();
-        firstLinkId = new ProgramDisciplineId(id, UUID.randomUUID());
-        secondLinkId = new ProgramDisciplineId(id, UUID.randomUUID());
-
-        final ProgramDiscipline firstLink = new ProgramDiscipline();
-        firstLink.setId(firstLinkId);
-
-        final ProgramDiscipline secondLink = new ProgramDiscipline();
-        secondLink.setId(secondLinkId);
-
-        discipline = new Discipline();
-        discipline.setId(id);
-        discipline.setName("Java Spring");
-        discipline.setMainLector("Georgi Georgiev");
-        discipline.getProgramDisciplines().add(firstLink);
-        discipline.getProgramDisciplines().add(secondLink);
-
-        request = new DisciplineRequestDto(
-            "Databases",
-            "Petar Petrov");
-
-        response = new DisciplineResponseDto(
-            id,
-            "Java Spring",
-            "Georgi Georgiev",
-            List.of(firstLinkId, secondLinkId)
-        );
-    }
-
     @Test
     void toEntity_shouldMapFieldsAndIgnoreIdAndProgramDisciplines_whenCalled() {
+        final DisciplineRequestDto request = createRequest();
+
         final Discipline result = disciplineMapper.toEntity(request);
 
         assertAll(
@@ -68,11 +32,15 @@ class DisciplineMapperTest {
 
     @Test
     void toResponseDto_shouldCopyIdNameAndMainLectorAndProgramDisciplinesMatch_whenCalled() {
-        final DisciplineResponseDto result =
-            disciplineMapper.toResponseDto(discipline);
+        final UUID id = UUID.randomUUID();
+        final ProgramDisciplineId firstLinkId = createProgramDisciplineId(id);
+        final ProgramDisciplineId secondLinkId = createProgramDisciplineId(id);
+        final Discipline discipline = createDiscipline(id, firstLinkId, secondLinkId);
+
+        final DisciplineResponseDto result = disciplineMapper.toResponseDto(discipline);
 
         assertAll(
-            () -> assertThat(result.id()).isEqualTo(discipline.getId()),
+            () -> assertThat(result.id()).isEqualTo(id),
             () -> assertThat(result.name()).isEqualTo(discipline.getName()),
             () -> assertThat(result.mainLector()).isEqualTo(discipline.getMainLector()),
             () -> assertThat(result.programDisciplinesIds())
@@ -92,6 +60,17 @@ class DisciplineMapperTest {
 
     @Test
     void toResponseDtoList_shouldMapEveryElement_whenCalled() {
+        final UUID id = UUID.randomUUID();
+        final ProgramDisciplineId firstLinkId = createProgramDisciplineId(id);
+        final ProgramDisciplineId secondLinkId = createProgramDisciplineId(id);
+        final Discipline discipline = createDiscipline(id, firstLinkId, secondLinkId);
+        final DisciplineResponseDto response = new DisciplineResponseDto(
+            id,
+            discipline.getName(),
+            discipline.getMainLector(),
+            List.of(firstLinkId, secondLinkId)
+        );
+
         final List<DisciplineResponseDto> result =
             disciplineMapper.toResponseDtoList(List.of(discipline));
 
@@ -108,6 +87,12 @@ class DisciplineMapperTest {
 
     @Test
     void updateEntityFromDto_shouldUpdateNameAndLectorAndNotUpdateIdAndProgramDisciplines_whenCalled() {
+        final UUID id = UUID.randomUUID();
+        final ProgramDisciplineId firstLinkId = createProgramDisciplineId(id);
+        final ProgramDisciplineId secondLinkId = createProgramDisciplineId(id);
+        final Discipline discipline = createDiscipline(id, firstLinkId, secondLinkId);
+        final DisciplineRequestDto request = createRequest();
+
         disciplineMapper.updateEntityFromDto(request, discipline);
 
         assertAll(
@@ -119,5 +104,31 @@ class DisciplineMapperTest {
                                        .map(ProgramDiscipline::getId))
                 .containsExactly(firstLinkId, secondLinkId)
         );
+    }
+
+    private Discipline createDiscipline(final UUID id,
+                                        final ProgramDisciplineId... programDisciplineIds) {
+        final Discipline discipline = new Discipline();
+        discipline.setId(id);
+        discipline.setName("Java Spring");
+        discipline.setMainLector("Georgi Georgiev");
+        discipline.setProgramDisciplines(Arrays.stream(programDisciplineIds)
+                                               .map(this::createProgramDiscipline)
+                                               .toList());
+        return discipline;
+    }
+
+    private ProgramDisciplineId createProgramDisciplineId(final UUID disciplineId) {
+        return new ProgramDisciplineId(disciplineId, UUID.randomUUID());
+    }
+
+    private ProgramDiscipline createProgramDiscipline(final ProgramDisciplineId id) {
+        final ProgramDiscipline programDiscipline = new ProgramDiscipline();
+        programDiscipline.setId(id);
+        return programDiscipline;
+    }
+
+    private DisciplineRequestDto createRequest() {
+        return new DisciplineRequestDto("Databases", "Petar Petrov");
     }
 }

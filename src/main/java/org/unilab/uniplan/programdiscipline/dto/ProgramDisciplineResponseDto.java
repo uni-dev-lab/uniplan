@@ -9,18 +9,14 @@ import java.util.UUID;
 public record ProgramDisciplineResponseDto(
     ProgramDisciplineId id,
 
-    @NotNull
     UUID disciplineId,
 
-    @NotNull
     UUID programId,
 
     short hoursLecture,
 
     short hoursExercises,
 
-    @Min(value = 1)
-    @Max(value = 12)
     byte semesterCount
 ) {
 

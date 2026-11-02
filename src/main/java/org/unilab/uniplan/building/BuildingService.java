@@ -14,8 +14,8 @@ public class BuildingService implements BaseService<Building> {
     private final BuildingRepository buildingRepository;
 
     @Override
-    public void save(final Building building) {
-        buildingRepository.save(building);
+    public Building save(final Building building) {
+        return buildingRepository.save(building);
     }
 
     @Override

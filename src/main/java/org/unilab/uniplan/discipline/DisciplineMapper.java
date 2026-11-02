@@ -4,31 +4,35 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.unilab.uniplan.discipline.dto.DisciplineDto;
+import org.mapstruct.Named;
 import org.unilab.uniplan.discipline.dto.DisciplineRequestDto;
 import org.unilab.uniplan.discipline.dto.DisciplineResponseDto;
+import org.unilab.uniplan.programdiscipline.ProgramDiscipline;
+import org.unilab.uniplan.programdiscipline.ProgramDisciplineId;
 
-@Mapper(componentModel = "spring")
+@Mapper
 public interface DisciplineMapper {
-
-    @Mapping(target = "programDisciplinesIds", source = "programDisciplines")
-    DisciplineDto toDto(final Discipline discipline);
-
-    @Mapping(target = "programDisciplines", source = "programDisciplinesIds")
-    Discipline toEntity(final DisciplineDto disciplineDto);
-
+    @Mapping(target = "programDisciplines", ignore = true)
     @Mapping(target = "id", ignore = true)
-    DisciplineDto toInternalDto(final DisciplineRequestDto disciplineRequestDto);
+    Discipline toEntity(final DisciplineRequestDto request);
 
-    DisciplineResponseDto toResponseDto(final DisciplineDto disciplineDto);
+    @Mapping(target = "programDisciplinesIds",
+        source = "programDisciplines",
+        qualifiedByName = "programDisciplinesToIds")
+    DisciplineResponseDto toResponseDto(final Discipline discipline);
 
-    List<DisciplineDto> toDtoList(final List<Discipline> disciplines);
+    List<DisciplineResponseDto> toResponseDtoList(final List<Discipline> disciplines);
 
-    List<DisciplineResponseDto> toResponseDtoList(final List<DisciplineDto> disciplineDtos);
-
-    @Mapping(target = "name", source = "disciplineDto.name")
-    @Mapping(target = "mainLector", source = "disciplineDto.mainLector")
-    @Mapping(target = "programDisciplines", source = "disciplineDto.programDisciplinesIds")
-    void updateEntityFromDto(final DisciplineDto disciplineDto,
+    @Mapping(target = "name", source = "request.name")
+    @Mapping(target = "mainLector", source = "request.mainLector")
+    @Mapping(target = "programDisciplines", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    void updateEntityFromDto(final DisciplineRequestDto request,
                              @MappingTarget final Discipline discipline);
+
+    @Named("programDisciplinesToIds")
+    default List<ProgramDisciplineId> programDisciplinesToIds(
+        final List<ProgramDiscipline> programDisciplines) {
+        return programDisciplines.stream().map(ProgramDiscipline::getId).toList();
+    }
 }

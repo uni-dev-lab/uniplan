@@ -5,10 +5,8 @@ import java.util.UUID;
 
 public record RoomCategoryResponseDto(
 
-    @NotNull
     UUID roomId,
 
-    @NotNull
     UUID categoryId
 ) {
 

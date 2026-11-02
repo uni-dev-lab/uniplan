@@ -40,7 +40,7 @@ public class ProgramDisciplineWebFacade {
         final UUID programId,
         final ProgramDisciplineRequestDto request) {
 
-        final ProgramDisciplineId id = buildId(programId, disciplineId);
+        final ProgramDisciplineId id = buildId(disciplineId, programId);
 
         final ProgramDiscipline programDiscipline = getProgramDisciplineOrThrow(id);
 
@@ -56,7 +56,7 @@ public class ProgramDisciplineWebFacade {
         final UUID disciplineId,
         final UUID programId) {
 
-        final ProgramDisciplineId id = buildId(programId, disciplineId);
+        final ProgramDisciplineId id = buildId(disciplineId, programId);
         final ProgramDiscipline programDiscipline = getProgramDisciplineOrThrow(id);
 
         return programDisciplineMapper.toResponseDto(programDiscipline);
@@ -67,7 +67,7 @@ public class ProgramDisciplineWebFacade {
         final UUID disciplineId,
         final UUID programId) {
 
-        final ProgramDisciplineId id = buildId(programId, disciplineId);
+        final ProgramDisciplineId id = buildId(disciplineId, programId);
         final ProgramDiscipline programDiscipline = getProgramDisciplineOrThrow(id);
 
         programDisciplineService.delete(programDiscipline);

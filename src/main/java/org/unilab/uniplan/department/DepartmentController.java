@@ -1,8 +1,6 @@
 package org.unilab.uniplan.department;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import static org.springframework.http.ResponseEntity.ok;
-
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
@@ -41,12 +39,13 @@ public class DepartmentController {
     }
 
     @GetMapping("/{id}")
-        public ResponseEntity<DepartmentResponseDto> getDepartmentById(@PathVariable final UUID id) {
-            return ResponseEntity.ok(departmentWebFacade.getDepartmentById(id));
-        }
+    public ResponseEntity<DepartmentResponseDto> getDepartmentById(@PathVariable final UUID id) {
+        return ResponseEntity.ok(departmentWebFacade.getDepartmentById(id));
+    }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateLector(@NotNull @PathVariable final UUID id, @Valid @NotNull @RequestBody final DepartmentRequestDto departmentRequestDto) {
+    public ResponseEntity<Void> updateLector(@NotNull @PathVariable final UUID id,
+                                             @Valid @NotNull @RequestBody final DepartmentRequestDto departmentRequestDto) {
         departmentWebFacade.updateDepartment(id, departmentRequestDto);
         return ResponseEntity.noContent().build();
     }

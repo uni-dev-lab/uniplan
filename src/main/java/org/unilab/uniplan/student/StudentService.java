@@ -14,18 +14,18 @@ public class StudentService implements BaseService<Student> {
     private final StudentRepository studentRepository;
 
     @Override
-    public void save(final Student entity) {
-        studentRepository.save(entity);
+    public Student save(final Student entity) {
+        return studentRepository.save(entity);
     }
 
     @Override
     public List<Student> getAll() {
-        return studentRepository.findAll();
+        return studentRepository.findAllWithCourseAndMajor();
     }
 
     @Override
     public Optional<Student> getById(final UUID id) {
-        return studentRepository.findById(id);
+        return studentRepository.findByIdWithCourseAndMajor(id);
     }
 
     @Override

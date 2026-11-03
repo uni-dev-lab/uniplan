@@ -29,7 +29,7 @@ public class UniversityService implements BaseService<University> {
     }
 
     @Override
-    public void save(final University university) {
-        universityRepository.save(university);
+    public University save(final University university) {
+        return universityRepository.save(university);
     }
 }

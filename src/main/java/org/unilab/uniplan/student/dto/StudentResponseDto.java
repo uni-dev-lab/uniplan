@@ -4,10 +4,13 @@ import java.util.UUID;
 
 public record StudentResponseDto(
     UUID id,
-    String firstName,
-    String lastName,
+    String name,
     String facultyNumber,
-    UUID courseId
+    UUID majorId,
+    String majorName,
+    String courseType,
+    String courseSubtype,
+    Byte courseYear
 ) {
 
 }

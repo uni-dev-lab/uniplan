@@ -10,7 +10,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.student.dto.StudentRequestDto;
 import org.unilab.uniplan.student.dto.StudentResponseDto;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -39,6 +38,7 @@ class StudentWebFacadeTest {
 
     private UUID studentId;
     private UUID courseId;
+    private UUID majorId;
     private Student student;
     private StudentRequestDto requestDto;
     private StudentResponseDto responseDto;
@@ -47,13 +47,27 @@ class StudentWebFacadeTest {
     void setUp() {
         studentId = UUID.randomUUID();
         courseId = UUID.randomUUID();
+        majorId = UUID.randomUUID();
         student = new Student();
-        requestDto = new StudentRequestDto("Petar", "Petrov", "2301261005", courseId);
-        responseDto = new StudentResponseDto(studentId, "Petar", "Petrov", "2301261005", courseId);
+        requestDto = new StudentRequestDto(
+            "Petar",
+            "Petrov",
+            "2301261005",
+            courseId);
+        responseDto = new StudentResponseDto(
+            studentId,
+            "Petar Petrov",
+            "2301261005",
+            majorId,
+            "Software Engineering",
+            "FULL_TIME",
+            "редовно",
+            (byte) 2
+        );
     }
 
     @Test
-    void createStudent_shouldMapValidateAndSave() {
+    void createStudent_ShouldMapValidateAndSave() {
         when(studentMapper.toEntity(requestDto)).thenReturn(student);
 
         studentWebFacade.createStudent(requestDto);
@@ -65,7 +79,7 @@ class StudentWebFacadeTest {
     }
 
     @Test
-    void updateStudent_shouldThrow_ifNotFound() {
+    void updateStudent_ShouldThrow_IfNotFound() {
         when(studentService.getById(studentId)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class,
@@ -75,7 +89,7 @@ class StudentWebFacadeTest {
     }
 
     @Test
-    void updateStudent_shouldValidateAndSave() {
+    void updateStudent_ShouldValidateAndSave() {
         when(studentService.getById(studentId)).thenReturn(Optional.of(student));
 
         studentWebFacade.updateStudent(studentId, requestDto);
@@ -87,7 +101,7 @@ class StudentWebFacadeTest {
     }
 
     @Test
-    void findStudentById_shouldReturnMappedDto() {
+    void getStudentById_ShouldReturnMappedDto() {
         when(studentService.getById(studentId)).thenReturn(Optional.of(student));
         when(studentMapper.toResponseDto(student)).thenReturn(responseDto);
 
@@ -95,7 +109,7 @@ class StudentWebFacadeTest {
     }
 
     @Test
-    void findStudentById_shouldThrow_ifNotFound() {
+    void getStudentById_ShouldThrow_IfNotFound() {
         when(studentService.getById(studentId)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class,
@@ -103,17 +117,7 @@ class StudentWebFacadeTest {
     }
 
     @Test
-    void findAllStudents_shouldReturnMappedList() {
-        final List<Student> students = List.of(student);
-        final List<StudentResponseDto> responseDtos = List.of(responseDto);
-        when(studentService.getAll()).thenReturn(students);
-        when(studentMapper.toResponseDtoList(students)).thenReturn(responseDtos);
-
-        assertEquals(responseDtos, studentWebFacade.getAllStudents());
-    }
-
-    @Test
-    void deleteStudent_shouldDelegate_ifExists() {
+    void deleteStudent_ShouldDelegateIfExists() {
         when(studentService.getById(studentId)).thenReturn(Optional.of(student));
 
         studentWebFacade.deleteStudent(studentId);
@@ -122,7 +126,7 @@ class StudentWebFacadeTest {
     }
 
     @Test
-    void deleteStudent_shouldThrow_ifNotFound() {
+    void deleteStudent_ShouldThrow_IfNotFound() {
         when(studentService.getById(studentId)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class,

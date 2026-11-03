@@ -32,15 +32,15 @@ class StudentServiceTest {
     }
 
     @Test
-    void save_shouldDelegateToRepository() {
+    void save_ShouldDelegateToRepository() {
         studentService.save(student);
         verify(studentRepository).save(student);
     }
 
     @Test
-    void getById_shouldReturnStudent_ifExists() {
+    void getById_ShouldReturnStudent_IfExists() {
         UUID id = UUID.randomUUID();
-        when(studentRepository.findById(id)).thenReturn(Optional.of(student));
+        when(studentRepository.findByIdWithCourseAndMajor(id)).thenReturn(Optional.of(student));
 
         Optional<Student> result = studentService.getById(id);
 
@@ -49,22 +49,22 @@ class StudentServiceTest {
     }
 
     @Test
-    void getById_shouldReturnEmpty_ifNotExists() {
+    void getById_ShouldReturnEmpty_IfNotExists() {
         UUID id = UUID.randomUUID();
-        when(studentRepository.findById(id)).thenReturn(Optional.empty());
+        when(studentRepository.findByIdWithCourseAndMajor(id)).thenReturn(Optional.empty());
 
         assertTrue(studentService.getById(id).isEmpty());
     }
 
     @Test
-    void getAll_shouldReturnAllStudents() {
-        when(studentRepository.findAll()).thenReturn(List.of(student));
+    void getAll_ShouldReturnAllStudents() {
+        when(studentRepository.findAllWithCourseAndMajor()).thenReturn(List.of(student));
 
         assertEquals(1, studentService.getAll().size());
     }
 
     @Test
-    void delete_shouldDelegateToRepository() {
+    void delete_ShouldDelegateToRepository() {
         studentService.delete(student);
         verify(studentRepository).delete(student);
     }

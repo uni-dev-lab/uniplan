@@ -45,8 +45,8 @@ public class StudentController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateStudent(@PathVariable final UUID id,
-                                              @RequestBody
-                                              @NotNull @Valid final StudentRequestDto studentRequestDTO) {
+                                                            @RequestBody
+                                                            @NotNull @Valid final StudentRequestDto studentRequestDTO) {
         studentWebFacade.updateStudent(id, studentRequestDTO);
         return ResponseEntity.noContent().build();
     }

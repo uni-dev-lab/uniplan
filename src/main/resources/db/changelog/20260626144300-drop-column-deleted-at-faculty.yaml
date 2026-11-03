@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20260626144300-1
+      author: pipetkova19
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - dropColumn:
+            tableName: faculty
+            columnName: deleted_at
+      rollback:
+        - addColumn:
+            tableName: faculty
+            columns:
+              - column:
+                  name: deleted_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: true

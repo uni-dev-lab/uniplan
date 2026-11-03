@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1755084381762-1
+      id: 202508011440-1
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -33,7 +33,7 @@ databaseChangeLog:
                   type: SMALLINT
             tableName: category
   - changeSet:
-      id: 1755084381762-2
+      id: 202508011440-2
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -76,7 +76,7 @@ databaseChangeLog:
                   type: VARCHAR(100)
             tableName: course
   - changeSet:
-      id: 1755084381762-3
+      id: 202508011440-3
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -114,7 +114,7 @@ databaseChangeLog:
                   type: INT
             tableName: course_group
   - changeSet:
-      id: 1755084381762-4
+      id: 202508011440-4
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -147,7 +147,7 @@ databaseChangeLog:
                   type: VARCHAR(200)
             tableName: department
   - changeSet:
-      id: 1755084381762-5
+      id: 202508011440-5
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -180,7 +180,7 @@ databaseChangeLog:
                   type: VARCHAR(200)
             tableName: discipline
   - changeSet:
-      id: 1755084381762-6
+      id: 202508011440-6
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -216,7 +216,7 @@ databaseChangeLog:
                   type: VARCHAR(500)
             tableName: faculty
   - changeSet:
-      id: 1755084381762-7
+      id: 202508011440-7
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -259,7 +259,7 @@ databaseChangeLog:
                   type: UUID
             tableName: lector
   - changeSet:
-      id: 1755084381762-8
+      id: 202508011440-8
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -301,7 +301,7 @@ databaseChangeLog:
                   type: VARCHAR(100)
             tableName: lector_program
   - changeSet:
-      id: 1755084381762-9
+      id: 202508011440-9
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -334,7 +334,7 @@ databaseChangeLog:
                   type: VARCHAR(200)
             tableName: major
   - changeSet:
-      id: 1755084381762-10
+      id: 202508011440-10
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -362,7 +362,7 @@ databaseChangeLog:
                   type: UUID
             tableName: program
   - changeSet:
-      id: 1755084381762-11
+      id: 202508011440-11
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -407,7 +407,7 @@ databaseChangeLog:
                   type: TINYINT
             tableName: program_discipline
   - changeSet:
-      id: 1755084381762-12
+      id: 202508011440-12
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -440,7 +440,7 @@ databaseChangeLog:
                   type: VARCHAR(50)
             tableName: room
   - changeSet:
-      id: 1755084381762-13
+      id: 202508011440-13
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -470,7 +470,7 @@ databaseChangeLog:
                   type: UUID
             tableName: room_category
   - changeSet:
-      id: 1755084381762-14
+      id: 202508011440-14
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -513,7 +513,7 @@ databaseChangeLog:
                   type: VARCHAR(100)
             tableName: student
   - changeSet:
-      id: 1755084381762-15
+      id: 202508011440-15
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -543,7 +543,7 @@ databaseChangeLog:
                   type: UUID
             tableName: student_group
   - changeSet:
-      id: 1755084381762-16
+      id: 202508011440-16
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -583,7 +583,7 @@ databaseChangeLog:
                   type: VARCHAR(2048)
             tableName: university
   - changeSet:
-      id: 1755084381762-17
+      id: 202508011440-17
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -592,7 +592,7 @@ databaseChangeLog:
             constraintName: uc_program_course
             tableName: program
   - changeSet:
-      id: 1755084381762-18
+      id: 202508011440-18
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -612,7 +612,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: course
   - changeSet:
-      id: 1755084381762-20
+      id: 202508011440-20
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -623,7 +623,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: major
   - changeSet:
-      id: 1755084381762-21
+      id: 202508011440-21
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -645,7 +645,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: university
   - changeSet:
-      id: 1755084381762-23
+      id: 202508011440-23
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -656,7 +656,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: faculty
   - changeSet:
-      id: 1755084381762-24
+      id: 202508011440-24
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -667,7 +667,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: discipline
   - changeSet:
-      id: 1755084381762-25
+      id: 202508011440-25
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -678,7 +678,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: lector
   - changeSet:
-      id: 1755084381762-26
+      id: 202508011440-26
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -689,7 +689,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: program
   - changeSet:
-      id: 1755084381762-27
+      id: 202508011440-27
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -700,7 +700,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: faculty
   - changeSet:
-      id: 1755084381762-28
+      id: 202508011440-28
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -711,7 +711,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: discipline
   - changeSet:
-      id: 1755084381762-29
+      id: 202508011440-29
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -722,7 +722,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: program
   - changeSet:
-      id: 1755084381762-30
+      id: 202508011440-30
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -733,7 +733,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: course
   - changeSet:
-      id: 1755084381762-31
+      id: 202508011440-31
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -744,7 +744,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: category
   - changeSet:
-      id: 1755084381762-32
+      id: 202508011440-32
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -755,7 +755,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: room
   - changeSet:
-      id: 1755084381762-33
+      id: 202508011440-33
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -766,7 +766,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: faculty
   - changeSet:
-      id: 1755084381762-34
+      id: 202508011440-34
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -777,7 +777,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: course_group
   - changeSet:
-      id: 1755084381762-35
+      id: 202508011440-35
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -788,7 +788,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: student
   - changeSet:
-      id: 1755084381762-36
+      id: 202508011440-36
       author: sideroff
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:

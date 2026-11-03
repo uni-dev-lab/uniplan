@@ -11,6 +11,8 @@ Your role is a **thin dispatcher**: fetch PR metadata, prepare the worktree, cla
 
 uniplan is currently a backend-only project; this skill is structured so a frontend reviewer can be added later as a sibling Agent dispatch without restructuring.
 
+> **CI override:** if the environment variable `CI=true` is set OR the invoking prompt explicitly says "running in CI / runner is already at the PR branch", **skip Step 2 (worktree creation) entirely**. In CI the runner has already checked out the PR branch into the working directory — set `<worktree-path>` to the current working directory (`git rev-parse --show-toplevel`) and proceed. In CI the run is review-only: do not edit files, do not commit, do not push.
+
 Follow these steps exactly.
 
 ## Step 1: Fetch PR metadata
@@ -31,7 +33,7 @@ If the PR is not found, stop and inform the user.
 
 ## Step 2: Create a git worktree for the PR branch
 
-**IMPORTANT: Always create the worktree — never skip this step, regardless of PR size or number of files changed.** The reviewer subagent reads source files from this worktree.
+**Skip this step if running in CI** (see CI override above). Otherwise: **always create the worktree — never skip this step locally, regardless of PR size or number of files changed.** The reviewer subagent reads source files from this worktree.
 
 Run each command as a **separate Bash call**:
 
@@ -206,3 +208,5 @@ After the review output, always print the following block (substituting the lite
 > All file edits for this PR must be made inside the worktree above.
 > Do **not** modify files in the main repository.
 ```
+
+If the run is in CI, print "Implementation target: N/A (review-only run in CI)" instead.

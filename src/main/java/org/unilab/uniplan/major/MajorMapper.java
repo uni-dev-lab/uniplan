@@ -6,7 +6,6 @@ import org.mapstruct.Mapping;
 import org.unilab.uniplan.course.CourseMapper;
 import org.unilab.uniplan.major.dto.MajorCoursesDto;
 import org.unilab.uniplan.major.dto.MajorCoursesResponseDto;
-import org.unilab.uniplan.major.dto.MajorDto;
 import org.unilab.uniplan.major.dto.MajorRequestDto;
 import org.unilab.uniplan.major.dto.MajorResponseDto;
 
@@ -14,22 +13,18 @@ import org.unilab.uniplan.major.dto.MajorResponseDto;
 public interface MajorMapper {
 
     @Mapping(source = "facultyId", target = "faculty.id")
-    Major toEntity(MajorDto majorDto);
+    Major toEntity(MajorRequestDto majorRequestDto);
+
+    @Mapping(source = "facultyId", target = "faculty.id")
+    void updateEntityFromDto(MajorRequestDto majorRequestDto, @MappingTarget Major major);
 
     @Mapping(source = "faculty.id", target = "facultyId")
-    MajorDto toDto(Major major);
+    MajorResponseDto toResponseDto(Major major);
+
+    List<MajorResponseDto> toResponseDtoList(List<Major> majors);
 
     @Mapping(source = "faculty.id", target = "facultyId")
-    MajorCoursesDto toFullDto(Major major);
+    MajorCoursesResponseDto toFullResponseDto(Major major);
 
-    @Mapping(target = "id", ignore = true)
-    MajorDto toInnerDto(MajorRequestDto requestDto);
-
-    MajorResponseDto toResponseDto(MajorDto innerDto);
-
-    List<MajorResponseDto> toResponseDtoList(List<MajorDto> majors);
-
-    MajorCoursesResponseDto toFullResponseDto(MajorCoursesDto innerDto);
-
-    List<MajorCoursesResponseDto> toFullResponseDtoList(List<MajorCoursesDto> majors);
+    List<MajorCoursesResponseDto> toFullResponseDtoList(List<Major> majors);
 }

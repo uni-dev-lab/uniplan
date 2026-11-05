@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20260806115300-1
+      author: Ivcho
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      preConditions:
+        - onFail: MARK_RAN
+        - columnExists:
+            tableName: faculty
+            columnName: deleted_at
+      changes:
+        - dropColumn:
+            tableName: faculty
+            columnName: deleted_at
+      rollback:
+        - addColumn:
+            tableName: faculty
+            columns:
+              - column:
+                  name: deleted_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: true
+  - changeSet:
+      id: 20260806115300-2
+      author: Ivcho
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      preConditions:
+        - onFail: MARK_RAN
+        - columnExists:
+            tableName: major
+            columnName: deleted_at
+      changes:
+        - dropColumn:
+            tableName: major
+            columnName: deleted_at
+      rollback:
+        - addColumn:
+            tableName: major
+            columns:
+              - column:
+                  name: deleted_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: true

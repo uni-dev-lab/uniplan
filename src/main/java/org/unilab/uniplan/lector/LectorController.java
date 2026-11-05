@@ -28,9 +28,10 @@ public class LectorController {
     private final LectorWebFacade lectorWebFacade;
 
     @PostMapping
-    public ResponseEntity<Void> createLector(@Valid @NotNull @RequestBody final LectorRequestDto lectorRequestDto) {
-        lectorWebFacade.createLector(lectorRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<LectorResponseDto> createLector(
+        @Valid @NotNull @RequestBody final LectorRequestDto lectorRequestDto) {
+        final LectorResponseDto response = lectorWebFacade.createLector(lectorRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping
@@ -44,11 +45,11 @@ public class LectorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateLector(@PathVariable final UUID id,
+    public ResponseEntity<LectorResponseDto> updateLector(@PathVariable final UUID id,
                                              @Valid @NotNull @RequestBody
                                              final LectorRequestDto lectorRequestDto) {
-        lectorWebFacade.updateLector(id, lectorRequestDto);
-        return ResponseEntity.noContent().build();
+
+        return ResponseEntity.ok(lectorWebFacade.updateLector(id, lectorRequestDto));
     }
 
     @DeleteMapping("/{id}")

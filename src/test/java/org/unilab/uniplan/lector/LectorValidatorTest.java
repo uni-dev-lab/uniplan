@@ -1,11 +1,11 @@
 package org.unilab.uniplan.lector;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,30 +24,31 @@ class LectorValidatorTest {
     @InjectMocks
     private LectorValidator lectorValidator;
 
-    private UUID facultyId;
-    private LectorRequestDto request;
-
-    @BeforeEach
-    void setUp() {
-        facultyId = UUID.randomUUID();
-
-        request = new LectorRequestDto(facultyId, "jane.doe@example.com", "Jane", "Doe");
-    }
-
     @Test
     void validate_shouldPass_whenFacultyExists() {
-        when(facultyRepository.existsById(facultyId)).thenReturn(true);
+        final LectorRequestDto request = createRequest();
+        when(facultyRepository.existsById(request.facultyId())).thenReturn(true);
 
-        assertThatCode(() -> lectorValidator.validate(request))
-            .doesNotThrowAnyException();
+        assertDoesNotThrow(() -> lectorValidator.validate(request));
+
+        verify(facultyRepository).existsById(request.facultyId());
     }
 
     @Test
     void validate_shouldThrowResourceNotFoundException_whenFacultyDoesNotExist() {
-        when(facultyRepository.existsById(facultyId)).thenReturn(false);
+        final LectorRequestDto request = createRequest();
 
         assertThatThrownBy(() -> lectorValidator.validate(request))
             .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(facultyId.toString());
+            .hasMessageContaining(request.facultyId().toString());
+
+        verify(facultyRepository).existsById(request.facultyId());
+    }
+
+    private LectorRequestDto createRequest() {
+        return new LectorRequestDto(UUID.randomUUID(),
+                                    "jane.doe@example.com",
+                                    "Jane",
+                                    "Doe");
     }
 }

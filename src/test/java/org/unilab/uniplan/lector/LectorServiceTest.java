@@ -1,14 +1,13 @@
 package org.unilab.uniplan.lector;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,61 +23,57 @@ class LectorServiceTest {
     @InjectMocks
     private LectorService lectorService;
 
-    private UUID id;
-    private Lector entity;
+    @Test
+    void save_shouldReturnSavedEntity_whenCalled() {
+        final Lector lector = mock(Lector.class);
+        final Lector saved = mock(Lector.class);
+        when(lectorRepository.save(lector)).thenReturn(saved);
 
-    @BeforeEach
-    void setUp() {
-        id = UUID.randomUUID();
-        entity = new Lector();
+        final var result = lectorService.save(lector);
+
+        verify(lectorRepository).save(lector);
+        assertThat(result).isSameAs(saved);
     }
 
     @Test
-    void save_shouldSaveEntity() {
-        when(lectorRepository.save(entity)).thenReturn(entity);
+    void getAll_shouldReturnListOfEntities_whenCalled() {
+        final List<Lector> lectors = mock();
+        when(lectorRepository.findAll()).thenReturn(lectors);
 
-        lectorService.save(entity);
+        final var result = lectorService.getAll();
 
-        verify(lectorRepository).save(entity);
-    }
-
-    @Test
-    void getAll_shouldReturnListOfEntities() {
-        final List<Lector> entities = List.of(entity);
-
-        when(lectorRepository.findAll()).thenReturn(entities);
-
-        final List<Lector> result = lectorService.getAll();
-
-        assertThat(result).isEqualTo(entities);
         verify(lectorRepository).findAll();
+        assertThat(result).isSameAs(lectors);
     }
 
     @Test
     void getById_shouldReturnEntity_whenLectorExists() {
-        when(lectorRepository.findById(id)).thenReturn(Optional.of(entity));
+        final UUID id = UUID.randomUUID();
+        final Lector lector = mock(Lector.class);
+        when(lectorRepository.findById(id)).thenReturn(Optional.of(lector));
 
-        final Optional<Lector> result = lectorService.getById(id);
+        final var result = lectorService.getById(id);
 
-        assertThat(result)
-            .isPresent()
-            .contains(entity);
         verify(lectorRepository).findById(id);
+        assertThat(result).contains(lector);
     }
 
     @Test
-    void getById_shouldReturnEmptyOptional_whenLectorNotFound() {
-        when(lectorRepository.findById(id)).thenReturn(Optional.empty());
+    void getById_shouldReturnEmpty_whenLectorDoesNotExist() {
+        final UUID id = UUID.randomUUID();
 
-        final Optional<Lector> result = lectorService.getById(id);
+        final var result = lectorService.getById(id);
 
+        verify(lectorRepository).findById(id);
         assertThat(result).isEmpty();
     }
 
     @Test
-    void delete_shouldDeleteEntity_whenLectorExists() {
-        lectorService.delete(entity);
+    void delete_shouldDelete_whenCalled() {
+        final Lector lector = mock(Lector.class);
 
-        verify(lectorRepository).delete(entity);
+        lectorService.delete(lector);
+
+        verify(lectorRepository).delete(lector);
     }
 }

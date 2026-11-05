@@ -5,33 +5,28 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.course.Course;
 import org.unilab.uniplan.course.CourseMapper;
+import org.unilab.uniplan.course.CourseMapperImpl;
 import org.unilab.uniplan.course.dto.CourseResponseDto;
 import org.unilab.uniplan.faculty.Faculty;
 import org.unilab.uniplan.major.dto.MajorCoursesResponseDto;
 import org.unilab.uniplan.major.dto.MajorRequestDto;
 import org.unilab.uniplan.major.dto.MajorResponseDto;
 
-@ExtendWith(MockitoExtension.class)
 class MajorMapperTest {
 
-    @Mock
-    private CourseMapper courseMapper;
+    private final CourseMapper courseMapper = new CourseMapperImpl();
 
     private MajorMapper mapper;
 
-    private UUID facultyId;
+    private UUID facultyIdEntity;
+    private UUID facultyIdDTO;
 
     private final String majorName1 = "Business Information Technology";
     private final String majorName2 = "Software Engineering";
@@ -40,59 +35,52 @@ class MajorMapperTest {
     private Major major1;
     private Major major2;
 
-    private CourseResponseDto courseResponseDto1;
-    private CourseResponseDto courseResponseDto2;
-
     @BeforeEach
     void setUp() {
 
         mapper = new MajorMapperImpl(courseMapper);
 
-        facultyId = UUID.randomUUID();
-        majorRequest = new MajorRequestDto(facultyId, majorName1);
+        facultyIdEntity = UUID.randomUUID();
+        facultyIdDTO = UUID.randomUUID();
+        majorRequest = new MajorRequestDto(facultyIdDTO, majorName1);
 
         final Faculty faculty = new Faculty();
-        faculty.setId(facultyId);
+        faculty.setId(facultyIdEntity);
 
-        final List<Course> coursesList = new ArrayList<>();
+        final Course course1 = new Course();
+        course1.setCourseType("Regular");
 
-        major1 = new Major(faculty, majorName1, coursesList);
+        final Course course2 = new Course();
+        course2.setCourseType("Part time");
+
+        final List<Course> coursesListMajor1 = List.of(course1, course2);
+
+        major1 = new Major(faculty, majorName1, coursesListMajor1);
         major1.setId(UUID.randomUUID());
 
-        major2 = new Major(faculty, majorName2, coursesList);
+        major2 = new Major(faculty, majorName2, coursesListMajor1);
         major2.setId(UUID.randomUUID());
 
-        final UUID courseResponseId1 = UUID.randomUUID();
-        final UUID courseResponseId2 = UUID.randomUUID();
-
-        courseResponseDto1 = new CourseResponseDto(courseResponseId1, major1.getId(),
-                                                   (byte) 4,
-                                                   "Regular",
-                                                   "On site");
-        courseResponseDto2 = new CourseResponseDto(courseResponseId2, major1.getId(),
-                                                   (byte) 3,
-                                                   "Regular",
-                                                   "On site");
     }
 
     @Test
     void toEntity_shouldMapAllFieldsAndIgnoreId_whenRequestDtoIsValid() {
-        Major entity = mapper.toEntity(majorRequest);
+        final Major entity = mapper.toEntity(majorRequest);
 
         assertNull(entity.getId());
         assertNotNull(entity.getFaculty());
         assertAll(
-            () -> assertEquals(entity.getFaculty().getId(), facultyId),
+            () -> assertEquals(entity.getFaculty().getId(), facultyIdDTO),
             () -> assertEquals(entity.getMajorName(), majorName1)
         );
     }
 
     @Test
     void toResponseDto_shouldMapAllFields_whenMajorIsValid() {
-        MajorResponseDto majorResponseDto = mapper.toResponseDto(major1);
+        final MajorResponseDto majorResponseDto = mapper.toResponseDto(major1);
 
         assertAll(
-            () -> assertEquals(majorResponseDto.facultyId(), facultyId),
+            () -> assertEquals(majorResponseDto.facultyId(), facultyIdEntity),
             () -> assertEquals(majorResponseDto.id(), major1.getId()),
             () -> assertEquals(majorResponseDto.majorName(), major1.getMajorName())
         );
@@ -101,22 +89,22 @@ class MajorMapperTest {
     @Test
     void toFullResponseDto_shouldMapAllFields_whenMajorIsValid() {
 
-        when(courseMapper.toResponseDtoList(major1.getCourses()))
-            .thenReturn(List.of(courseResponseDto1, courseResponseDto2));
-
-        MajorCoursesResponseDto majorCoursesResponseDto = mapper.toFullResponseDto(major1);
+        final MajorCoursesResponseDto majorCoursesResponseDto = mapper.toFullResponseDto(major1);
 
         assertNotNull(majorCoursesResponseDto.courses());
         assertAll(
-            () -> assertEquals(majorCoursesResponseDto.facultyId(), facultyId),
+            () -> assertEquals(majorCoursesResponseDto.facultyId(), facultyIdEntity),
             () -> assertEquals(majorCoursesResponseDto.id(), major1.getId()),
             () -> assertEquals(majorCoursesResponseDto.majorName(), major1.getMajorName())
         );
+        assertThat(majorCoursesResponseDto.courses())
+            .extracting(CourseResponseDto::courseType)
+            .containsExactly("Regular", "Part time");
     }
 
     @Test
     void toResponseDtoList_shouldMapAllElements_whenListIsNotEmpty() {
-        List<MajorResponseDto> majorResponseDtoList = mapper.toResponseDtoList(List.of(major1,
+        final List<MajorResponseDto> majorResponseDtoList = mapper.toResponseDtoList(List.of(major1,
                                                                                        major2));
 
         assertThat(majorResponseDtoList)
@@ -126,31 +114,39 @@ class MajorMapperTest {
 
     @Test
     void toFullResponseDtoList_shouldMapAllElements_whenListIsNotEmpty() {
-        List<MajorCoursesResponseDto> majorCoursesResponseDtoList = mapper.toFullResponseDtoList(
+        final List<MajorCoursesResponseDto> majorCoursesResponseDtoList = mapper.toFullResponseDtoList(
             List.of(major1, major2));
 
         assertThat(majorCoursesResponseDtoList)
             .extracting(MajorCoursesResponseDto::majorName)
             .containsExactly(majorName1, majorName2);
+
+        assertThat(majorCoursesResponseDtoList)
+            .extracting(MajorCoursesResponseDto::courses)
+            .allSatisfy(courses ->
+                            assertThat(courses)
+                                .extracting(CourseResponseDto::courseType)
+                                .containsExactly("Regular", "Part time")
+            );
     }
 
     @Test
     void toResponseDtoList_shouldReturnEmptyList_whenListIsEmpty() {
-        List<MajorResponseDto> majorResponseDtoList = mapper.toResponseDtoList(List.of());
+        final List<MajorResponseDto> majorResponseDtoList = mapper.toResponseDtoList(List.of());
 
         assertThat(majorResponseDtoList).isEmpty();
     }
 
     @Test
     void toFullResponseDtoList_shouldReturnEmptyList_whenListIsEmpty() {
-        List<MajorCoursesResponseDto> majorCoursesResponseDtoList = mapper.toFullResponseDtoList(
+        final List<MajorCoursesResponseDto> majorCoursesResponseDtoList = mapper.toFullResponseDtoList(
             List.of());
 
         assertThat(majorCoursesResponseDtoList).isEmpty();
     }
 
     @Test
-    void updateEntity_shouldUpdateAllFields_whenRequestDtoIsValid() {
+    void updateEntityFromDto_shouldUpdateAllFields_whenRequestDtoIsValid() {
         mapper.updateEntityFromDto(majorRequest, major2);
 
         assertNotNull(major2.getFaculty());
@@ -162,7 +158,7 @@ class MajorMapperTest {
 
     @Test
     void updateEntity_shouldNotChangeId_whenUpdating() {
-        UUID id = major2.getId();
+        final UUID id = major2.getId();
         mapper.updateEntityFromDto(majorRequest, major2);
 
         assertEquals(id, major2.getId());
@@ -170,8 +166,8 @@ class MajorMapperTest {
 
     @Test
     void toFaculty_shouldMapId_whenFacultyIdIsGiven() {
-        final Faculty result = mapper.toFaculty(facultyId);
+        final Faculty result = mapper.toFaculty(facultyIdEntity);
 
-        assertThat(result.getId()).isEqualTo(facultyId);
+        assertThat(result.getId()).isEqualTo(facultyIdEntity);
     }
 }

@@ -16,10 +16,9 @@ public interface ProgramDisciplineLectorMapper {
     @Mapping(target = "discipline", ignore = true)
     @Mapping(target = "lector", ignore = true)
     @Mapping(target = "program", ignore = true)
-    @Mapping(target = "id", expression =
-        "java(new ProgramDisciplineLectorId(request.lectorId(),"
-        + " request.programId(),"
-        + " request.disciplineId()))")
+    @Mapping(target = "id.lectorId", source = "lectorId")
+    @Mapping(target = "id.programId", source = "programId")
+    @Mapping(target = "id.disciplineId", source = "disciplineId")
     ProgramDisciplineLector toEntity(ProgramDisciplineLectorRequestDto request);
 
     /*After creating relationships are still null. Until they are fetched they would be null

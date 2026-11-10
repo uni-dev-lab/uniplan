@@ -1,24 +1,18 @@
 package org.unilab.uniplan.programdiscipline;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doAnswer;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
-import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineDto;
 
 @ExtendWith(MockitoExtension.class)
 class ProgramDisciplineServiceTest {
@@ -26,137 +20,64 @@ class ProgramDisciplineServiceTest {
     @Mock
     private ProgramDisciplineRepository programDisciplineRepository;
 
-    @Mock
-    private ProgramDisciplineMapper programDisciplineMapper;
-
     @InjectMocks
     private ProgramDisciplineService programDisciplineService;
 
-    private ProgramDisciplineId id;
-    private UUID disciplineId;
-    private UUID programId;
-    private short hoursLecture;
-    private short hoursExercise;
-    private byte semesterCount;
-    private ProgramDisciplineDto programDisciplineDto;
-    private ProgramDiscipline programDiscipline;
+    @Test
+    void save_shouldReturnSavedEntity_whenCalled() {
+        final ProgramDiscipline entity = mock(ProgramDiscipline.class);
+        final ProgramDiscipline saved = mock(ProgramDiscipline.class);
+        when(programDisciplineRepository.save(entity)).thenReturn(saved);
 
-    @BeforeEach
-    void setUp(){
-        disciplineId = UUID.randomUUID();
-        programId = UUID.randomUUID();
-        id = new ProgramDisciplineId(programId, disciplineId);
+        final var result = programDisciplineService.save(entity);
 
-        hoursExercise = 12;
-        hoursLecture = 12;
-        semesterCount = 4;
-        programDisciplineDto = new ProgramDisciplineDto(id,
-                                                        disciplineId,
-                                                        programId,
-                                                        hoursLecture,
-                                                        hoursExercise,
-                                                        semesterCount);
-        programDiscipline = new ProgramDiscipline();
+        verify(programDisciplineRepository).save(entity);
+        assertThat(result).isSameAs(saved);
     }
 
     @Test
-    void testCreateProgramDisciplineShouldSaveAndReturnDto() {
-        when(programDisciplineMapper.toEntity(programDisciplineDto)).thenReturn(programDiscipline);
-        when(programDisciplineRepository.save(programDiscipline)).thenReturn(programDiscipline);
-        when(programDisciplineMapper.toDto(programDiscipline)).thenReturn(programDisciplineDto);
-
-        ProgramDisciplineDto result = programDisciplineService.createProgramDiscipline(programDisciplineDto);
-
-        assertEquals(programDisciplineDto, result);
-    }
-
-    @Test
-    void testGetAllProgramDisciplinesShouldReturnListOfProgramDisciplineDtos() {
-        List<ProgramDiscipline> entities = List.of(programDiscipline);
-        List<ProgramDisciplineDto> dtos = List.of(programDisciplineDto);
-
+    void getAll_shouldReturnAllEntities_whenCalled() {
+        final List<ProgramDiscipline> entities = mock();
         when(programDisciplineRepository.findAll()).thenReturn(entities);
-        when(programDisciplineMapper.toDtos(entities)).thenReturn(dtos);
 
-        List<ProgramDisciplineDto> result = programDisciplineService.getAllProgramDisciplines();
+        final var result = programDisciplineService.getAll();
 
-        assertEquals(dtos, result);
+        verify(programDisciplineRepository).findAll();
+        assertThat(result).isSameAs(entities);
     }
 
     @Test
-    void testGetProgramDisciplineByIdShouldReturnProgramDisciplineDtoIfFound() {
-        when(programDisciplineRepository.findById(id)).thenReturn(Optional.of(programDiscipline));
-        when(programDisciplineMapper.toDto(programDiscipline)).thenReturn(programDisciplineDto);
-        when(programDisciplineMapper.toProgramDisciplineId(disciplineId, programId)).thenReturn(id);
+    void getById_shouldReturnEntity_whenItExists() {
+        final ProgramDisciplineId id = createId();
+        final ProgramDiscipline entity = mock(ProgramDiscipline.class);
+        when(programDisciplineRepository.findById(id)).thenReturn(Optional.of(entity));
 
-        ProgramDisciplineDto result = programDisciplineService.getProgramDisciplineById(
-            disciplineId,
-            programId);
+        final var result = programDisciplineService.getById(id);
 
-        assertEquals(programDisciplineDto, result);
+        verify(programDisciplineRepository).findById(id);
+        assertThat(result).contains(entity);
     }
 
     @Test
-    void testGetProgramDisciplineByIdShouldReturnEmptyOptionalIfProgramDisciplineNotFound() {
-        when(programDisciplineRepository.findById(id)).thenReturn(Optional.empty());
-        when(programDisciplineMapper.toProgramDisciplineId(disciplineId, programId)).thenReturn(id);
+    void getById_shouldReturnEmpty_whenEntityDoesntExist() {
+        final ProgramDisciplineId id = createId();
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> programDisciplineService.getProgramDisciplineById(
-            disciplineId,
-            programId));
+        final var result = programDisciplineService.getById(id);
 
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
+        verify(programDisciplineRepository).findById(id);
+        assertThat(result).isEmpty();
     }
 
     @Test
-    void testUpdateProgramDisciplineShouldUpdateAndReturnDtoIfFound() {
-        when(programDisciplineRepository.findById(id)).thenReturn(Optional.of(programDiscipline));
-        doAnswer(invocation -> null).when(programDisciplineMapper).updateEntityFromDto(programDisciplineDto, programDiscipline);
-        when(programDisciplineRepository.save(programDiscipline)).thenReturn(programDiscipline);
-        when(programDisciplineMapper.toDto(programDiscipline)).thenReturn(programDisciplineDto);
-        when(programDisciplineMapper.toProgramDisciplineId(disciplineId, programId)).thenReturn(id);
+    void delete_shouldDelete_whenCalled() {
+        final ProgramDiscipline entity = mock(ProgramDiscipline.class);
 
-        ProgramDisciplineDto result = programDisciplineService.updateProgramDiscipline(
-            disciplineId,
-            programId,
-            programDisciplineDto);
+        programDisciplineService.delete(entity);
 
-        assertEquals(programDisciplineDto, result);
+        verify(programDisciplineRepository).delete(entity);
     }
 
-    @Test
-    void testUpdateProgramDisciplineShouldReturnEmptyOptionalIfNotFound() {
-        when(programDisciplineRepository.findById(id)).thenReturn(Optional.empty());
-        when(programDisciplineMapper.toProgramDisciplineId(disciplineId, programId)).thenReturn(id);
-
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> programDisciplineService.updateProgramDiscipline(
-            disciplineId,
-            programId,
-            programDisciplineDto));
-
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
-    }
-
-    @Test
-    void testDeleteProgramDisciplineShouldDeleteProgramDisciplineIfFound() {
-        when(programDisciplineRepository.findById(id)).thenReturn(Optional.of(programDiscipline));
-        when(programDisciplineMapper.toProgramDisciplineId(disciplineId, programId)).thenReturn(id);
-        doAnswer(invocation -> null).when(programDisciplineRepository).delete(programDiscipline);
-
-        assertDoesNotThrow(() -> programDisciplineService.deleteProgramDiscipline(disciplineId,
-                                                                                  programId));
-        verify(programDisciplineRepository).delete(programDiscipline);
-    }
-
-    @Test
-    void testDeleteProgramDisciplineShouldThrowIfNotFound() {
-        when(programDisciplineRepository.findById(id)).thenReturn(Optional.empty());
-        when(programDisciplineMapper.toProgramDisciplineId(disciplineId, programId)).thenReturn(id);
-
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
-            programDisciplineService.deleteProgramDiscipline(disciplineId, programId));
-
-        assertTrue(exception.getMessage().contains(String.valueOf(disciplineId)));
-        assertTrue(exception.getMessage().contains(String.valueOf(programId)));
+    private ProgramDisciplineId createId() {
+        return new ProgramDisciplineId(UUID.randomUUID(), UUID.randomUUID());
     }
 }

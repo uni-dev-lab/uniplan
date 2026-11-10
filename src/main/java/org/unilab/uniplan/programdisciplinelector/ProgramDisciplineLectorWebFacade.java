@@ -23,11 +23,12 @@ public class ProgramDisciplineLectorWebFacade {
     private final ProgramDisciplineLectorValidator programDisciplineLectorValidator;
 
     @Transactional
-    public ProgramDisciplineLectorResponseDto createProgramDisciplineLector(final ProgramDisciplineLectorRequestDto request) {
+    public ProgramDisciplineLectorResponseDto createProgramDisciplineLector(
+        final ProgramDisciplineLectorRequestDto request) {
         programDisciplineLectorValidator.validateForCreate(request);
 
-        final ProgramDisciplineLector programDisciplineLector = programDisciplineLectorMapper.toEntity(
-            request);
+        final ProgramDisciplineLector programDisciplineLector =
+            programDisciplineLectorMapper.toEntity(request);
         final ProgramDisciplineLector saved = programDisciplineLectorService.save(
             programDisciplineLector);
         log.info("Created ProgramDisciplineLector with ID: {}", saved.getId());
@@ -36,64 +37,81 @@ public class ProgramDisciplineLectorWebFacade {
     }
 
     @Transactional
-    public ProgramDisciplineLectorResponseDto updateProgramDisciplineLector(final UUID lectorId,
-                                                                            final UUID programId,
-                                                                            final UUID disciplineId,
-                                                                            final ProgramDisciplineLectorRequestDto request) {
-        final ProgramDisciplineLectorId id = buildProgramDisciplineLectorId(lectorId,
-                                                                            programId,
-                                                                            disciplineId);
+    public ProgramDisciplineLectorResponseDto updateProgramDisciplineLector(
+        final UUID lectorId,
+        final UUID programId,
+        final UUID disciplineId,
+        final ProgramDisciplineLectorRequestDto request) {
+        final ProgramDisciplineLectorId id =
+            buildProgramDisciplineLectorId(
+                lectorId,
+                programId,
+                disciplineId);
 
-        final ProgramDisciplineLector programDisciplineLector = getProgramDisciplineLectorOrThrow(id);
+        final ProgramDisciplineLector programDisciplineLector =
+            getProgramDisciplineLectorOrThrow(id);
 
         programDisciplineLectorMapper.updateEntityFromDto(request, programDisciplineLector);
-        final ProgramDisciplineLector saved = programDisciplineLectorService.save(programDisciplineLector);
+        final ProgramDisciplineLector saved = programDisciplineLectorService.save(
+            programDisciplineLector);
         log.info("Updated ProgramDisciplineLector with ID: {}", saved.getId());
 
         return programDisciplineLectorMapper.toResponseDto(saved);
     }
 
     @Transactional(readOnly = true)
-    public ProgramDisciplineLectorResponseDto getProgramDisciplineLectorById(final UUID lectorId,
-                                                                             final UUID programId,
-                                                                             final UUID disciplineId) {
-        final ProgramDisciplineLectorId id = buildProgramDisciplineLectorId(lectorId,
-                                                                            programId,
-                                                                            disciplineId);
+    public ProgramDisciplineLectorResponseDto getProgramDisciplineLectorById(
+        final UUID lectorId,
+        final UUID programId,
+        final UUID disciplineId) {
+        final ProgramDisciplineLectorId id =
+            buildProgramDisciplineLectorId(
+                lectorId,
+                programId,
+                disciplineId);
 
-        final ProgramDisciplineLector programDisciplineLector = getProgramDisciplineLectorOrThrow(id);
+        final ProgramDisciplineLector programDisciplineLector =
+            getProgramDisciplineLectorOrThrow(id);
         return programDisciplineLectorMapper.toResponseDto(programDisciplineLector);
     }
 
     @Transactional
-    public void deleteProgramDisciplineLector(final UUID lectorId,
-                                              final UUID programId,
-                                              final UUID disciplineId) {
-        final ProgramDisciplineLectorId id = buildProgramDisciplineLectorId(lectorId,
-                                                                            programId,
-                                                                            disciplineId);
+    public void deleteProgramDisciplineLector(
+        final UUID lectorId,
+        final UUID programId,
+        final UUID disciplineId) {
+        final ProgramDisciplineLectorId id =
+            buildProgramDisciplineLectorId(
+                lectorId,
+                programId,
+                disciplineId);
 
-        final ProgramDisciplineLector programDisciplineLector = getProgramDisciplineLectorOrThrow(id);
+        final ProgramDisciplineLector programDisciplineLector =
+            getProgramDisciplineLectorOrThrow(id);
         programDisciplineLectorService.delete(programDisciplineLector);
         log.info("Deleted ProgramDisciplineLector with ID: {}", id);
     }
 
     @Transactional(readOnly = true)
     public List<ProgramDisciplineLectorResponseDto> getAllProgramDisciplineLectors() {
-        return programDisciplineLectorMapper.toResponseDtoList(programDisciplineLectorService.getAll());
+        return programDisciplineLectorMapper
+            .toResponseDtoList(programDisciplineLectorService.getAll());
     }
 
-    private ProgramDisciplineLector getProgramDisciplineLectorOrThrow(final ProgramDisciplineLectorId id) {
-        return programDisciplineLectorService.getById(id)
-                                             .orElseThrow(() -> new ResourceNotFoundException(
-                                                 PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND.getMessage(
-                                                     String.valueOf(id))
-                                             ));
+    private ProgramDisciplineLector getProgramDisciplineLectorOrThrow(
+        final ProgramDisciplineLectorId id) {
+        return programDisciplineLectorService
+            .getById(id)
+            .orElseThrow(() -> new ResourceNotFoundException(
+                PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND.getMessage(
+                    String.valueOf(id))
+            ));
     }
 
-    private ProgramDisciplineLectorId buildProgramDisciplineLectorId(final UUID lectorId,
-                                                                     final UUID programId,
-                                                                     final UUID disciplineId) {
+    private ProgramDisciplineLectorId buildProgramDisciplineLectorId(
+        final UUID lectorId,
+        final UUID programId,
+        final UUID disciplineId) {
         return new ProgramDisciplineLectorId(lectorId, programId, disciplineId);
     }
 }

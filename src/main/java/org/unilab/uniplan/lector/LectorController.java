@@ -22,7 +22,8 @@ import org.unilab.uniplan.lector.dto.LectorResponseDto;
 @RestController
 @RequestMapping("/lectors")
 @RequiredArgsConstructor
-@Tag(name = "Lectors", description = "Manage lecturers with contact information and associated faculties")
+@Tag(name = "Lectors", description =
+    "Manage lecturers with contact information and associated faculties")
 public class LectorController {
 
     private final LectorWebFacade lectorWebFacade;
@@ -41,13 +42,13 @@ public class LectorController {
 
     @GetMapping("/{id}")
     public ResponseEntity<LectorResponseDto> getLectorById(@PathVariable final UUID id) {
-       return ResponseEntity.ok(lectorWebFacade.getLectorById(id));
+        return ResponseEntity.ok(lectorWebFacade.getLectorById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<LectorResponseDto> updateLector(@PathVariable final UUID id,
-                                             @Valid @NotNull @RequestBody
-                                             final LectorRequestDto lectorRequestDto) {
+    public ResponseEntity<LectorResponseDto> updateLector(
+        @PathVariable final UUID id,
+        @Valid @NotNull @RequestBody final LectorRequestDto lectorRequestDto) {
 
         return ResponseEntity.ok(lectorWebFacade.updateLector(id, lectorRequestDto));
     }

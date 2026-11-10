@@ -1,6 +1,10 @@
 package org.unilab.uniplan.lector;
 
 
+import static org.unilab.uniplan.utils.ErrorConstants.LECTOR_NOT_FOUND;
+
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -8,10 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.lector.dto.LectorRequestDto;
 import org.unilab.uniplan.lector.dto.LectorResponseDto;
-import java.util.List;
-import java.util.UUID;
-
-import static org.unilab.uniplan.utils.ErrorConstants.LECTOR_NOT_FOUND;
 
 @Component
 @Slf4j
@@ -42,18 +42,18 @@ public class LectorWebFacade {
         return lectorMapper.toResponseDto(lector);
     }
 
-    private Lector getLectorOrThrow(final UUID id){
+    private Lector getLectorOrThrow(final UUID id) {
         return lectorService.getById(id)
-                             .orElseThrow(() -> new ResourceNotFoundException(
-                                 LECTOR_NOT_FOUND.getMessage(String.valueOf(id))
-                             ));
+                            .orElseThrow(() -> new ResourceNotFoundException(
+                                LECTOR_NOT_FOUND.getMessage(String.valueOf(id))
+                            ));
     }
 
     @Transactional
     public LectorResponseDto updateLector(final UUID id,
-                             final LectorRequestDto request) {
-        final Lector lector = getLectorOrThrow(id);
+                                          final LectorRequestDto request) {
         lectorValidator.validate(request);
+        final Lector lector = getLectorOrThrow(id);
         lectorMapper.updateEntity(request, lector);
         final Lector saved = lectorService.save(lector);
         log.info("Lector with id {} has been updated", saved.getId());

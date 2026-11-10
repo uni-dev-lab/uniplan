@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.unilab.uniplan.common.model.BaseService;
 
-
 @Service
 @RequiredArgsConstructor
 public class LectorService implements BaseService<Lector> {
@@ -16,7 +15,7 @@ public class LectorService implements BaseService<Lector> {
 
     @Override
     public Lector save(final Lector entity) {
-         return lectorRepository.save(entity);
+        return lectorRepository.save(entity);
     }
 
     @Override

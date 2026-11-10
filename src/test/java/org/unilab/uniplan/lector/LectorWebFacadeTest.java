@@ -126,8 +126,8 @@ class LectorWebFacadeTest {
         final var result = lectorWebFacade.updateLector(id, request);
 
         final InOrder inOrder = inOrder(lectorService, lectorValidator, lectorMapper);
-        inOrder.verify(lectorService).getById(id);
         inOrder.verify(lectorValidator).validate(request);
+        inOrder.verify(lectorService).getById(id);
         inOrder.verify(lectorMapper).updateEntity(request, entity);
         inOrder.verify(lectorService).save(entity);
         inOrder.verify(lectorMapper).toResponseDto(saved);
@@ -138,17 +138,13 @@ class LectorWebFacadeTest {
     void updateLector_shouldNotSave_whenValidationFails() {
         final UUID id = UUID.randomUUID();
         final LectorRequestDto request = createRequest();
-        final Lector entity = mock(Lector.class);
-        when(lectorService.getById(id)).thenReturn(Optional.of(entity));
         doThrow(new ResourceNotFoundException("")).when(lectorValidator).validate(request);
 
         assertThatThrownBy(() -> lectorWebFacade.updateLector(id, request))
             .isInstanceOf(ResourceNotFoundException.class);
 
-        verify(lectorService).getById(id);
         verify(lectorValidator).validate(request);
-        verify(lectorService, never()).save(any());
-        verifyNoInteractions(lectorMapper);
+        verifyNoInteractions(lectorMapper, lectorService);
     }
 
     @Test
@@ -160,9 +156,10 @@ class LectorWebFacadeTest {
             .isInstanceOf(ResourceNotFoundException.class)
             .hasMessageContaining(id.toString());
 
+        verify(lectorValidator).validate(request);
         verify(lectorService).getById(id);
         verify(lectorService, never()).save(any());
-        verifyNoInteractions(lectorValidator, lectorMapper);
+        verifyNoInteractions(lectorMapper);
     }
 
     @Test

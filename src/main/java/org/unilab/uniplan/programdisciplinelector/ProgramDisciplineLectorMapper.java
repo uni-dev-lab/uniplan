@@ -16,9 +16,10 @@ public interface ProgramDisciplineLectorMapper {
     @Mapping(target = "discipline", ignore = true)
     @Mapping(target = "lector", ignore = true)
     @Mapping(target = "program", ignore = true)
-    @Mapping(target = "id", expression = "java(new ProgramDisciplineLectorId(request.lectorId(),"
-                                         + " request.programId(),"
-                                         + " request.disciplineId()))")
+    @Mapping(target = "id", expression =
+        "java(new ProgramDisciplineLectorId(request.lectorId(),"
+        + " request.programId(),"
+        + " request.disciplineId()))")
     ProgramDisciplineLector toEntity(ProgramDisciplineLectorRequestDto request);
 
     /*After creating relationships are still null. Until they are fetched they would be null
@@ -26,9 +27,11 @@ public interface ProgramDisciplineLectorMapper {
     @Mapping(target = "lectorId", source = "id.lectorId")
     @Mapping(target = "programId", source = "id.programId")
     @Mapping(target = "disciplineId", source = "id.disciplineId")
-    ProgramDisciplineLectorResponseDto toResponseDto(final ProgramDisciplineLector programDisciplineLector);
+    ProgramDisciplineLectorResponseDto toResponseDto(
+        final ProgramDisciplineLector programDisciplineLector);
 
-    List<ProgramDisciplineLectorResponseDto> toResponseDtoList(List<ProgramDisciplineLector> programDisciplineLectorList);
+    List<ProgramDisciplineLectorResponseDto> toResponseDtoList(
+        List<ProgramDisciplineLector> programDisciplineLectorList);
 
     /*Ignoring id, lector program and discipline since changing them would also
      * mean changing the ids connected to the object which would change the id of our entity */

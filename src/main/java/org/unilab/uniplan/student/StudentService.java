@@ -14,8 +14,8 @@ public class StudentService implements BaseService<Student> {
     private final StudentRepository studentRepository;
 
     @Override
-    public void save(final Student entity) {
-        studentRepository.save(entity);
+    public Student save(final Student entity) {
+        return studentRepository.save(entity);
     }
 
     @Override

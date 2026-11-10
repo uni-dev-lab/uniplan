@@ -1,25 +1,18 @@
 package org.unilab.uniplan.lector;
 
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doAnswer;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
-import org.unilab.uniplan.lector.dto.LectorDto;
 
 @ExtendWith(MockitoExtension.class)
 class LectorServiceTest {
@@ -27,114 +20,60 @@ class LectorServiceTest {
     @Mock
     private LectorRepository lectorRepository;
 
-    @Mock
-    private LectorMapper lectorMapper;
-
     @InjectMocks
     private LectorService lectorService;
 
-    private UUID id;
-    private String firstName;
-    private  String lastName;
-    private UUID facultyId;
-    private String email;
-    private LectorDto lectorDto;
-    private Lector lector;
+    @Test
+    void save_shouldReturnSavedEntity_whenCalled() {
+        final Lector lector = mock(Lector.class);
+        final Lector saved = mock(Lector.class);
+        when(lectorRepository.save(lector)).thenReturn(saved);
 
-    @BeforeEach
-    void setUp(){
-        id = UUID.randomUUID();
-        facultyId = UUID.randomUUID();
-        firstName = "Ivan";
-        lastName = "Ivanov";
-        email = "i.ivanov@gmail.com";
-        lectorDto = new LectorDto(id, facultyId, email, firstName, lastName);
-        lector = new Lector();
+        final var result = lectorService.save(lector);
+
+        verify(lectorRepository).save(lector);
+        assertThat(result).isSameAs(saved);
     }
 
     @Test
-    void testCreateLectorShouldSaveAndReturnDto() {
-        when(lectorMapper.toEntity(lectorDto)).thenReturn(lector);
-        when(lectorRepository.save(lector)).thenReturn(lector);
-        when(lectorMapper.toDto(lector)).thenReturn(lectorDto);
+    void getAll_shouldReturnListOfEntities_whenCalled() {
+        final List<Lector> lectors = mock();
+        when(lectorRepository.findAll()).thenReturn(lectors);
 
-        LectorDto result = lectorService.createLector(lectorDto);
+        final var result = lectorService.getAll();
 
-        assertEquals(lectorDto, result);
+        verify(lectorRepository).findAll();
+        assertThat(result).isSameAs(lectors);
     }
 
     @Test
-    void testGetAllLectorsShouldReturnListOfLectorDtos() {
-        List<Lector> entities = List.of(lector);
-        List<LectorDto> dtos = List.of(lectorDto);
-
-        when(lectorRepository.findAll()).thenReturn(entities);
-        when(lectorMapper.toDtos(entities)).thenReturn(dtos);
-
-        List<LectorDto> result = lectorService.getAllLectors();
-
-        assertEquals(dtos, result);
-    }
-
-    @Test
-    void testGetLectorByIdShouldReturnLectorDtoIfFound() {
+    void getById_shouldReturnEntity_whenLectorExists() {
+        final UUID id = UUID.randomUUID();
+        final Lector lector = mock(Lector.class);
         when(lectorRepository.findById(id)).thenReturn(Optional.of(lector));
-        when(lectorMapper.toDto(lector)).thenReturn(lectorDto);
 
-        LectorDto result = lectorService.getLectorById(id);
+        final var result = lectorService.getById(id);
 
-        assertEquals(lectorDto, result);
+        verify(lectorRepository).findById(id);
+        assertThat(result).contains(lector);
     }
 
     @Test
-    void testGetLectorByIdShouldReturnEmptyOptionalIfLectorNotFound() {
-        when(lectorRepository.findById(id)).thenReturn(Optional.empty());
+    void getById_shouldReturnEmpty_whenLectorDoesNotExist() {
+        final UUID id = UUID.randomUUID();
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
-                                                           () -> lectorService.getLectorById(id));
+        final var result = lectorService.getById(id);
 
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
+        verify(lectorRepository).findById(id);
+        assertThat(result).isEmpty();
     }
 
     @Test
-    void testUpdateLectorShouldUpdateAndReturnDtoIfFound() {
-        when(lectorRepository.findById(id)).thenReturn(Optional.of(lector));
-        doAnswer(invocation -> null).when(lectorMapper).updateEntityFromDto(lectorDto, lector);
-        when(lectorRepository.save(lector)).thenReturn(lector);
-        when(lectorMapper.toDto(lector)).thenReturn(lectorDto);
+    void delete_shouldDelete_whenCalled() {
+        final Lector lector = mock(Lector.class);
 
-        LectorDto result = lectorService.updateLector(id, lectorDto);
+        lectorService.delete(lector);
 
-        assertEquals(lectorDto, result);
-    }
-
-    @Test
-    void testUpdateLectorShouldReturnEmptyOptionalIfNotFound() {
-        when(lectorRepository.findById(id)).thenReturn(Optional.empty());
-
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
-                                                           () -> lectorService.updateLector(id,
-                                                                                            lectorDto));
-
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
-    }
-
-    @Test
-    void testDeleteLectorShouldDeleteLectorIfFound() {
-        when(lectorRepository.findById(id)).thenReturn(Optional.of(lector));
-        doAnswer(invocation -> null).when(lectorRepository).delete(lector);
-
-        assertDoesNotThrow(() -> lectorService.deleteLector(id));
         verify(lectorRepository).delete(lector);
-    }
-
-    @Test
-    void testDeleteLectorShouldThrowIfNotFound() {
-        when(lectorRepository.findById(id)).thenReturn(Optional.empty());
-
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
-            lectorService.deleteLector(id));
-
-        assertTrue(exception.getMessage().contains(String.valueOf(id)));
     }
 }

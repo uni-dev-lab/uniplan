@@ -82,22 +82,39 @@ class ProgramValidatorTest {
     @Test
     void validateForUpdate_shouldNotThrow_whenValid() {
         final UUID programId = UUID.randomUUID();
+        when(programRepository.existsById(programId)).thenReturn(true);
         when(courseRepository.existsById(courseId)).thenReturn(true);
 
         assertDoesNotThrow(() -> programValidator.validateForUpdate(programId, request));
 
+        verify(programRepository).existsById(programId);
         verify(courseRepository).existsById(courseId);
         verify(programRepository).existsByCourse_IdAndIdNot(courseId, programId);
     }
 
     @Test
+    void validateForUpdate_shouldThrowNotFound_whenProgramDoesNotExist() {
+        final UUID programId = UUID.randomUUID();
+
+        assertThatThrownBy(() -> programValidator.validateForUpdate(programId, request))
+            .isInstanceOf(ResourceNotFoundException.class)
+            .hasMessageContaining(programId.toString());
+
+        verify(programRepository).existsById(programId);
+        verify(courseRepository, never()).existsById(any());
+        verify(programRepository, never()).existsByCourse_IdAndIdNot(any(), any());
+    }
+
+    @Test
     void validateForUpdate_shouldThrowNotFound_whenCourseDoesNotExist() {
         final UUID programId = UUID.randomUUID();
+        when(programRepository.existsById(programId)).thenReturn(true);
 
         assertThatThrownBy(() -> programValidator.validateForUpdate(programId, request))
             .isInstanceOf(ResourceNotFoundException.class)
             .hasMessageContaining(courseId.toString());
 
+        verify(programRepository).existsById(programId);
         verify(courseRepository).existsById(courseId);
         verify(programRepository, never()).existsByCourse_IdAndIdNot(any(), any());
     }
@@ -105,6 +122,7 @@ class ProgramValidatorTest {
     @Test
     void validateForUpdate_shouldThrowConflict_whenOtherProgramExistsWithCourseId() {
         final UUID programId = UUID.randomUUID();
+        when(programRepository.existsById(programId)).thenReturn(true);
         when(courseRepository.existsById(courseId)).thenReturn(true);
         when(programRepository.existsByCourse_IdAndIdNot(courseId, programId))
             .thenReturn(true);
@@ -117,6 +135,7 @@ class ProgramValidatorTest {
                 assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
             });
 
+        verify(programRepository).existsById(programId);
         verify(courseRepository).existsById(courseId);
         verify(programRepository).existsByCourse_IdAndIdNot(courseId, programId);
     }

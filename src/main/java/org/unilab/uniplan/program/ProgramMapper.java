@@ -15,10 +15,9 @@ import org.unilab.uniplan.programdiscipline.ProgramDisciplineId;
 @Mapper
 public interface ProgramMapper {
 
-    /*Before it was target= course.id which would just switch the current Course's id
-     * instead of switching to a new Course. We create a new Course object that isn't
-     * persisted because we haven't set cascade and then on save() we only change at what
-     * Course the Program entity is pointing with it's FK column.*/
+    /* We create a new Course object that isn't persisted because we haven't
+     * set cascade and then on save() we only change at what
+     * Course the Program entity is pointing with its FK column.*/
     @Mapping(target = "course", source = "courseId", qualifiedByName = "courseIdToCourse")
     @Mapping(target = "programDisciplines", ignore = true)
     @Mapping(target = "id", ignore = true)
@@ -29,9 +28,8 @@ public interface ProgramMapper {
         qualifiedByName = "programDisciplinesToIds")
     ProgramResponseDto toResponseDto(final Program program);
 
-    List<ProgramResponseDto> toResponseDtoList(final List<Program> requests);
+    List<ProgramResponseDto> toResponseDtoList(final List<Program> programs);
 
-    /*Same as above*/
     @Mapping(target = "course", source = "courseId", qualifiedByName = "courseIdToCourse")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "programDisciplines", ignore = true)

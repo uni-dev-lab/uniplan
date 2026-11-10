@@ -1,5 +1,14 @@
 package org.unilab.uniplan.programdiscipline;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,15 +21,6 @@ import org.unilab.uniplan.discipline.DisciplineRepository;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.program.ProgramRepository;
 import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineRequestDto;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProgramDisciplineValidatorTest {
@@ -105,6 +105,46 @@ class ProgramDisciplineValidatorTest {
         verify(programRepository).existsById(request.programId());
         verify(disciplineRepository).existsById(request.disciplineId());
         verify(programDisciplineRepository).existsById(id);
+    }
+
+    @Test
+    void validateForUpdate_shouldNotThrow_whenIdsMatch() {
+        final ProgramDisciplineId id =
+            new ProgramDisciplineId(
+                UUID.fromString(request.disciplineId().toString()),
+                UUID.fromString(request.programId().toString()));
+
+        assertDoesNotThrow(() -> programDisciplineValidator.validateForUpdate(id, request));
+    }
+
+    @Test
+    void validateForUpdate_shouldThrowBadRequest_whenDisciplineIdDiffers() {
+        final ProgramDisciplineId id =
+            new ProgramDisciplineId(
+                UUID.randomUUID(),
+                UUID.fromString(request.programId().toString()));
+
+        assertThatThrownBy(() -> programDisciplineValidator.validateForUpdate(id, request))
+            .isInstanceOf(ResponseStatusException.class)
+            .satisfies(exception -> {
+                final ResponseStatusException ex = (ResponseStatusException) exception;
+                assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            });
+    }
+
+    @Test
+    void validateForUpdate_shouldThrowBadRequest_whenProgramIdDiffers() {
+        final ProgramDisciplineId id =
+            new ProgramDisciplineId(
+                UUID.fromString(request.disciplineId().toString()),
+                UUID.randomUUID());
+
+        assertThatThrownBy(() -> programDisciplineValidator.validateForUpdate(id, request))
+            .isInstanceOf(ResponseStatusException.class)
+            .satisfies(exception -> {
+                final ResponseStatusException ex = (ResponseStatusException) exception;
+                assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            });
     }
 
     private ProgramDisciplineId createId(final ProgramDisciplineRequestDto request) {

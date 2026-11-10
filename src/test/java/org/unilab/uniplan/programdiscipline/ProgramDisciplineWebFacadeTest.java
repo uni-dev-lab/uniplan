@@ -20,6 +20,8 @@ import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineRequestDto;
 import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineResponseDto;
@@ -98,8 +100,11 @@ class ProgramDisciplineWebFacadeTest {
                 id.getDisciplineId(), id.getProgramId(), request);
 
         final InOrder inOrder = inOrder(
-            programDisciplineService, programDisciplineMapper);
+            programDisciplineValidator,
+            programDisciplineService,
+            programDisciplineMapper);
 
+        inOrder.verify(programDisciplineValidator).validateForUpdate(id, request);
         inOrder.verify(programDisciplineService).getById(id);
         inOrder.verify(programDisciplineMapper).updateEntityFromDto(request, entity);
         inOrder.verify(programDisciplineService).save(entity);
@@ -118,9 +123,30 @@ class ProgramDisciplineWebFacadeTest {
                     id.getDisciplineId(), id.getProgramId(), request))
             .isInstanceOf(ResourceNotFoundException.class);
 
+        verify(programDisciplineValidator).validateForUpdate(id, request);
         verify(programDisciplineService).getById(id);
         verify(programDisciplineService, never()).save(any());
         verifyNoInteractions(programDisciplineMapper);
+    }
+
+    @Test
+    void updateProgramDiscipline_shouldThrowBadRequest_whenValidationFails() {
+        final ProgramDisciplineId id = createId();
+        final ProgramDisciplineRequestDto request = createRequest();
+        doThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST))
+            .when(programDisciplineValidator).validateForUpdate(id, request);
+
+        assertThatThrownBy(
+            () -> programDisciplineWebFacade.updateProgramDiscipline(
+                id.getDisciplineId(), id.getProgramId(), request))
+            .isInstanceOf(ResponseStatusException.class)
+            .satisfies(exception -> {
+                final ResponseStatusException ex = (ResponseStatusException) exception;
+                assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            });
+
+        verify(programDisciplineValidator).validateForUpdate(id, request);
+        verifyNoInteractions(programDisciplineService, programDisciplineMapper);
     }
 
     @Test
@@ -177,6 +203,7 @@ class ProgramDisciplineWebFacadeTest {
         final ProgramDisciplineId id = createId();
         final ProgramDiscipline entity = mock(ProgramDiscipline.class);
         when(programDisciplineService.getById(id)).thenReturn(Optional.of(entity));
+
         programDisciplineWebFacade.deleteProgramDiscipline(
             id.getDisciplineId(),
             id.getProgramId());

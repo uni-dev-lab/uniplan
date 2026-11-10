@@ -12,9 +12,8 @@ public interface ProgramDisciplineMapper {
 
     @Mapping(target = "program", ignore = true)
     @Mapping(target = "discipline", ignore = true)
-    @Mapping(target = "id", expression = "java(new ProgramDisciplineId("
-                                         + "request.disciplineId(),"
-                                         + "request.programId()))")
+    @Mapping(target = "id.disciplineId", source = "disciplineId")
+    @Mapping(target = "id.programId", source = "programId")
     ProgramDiscipline toEntity(ProgramDisciplineRequestDto request);
 
     @Mapping(target = "programId", source = "id.programId")

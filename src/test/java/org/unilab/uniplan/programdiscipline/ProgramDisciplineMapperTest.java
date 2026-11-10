@@ -67,7 +67,7 @@ class ProgramDisciplineMapperTest {
     }
 
     @Test
-    void updateEntityFromDto_shouldUpdateHoursAndSemesterAndKeepIdAndRelationships_whenRequestHasOtherIds() {
+    void updateEntityFromDto_shouldKeepIdAndRelations_whenRequestHasOtherIds() {
         final ProgramDisciplineId id = createId();
         final ProgramDiscipline entity = createEntity(id);
         final ProgramDisciplineRequestDto request =

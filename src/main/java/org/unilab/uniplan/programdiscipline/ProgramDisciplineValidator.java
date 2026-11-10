@@ -1,7 +1,7 @@
 package org.unilab.uniplan.programdiscipline;
 
-import static org.unilab.uniplan.utils.ErrorConstants.PROGRAM_NOT_FOUND;
 import static org.unilab.uniplan.utils.ErrorConstants.DISCIPLINE_NOT_FOUND;
+import static org.unilab.uniplan.utils.ErrorConstants.PROGRAM_NOT_FOUND;
 
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +25,17 @@ public class ProgramDisciplineValidator {
         validateProgramExists(request.programId());
         validateDisciplineExists(request.disciplineId());
         validateNotAlreadyAssigned(request);
+    }
+
+    public void validateForUpdate(
+        final ProgramDisciplineId id,
+        final ProgramDisciplineRequestDto request) {
+        if (!id.getDisciplineId().equals(request.disciplineId()) ||
+            !id.getProgramId().equals(request.programId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                                              "Request ID should match "
+                                              + "the entity's ID");
+        }
     }
 
     private void validateNotAlreadyAssigned(final ProgramDisciplineRequestDto request) {

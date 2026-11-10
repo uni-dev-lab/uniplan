@@ -42,6 +42,8 @@ public class ProgramDisciplineWebFacade {
 
         final ProgramDisciplineId id = buildId(disciplineId, programId);
 
+        programDisciplineValidator.validateForUpdate(id, request);
+
         final ProgramDiscipline programDiscipline = getProgramDisciplineOrThrow(id);
 
         programDisciplineMapper.updateEntityFromDto(request, programDiscipline);

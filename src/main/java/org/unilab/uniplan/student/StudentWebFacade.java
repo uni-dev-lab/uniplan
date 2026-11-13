@@ -44,6 +44,7 @@ public class StudentWebFacade {
     public void updateStudent(final UUID id,
                               final StudentRequestDto request){
         studentValidator.validate(request);
+
         final Student student = getStudentOrThrow(id);
         studentMapper.updateEntity(request, student);
         studentService.save(student);

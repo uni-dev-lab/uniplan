@@ -2,7 +2,6 @@ package org.unilab.uniplan.major;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -25,8 +24,9 @@ class MajorMapperTest {
 
     private MajorMapper mapper;
 
-    private UUID facultyIdEntity;
+    private UUID facultyIdEntity1;
     private UUID facultyIdDTO;
+    private UUID facultyIdEntity2;
 
     private final String majorName1 = "Business Information Technology";
     private final String majorName2 = "Software Engineering";
@@ -40,12 +40,16 @@ class MajorMapperTest {
 
         mapper = new MajorMapperImpl(courseMapper);
 
-        facultyIdEntity = UUID.randomUUID();
+        facultyIdEntity1 = UUID.randomUUID();
         facultyIdDTO = UUID.randomUUID();
+        facultyIdEntity2 = UUID.randomUUID();
         majorRequest = new MajorRequestDto(facultyIdDTO, majorName1);
 
-        final Faculty faculty = new Faculty();
-        faculty.setId(facultyIdEntity);
+        final Faculty faculty1 = new Faculty();
+        faculty1.setId(facultyIdEntity1);
+
+        final Faculty faculty2 = new Faculty();
+        faculty2.setId(facultyIdEntity2);
 
         final Course course1 = new Course();
         course1.setCourseType("Regular");
@@ -55,10 +59,10 @@ class MajorMapperTest {
 
         final List<Course> coursesListMajor1 = List.of(course1, course2);
 
-        major1 = new Major(faculty, majorName1, coursesListMajor1);
+        major1 = new Major(faculty1, majorName1, coursesListMajor1);
         major1.setId(UUID.randomUUID());
 
-        major2 = new Major(faculty, majorName2, coursesListMajor1);
+        major2 = new Major(faculty2, majorName2, coursesListMajor1);
         major2.setId(UUID.randomUUID());
 
     }
@@ -70,8 +74,8 @@ class MajorMapperTest {
         assertNull(entity.getId());
         assertNotNull(entity.getFaculty());
         assertAll(
-            () -> assertEquals(entity.getFaculty().getId(), facultyIdDTO),
-            () -> assertEquals(entity.getMajorName(), majorName1)
+            () -> assertThat(entity.getFaculty().getId()).isEqualTo(facultyIdDTO),
+            () -> assertThat(entity.getMajorName()).isEqualTo(majorName1)
         );
     }
 
@@ -80,9 +84,9 @@ class MajorMapperTest {
         final MajorResponseDto majorResponseDto = mapper.toResponseDto(major1);
 
         assertAll(
-            () -> assertEquals(majorResponseDto.facultyId(), facultyIdEntity),
-            () -> assertEquals(majorResponseDto.id(), major1.getId()),
-            () -> assertEquals(majorResponseDto.majorName(), major1.getMajorName())
+            () -> assertThat(facultyIdEntity1).isEqualTo(majorResponseDto.facultyId()),
+            () -> assertThat(majorResponseDto.id()).isEqualTo(major1.getId()),
+            () -> assertThat(majorResponseDto.majorName()).isEqualTo(major1.getMajorName())
         );
     }
 
@@ -93,9 +97,9 @@ class MajorMapperTest {
 
         assertNotNull(majorCoursesResponseDto.courses());
         assertAll(
-            () -> assertEquals(majorCoursesResponseDto.facultyId(), facultyIdEntity),
-            () -> assertEquals(majorCoursesResponseDto.id(), major1.getId()),
-            () -> assertEquals(majorCoursesResponseDto.majorName(), major1.getMajorName())
+            () -> assertThat(majorCoursesResponseDto.facultyId()).isEqualTo(facultyIdEntity1),
+            () -> assertThat(majorCoursesResponseDto.id()).isEqualTo(major1.getId()),
+            () -> assertThat(majorCoursesResponseDto.majorName()).isEqualTo(major1.getMajorName())
         );
         assertThat(majorCoursesResponseDto.courses())
             .extracting(CourseResponseDto::courseType)
@@ -147,13 +151,17 @@ class MajorMapperTest {
 
     @Test
     void updateEntityFromDto_shouldUpdateAllFields_whenRequestDtoIsValid() {
+        final Faculty original = major2.getFaculty();
         mapper.updateEntityFromDto(majorRequest, major2);
+
+        assertThat(original.getId()).isEqualTo(facultyIdEntity2);
 
         assertNotNull(major2.getFaculty());
         assertAll(
-            () -> assertEquals(majorRequest.facultyId(), major2.getFaculty().getId()),
-            () -> assertEquals(majorRequest.majorName(), major2.getMajorName())
+            () -> assertThat(majorRequest.facultyId()).isEqualTo(major2.getFaculty().getId()),
+            () -> assertThat(majorRequest.majorName()).isEqualTo(major2.getMajorName())
         );
+        assertThat(major2.getFaculty()).isNotSameAs(original);
     }
 
     @Test
@@ -161,13 +169,13 @@ class MajorMapperTest {
         final UUID id = major2.getId();
         mapper.updateEntityFromDto(majorRequest, major2);
 
-        assertEquals(id, major2.getId());
+        assertThat(id).isEqualTo(major2.getId());
     }
 
     @Test
     void toFaculty_shouldMapId_whenFacultyIdIsGiven() {
-        final Faculty result = mapper.toFaculty(facultyIdEntity);
+        final Faculty result = mapper.toFaculty(facultyIdEntity1);
 
-        assertThat(result.getId()).isEqualTo(facultyIdEntity);
+        assertThat(result.getId()).isEqualTo(facultyIdEntity1);
     }
 }

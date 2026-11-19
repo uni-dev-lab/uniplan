@@ -7,23 +7,25 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.unilab.uniplan.building.dto.BuildingRequestDto;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
-import org.unilab.uniplan.university.UniversityRepository;
+import org.unilab.uniplan.university.University;
+import org.unilab.uniplan.university.UniversityService;
 
 @Component
 @RequiredArgsConstructor
 public class BuildingValidator {
 
-    private final UniversityRepository universityRepository;
+    private final UniversityService universityService;
 
-    public void validate(final BuildingRequestDto requestDto) {
-        validateUniversityExists(requestDto.universityId());
-    }
+    public University validateAndResolveUniversity(
+        final BuildingRequestDto requestDto) {
 
-    private void validateUniversityExists(final UUID universityId) {
-        if (!universityRepository.existsById(universityId)) {
-            throw new ResourceNotFoundException(
-                UNIVERSITY_NOT_FOUND.getMessage(String.valueOf(universityId))
-            );
-        }
+        final UUID universityId = requestDto.universityId();
+
+        return universityService.getById(universityId)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                    UNIVERSITY_NOT_FOUND.getMessage(
+                                        String.valueOf(universityId)
+                                    )
+                                ));
     }
 }

@@ -8,12 +8,10 @@ import org.unilab.uniplan.building.dto.BuildingRequestDto;
 import org.unilab.uniplan.building.dto.BuildingResponseDto;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.university.University;
-import org.unilab.uniplan.university.UniversityService;
 import java.util.List;
 import java.util.UUID;
 
 import static org.unilab.uniplan.utils.ErrorConstants.BUILDING_NOT_FOUND;
-import static org.unilab.uniplan.utils.ErrorConstants.UNIVERSITY_NOT_FOUND;
 
 @Component
 @Slf4j
@@ -21,15 +19,14 @@ import static org.unilab.uniplan.utils.ErrorConstants.UNIVERSITY_NOT_FOUND;
 public class BuildingWebFacade {
     private final BuildingService buildingService;
     private final BuildingMapper buildingMapper;
-    private final UniversityService universityService;
     private final BuildingValidator buildingValidator;
 
     @Transactional
     public void createBuilding(final BuildingRequestDto request) {
-        buildingValidator.validate(request);
+        final University university = buildingValidator.validateAndResolveUniversity(request);
 
         final Building building = buildingMapper.toEntity(request);
-        building.setUniversity(getUniversityOrThrow(request.universityId()));
+        building.setUniversity(university);
         buildingService.save(building);
 
         log.info("created building with ID: {}", building.getId());
@@ -37,12 +34,13 @@ public class BuildingWebFacade {
 
     @Transactional
     public void updateBuilding(final UUID id, final BuildingRequestDto request) {
-        buildingValidator.validate(request);
+        final University university = buildingValidator.validateAndResolveUniversity(request);
 
         final Building building = getBuildingOrThrow(id);
         buildingMapper.updateEntityFromDto(request, building);
-        building.setUniversity(getUniversityOrThrow(request.universityId()));
+        building.setUniversity(university);
         buildingService.save(building);
+
         log.info("updated building with ID: {}", building.getId());
     }
 
@@ -69,11 +67,5 @@ public class BuildingWebFacade {
                               .orElseThrow(() -> new ResourceNotFoundException(
                                   BUILDING_NOT_FOUND.getMessage(String.valueOf(id)))
                               );
-    }
-
-    private University getUniversityOrThrow(final UUID universityId) {
-        return universityService.getById(universityId)
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                    UNIVERSITY_NOT_FOUND.getMessage(String.valueOf(universityId))));
     }
 }

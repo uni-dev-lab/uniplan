@@ -20,7 +20,7 @@ public class BuildingService implements BaseService<Building> {
 
     @Override
     public List<Building> getAll() {
-        return buildingRepository.findAll();
+        return buildingRepository.findAllWithUniversity();
     }
 
     @Override
@@ -29,7 +29,7 @@ public class BuildingService implements BaseService<Building> {
     }
 
     @Override
-    public void delete(Building building) {
+    public void delete(final Building building) {
         buildingRepository.delete(building);
     }
 }

@@ -1,5 +1,6 @@
 package org.unilab.uniplan.building;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
@@ -23,7 +24,6 @@ import org.unilab.uniplan.building.dto.BuildingRequestDto;
 import org.unilab.uniplan.building.dto.BuildingResponseDto;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.university.University;
-import org.unilab.uniplan.university.UniversityService;
 
 @ExtendWith(MockitoExtension.class)
 class BuildingWebFacadeTest {
@@ -35,16 +35,12 @@ class BuildingWebFacadeTest {
     private BuildingMapper buildingMapper;
 
     @Mock
-    private UniversityService universityService;
-
-    @Mock
     private BuildingValidator buildingValidator;
 
     @InjectMocks
     private BuildingWebFacade buildingWebFacade;
 
     private UUID buildingId;
-    private UUID universityId;
     private Building building;
     private University university;
     private BuildingRequestDto requestDto;
@@ -53,7 +49,6 @@ class BuildingWebFacadeTest {
     @BeforeEach
     void setUp() {
         buildingId = UUID.randomUUID();
-        universityId = UUID.randomUUID();
         building = new Building();
         university = new University();
         requestDto = mock(BuildingRequestDto.class);
@@ -61,36 +56,37 @@ class BuildingWebFacadeTest {
     }
 
     @Test
-    void createBuildingShouldMapResolveUniversityAndSaveBuilding() {
-        when(requestDto.universityId()).thenReturn(universityId);
+    void createBuilding_shouldSaveBuilding_whenUniversityExists() {
+        when(buildingValidator.validateAndResolveUniversity(requestDto)).thenReturn(university);
         when(buildingMapper.toEntity(requestDto)).thenReturn(building);
-        when(universityService.getById(universityId)).thenReturn(Optional.of(university));
 
         buildingWebFacade.createBuilding(requestDto);
 
-        final InOrder inOrder = inOrder(buildingValidator, buildingMapper, universityService, buildingService);
-        inOrder.verify(buildingValidator).validate(requestDto);
+        final InOrder inOrder = inOrder(buildingValidator, buildingMapper, buildingService);
+
+        inOrder.verify(buildingValidator).validateAndResolveUniversity(requestDto);
         inOrder.verify(buildingMapper).toEntity(requestDto);
-        inOrder.verify(universityService).getById(universityId);
         inOrder.verify(buildingService).save(building);
+
         assertEquals(university, building.getUniversity());
     }
 
     @Test
-    void createBuildingShouldThrowIfUniversityDoesNotExist() {
-        when(requestDto.universityId()).thenReturn(universityId);
-        when(buildingMapper.toEntity(requestDto)).thenReturn(building);
-        when(universityService.getById(universityId)).thenReturn(Optional.empty());
+    void createBuilding_shouldThrowException_whenUniversityDoesNotExist() {
+        when(buildingValidator.validateAndResolveUniversity(requestDto))
+            .thenThrow(new ResourceNotFoundException("University not found"));
 
-        assertThrows(ResourceNotFoundException.class,
-                     () -> buildingWebFacade.createBuilding(requestDto));
+        assertThatThrownBy(() ->
+                               buildingWebFacade.createBuilding(requestDto)
+        ).isInstanceOf(ResourceNotFoundException.class);
 
-        verify(buildingValidator).validate(requestDto);
+        verify(buildingValidator).validateAndResolveUniversity(requestDto);
+        verify(buildingMapper, never()).toEntity(any(BuildingRequestDto.class));
         verify(buildingService, never()).save(any(Building.class));
     }
 
     @Test
-    void getAllBuildingsShouldReturnResponseDtoList() {
+    void getAllBuildings_shouldReturnResponseDtoList_whenBuildingsExist() {
         final List<Building> buildings = List.of(building);
         final List<BuildingResponseDto> responseDtos = List.of(responseDto);
 
@@ -105,7 +101,7 @@ class BuildingWebFacadeTest {
     }
 
     @Test
-    void getBuildingByIdShouldReturnResponseDtoIfFound() {
+    void getBuildingById_shouldReturnResponseDto_whenBuildingExists() {
         when(buildingService.getById(buildingId)).thenReturn(Optional.of(building));
         when(buildingMapper.toResponseDto(building)).thenReturn(responseDto);
 
@@ -117,7 +113,7 @@ class BuildingWebFacadeTest {
     }
 
     @Test
-    void getBuildingByIdShouldThrowIfBuildingDoesNotExist() {
+    void getBuildingById_shouldThrowException_whenBuildingDoesNotExist() {
         when(buildingService.getById(buildingId)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class,
@@ -128,49 +124,54 @@ class BuildingWebFacadeTest {
     }
 
     @Test
-    void updateBuildingShouldUpdateResolveUniversityAndSaveBuildingIfFound() {
-        when(requestDto.universityId()).thenReturn(universityId);
+    void updateBuilding_shouldUpdateBuilding_whenBuildingAndUniversityExist() {
+        when(buildingValidator.validateAndResolveUniversity(requestDto)).thenReturn(university);
         when(buildingService.getById(buildingId)).thenReturn(Optional.of(building));
-        when(universityService.getById(universityId)).thenReturn(Optional.of(university));
 
         buildingWebFacade.updateBuilding(buildingId, requestDto);
 
-        final InOrder inOrder = inOrder(buildingValidator, buildingService, buildingMapper, universityService);
-        inOrder.verify(buildingValidator).validate(requestDto);
+        final InOrder inOrder = inOrder(buildingValidator,
+                                        buildingService,
+                                        buildingMapper);
+
+        inOrder.verify(buildingValidator).validateAndResolveUniversity(requestDto);
         inOrder.verify(buildingService).getById(buildingId);
         inOrder.verify(buildingMapper).updateEntityFromDto(requestDto, building);
-        inOrder.verify(universityService).getById(universityId);
         inOrder.verify(buildingService).save(building);
+
         assertEquals(university, building.getUniversity());
     }
 
     @Test
-    void updateBuildingShouldThrowIfBuildingDoesNotExist() {
+    void updateBuilding_shouldThrowException_whenBuildingDoesNotExist() {
+        when(buildingValidator.validateAndResolveUniversity(requestDto)).thenReturn(university);
         when(buildingService.getById(buildingId)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class,
                      () -> buildingWebFacade.updateBuilding(buildingId, requestDto));
 
-        verify(buildingValidator).validate(requestDto);
+        verify(buildingValidator).validateAndResolveUniversity(requestDto);
         verify(buildingService).getById(buildingId);
-        verify(buildingMapper, never()).updateEntityFromDto(any(BuildingRequestDto.class), any(Building.class));
+        verify(buildingMapper, never()).updateEntityFromDto(any(BuildingRequestDto.class),
+                                                            any(Building.class));
         verify(buildingService, never()).save(any(Building.class));
     }
 
     @Test
-    void updateBuildingShouldThrowIfUniversityDoesNotExist() {
-        when(requestDto.universityId()).thenReturn(universityId);
-        when(buildingService.getById(buildingId)).thenReturn(Optional.of(building));
-        when(universityService.getById(universityId)).thenReturn(Optional.empty());
+    void updateBuilding_shouldThrowException_whenUniversityDoesNotExist() {
+        when(buildingValidator.validateAndResolveUniversity(requestDto))
+            .thenThrow(new ResourceNotFoundException("University not found"));
 
         assertThrows(ResourceNotFoundException.class,
                      () -> buildingWebFacade.updateBuilding(buildingId, requestDto));
 
+        verify(buildingValidator).validateAndResolveUniversity(requestDto);
+        verify(buildingService, never()).getById(buildingId);
         verify(buildingService, never()).save(any(Building.class));
     }
 
     @Test
-    void deleteBuildingShouldDeleteBuildingIfFound() {
+    void deleteBuilding_shouldDeleteBuilding_whenBuildingExists() {
         when(buildingService.getById(buildingId)).thenReturn(Optional.of(building));
 
         buildingWebFacade.deleteBuilding(buildingId);
@@ -180,7 +181,7 @@ class BuildingWebFacadeTest {
     }
 
     @Test
-    void deleteBuildingShouldThrowIfBuildingDoesNotExist() {
+    void deleteBuilding_shouldThrowException_whenBuildingDoesNotExist() {
         when(buildingService.getById(buildingId)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class,

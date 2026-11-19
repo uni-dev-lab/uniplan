@@ -1,11 +1,13 @@
 package org.unilab.uniplan.building;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,44 +17,49 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.building.dto.BuildingRequestDto;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
-import org.unilab.uniplan.university.UniversityRepository;
+import org.unilab.uniplan.university.University;
+import org.unilab.uniplan.university.UniversityService;
 
 @ExtendWith(MockitoExtension.class)
 class BuildingValidatorTest {
 
     @Mock
-    private UniversityRepository universityRepository;
+    private UniversityService universityService;
 
     @InjectMocks
     private BuildingValidator buildingValidator;
 
     private UUID universityId;
     private BuildingRequestDto requestDto;
+    private University university;
 
     @BeforeEach
     void setUp() {
         universityId = UUID.randomUUID();
+        university = new University();
         requestDto = mock(BuildingRequestDto.class);
 
         when(requestDto.universityId()).thenReturn(universityId);
     }
 
     @Test
-    void validate_shouldPass_whenUniversityExists() {
-        when(universityRepository.existsById(universityId)).thenReturn(true);
+    void validateAndResolveUniversity_shouldReturnUniversity_whenUniversityExists() {
+        when(universityService.getById(universityId)).thenReturn(Optional.of(university));
 
-        assertDoesNotThrow(() -> buildingValidator.validate(requestDto));
+        final University result = buildingValidator.validateAndResolveUniversity(requestDto);
 
-        verify(universityRepository).existsById(universityId);
+        assertThat(result).isSameAs(university);
+        verify(universityService).getById(universityId);
     }
 
     @Test
-    void validate_shouldThrow_whenUniversityDoesNotExist() {
-        when(universityRepository.existsById(universityId)).thenReturn(false);
+    void validateAndResolveUniversity_shouldThrowResourceNotFoundException_whenUniversityDoesNotExist() {
+        when(universityService.getById(universityId)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class,
-                     () -> buildingValidator.validate(requestDto));
+        assertThatThrownBy(() ->
+                               buildingValidator.validateAndResolveUniversity(requestDto)
+        ).isInstanceOf(ResourceNotFoundException.class);
 
-        verify(universityRepository).existsById(universityId);
+        verify(universityService).getById(universityId);
     }
 }

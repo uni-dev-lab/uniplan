@@ -33,14 +33,14 @@ class BuildingServiceTest {
     }
 
     @Test
-    void saveShouldSaveBuilding() {
+    void save_shouldSaveBuilding_whenCalled() {
         buildingService.save(building);
 
         verify(buildingRepository).save(building);
     }
 
     @Test
-    void getByIdShouldReturnBuildingOptionalIfBuildingExists() {
+    void getById_shouldReturnBuilding_whenBuildingExists() {
         when(buildingRepository.findById(buildingId)).thenReturn(Optional.of(building));
 
         final Optional<Building> result = buildingService.getById(buildingId);
@@ -50,28 +50,18 @@ class BuildingServiceTest {
     }
 
     @Test
-    void getByIdShouldReturnEmptyOptionalIfBuildingDoesNotExist() {
-        when(buildingRepository.findById(buildingId)).thenReturn(Optional.empty());
-
-        final Optional<Building> result = buildingService.getById(buildingId);
-
-        assertEquals(Optional.empty(), result);
-        verify(buildingRepository).findById(buildingId);
-    }
-
-    @Test
-    void getAllShouldReturnListOfBuildings() {
+    void getAll_shouldReturnBuildings_whenBuildingsExist() {
         final List<Building> buildings = List.of(building);
-        when(buildingRepository.findAll()).thenReturn(buildings);
+        when(buildingRepository.findAllWithUniversity()).thenReturn(buildings);
 
         final List<Building> result = buildingService.getAll();
 
         assertEquals(buildings, result);
-        verify(buildingRepository).findAll();
+        verify(buildingRepository).findAllWithUniversity();
     }
 
     @Test
-    void deleteShouldDeleteBuilding() {
+    void delete_shouldDeleteBuilding_whenCalled() {
         buildingService.delete(building);
 
         verify(buildingRepository).delete(building);

@@ -10,7 +10,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -77,6 +76,27 @@ public class GlobalExceptionHandler {
         );
     }
 
+    //Handles invalid sort properties (e.g., sorting by a property that does not exist)
+    @ExceptionHandler(InvalidSortPropertyException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidSort(
+        final InvalidSortPropertyException ex,
+        final HttpServletRequest request,
+        final Locale locale) {
+        log.info(ex.getMessage());
+
+        return new ResponseEntity<>(
+            new ErrorResponse(
+                messageSource.getMessage("invalid_sort", null, locale),
+                HttpStatus.BAD_REQUEST.value(),
+                LocalDateTime.now(),
+                request.getRequestURI()
+
+            ),
+            HttpStatus.NOT_FOUND
+        );
+    }
+
+
     // Handles type mismatch exceptions (e.g., when a path variable cannot be converted to the expected type)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorResponse> handleTypeMismatch(final MethodArgumentTypeMismatchException ex,
@@ -84,15 +104,15 @@ public class GlobalExceptionHandler {
                                                             final Locale locale) {
 
         final String expectedType = Optional.ofNullable(ex.getRequiredType())
-                                      .map(Class::getSimpleName)
+                                            .map(Class::getSimpleName)
                                             .orElse(messageSource.getMessage(
                                                 "unknown_type", null,
                                                 locale));
 
         final String message = "Invalid parameter: "
-                         + ex.getName()
-                         + " should be of type "
-                         + expectedType;
+                               + ex.getName()
+                               + " should be of type "
+                               + expectedType;
 
         log.info(message);
 

@@ -1,6 +1,8 @@
 package org.unilab.uniplan.lector;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -13,6 +15,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
+import org.unilab.uniplan.lector.dto.LectorFilterDto;
 
 @ExtendWith(MockitoExtension.class)
 class LectorServiceTest {
@@ -75,5 +82,20 @@ class LectorServiceTest {
         lectorService.delete(lector);
 
         verify(lectorRepository).delete(lector);
+    }
+
+    @Test
+    void getAll_shouldReturnRepositoryPage_whenFilterAndPageableGiven() {
+        final PageRequest pageable = PageRequest.of(0, 10);
+        final Lector entity = mock(Lector.class);
+        final LectorFilterDto filter = new LectorFilterDto(
+            null, null, null, null, null, null);
+        final Page<Lector> page = new PageImpl<>(List.of(entity), pageable, 1);
+        when(lectorRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(page);
+
+        final var result = lectorService.getAll(filter, pageable);
+
+        verify(lectorRepository).findAll(any(Specification.class), eq(pageable));
+        assertThat(result).isSameAs(page);
     }
 }

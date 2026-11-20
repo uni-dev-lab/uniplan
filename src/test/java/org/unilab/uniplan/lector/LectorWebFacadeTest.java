@@ -20,7 +20,13 @@ import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.unilab.uniplan.common.specification.SortValidator;
+import org.unilab.uniplan.exception.InvalidSortPropertyException;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.lector.dto.LectorFilterDto;
 import org.unilab.uniplan.lector.dto.LectorRequestDto;
 import org.unilab.uniplan.lector.dto.LectorResponseDto;
 
@@ -35,6 +41,9 @@ class LectorWebFacadeTest {
 
     @Mock
     private LectorMapper lectorMapper;
+
+    @Mock
+    private SortValidator sortValidator;
 
     @InjectMocks
     private LectorWebFacade lectorWebFacade;
@@ -72,17 +81,55 @@ class LectorWebFacadeTest {
     }
 
     @Test
-    void getAllLectors_shouldReturnListOfResponseDtos_whenCalled() {
-        final List<Lector> entities = mock();
-        final List<LectorResponseDto> responses = mock();
-        when(lectorService.getAll()).thenReturn(entities);
-        when(lectorMapper.toResponseDtoList(entities)).thenReturn(responses);
+    void getAllLectors_shouldReturnMappedPage_whenSortIsValid() {
+        final PageRequest pageable = PageRequest.of(0, 10);
+        final LectorFilterDto filter = new LectorFilterDto(
+            null, null, null, null, null, null);
+        final Lector entity = mock(Lector.class);
+        final LectorResponseDto response = mock(LectorResponseDto.class);
+        final Page<Lector> page = new PageImpl<>(List.of(entity), pageable, 1);
+        when(lectorService.getAll(filter, pageable)).thenReturn(page);
+        when(lectorMapper.toResponseDto(entity)).thenReturn(response);
 
-        final var result = lectorWebFacade.getAllLectors();
+        final var result = lectorWebFacade.getAllLectors(filter, pageable);
 
-        verify(lectorService).getAll();
-        verify(lectorMapper).toResponseDtoList(entities);
-        assertThat(result).isSameAs(responses);
+        final InOrder inOrder = inOrder(sortValidator, lectorService, lectorMapper);
+        inOrder.verify(sortValidator).validate(
+            pageable, LectorSpecifications.ALLOWED_PROPERTIES);
+        inOrder.verify(lectorService).getAll(filter, pageable);
+        inOrder.verify(lectorMapper).toResponseDto(entity);
+        assertThat(result.content()).containsExactly(response);
+        assertThat(result.totalElements()).isEqualTo(1);
+    }
+
+    @Test
+    void getAllLectors_shouldNotQueryService_whenSortIsInvalid() {
+        final PageRequest pageable = PageRequest.of(0, 10);
+        final LectorFilterDto filter = new LectorFilterDto(
+            null, null, null, null, null, null);
+        doThrow(new InvalidSortPropertyException(""))
+            .when(sortValidator).validate(pageable, LectorSpecifications.ALLOWED_PROPERTIES);
+
+        assertThatThrownBy(() -> lectorWebFacade.getAllLectors(filter, pageable))
+            .isInstanceOf(InvalidSortPropertyException.class);
+
+        verify(sortValidator).validate(pageable, LectorSpecifications.ALLOWED_PROPERTIES);
+        verifyNoInteractions(lectorService, lectorMapper);
+    }
+
+    @Test
+    void getAllLectors_shouldReturnEmptyPage_whenNoLectorsMatch() {
+        final PageRequest pageable = PageRequest.of(0, 10);
+        final LectorFilterDto filter = new LectorFilterDto(
+            null, null, null, null, null, null);
+        when(lectorService.getAll(filter, pageable)).thenReturn(Page.empty(pageable));
+
+        final var result = lectorWebFacade.getAllLectors(filter, pageable);
+
+        verify(sortValidator).validate(pageable, LectorSpecifications.ALLOWED_PROPERTIES);
+        verify(lectorService).getAll(filter, pageable);
+        verifyNoInteractions(lectorMapper);
+        assertThat(result.content()).isEmpty();
     }
 
     @Test

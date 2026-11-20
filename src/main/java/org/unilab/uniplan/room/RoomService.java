@@ -15,8 +15,8 @@ public class RoomService implements BaseService<Room> {
     private final RoomRepository roomRepository;
 
     @Override
-    public void save(final Room room) {
-        roomRepository.save(room);
+    public Room save(final Room room) {
+        return roomRepository.save(room);
     }
 
     @Override

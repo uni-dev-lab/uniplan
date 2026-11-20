@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.unilab.uniplan.major.dto.MajorCoursesResponseDto;
-import org.unilab.uniplan.major.dto.MajorDto;
 import org.unilab.uniplan.major.dto.MajorRequestDto;
 import org.unilab.uniplan.major.dto.MajorResponseDto;
 
@@ -27,52 +26,51 @@ import org.unilab.uniplan.major.dto.MajorResponseDto;
 @Tag(name = "Majors", description = "Manage academic majors (e.g., Informatics, Software Engineering) associated with faculties")
 public class MajorController {
 
-    private final MajorService majorService;
-    private final MajorMapper majorMapper;
+    private final MajorWebFacade majorWebFacade;
 
     @PostMapping
-    public ResponseEntity<MajorResponseDto> addMajor(@RequestBody @NotNull
+    public ResponseEntity<Void> createMajor(@RequestBody @NotNull
                                                      @Valid final MajorRequestDto majorRequestDTO) {
-        final MajorDto majorDTO = majorMapper.toInnerDto(majorRequestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                             .body(majorMapper.toResponseDto(majorService.createMajor(majorDTO)));
+        majorWebFacade.createMajor(majorRequestDTO);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<MajorResponseDto> getMajorById(@PathVariable final UUID id) {
-        return ResponseEntity.ok(majorMapper.toResponseDto(majorService.findMajorById(id)));
+        return ResponseEntity.ok(majorWebFacade.getMajorById(id));
     }
 
     @GetMapping("/{id}/courses")
     public ResponseEntity<MajorCoursesResponseDto> getMajorWithCoursesById(@PathVariable final UUID id) {
-        return ResponseEntity.ok(majorMapper.toFullResponseDto(majorService.findMajorWithCoursesById(id)));
+        return ResponseEntity.ok(majorWebFacade.getMajorWithCoursesById(id));
     }
 
     @GetMapping("/faculty/{facultyId}")
-    public  List<MajorResponseDto> getMajorsByFacultyId(@PathVariable final UUID facultyId) {
-        return majorMapper.toResponseDtoList(majorService.findAllMajorByFacultyId(facultyId));
+    public  ResponseEntity<List<MajorResponseDto>> getMajorsByFacultyId(@PathVariable final UUID facultyId) {
+        return ResponseEntity.ok(majorWebFacade.getMajorsByFacultyId(facultyId));
     }
 
     @GetMapping("/faculty/{facultyId}/courses")
-    public  List<MajorCoursesResponseDto> getMajorsWithCoursesByFacultyId(@PathVariable final UUID facultyId) {
-        return majorMapper.toFullResponseDtoList(majorService.findAllMajorWithCoursesByFacultyId(facultyId));
+    public  ResponseEntity<List<MajorCoursesResponseDto>> getMajorsWithCoursesByFacultyId(@PathVariable final UUID facultyId) {
+        return ResponseEntity.ok(majorWebFacade.getMajorsWithCoursesByFacultyId(facultyId));
     }
 
     @GetMapping
-    public List<MajorResponseDto> getAllMajors() {
-        return majorMapper.toResponseDtoList(majorService.findAll());
+    public ResponseEntity<List<MajorResponseDto>> getAllMajors() {
+        return ResponseEntity.ok(majorWebFacade.getAllMajors());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MajorResponseDto> updateMajor(@PathVariable final UUID id,
+    public ResponseEntity<Void> updateMajor(@PathVariable final UUID id,
                                                         @RequestBody @NotNull @Valid MajorRequestDto majorRequestDTO) {
-        final MajorDto majorDTO = majorMapper.toInnerDto(majorRequestDTO);
-        return ResponseEntity.ok(majorMapper.toResponseDto(majorService.updateMajor(id, majorDTO)));
+        majorWebFacade.updateMajor(id, majorRequestDTO);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMajor(@PathVariable final UUID id) {
-        majorService.deleteMajor(id);
+        majorWebFacade.deleteMajor(id);
         return ResponseEntity.noContent().build();
     }
 }

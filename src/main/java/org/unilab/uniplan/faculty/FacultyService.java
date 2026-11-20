@@ -14,8 +14,8 @@ public class FacultyService implements BaseService<Faculty> {
     private final FacultyRepository facultyRepository;
 
     @Override
-    public void save(final Faculty faculty) {
-        facultyRepository.save(faculty);
+    public Faculty save(final Faculty faculty) {
+        return facultyRepository.save(faculty);
     }
 
     @Override

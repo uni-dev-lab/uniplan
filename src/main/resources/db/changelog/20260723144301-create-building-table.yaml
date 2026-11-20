@@ -1,0 +1,47 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20260723144300-1
+      author: pipetkova19
+      changes:
+        - createTable:
+            tableName: building
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_building
+              - column:
+                  name: name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: address
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: university_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+
+  - changeSet:
+      id: 20260723144300-2
+      author: pipetkova19
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: building
+            baseColumnNames: university_id
+            constraintName: FK_BUILDING_ON_UNIVERSITY
+            referencedTableName: university
+            referencedColumnNames: id

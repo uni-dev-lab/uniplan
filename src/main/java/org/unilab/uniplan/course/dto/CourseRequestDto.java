@@ -16,10 +16,10 @@ public record CourseRequestDto(
     @Max(value = 20, message = "Course year must be at least 1")
     byte courseYear,
     @NotBlank(message = "Course type is required")
-    @Max(value = 100, message = "Course type must be at most 100 characters")
+    @Size(max = 100, message = "Course type must be at most 100 characters")
     String courseType,
     @NotBlank(message = "Course subtype cannot be null")
-    @Max(value = 100, message = "Course subtype must be at most 100 characters")
+    @Size(max = 100, message = "Course subtype must be at most 100 characters")
     String courseSubtype
 ) {
 

@@ -1,6 +1,7 @@
 package org.unilab.uniplan.lector;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -11,7 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.FacultyNotFoundException;
 import org.unilab.uniplan.faculty.FacultyRepository;
 import org.unilab.uniplan.lector.dto.LectorRequestDto;
 
@@ -39,8 +40,10 @@ class LectorValidatorTest {
         final LectorRequestDto request = createRequest();
 
         assertThatThrownBy(() -> lectorValidator.validate(request))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(request.facultyId().toString());
+            .isInstanceOfSatisfying(FacultyNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo("faculty_not_found");
+                assertThat(ex.getArgs()).containsExactly(request.facultyId());
+            });
 
         verify(facultyRepository).existsById(request.facultyId());
     }

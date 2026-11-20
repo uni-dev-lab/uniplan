@@ -1,15 +1,13 @@
 package org.unilab.uniplan.program;
 
-import static org.unilab.uniplan.utils.ErrorConstants.COURSE_NOT_FOUND;
-import static org.unilab.uniplan.utils.ErrorConstants.PROGRAM_NOT_FOUND;
-
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import org.unilab.uniplan.course.CourseRepository;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.CourseNotFoundException;
+import org.unilab.uniplan.exception.ProgramNotFoundException;
 import org.unilab.uniplan.program.dto.ProgramRequestDto;
 
 @Component
@@ -35,15 +33,13 @@ public class ProgramValidator {
 
     private void validateProgramExists(final UUID id) {
         if (!programRepository.existsById(id)) {
-            throw new ResourceNotFoundException(
-                PROGRAM_NOT_FOUND.getMessage(String.valueOf(id)));
+            throw new ProgramNotFoundException(id);
         }
     }
 
     private void validateCourseExists(final UUID id) {
         if (!courseRepository.existsById(id)) {
-            throw new ResourceNotFoundException(
-                COURSE_NOT_FOUND.getMessage(String.valueOf(id)));
+            throw new CourseNotFoundException(id);
         }
     }
 

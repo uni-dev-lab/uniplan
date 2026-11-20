@@ -6,11 +6,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.unilab.uniplan.category.dto.CategoryRequestDto;
 import org.unilab.uniplan.category.dto.CategoryResponseDto;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.CategoryNotFoundException;
 import java.util.List;
 import java.util.UUID;
-
-import static org.unilab.uniplan.utils.ErrorConstants.CATEGORY_NOT_FOUND;
 
 @Component
 @Slf4j
@@ -51,10 +49,10 @@ public class CategoryWebFacade {
     public List<CategoryResponseDto> getAllCategories() {
         return categoryMapper.toResponseDtoList(categoryService.getAll());
     }
+
     private Category getCategoryOrThrow(final UUID id) {
         return categoryService.getById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(
-                CATEGORY_NOT_FOUND.getMessage(String.valueOf(id)))
+            .orElseThrow(() -> new CategoryNotFoundException(id)
             );
     }
 }

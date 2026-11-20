@@ -1,6 +1,5 @@
 package org.unilab.uniplan.faculty;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.inOrder;
@@ -16,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.FacultyNotFoundException;
 import org.unilab.uniplan.faculty.dto.FacultyRequestDto;
 import org.unilab.uniplan.faculty.dto.FacultyResponseDto;
 
@@ -40,7 +39,7 @@ class FacultyWebFacadeTest {
     @BeforeEach
     void setUp() {
         id = UUID.randomUUID();
-        UUID universityId= UUID.randomUUID();
+        UUID universityId = UUID.randomUUID();
 
         entity = new Faculty();
         requestDto = new FacultyRequestDto(universityId, "FMI", "Burgas");
@@ -74,8 +73,9 @@ class FacultyWebFacadeTest {
         when(facultyService.getById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> facultyWebFacade.updateFaculty(id, requestDto))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(id.toString());
+            .isInstanceOf(FacultyNotFoundException.class)
+            .satisfies(ex -> assertThat(((FacultyNotFoundException) ex).getArgs()).contains(id));
+
     }
 
     @Test
@@ -100,12 +100,12 @@ class FacultyWebFacadeTest {
     }
 
     @Test
-    void getFacultyById_shouldThrowResourceNotFoundException_whenFacultyNotFound() {
+    void getFacultyById_shouldThrowFacultyNotFoundException_whenFacultyNotFound() {
         when(facultyService.getById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> facultyWebFacade.getFacultyById(id))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(id.toString());
+            .isInstanceOf(FacultyNotFoundException.class)
+            .satisfies(ex -> assertThat(((FacultyNotFoundException) ex).getArgs()).contains(id));
     }
 
     @Test
@@ -122,7 +122,8 @@ class FacultyWebFacadeTest {
         when(facultyService.getById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> facultyWebFacade.deleteFaculty(id))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(id.toString());
+            .isInstanceOf(FacultyNotFoundException.class)
+            .satisfies(ex -> assertThat(((FacultyNotFoundException) ex).getArgs()).contains(id));
+
     }
 }

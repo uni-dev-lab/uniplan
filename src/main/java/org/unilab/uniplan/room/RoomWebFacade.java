@@ -4,12 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.RoomNotFoundException;
 import org.unilab.uniplan.room.dto.RoomRequestDto;
 import org.unilab.uniplan.room.dto.RoomResponseDto;
 import java.util.List;
 import java.util.UUID;
-import static org.unilab.uniplan.utils.ErrorConstants.ROOM_NOT_FOUND;
 
 @Component
 @Slf4j
@@ -21,8 +20,7 @@ public class RoomWebFacade {
 
     private Room getRoomOrThrow(final UUID id) {
         return roomService.getById(id)
-                             .orElseThrow(() -> new ResourceNotFoundException(ROOM_NOT_FOUND.getMessage(
-                                 String.valueOf(id))));
+                             .orElseThrow(() -> new RoomNotFoundException(id));
     }
 
     @Transactional
@@ -49,8 +47,7 @@ public class RoomWebFacade {
     @Transactional(readOnly = true)
     public RoomResponseDto getRoomById(final UUID id) {
         return roomService.getRoomResponseById(id)
-                          .orElseThrow(() -> new ResourceNotFoundException(ROOM_NOT_FOUND.getMessage(
-                              String.valueOf(id))));
+                          .orElseThrow(() -> new RoomNotFoundException(id));
     }
 
     @Transactional

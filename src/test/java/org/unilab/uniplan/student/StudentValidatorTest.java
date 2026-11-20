@@ -7,13 +7,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.course.CourseRepository;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.CourseNotFoundException;
 import org.unilab.uniplan.student.dto.StudentRequestDto;
 import java.util.UUID;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,12 +43,15 @@ class StudentValidatorTest {
     }
 
     @Test
-    void validate_ShouldThrow_WhenCourseNotFound() {
+    void validate_shouldThrowCourseNotFoundException_whenCourseDoesNotExist() {
         when(courseRepository.existsById(courseId)).thenReturn(false);
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
-                                                           () -> studentValidator.validate(requestDto));
+        assertThatThrownBy(() -> studentValidator.validate(requestDto))
+            .isInstanceOfSatisfying(CourseNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo("course_not_found");
+                assertThat(ex.getArgs()).containsExactly(courseId);
+            });
 
-        assertTrue(exception.getMessage().contains(courseId.toString()));
+        verify(courseRepository).existsById(courseId);
     }
 }

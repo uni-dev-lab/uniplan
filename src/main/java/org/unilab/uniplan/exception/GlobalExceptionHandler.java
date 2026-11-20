@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
@@ -96,6 +97,24 @@ public class GlobalExceptionHandler {
         );
     }
 
+    //Handles invalid filter data (e.g., dateFrom = 123)
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidData(
+        final BindException ex,
+        final HttpServletRequest request,
+        final Locale locale) {
+        log.info(ex.getMessage());
+
+        return new ResponseEntity<>(
+            new ErrorResponse(
+                messageSource.getMessage("invalid_data", null, locale),
+                HttpStatus.BAD_REQUEST.value(),
+                LocalDateTime.now(),
+                request.getRequestURI()
+            ),
+            HttpStatus.BAD_REQUEST
+        );
+    }
 
     // Handles type mismatch exceptions (e.g., when a path variable cannot be converted to the expected type)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)

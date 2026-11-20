@@ -53,7 +53,7 @@ public class SpecificationUtils {
             return Specification.unrestricted();
         }
         return (root, query, cb)
-            -> cb.lessThanOrEqualTo(root.get(attribute), to);
+            -> cb.lessThan(root.get(attribute), to);
     }
 
     private static String escape(final String value) {

@@ -4,13 +4,11 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.StudentNotFoundException;
 import org.unilab.uniplan.student.dto.StudentRequestDto;
 import org.unilab.uniplan.student.dto.StudentResponseDto;
 import java.util.List;
 import java.util.UUID;
-
-import static org.unilab.uniplan.utils.ErrorConstants.STUDENT_NOT_FOUND;
 
 @Component
 @Slf4j
@@ -59,8 +57,6 @@ public class StudentWebFacade {
 
     private Student getStudentOrThrow(final UUID id){
         return studentService.getById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(
-                STUDENT_NOT_FOUND.getMessage(String.valueOf(id))
-            ));
+            .orElseThrow(() -> new StudentNotFoundException(id));
     }
 }

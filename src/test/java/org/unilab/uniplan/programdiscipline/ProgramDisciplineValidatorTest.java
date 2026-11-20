@@ -18,7 +18,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.unilab.uniplan.discipline.DisciplineRepository;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.DisciplineNotFoundException;
+import org.unilab.uniplan.exception.ProgramNotFoundException;
 import org.unilab.uniplan.program.ProgramRepository;
 import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineRequestDto;
 
@@ -64,10 +65,12 @@ class ProgramDisciplineValidatorTest {
     }
 
     @Test
-    void validateForCreate_shouldThrowResourceNotFound_whenProgramMissing() {
+    void validateForCreate_shouldThrowProgramNotFoundException_whenProgramMissing() {
         assertThatThrownBy(() -> programDisciplineValidator.validateForCreate(request))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(request.programId().toString());
+            .isInstanceOfSatisfying(ProgramNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo("program_not_found");
+                assertThat(ex.getArgs()).containsExactly(request.programId());
+            });
 
         verify(programRepository).existsById(request.programId());
         verify(disciplineRepository, never()).existsById(any());
@@ -75,12 +78,14 @@ class ProgramDisciplineValidatorTest {
     }
 
     @Test
-    void validateForCreate_shouldThrowResourceNotFound_whenDisciplineMissing() {
+    void validateForCreate_shouldThrowDisciplineNotFoundException_whenDisciplineMissing() {
         when(programRepository.existsById(request.programId())).thenReturn(true);
 
         assertThatThrownBy(() -> programDisciplineValidator.validateForCreate(request))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(request.disciplineId().toString());
+            .isInstanceOfSatisfying(DisciplineNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo("discipline_not_found");
+                assertThat(ex.getArgs()).containsExactly(request.disciplineId());
+            });
 
         verify(programRepository).existsById(request.programId());
         verify(disciplineRepository).existsById(request.disciplineId());

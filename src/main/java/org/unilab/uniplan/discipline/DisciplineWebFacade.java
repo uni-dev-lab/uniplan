@@ -6,11 +6,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.unilab.uniplan.discipline.dto.DisciplineRequestDto;
 import org.unilab.uniplan.discipline.dto.DisciplineResponseDto;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.DisciplineNotFoundException;
 import java.util.List;
 import java.util.UUID;
-
-import static org.unilab.uniplan.utils.ErrorConstants.DISCIPLINE_NOT_FOUND;
 
 @Component
 @Slf4j
@@ -65,7 +63,6 @@ public class DisciplineWebFacade {
 
     private Discipline getDisciplineOrThrow(final UUID id) {
         return disciplineService.getById(id)
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                    DISCIPLINE_NOT_FOUND.getMessage(String.valueOf(id))));
+                                .orElseThrow(() -> new DisciplineNotFoundException(id));
     }
 }

@@ -2,6 +2,7 @@ package org.unilab.uniplan.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -26,17 +26,29 @@ public class GlobalExceptionHandler {
     //Handles resource not found exceptions triggered by element not found by search parameters
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(final ResourceNotFoundException ex,
-                                                                   final HttpServletRequest request,
+                                                                         final HttpServletRequest request,
                                                                          final Locale locale) {
-        String message = messageSource.getMessage(
+        final String fallbackMessage = messageSource.getMessage(
+            "resource_not_found",
+            null,
+            "Resource not found!",
+            locale);
+
+        final String message = messageSource.getMessage(
             ex.getMessageKey(),
             ex.getArgs(),
-            locale);
-        log.info(ex.getMessage());
+            fallbackMessage,
+            locale
+        );
+
+        log.info("Resource not found: key={}, args={}, path={}",
+                 ex.getMessageKey(),
+                 Arrays.toString(ex.getArgs()),
+                 request.getRequestURI());
 
         return new ResponseEntity<>(
             new ErrorResponse(
-               message,
+                message,
                 HttpStatus.NOT_FOUND.value(),
                 LocalDateTime.now(),
                 request.getRequestURI()
@@ -47,7 +59,7 @@ public class GlobalExceptionHandler {
 
     //Handles validation exceptions triggered by method argument validation failures (e.g. @Valid)
     @ExceptionHandler(HandlerMethodValidationException.class)
-   public ResponseEntity<ErrorResponse> handleResourceNotFoundException(final HandlerMethodValidationException ex,
+    public ResponseEntity<ErrorResponse> handleValidationException(final HandlerMethodValidationException ex,
                                                                    final HttpServletRequest request,
                                                                    final Locale locale) {
         log.info(ex.getReason());
@@ -88,15 +100,15 @@ public class GlobalExceptionHandler {
                                                             final Locale locale) {
 
         final String expectedType = Optional.ofNullable(ex.getRequiredType())
-                                      .map(Class::getSimpleName)
+                                            .map(Class::getSimpleName)
                                             .orElse(messageSource.getMessage(
                                                 "unknown_type", null,
                                                 locale));
 
         final String message = "Invalid parameter: "
-                         + ex.getName()
-                         + " should be of type "
-                         + expectedType;
+                               + ex.getName()
+                               + " should be of type "
+                               + expectedType;
 
         log.info(message);
 

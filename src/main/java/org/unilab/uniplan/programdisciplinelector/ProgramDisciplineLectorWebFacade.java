@@ -4,14 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.ProgramDisciplineLectorNotFoundException;
 import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorRequestDto;
 import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorResponseDto;
 
 import java.util.List;
 import java.util.UUID;
-
-import static org.unilab.uniplan.utils.ErrorConstants.PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND;
 
 @Component
 @Slf4j
@@ -102,10 +100,7 @@ public class ProgramDisciplineLectorWebFacade {
         final ProgramDisciplineLectorId id) {
         return programDisciplineLectorService
             .getById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(
-                PROGRAM_DISCIPLINE_LECTOR_NOT_FOUND.getMessage(
-                    String.valueOf(id))
-            ));
+            .orElseThrow(() -> new ProgramDisciplineLectorNotFoundException(id));
     }
 
     private ProgramDisciplineLectorId buildProgramDisciplineLectorId(

@@ -18,7 +18,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.unilab.uniplan.discipline.DisciplineRepository;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.DisciplineNotFoundException;
+import org.unilab.uniplan.exception.LectorNotFoundException;
+import org.unilab.uniplan.exception.ProgramNotFoundException;
 import org.unilab.uniplan.lector.LectorRepository;
 import org.unilab.uniplan.program.ProgramRepository;
 import org.unilab.uniplan.programdisciplinelector.dto.ProgramDisciplineLectorRequestDto;
@@ -67,10 +69,12 @@ class ProgramDisciplineLectorValidatorTest {
     }
 
     @Test
-    void validateForCreate_shouldThrowResourceNotFoundException_whenLectorMissing() {
+    void validateForCreate_shouldThrowLectorNotFoundException_whenLectorMissing() {
         assertThatThrownBy(() -> programDisciplineLectorValidator.validateForCreate(request))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(request.lectorId().toString());
+            .isInstanceOfSatisfying(LectorNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo("lector_not_found");
+                assertThat(ex.getArgs()).containsExactly(request.lectorId());
+            });
 
         verify(lectorRepository).existsById(request.lectorId());
         verify(programRepository, never()).existsById(any());
@@ -79,12 +83,14 @@ class ProgramDisciplineLectorValidatorTest {
     }
 
     @Test
-    void validateForCreate_shouldThrowResourceNotFoundException_whenProgramMissing() {
+    void validateForCreate_shouldThrowProgramNotFoundException_whenProgramMissing() {
         when(lectorRepository.existsById(request.lectorId())).thenReturn(true);
 
         assertThatThrownBy(() -> programDisciplineLectorValidator.validateForCreate(request))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(request.programId().toString());
+            .isInstanceOfSatisfying(ProgramNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo("program_not_found");
+                assertThat(ex.getArgs()).containsExactly(request.programId());
+            });
 
         verify(lectorRepository).existsById(request.lectorId());
         verify(programRepository).existsById(request.programId());
@@ -93,13 +99,15 @@ class ProgramDisciplineLectorValidatorTest {
     }
 
     @Test
-    void validateForCreate_shouldThrowResourceNotFoundException_whenDisciplineMissing() {
+    void validateForCreate_shouldThrowDisciplineNotFoundException_whenDisciplineMissing() {
         when(lectorRepository.existsById(request.lectorId())).thenReturn(true);
         when(programRepository.existsById(request.programId())).thenReturn(true);
 
         assertThatThrownBy(() -> programDisciplineLectorValidator.validateForCreate(request))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(request.disciplineId().toString());
+            .isInstanceOfSatisfying(DisciplineNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo("discipline_not_found");
+                assertThat(ex.getArgs()).containsExactly(request.disciplineId());
+            });
 
         verify(lectorRepository).existsById(request.lectorId());
         verify(programRepository).existsById(request.programId());

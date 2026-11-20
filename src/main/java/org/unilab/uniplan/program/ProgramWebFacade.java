@@ -1,14 +1,12 @@
 package org.unilab.uniplan.program;
 
-import static org.unilab.uniplan.utils.ErrorConstants.PROGRAM_NOT_FOUND;
-
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.ProgramNotFoundException;
 import org.unilab.uniplan.program.dto.ProgramRequestDto;
 import org.unilab.uniplan.program.dto.ProgramResponseDto;
 
@@ -67,8 +65,6 @@ public class ProgramWebFacade {
 
     private Program getProgramOrThrow(final UUID id) {
         return programService.getById(id)
-                             .orElseThrow(() -> new ResourceNotFoundException(
-                                 PROGRAM_NOT_FOUND.getMessage(String.valueOf(id))
-                             ));
+                             .orElseThrow(() -> new ProgramNotFoundException(id));
     }
 }

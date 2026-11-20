@@ -1,14 +1,12 @@
 package org.unilab.uniplan.programdiscipline;
 
-import static org.unilab.uniplan.utils.ErrorConstants.PROGRAM_DISCIPLINE_NOT_FOUND;
-
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.ProgramDisciplineNotFoundException;
 import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineRequestDto;
 import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineResponseDto;
 
@@ -84,11 +82,7 @@ public class ProgramDisciplineWebFacade {
 
     private ProgramDiscipline getProgramDisciplineOrThrow(final ProgramDisciplineId id) {
         return programDisciplineService.getById(id)
-                                       .orElseThrow(() -> new ResourceNotFoundException(
-                                           PROGRAM_DISCIPLINE_NOT_FOUND.getMessage(
-                                               String.valueOf(id)
-                                           )
-                                       ));
+                                       .orElseThrow(() -> new ProgramDisciplineNotFoundException(id));
     }
 
     private ProgramDisciplineId buildId(final UUID disciplineId, final UUID programId) {

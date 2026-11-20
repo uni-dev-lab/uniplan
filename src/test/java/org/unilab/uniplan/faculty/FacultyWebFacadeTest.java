@@ -1,6 +1,5 @@
 package org.unilab.uniplan.faculty;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.inOrder;
@@ -17,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.exception.FacultyNotFoundException;
-import org.unilab.uniplan.exception.UniversityNotFoundException;
 import org.unilab.uniplan.faculty.dto.FacultyRequestDto;
 import org.unilab.uniplan.faculty.dto.FacultyResponseDto;
 
@@ -41,7 +39,7 @@ class FacultyWebFacadeTest {
     @BeforeEach
     void setUp() {
         id = UUID.randomUUID();
-        UUID universityId= UUID.randomUUID();
+        UUID universityId = UUID.randomUUID();
 
         entity = new Faculty();
         requestDto = new FacultyRequestDto(universityId, "FMI", "Burgas");
@@ -74,7 +72,7 @@ class FacultyWebFacadeTest {
     void updateFaculty_shouldThrowResourceNotFoundException_whenFacultyNotFound() {
         when(facultyService.getById(id)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> facultyWebFacade.updateFaculty(id,requestDto))
+        assertThatThrownBy(() -> facultyWebFacade.updateFaculty(id, requestDto))
             .isInstanceOf(FacultyNotFoundException.class)
             .satisfies(ex -> assertThat(((FacultyNotFoundException) ex).getArgs()).contains(id));
 
@@ -110,7 +108,7 @@ class FacultyWebFacadeTest {
             .satisfies(ex -> assertThat(((FacultyNotFoundException) ex).getArgs()).contains(id));
     }
 
-        @Test
+    @Test
     void deleteFaculty_shouldDeleteFaculty_whenFacultyExists() {
         when(facultyService.getById(id)).thenReturn(Optional.of(entity));
 

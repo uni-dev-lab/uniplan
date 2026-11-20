@@ -23,8 +23,8 @@ public class StudentGroupService {
 
     @Transactional
     public StudentGroupDto updateStudentGroup(final UUID studentId,
-                                                        final UUID courseGroupId,
-                                                        final StudentGroupDto studentGroupDTO) {
+                                              final UUID courseGroupId,
+                                              final StudentGroupDto studentGroupDTO) {
         final StudentGroupId id = new StudentGroupId(studentId, courseGroupId);
 
         return studentGroupRepository.findById(id).map(
@@ -37,13 +37,14 @@ public class StudentGroupService {
     public void deleteStudentGroup(final UUID studentId, final UUID courseGroupId) {
         final StudentGroupId id = new StudentGroupId(studentId, courseGroupId);
         final StudentGroup studentGroup = studentGroupRepository.findById(id)
-                                                                .orElseThrow(() -> new StudentGroupNotFoundException(id));
+                                                                .orElseThrow(() -> new StudentGroupNotFoundException(
+                                                                    id));
 
         studentGroupRepository.delete(studentGroup);
     }
 
     public StudentGroupDto findStudentGroupById(final UUID studentId,
-                                                          final UUID courseGroupId) {
+                                                final UUID courseGroupId) {
         final StudentGroupId id = new StudentGroupId(studentId, courseGroupId);
 
         return studentGroupRepository.findById(id)

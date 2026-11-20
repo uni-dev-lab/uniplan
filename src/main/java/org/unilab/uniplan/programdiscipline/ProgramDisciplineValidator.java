@@ -1,15 +1,13 @@
 package org.unilab.uniplan.programdiscipline;
 
-import static org.unilab.uniplan.utils.ErrorConstants.DISCIPLINE_NOT_FOUND;
-import static org.unilab.uniplan.utils.ErrorConstants.PROGRAM_NOT_FOUND;
-
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import org.unilab.uniplan.discipline.DisciplineRepository;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.DisciplineNotFoundException;
+import org.unilab.uniplan.exception.ProgramNotFoundException;
 import org.unilab.uniplan.program.ProgramRepository;
 import org.unilab.uniplan.programdiscipline.dto.ProgramDisciplineRequestDto;
 
@@ -53,17 +51,13 @@ public class ProgramDisciplineValidator {
 
     private void validateProgramExists(final UUID programId) {
         if (!programRepository.existsById(programId)) {
-            throw new ResourceNotFoundException(
-                PROGRAM_NOT_FOUND.getMessage(String.valueOf(programId))
-            );
+            throw new ProgramNotFoundException(programId);
         }
     }
 
     private void validateDisciplineExists(final UUID disciplineId) {
         if (!disciplineRepository.existsById(disciplineId)) {
-            throw new ResourceNotFoundException(
-                DISCIPLINE_NOT_FOUND.getMessage(String.valueOf(disciplineId))
-            );
+            throw new DisciplineNotFoundException(disciplineId);
         }
     }
 

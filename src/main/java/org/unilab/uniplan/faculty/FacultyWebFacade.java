@@ -1,12 +1,10 @@
 package org.unilab.uniplan.faculty;
 
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.unilab.uniplan.exception.FacultyNotFoundException;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.faculty.dto.FacultyRequestDto;
 import org.unilab.uniplan.faculty.dto.FacultyResponseDto;
 import java.util.List;

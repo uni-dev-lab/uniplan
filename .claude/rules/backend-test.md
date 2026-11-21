@@ -23,7 +23,7 @@ Use the Maven wrapper. Run each command as a separate Bash call (do NOT chain wi
 ./mvnw -B verify                                # full build + all tests
 ./mvnw test                                     # all tests only
 ./mvnw test -Dtest=MajorServiceTest             # single class
-./mvnw test -Dtest=MajorServiceTest#createMajorShouldReturnAndSavedMajorDTO  # single method
+./mvnw test -Dtest=MajorServiceTest#saveShouldSaveMajor  # single method
 ```
 
 CI (`.github/workflows/build.yml`) runs `mvn -B clean verify` on every PR against `main`.
@@ -70,7 +70,7 @@ The Facade test is the primary place to assert:
 - The Validator is called before the Service (`InOrder` verification).
 - `ResourceNotFoundException` is thrown when the Service returns `Optional.empty()`.
 - The MapStruct mapper is called on the saved entity, not the input.
-- Logging happens at INFO for the business operation (use `LogCaptor` if asserting log output).
+- Logging happens at INFO for the business operation (no log-capture library is configured — don't require log assertions).
 
 ### Service test (repository interaction only)
 
@@ -85,13 +85,13 @@ class ProgramServiceTest {
     private ProgramRepository programRepository;
 
     @Test
-    void findById_shouldReturnEntity_whenProgramExists() {
+    void getById_shouldReturnEntity_whenProgramExists() {
         // test
     }
 }
 ```
 
-Service tests are thin: a one-line `findById` delegating to the repository deserves at most one happy-path test. Do not pad Service tests with assertions that belong on the Facade (validation order, exception types, DTO conversion).
+Service tests are thin: a one-line `getById` delegating to the repository deserves at most one happy-path test. Do not pad Service tests with assertions that belong on the Facade (validation order, exception types, DTO conversion).
 
 ### Validator test (one test per business rule)
 
@@ -124,23 +124,23 @@ One test per rule — happy path plus each failure mode. The Validator is where 
 
 ### Pre-existing Service-only features
 
-Existing features (e.g. `major/`) still combine orchestration + transactions + exception throwing in the Service. Their `*ServiceTest` classes can keep the existing shape until the feature is migrated to the Facade pattern. Do not preemptively split them.
+Existing features (e.g. `coursegroup/`) still combine orchestration + transactions + exception throwing in the Service. Their `*ServiceTest` classes can keep the existing shape until the feature is migrated to the Facade pattern. Do not preemptively split them.
 
 ```java
 @ExtendWith(MockitoExtension.class)
-class MajorServiceTest {
+class CourseGroupServiceTest {
 
     @InjectMocks
-    private MajorService majorService;
+    private CourseGroupService courseGroupService;
 
     @Mock
-    private MajorRepository majorRepository;
+    private CourseGroupMapper courseGroupMapper;
 
     @Mock
-    private MajorMapper majorMapper;
+    private CourseGroupRepository courseGroupRepository;
 
     @Test
-    void createMajor_shouldReturnSavedDto_whenInputIsValid() {
+    void createCourseGroupShouldReturnAndSavedCourseGroupDTO() {
         // test
     }
 }
@@ -156,7 +156,7 @@ void findMajorById_shouldThrowResourceNotFoundException_whenMajorMissing() { }
 void deleteMajor_shouldRemoveEntity_whenMajorExists() { }
 ```
 
-The existing tests (e.g. `MajorServiceTest`) use a camelCase descriptive variant (`createMajorShouldReturnAndSavedMajorDTO`). New tests use the `_shouldX_whenY` snake-segment form for clarity. Migration of older tests is opportunistic — do not blanket-rename in unrelated PRs.
+The existing tests (e.g. `CourseGroupServiceTest`) use a camelCase descriptive variant (`createCourseGroupShouldReturnAndSavedCourseGroupDTO`). New tests use the `_shouldX_whenY` snake-segment form for clarity. Migration of older tests is opportunistic — do not blanket-rename in unrelated PRs.
 
 ## Structure
 

@@ -5,7 +5,9 @@ import java.time.LocalDate;
 import java.util.UUID;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
+import org.unilab.uniplan.common.validation.ValidDateRange;
 
+@ValidDateRange(dateFrom = "createdFrom", dateTo = "createdTo")
 public record LectorFilterDto(
     @Size(max = 100)
     String firstName,

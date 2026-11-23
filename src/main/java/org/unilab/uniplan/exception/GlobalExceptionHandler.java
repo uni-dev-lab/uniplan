@@ -2,6 +2,7 @@ package org.unilab.uniplan.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
@@ -93,7 +95,7 @@ public class GlobalExceptionHandler {
                 request.getRequestURI()
 
             ),
-            HttpStatus.NOT_FOUND
+            HttpStatus.BAD_REQUEST
         );
     }
 
@@ -103,11 +105,16 @@ public class GlobalExceptionHandler {
         final BindException ex,
         final HttpServletRequest request,
         final Locale locale) {
-        log.info(ex.getMessage());
+        List<String> invalidFields = ex.getFieldErrors().stream()
+                                       .map(FieldError::getField)
+                                       .distinct()
+                                       .toList();
+
+        log.info("Validation failed for fields: {}", invalidFields);
 
         return new ResponseEntity<>(
             new ErrorResponse(
-                messageSource.getMessage("invalid_data", null, locale),
+                messageSource.getMessage("invalid_filter_data", null, locale),
                 HttpStatus.BAD_REQUEST.value(),
                 LocalDateTime.now(),
                 request.getRequestURI()

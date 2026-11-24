@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -24,8 +25,16 @@ import org.unilab.uniplan.lector.dto.LectorFilterDto;
 @ExtendWith(MockitoExtension.class)
 class LectorServiceTest {
 
+    private static final String FIRST_NAME = "name";
+
     @Mock
     private LectorRepository lectorRepository;
+
+    @Mock
+    private MockedStatic<LectorSpecifications> lectorSpecifications;
+
+    @Mock 
+    private Specification<Lector> spec;
 
     @InjectMocks
     private LectorService lectorService;
@@ -85,17 +94,17 @@ class LectorServiceTest {
     }
 
     @Test
-    void getAll_shouldReturnRepositoryPage_whenFilterAndPageableGiven() {
+    void getAll_shouldQueryWithSpecificationBuiltFromFilter_whenFilterGiven() {
         final PageRequest pageable = PageRequest.of(0, 10);
-        final Lector entity = mock(Lector.class);
-        final LectorFilterDto filter = new LectorFilterDto(
-            null, null, null, null, null, null);
-        final Page<Lector> page = new PageImpl<>(List.of(entity), pageable, 1);
-        when(lectorRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(page);
+        final Specification<Lector> spec = mock();
+        final LectorFilterDto filter = new LectorFilterDto(FIRST_NAME, null, null, null, null, null);
+        final Page<Lector> page = new PageImpl<>(List.of(), pageable, 0);
+        lectorSpecifications.when(() -> LectorSpecifications.from(filter)).thenReturn(spec);
+        when(lectorRepository.findAll(spec, pageable)).thenReturn(page);
 
         final var result = lectorService.getAll(filter, pageable);
 
-        verify(lectorRepository).findAll(any(Specification.class), eq(pageable));
+        verify(lectorRepository).findAll(spec, pageable);
         assertThat(result).isSameAs(page);
     }
 }

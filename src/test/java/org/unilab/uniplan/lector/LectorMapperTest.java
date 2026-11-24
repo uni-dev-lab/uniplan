@@ -3,7 +3,6 @@ package org.unilab.uniplan.lector;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.unilab.uniplan.faculty.Faculty;
@@ -52,25 +51,6 @@ class LectorMapperTest {
         final LectorResponseDto result = lectorMapper.toResponseDto(lector);
 
         assertThat(result.facultyId()).isNull();
-    }
-
-    @Test
-    void toResponseDtoList_shouldMapEveryElement_whenCalled() {
-        final Lector first = createLector(UUID.randomUUID(), UUID.randomUUID());
-        final Lector second = createLector(UUID.randomUUID(), UUID.randomUUID());
-
-        final List<LectorResponseDto> result =
-            lectorMapper.toResponseDtoList(List.of(first, second));
-
-        assertThat(result).extracting(LectorResponseDto::id)
-                          .containsExactly(first.getId(), second.getId());
-    }
-
-    @Test
-    void toResponseDtoList_shouldBeEmpty_whenListIsEmpty() {
-        final List<LectorResponseDto> result = lectorMapper.toResponseDtoList(List.of());
-
-        assertThat(result).isEmpty();
     }
 
     @Test

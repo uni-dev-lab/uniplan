@@ -3,13 +3,17 @@ package org.unilab.uniplan.lector;
 
 import static org.unilab.uniplan.utils.ErrorConstants.LECTOR_NOT_FOUND;
 
-import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.unilab.uniplan.common.dto.PageResponseDto;
+import org.unilab.uniplan.common.specification.SortValidator;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.lector.dto.LectorFilterDto;
 import org.unilab.uniplan.lector.dto.LectorRequestDto;
 import org.unilab.uniplan.lector.dto.LectorResponseDto;
 
@@ -21,6 +25,7 @@ public class LectorWebFacade {
     private final LectorMapper lectorMapper;
     private final LectorService lectorService;
     private final LectorValidator lectorValidator;
+    private final SortValidator sortValidator;
 
     @Transactional
     public LectorResponseDto createLector(final LectorRequestDto request) {
@@ -32,8 +37,12 @@ public class LectorWebFacade {
     }
 
     @Transactional(readOnly = true)
-    public List<LectorResponseDto> getAllLectors() {
-        return lectorMapper.toResponseDtoList(lectorService.getAll());
+    public PageResponseDto<LectorResponseDto> getAllLectors(
+        final LectorFilterDto filter,
+        final Pageable pageable) {
+        sortValidator.validate(pageable, LectorSpecifications.ALLOWED_PROPERTIES);
+        final Page<Lector> page = lectorService.getAll(filter, pageable);
+        return PageResponseDto.from(page.map(lectorMapper::toResponseDto));
     }
 
     @Transactional(readOnly = true)

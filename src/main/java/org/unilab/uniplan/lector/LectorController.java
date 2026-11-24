@@ -3,9 +3,12 @@ package org.unilab.uniplan.lector;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +19,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.unilab.uniplan.common.dto.PageResponseDto;
+import org.unilab.uniplan.lector.dto.LectorFilterDto;
 import org.unilab.uniplan.lector.dto.LectorRequestDto;
 import org.unilab.uniplan.lector.dto.LectorResponseDto;
 
@@ -36,8 +41,12 @@ public class LectorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LectorResponseDto>> getAllLectors() {
-        return ResponseEntity.ok(lectorWebFacade.getAllLectors());
+    public ResponseEntity<PageResponseDto<LectorResponseDto>> getAllLectors(
+        @ParameterObject @PageableDefault(
+            sort = {"firstName", "id"},
+            direction = Direction.ASC) final Pageable pageable,
+        @Valid @ParameterObject final LectorFilterDto filter) {
+        return ResponseEntity.ok(lectorWebFacade.getAllLectors(filter, pageable));
     }
 
     @GetMapping("/{id}")

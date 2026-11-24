@@ -6,6 +6,12 @@ spring:
   application:
     name: Plan University Schedule
 
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+        max-page-size: 100
+
   mvc:
     servlet:
       path: /api

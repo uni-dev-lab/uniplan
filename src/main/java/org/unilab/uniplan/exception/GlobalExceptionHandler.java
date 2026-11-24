@@ -93,7 +93,6 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST.value(),
                 LocalDateTime.now(),
                 request.getRequestURI()
-
             ),
             HttpStatus.BAD_REQUEST
         );
@@ -105,7 +104,7 @@ public class GlobalExceptionHandler {
         final BindException ex,
         final HttpServletRequest request,
         final Locale locale) {
-        List<String> invalidFields = ex.getFieldErrors().stream()
+        final List<String> invalidFields = ex.getFieldErrors().stream()
                                        .map(FieldError::getField)
                                        .distinct()
                                        .toList();

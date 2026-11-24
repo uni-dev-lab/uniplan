@@ -33,7 +33,7 @@ class LectorServiceTest {
     @Mock
     private MockedStatic<LectorSpecifications> lectorSpecifications;
 
-    @Mock 
+    @Mock
     private Specification<Lector> spec;
 
     @InjectMocks
@@ -97,7 +97,8 @@ class LectorServiceTest {
     void getAll_shouldQueryWithSpecificationBuiltFromFilter_whenFilterGiven() {
         final PageRequest pageable = PageRequest.of(0, 10);
         final Specification<Lector> spec = mock();
-        final LectorFilterDto filter = new LectorFilterDto(FIRST_NAME, null, null, null, null, null);
+        final LectorFilterDto filter =
+            new LectorFilterDto(FIRST_NAME, null, null, null, null, null);
         final Page<Lector> page = new PageImpl<>(List.of(), pageable, 0);
         lectorSpecifications.when(() -> LectorSpecifications.from(filter)).thenReturn(spec);
         when(lectorRepository.findAll(spec, pageable)).thenReturn(page);

@@ -19,7 +19,7 @@ Follow these steps exactly.
 
 Run:
 ```
-gh pr view $ARGUMENTS --json number,title,body,baseRefName,headRefName,author,files
+gh pr view $ARGUMENTS --json number,title,body,baseRefName,headRefName,author,files,reviews,comments
 ```
 
 Extract the PR title, description, base branch, head branch, author, and list of changed files. Display a summary header like:
@@ -51,16 +51,16 @@ Run each command as a **separate Bash call**:
    mkdir -p <repo-root>/../uniplan-worktree
    ```
 
-4. Fetch the branch:
+4. Fetch the base and head branches:
    ```
-   git fetch origin <headRefName>
+   git fetch origin <baseRefName> <headRefName>
    ```
 
 5. Check whether a worktree for this branch already exists:
    ```
    git worktree list
    ```
-   - If one already exists, skip to Step 3 and use its path as `<worktree-path>`.
+   - If one already exists, run `git -C <worktree-path> merge --ff-only origin/<headRefName>`; if that fails (local commits or divergence), stop and report — do not reset. Then skip to Step 3.
 
 6. If not, create it. Use the branch name (not `origin/<headRefName>`) so git's DWIM behavior creates a local branch tracking the remote — passing `origin/<headRefName>` results in a detached HEAD:
    ```
@@ -144,6 +144,7 @@ Scope the Other slice by path prefix:
 | `db/` (root, password file)                | Secrets never committed in plaintext                                         |
 | Root configs (`.gitignore`, `.editorconfig`, `pom.xml` non-Java parts) | Lockfile churn justified, ignored paths correct                              |
 | `.claude/rules/`, `.claude/agents/`, `.claude/skills/` | Rule/agent/skill changes consistent across files; no contradictions          |
+| Any path                                   | Stray artifacts committed (`*.patch`, `*.diff`, `*.log`, `*.orig`, dumps) → Minor |
 
 Get the Other-slice diff by running, from the worktree:
 ```
@@ -164,6 +165,7 @@ After the subagent returns, combine its output **together with your own Other-sl
 - Cap **Suggestions** at three entries total across all streams — if more are returned, rank by impact and drop the rest.
 - Add a **Summary** paragraph (2–3 sentences) describing what the PR does and your overall assessment, synthesized from the subagent output, the Other-slice review, and the PR metadata.
 - Add a **Praise** section highlighting things done well.
+- If an earlier Claude review exists on the PR (body starts with `## Code Review: PR #` or `## Automated code review`), forward its Critical/Important findings to the subagent (append them to the Step 4 dispatch prompt) and add a `### Previous findings` section (before Critical) listing each as Resolved / Still open, checked against the current code.
 
 Output format (use verbatim):
 
@@ -174,6 +176,9 @@ Output format (use verbatim):
 
 ### Summary
 <2-3 sentence summary of what this PR does and your overall assessment>
+
+### Previous findings
+<each Critical/Important finding from the earlier Claude review: Resolved / Still open; "None" if no earlier review>
 
 ### Critical (must fix)
 <merged Critical findings; "None" if empty>

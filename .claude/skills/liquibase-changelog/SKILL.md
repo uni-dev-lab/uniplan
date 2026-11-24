@@ -1,6 +1,6 @@
 ---
 name: liquibase-changelog
-description: Scaffold a new Liquibase changelog for the uniplan backend. Creates src/main/resources/db/changelog/<YYYY>/<MM>/<NNNN>-<slug>.yaml with the mandatory objectQuotingStrategy and a rollback block, and appends the include to db.changelog-master.yaml. Use when adding a new database migration.
+description: Scaffold a new Liquibase changelog for the uniplan backend. Creates src/main/resources/db/changelog/<yyyyMMddHHmmss>-<slug>.yaml (UTC timestamp, flat — no subfolders) with the mandatory objectQuotingStrategy and a rollback block, and appends the include to db.changelog-master.yaml. Use when adding a new database migration.
 disable-model-invocation: false
 argument-hint: <kebab-case-slug-describing-the-change>
 ---
@@ -11,44 +11,28 @@ If `$ARGUMENTS` is empty, ask the invoker for a short kebab-case slug describing
 
 Follow these steps exactly. Run each step as a **separate Bash call** — do NOT combine them with `&&` or shell variables.
 
-## Step 1: Get today's date (UTC)
+## Step 1: Generate the UTC timestamp
 
-Run `date -u +%Y-%m-%d` and capture three values:
-- `${YEAR}` — the four-digit year (e.g. `2026`)
-- `${MONTH}` — the two-digit month (e.g. `05`)
-- `${DATE_FULL}` — the full date string (e.g. `2026-05-03`), used in the changeset id only.
+Run `date -u +%Y%m%d%H%M%S` and capture the 14-digit result as `${TS}` (e.g. `20260806115300`). It prefixes both the filename and the changeset id.
 
 ## Step 2: Get the current git user name
 
 Run `git config user.name` and capture the result as `${AUTHOR}`. If the command returns an empty string or errors, stop and ask the invoker to set `git config user.name` before continuing.
 
-## Step 3: Compute the next sequence number
+## Step 3: Verify the target path is free
 
-Run `ls src/main/resources/db/changelog/${YEAR}/${MONTH}/` (create the directory in Step 4 if `ls` errors with "No such file or directory"). From the output, enumerate every filename matching `NNNN-*.yaml` — do not attempt arithmetic shortcuts; read each filename literally.
+Changelogs live flat under `src/main/resources/db/changelog/` — no year/month subfolders. The target file path is `src/main/resources/db/changelog/${TS}-<slug>.yaml`.
 
-- If the directory does not yet exist or no files are present, set `${NN}` = `0001`.
-- Otherwise take the highest existing four-digit prefix across all of `src/main/resources/db/changelog/**/*.yaml` (NOT just this month's folder — the sequence is repository-wide, not per-month — see existing `0001-...` and `0002-...` files), increment by 1, and zero-pad to four digits.
+Run `ls src/main/resources/db/changelog/`. If a file with the same `${TS}` prefix already appears, stop and report (re-run Step 1 after a second rather than editing the timestamp by hand).
 
-Run `find src/main/resources/db/changelog -type f -name '*.yaml' -not -name 'db.changelog-master.yaml'` to enumerate every existing changelog and read the highest prefix.
+## Step 4: Create the changelog file
 
-## Step 4: Ensure the target directory exists
-
-Run `mkdir -p src/main/resources/db/changelog/${YEAR}/${MONTH}`.
-
-## Step 5: Verify the target path is free
-
-The target file path is `src/main/resources/db/changelog/${YEAR}/${MONTH}/${NN}-<slug>.yaml`.
-
-Derive the target path from Step 3's enumeration — if it already appears, stop and report. Do not re-probe with another `ls`.
-
-## Step 6: Create the changelog file
-
-Write the file with exactly this skeleton (substitute `${DATE_FULL}`, `${NN}`, `${AUTHOR}`, and the slug from `$ARGUMENTS`):
+Write the file with exactly this skeleton (substitute `${TS}`, `${AUTHOR}`; number further changesets in the same file `${TS}-2`, `${TS}-3`, ...):
 
 ```yaml
 databaseChangeLog:
   - changeSet:
-      id: ${NN}-<slug>
+      id: ${TS}-1
       author: ${AUTHOR}
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -62,16 +46,16 @@ databaseChangeLog:
 
 The scaffold includes `rollback:` by default — every new changelog should either specify inverse operations or explicitly document why rollback is not possible.
 
-## Step 7: Register the include in the master changelog
+## Step 5: Register the include in the master changelog
 
 Open `src/main/resources/db/changelog/db.changelog-master.yaml` and append a new include block at the end, preserving the two-space indentation used in the file:
 
 ```yaml
   - include:
-      file: db/changelog/${YEAR}/${MONTH}/${NN}-<slug>.yaml
+      file: db/changelog/${TS}-<slug>.yaml
 ```
 
-## Step 8: Report
+## Step 6: Report
 
 Print:
 
@@ -84,6 +68,5 @@ Print:
 
 - `author` is the committer name captured from `git config user.name` in Step 2 — never hardcode a value.
 - Every changeSet MUST carry `objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS` per [.claude/rules/backend.md](../../rules/backend.md). Do not omit it.
-- Never overwrite an existing changelog file.
-- Filename format is `NNNN-<slug>.yaml` (four-digit zero-padded NN, repository-wide sequence). Do not deviate.
-- Do not edit the existing baseline files (`0001-baseline-init-changelog.yaml`, `0002-seed-university-data-from-csv.yaml`) — they are frozen.
+- Never overwrite or edit an existing changelog file — already-applied changesets are frozen; make changes in a new changelog.
+- Filename format is `<yyyyMMddHHmmss>-<slug>.yaml` (UTC timestamp, kebab-case slug), flat under `src/main/resources/db/changelog/`. Do not deviate.

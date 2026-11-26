@@ -53,6 +53,9 @@ public class BuildingWebFacade {
     @Transactional
     public void deleteBuilding(final UUID id) {
         final Building building = getBuildingOrThrow(id);
+
+        buildingValidator.validateCanDelete(id);
+
         buildingService.delete(building);
         log.info("deleted building with ID: {}", id);
     }

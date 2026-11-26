@@ -2,8 +2,6 @@ package org.unilab.uniplan.building;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -15,6 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.unilab.uniplan.building.dto.BuildingRequestDto;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.university.University;
@@ -25,6 +25,9 @@ class BuildingValidatorTest {
 
     @Mock
     private UniversityService universityService;
+
+    @Mock
+    private BuildingService buildingService;
 
     @InjectMocks
     private BuildingValidator buildingValidator;
@@ -37,9 +40,11 @@ class BuildingValidatorTest {
     void setUp() {
         universityId = UUID.randomUUID();
         university = new University();
-        requestDto = mock(BuildingRequestDto.class);
-
-        when(requestDto.universityId()).thenReturn(universityId);
+        requestDto = new BuildingRequestDto(
+            "Main Building",
+            "123 Campus Road",
+            universityId
+        );
     }
 
     @Test
@@ -53,13 +58,37 @@ class BuildingValidatorTest {
     }
 
     @Test
-    void validateAndResolveUniversity_shouldThrowResourceNotFoundException_whenUniversityDoesNotExist() {
+    void validateAndResolveUniversity_shouldThrowNotFound_whenUniversityMissing() {
         when(universityService.getById(universityId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() ->
-                               buildingValidator.validateAndResolveUniversity(requestDto)
-        ).isInstanceOf(ResourceNotFoundException.class);
+        assertThatThrownBy(() -> buildingValidator.validateAndResolveUniversity(requestDto))
+            .isInstanceOf(ResourceNotFoundException.class);
 
         verify(universityService).getById(universityId);
     }
+
+
+    @Test
+    void validateCanDelete_shouldThrowConflict_whenBuildingHasRooms() {
+        final UUID buildingId = UUID.randomUUID();
+        when(buildingService.hasAssignedRooms(buildingId)).thenReturn(true);
+
+        assertThatThrownBy(() -> buildingValidator.validateCanDelete(buildingId))
+            .isInstanceOfSatisfying(ResponseStatusException.class, ex ->
+                assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.CONFLICT)
+            );
+
+        verify(buildingService).hasAssignedRooms(buildingId);
+    }
+
+    @Test
+    void validateCanDelete_shouldSucceed_whenBuildingHasNoRooms() {
+        final UUID buildingId = UUID.randomUUID();
+        when(buildingService.hasAssignedRooms(buildingId)).thenReturn(false);
+
+        buildingValidator.validateCanDelete(buildingId);
+
+        verify(buildingService).hasAssignedRooms(buildingId);
+    }
+
 }

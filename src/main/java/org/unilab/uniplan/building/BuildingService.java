@@ -32,4 +32,8 @@ public class BuildingService implements BaseService<Building> {
     public void delete(final Building building) {
         buildingRepository.delete(building);
     }
+
+    public boolean hasAssignedRooms(final UUID buildingId) {
+        return buildingRepository.hasAssignedRooms(buildingId);
+    }
 }

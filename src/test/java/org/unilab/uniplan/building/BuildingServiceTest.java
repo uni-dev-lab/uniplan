@@ -1,6 +1,6 @@
 package org.unilab.uniplan.building;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -45,7 +45,7 @@ class BuildingServiceTest {
 
         final Optional<Building> result = buildingService.getById(buildingId);
 
-        assertEquals(Optional.of(building), result);
+        assertThat(result).isEqualTo(Optional.of(building));
         verify(buildingRepository).findById(buildingId);
     }
 
@@ -56,7 +56,7 @@ class BuildingServiceTest {
 
         final List<Building> result = buildingService.getAll();
 
-        assertEquals(buildings, result);
+        assertThat(result).isEqualTo(buildings);
         verify(buildingRepository).findAllWithUniversity();
     }
 
@@ -65,5 +65,15 @@ class BuildingServiceTest {
         buildingService.delete(building);
 
         verify(buildingRepository).delete(building);
+    }
+
+    @Test
+    void hasAssignedRooms_shouldReturnTrue_whenBuildingHasRooms() {
+        when(buildingRepository.hasAssignedRooms(buildingId)).thenReturn(true);
+
+        final boolean result = buildingService.hasAssignedRooms(buildingId);
+
+        assertThat(result).isTrue();
+        verify(buildingRepository).hasAssignedRooms(buildingId);
     }
 }

@@ -22,12 +22,18 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/buildings")
 @RequiredArgsConstructor
-@Tag(name = "Buildings", description = "Manage university buildings, including name, address, and associated university")
+@Tag(
+    name = "Buildings",
+    description = "Manage university buildings, including name, address, and associated university"
+)
 public class BuildingController {
+
     private final BuildingWebFacade buildingWebFacade;
 
     @PostMapping
-    public ResponseEntity<Void> createBuilding(@Valid @NotNull @RequestBody final BuildingRequestDto buildingRequestDto) {
+    public ResponseEntity<Void> createBuilding(
+        @Valid @NotNull @RequestBody final BuildingRequestDto buildingRequestDto) {
+
         buildingWebFacade.createBuilding(buildingRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

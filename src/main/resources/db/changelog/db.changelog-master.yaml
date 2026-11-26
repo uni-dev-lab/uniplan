@@ -21,3 +21,5 @@ databaseChangeLog:
       file: db/changelog/20260728113500-add-building-column-to-room.yaml
   - include:
       file: db/changelog/20260806115300-drop-legacy-deleted-at.yaml
+  - include:
+      file: db/changelog/20261127010000-add-room-building-foreign-key.yaml

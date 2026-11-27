@@ -64,9 +64,9 @@ class CourseGroupServiceTest {
     void findCourseGroupByIdShouldReturnCourseGroupDTOIfNotExists() {
         when(courseGroupRepository.findById(courseGroupId)).thenReturn(Optional.empty());
 
-        CourseGroupNotFoundException exception = assertThrows(CourseGroupNotFoundException.class,
-                                                              () -> courseGroupService.findCourseGroupById(
-                                                                  courseGroupId));
+        CourseGroupNotFoundException exception = assertThrows(
+            CourseGroupNotFoundException.class,
+            () -> courseGroupService.findCourseGroupById(courseGroupId));
 
         assertEquals(COURSE_GROUP_NOT_FOUND_KEY, exception.getMessageKey());
     }
@@ -111,10 +111,9 @@ class CourseGroupServiceTest {
     void updateCourseGroupShouldReturnEmptyIfNotFound() {
         when(courseGroupRepository.findById(courseGroupId)).thenReturn(Optional.empty());
 
-        CourseGroupNotFoundException exception = assertThrows(CourseGroupNotFoundException.class,
-                                                              () -> courseGroupService.updateCourseGroup(
-                                                                  courseGroupId,
-                                                                  courseGroupDTO));
+        CourseGroupNotFoundException exception = assertThrows(
+            CourseGroupNotFoundException.class,
+            () -> courseGroupService.updateCourseGroup(courseGroupId, courseGroupDTO));
 
         assertEquals(COURSE_GROUP_NOT_FOUND_KEY, exception.getMessageKey());
         verify(courseGroupRepository, never()).save(any());
@@ -133,9 +132,9 @@ class CourseGroupServiceTest {
     void deleteCourseGroupShouldThrowIfNotFound() {
         when(courseGroupRepository.findById(courseGroupId)).thenReturn(Optional.empty());
 
-        CourseGroupNotFoundException exception = assertThrows(CourseGroupNotFoundException.class,
-                                                              () -> courseGroupService.deleteCourseGroup(
-                                                                  courseGroupId));
+        CourseGroupNotFoundException exception = assertThrows(
+            CourseGroupNotFoundException.class,
+            () -> courseGroupService.deleteCourseGroup(courseGroupId));
 
         assertEquals(COURSE_GROUP_NOT_FOUND_KEY, exception.getMessageKey());
         verify(courseGroupRepository, never()).delete(any());

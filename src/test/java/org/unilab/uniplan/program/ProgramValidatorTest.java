@@ -25,6 +25,9 @@ import org.unilab.uniplan.program.dto.ProgramRequestDto;
 @ExtendWith(MockitoExtension.class)
 class ProgramValidatorTest {
 
+    private static final String COURSE_NOT_FOUND_KEY = "course_not_found";
+    private static final String PROGRAM_NOT_FOUND_KEY = "program_not_found";
+
     @Mock
     private ProgramRepository programRepository;
 
@@ -57,7 +60,7 @@ class ProgramValidatorTest {
     void validateForCreate_shouldThrowCourseNotFoundException_whenCourseDoesNotExist() {
         assertThatThrownBy(() -> programValidator.validateForCreate(request))
             .isInstanceOfSatisfying(CourseNotFoundException.class, ex -> {
-                assertThat(ex.getMessageKey()).isEqualTo("course_not_found");
+                assertThat(ex.getMessageKey()).isEqualTo(COURSE_NOT_FOUND_KEY);
                 assertThat(ex.getArgs()).containsExactly(courseId);
             });
 
@@ -101,7 +104,7 @@ class ProgramValidatorTest {
 
         assertThatThrownBy(() -> programValidator.validateForUpdate(programId, request))
             .isInstanceOfSatisfying(ProgramNotFoundException.class, ex -> {
-                assertThat(ex.getMessageKey()).isEqualTo("program_not_found");
+                assertThat(ex.getMessageKey()).isEqualTo(PROGRAM_NOT_FOUND_KEY);
                 assertThat(ex.getArgs()).containsExactly(programId);
             });
 
@@ -118,7 +121,7 @@ class ProgramValidatorTest {
 
         assertThatThrownBy(() -> programValidator.validateForUpdate(programId, request))
             .isInstanceOfSatisfying(CourseNotFoundException.class, ex -> {
-                assertThat(ex.getMessageKey()).isEqualTo("course_not_found");
+                assertThat(ex.getMessageKey()).isEqualTo(COURSE_NOT_FOUND_KEY);
                 assertThat(ex.getArgs()).containsExactly(courseId);
             });
 

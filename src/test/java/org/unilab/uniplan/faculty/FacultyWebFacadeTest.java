@@ -22,6 +22,8 @@ import org.unilab.uniplan.faculty.dto.FacultyResponseDto;
 @ExtendWith(MockitoExtension.class)
 class FacultyWebFacadeTest {
 
+    private static final String FACULTY_NOT_FOUND_KEY = "faculty_not_found";
+
     @Mock
     private FacultyMapper facultyMapper;
 
@@ -69,12 +71,14 @@ class FacultyWebFacadeTest {
     }
 
     @Test
-    void updateFaculty_shouldThrowResourceNotFoundException_whenFacultyNotFound() {
+    void updateFaculty_shouldThrowFacultyNotFoundException_whenFacultyNotFound() {
         when(facultyService.getById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> facultyWebFacade.updateFaculty(id, requestDto))
-            .isInstanceOf(FacultyNotFoundException.class)
-            .satisfies(ex -> assertThat(((FacultyNotFoundException) ex).getArgs()).contains(id));
+            .isInstanceOfSatisfying(FacultyNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo(FACULTY_NOT_FOUND_KEY);
+                assertThat(ex.getArgs()).containsExactly(id);
+            });
 
     }
 
@@ -104,8 +108,10 @@ class FacultyWebFacadeTest {
         when(facultyService.getById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> facultyWebFacade.getFacultyById(id))
-            .isInstanceOf(FacultyNotFoundException.class)
-            .satisfies(ex -> assertThat(((FacultyNotFoundException) ex).getArgs()).contains(id));
+            .isInstanceOfSatisfying(FacultyNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo(FACULTY_NOT_FOUND_KEY);
+                assertThat(ex.getArgs()).containsExactly(id);
+            });
     }
 
     @Test
@@ -118,12 +124,14 @@ class FacultyWebFacadeTest {
     }
 
     @Test
-    void deleteFaculty_shouldThrowResourceNotFoundException_whenFacultyNotFound() {
+    void deleteFaculty_shouldThrowFacultyNotFoundException_whenFacultyNotFound() {
         when(facultyService.getById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> facultyWebFacade.deleteFaculty(id))
-            .isInstanceOf(FacultyNotFoundException.class)
-            .satisfies(ex -> assertThat(((FacultyNotFoundException) ex).getArgs()).contains(id));
+            .isInstanceOfSatisfying(FacultyNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo(FACULTY_NOT_FOUND_KEY);
+                assertThat(ex.getArgs()).containsExactly(id);
+            });
 
     }
 }

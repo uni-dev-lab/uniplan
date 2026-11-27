@@ -25,9 +25,11 @@ public class GlobalExceptionHandler {
 
     //Handles resource not found exceptions triggered by element not found by search parameters
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(final ResourceNotFoundException ex,
-                                                                         final HttpServletRequest request,
-                                                                         final Locale locale) {
+    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(
+        final ResourceNotFoundException ex,
+        final HttpServletRequest request,
+        final Locale locale) {
+
         final String fallbackMessage = messageSource.getMessage(
             "resource_not_found",
             null,
@@ -59,9 +61,11 @@ public class GlobalExceptionHandler {
 
     //Handles validation exceptions triggered by method argument validation failures (e.g. @Valid)
     @ExceptionHandler(HandlerMethodValidationException.class)
-    public ResponseEntity<ErrorResponse> handleValidationException(final HandlerMethodValidationException ex,
-                                                                   final HttpServletRequest request,
-                                                                   final Locale locale) {
+    public ResponseEntity<ErrorResponse> handleValidationException(
+        final HandlerMethodValidationException ex,
+        final HttpServletRequest request,
+        final Locale locale) {
+
         log.info(ex.getReason());
 
         return new ResponseEntity<>(
@@ -75,11 +79,14 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // Handles exceptions thrown with specific HTTP status (like 404, 400) via ResponseStatusException
+    // Handles exceptions thrown with specific HTTP status (like 404, 400)
+    // via ResponseStatusException
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<ErrorResponse> handleResponseStatusException(final ResponseStatusException ex,
-                                                                       final HttpServletRequest request,
-                                                                       final Locale locale) {
+    public ResponseEntity<ErrorResponse> handleResponseStatusException(
+        final ResponseStatusException ex,
+        final HttpServletRequest request,
+        final Locale locale) {
+
         log.info(ex.getReason());
 
         return new ResponseEntity<>(
@@ -93,11 +100,13 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // Handles type mismatch exceptions (e.g., when a path variable cannot be converted to the expected type)
+    // Handles type mismatch exceptions
+    // (e.g., when a path variable cannot be converted to the expected type)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ErrorResponse> handleTypeMismatch(final MethodArgumentTypeMismatchException ex,
-                                                            final HttpServletRequest request,
-                                                            final Locale locale) {
+    public ResponseEntity<ErrorResponse> handleTypeMismatch(
+        final MethodArgumentTypeMismatchException ex,
+        final HttpServletRequest request,
+        final Locale locale) {
 
         final String expectedType = Optional.ofNullable(ex.getRequiredType())
                                             .map(Class::getSimpleName)
@@ -123,9 +132,10 @@ public class GlobalExceptionHandler {
 
     // Handles generic runtime exceptions that are not caught by more specific handlers
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorResponse> handleRuntimeException(final RuntimeException ex,
-                                                                final HttpServletRequest request,
-                                                                final Locale locale) {
+    public ResponseEntity<ErrorResponse> handleRuntimeException(
+        final RuntimeException ex,
+        final HttpServletRequest request,
+        final Locale locale) {
 
         log.info(ex.getMessage());
 
@@ -138,7 +148,8 @@ public class GlobalExceptionHandler {
         ), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    // Handles any uncaught exceptions, logs the exception type, and returns HTTP 500 with error message
+    // Handles any uncaught exceptions, logs the exception type,
+    // and returns HTTP 500 with error message
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleAnyException(final Exception ex, final Locale locale) {
 

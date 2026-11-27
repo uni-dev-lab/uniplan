@@ -27,9 +27,10 @@ public class StudentGroupService {
                                               final StudentGroupDto studentGroupDTO) {
         final StudentGroupId id = new StudentGroupId(studentId, courseGroupId);
 
-        return studentGroupRepository.findById(id).map(
-                                         existingStudentGroup -> updateEntityAndConvertToDto(studentGroupDTO,
-                                                                                             existingStudentGroup))
+        return studentGroupRepository.findById(id)
+                                     .map(existingStudentGroup ->
+                                              updateEntityAndConvertToDto(studentGroupDTO,
+                                                                          existingStudentGroup))
                                      .orElseThrow(() -> new StudentGroupNotFoundException(id));
     }
 

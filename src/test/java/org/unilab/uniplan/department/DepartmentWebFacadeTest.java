@@ -27,6 +27,8 @@ import org.unilab.uniplan.exception.DepartmentNotFoundException;
 @ExtendWith(MockitoExtension.class)
 class DepartmentWebFacadeTest {
 
+    private static final String DEPARTMENT_NOT_FOUND_KEY = "department_not_found";
+
     @Mock
     private DepartmentService departmentService;
 
@@ -104,7 +106,7 @@ class DepartmentWebFacadeTest {
 
         assertThatThrownBy(() -> departmentWebFacade.getDepartmentById(id))
             .isInstanceOfSatisfying(DepartmentNotFoundException.class, ex -> {
-                assertThat(ex.getMessageKey()).isEqualTo("department_not_found");
+                assertThat(ex.getMessageKey()).isEqualTo(DEPARTMENT_NOT_FOUND_KEY);
                 assertThat(ex.getArgs()).containsExactly(id);
             });
     }
@@ -127,7 +129,7 @@ class DepartmentWebFacadeTest {
 
         assertThatThrownBy(() -> departmentWebFacade.updateDepartment(id, request))
             .isInstanceOfSatisfying(DepartmentNotFoundException.class, ex -> {
-                assertThat(ex.getMessageKey()).isEqualTo("department_not_found");
+                assertThat(ex.getMessageKey()).isEqualTo(DEPARTMENT_NOT_FOUND_KEY);
                 assertThat(ex.getArgs()).containsExactly(id);
             });
 
@@ -149,7 +151,7 @@ class DepartmentWebFacadeTest {
 
         assertThatThrownBy(() -> departmentWebFacade.deleteDepartment(id))
             .isInstanceOfSatisfying(DepartmentNotFoundException.class, ex -> {
-                assertThat(ex.getMessageKey()).isEqualTo("department_not_found");
+                assertThat(ex.getMessageKey()).isEqualTo(DEPARTMENT_NOT_FOUND_KEY);
                 assertThat(ex.getArgs()).containsExactly(id);
             });
 

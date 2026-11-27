@@ -36,17 +36,18 @@ public class CourseGroupService {
     public CourseGroupDto updateCourseGroup(final UUID id,
                                             final CourseGroupDto courseGroupDTO) {
 
-        return courseGroupRepository.findById(id).map(
-                                        existingCourseGroup -> updateEntityAndConvertToDto(courseGroupDTO,
-                                                                                           existingCourseGroup))
+        return courseGroupRepository.findById(id)
+                                    .map(existingCourseGroup ->
+                                             updateEntityAndConvertToDto(courseGroupDTO,
+                                                                         existingCourseGroup))
                                     .orElseThrow(() -> new CourseGroupNotFoundException(id));
     }
 
     @Transactional
     public void deleteCourseGroup(final UUID id) {
         final CourseGroup courseGroup = courseGroupRepository.findById(id)
-                                                             .orElseThrow(
-                                                                 () -> new CourseGroupNotFoundException(id));
+                                                             .orElseThrow(() -> new CourseGroupNotFoundException(
+                                                                 id));
         courseGroupRepository.delete(courseGroup);
     }
 

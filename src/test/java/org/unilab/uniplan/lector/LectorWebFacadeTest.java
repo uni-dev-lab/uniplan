@@ -28,6 +28,8 @@ import org.unilab.uniplan.exception.LectorNotFoundException;
 @ExtendWith(MockitoExtension.class)
 class LectorWebFacadeTest {
 
+    private static final String LECTOR_NOT_FOUND_KEY = "lector_not_found";
+
     @Mock
     private LectorService lectorService;
 
@@ -108,7 +110,7 @@ class LectorWebFacadeTest {
 
         assertThatThrownBy(() -> lectorWebFacade.getLectorById(id))
             .isInstanceOfSatisfying(LectorNotFoundException.class, ex -> {
-                assertThat(ex.getMessageKey()).isEqualTo("lector_not_found");
+                assertThat(ex.getMessageKey()).isEqualTo(LECTOR_NOT_FOUND_KEY);
                 assertThat(ex.getArgs()).containsExactly(id);
             });
 
@@ -159,7 +161,7 @@ class LectorWebFacadeTest {
 
         assertThatThrownBy(() -> lectorWebFacade.updateLector(id, request))
             .isInstanceOfSatisfying(LectorNotFoundException.class, ex -> {
-                assertThat(ex.getMessageKey()).isEqualTo("lector_not_found");
+                assertThat(ex.getMessageKey()).isEqualTo(LECTOR_NOT_FOUND_KEY);
                 assertThat(ex.getArgs()).containsExactly(id);
             });
 
@@ -188,7 +190,7 @@ class LectorWebFacadeTest {
 
         assertThatThrownBy(() -> lectorWebFacade.deleteLectorById(id))
             .isInstanceOfSatisfying(LectorNotFoundException.class, ex -> {
-                assertThat(ex.getMessageKey()).isEqualTo("lector_not_found");
+                assertThat(ex.getMessageKey()).isEqualTo(LECTOR_NOT_FOUND_KEY);
                 assertThat(ex.getArgs()).containsExactly(id);
             });
 

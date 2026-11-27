@@ -22,6 +22,8 @@ import org.unilab.uniplan.university.dto.UniversityResponseDto;
 @ExtendWith(MockitoExtension.class)
 class UniversityWebFacadeTest {
 
+    private static final String UNIVERSITY_NOT_FOUND_KEY = "university_not_found";
+
     @Mock
     private UniversityMapper universityMapper;
 
@@ -69,13 +71,14 @@ class UniversityWebFacadeTest {
     }
 
     @Test
-    void updateUniversity_shouldThrowResourceNotFoundException_whenUniversityNotFound() {
+    void updateUniversity_shouldThrowUniversityNotFoundException_whenUniversityNotFound() {
         when(universityService.getById(id)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> universityWebFacade.updateUniversity(id,requestDto))
-            .isInstanceOf(UniversityNotFoundException.class)
-            .satisfies(ex -> assertThat(((UniversityNotFoundException) ex).getArgs()).contains(id));
-
+        assertThatThrownBy(() -> universityWebFacade.updateUniversity(id, requestDto))
+            .isInstanceOfSatisfying(UniversityNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo(UNIVERSITY_NOT_FOUND_KEY);
+                assertThat(ex.getArgs()).containsExactly(id);
+            });
     }
 
     @Test
@@ -100,12 +103,14 @@ class UniversityWebFacadeTest {
     }
 
     @Test
-    void getUniversityById_shouldThrowResourceNotFoundException_whenUniversityNotFound() {
+    void getUniversityById_shouldThrowUniversityNotFoundException_whenUniversityNotFound() {
         when(universityService.getById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> universityWebFacade.getUniversityById(id))
-            .isInstanceOf(UniversityNotFoundException.class)
-            .satisfies(ex -> assertThat(((UniversityNotFoundException) ex).getArgs()).contains(id));
+            .isInstanceOfSatisfying(UniversityNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo(UNIVERSITY_NOT_FOUND_KEY);
+                assertThat(ex.getArgs()).containsExactly(id);
+            });
     }
 
     @Test
@@ -122,7 +127,9 @@ class UniversityWebFacadeTest {
         when(universityService.getById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> universityWebFacade.deleteUniversity(id))
-            .isInstanceOf(UniversityNotFoundException.class)
-            .satisfies(ex -> assertThat(((UniversityNotFoundException) ex).getArgs()).contains(id));
+            .isInstanceOfSatisfying(UniversityNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo(UNIVERSITY_NOT_FOUND_KEY);
+                assertThat(ex.getArgs()).containsExactly(id);
+            });
     }
 }

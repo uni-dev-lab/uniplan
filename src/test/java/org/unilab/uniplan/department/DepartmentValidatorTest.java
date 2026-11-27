@@ -2,6 +2,8 @@ package org.unilab.uniplan.department;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.UUID;
@@ -12,8 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.department.dto.DepartmentRequestDto;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.faculty.FacultyRepository;
+import org.unilab.uniplan.exception.FacultyNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class DepartmentValidatorTest {
@@ -45,7 +47,11 @@ class DepartmentValidatorTest {
         when(facultyRepository.existsById(facultyId)).thenReturn(false);
 
         assertThatThrownBy(() -> departmentValidator.validate(request))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(String.valueOf(facultyId));
+            .isInstanceOfSatisfying(FacultyNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo("faculty_not_found");
+                assertThat(ex.getArgs()).containsExactly(facultyId);
+            });
+
+        verify(facultyRepository).existsById(facultyId);
     }
 }

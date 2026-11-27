@@ -4,13 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.RoomCategoryNotFoundException;
 import org.unilab.uniplan.roomcategory.dto.RoomCategoryRequestDto;
 import org.unilab.uniplan.roomcategory.dto.RoomCategoryResponseDto;
 import java.util.List;
 import java.util.UUID;
-
-import static org.unilab.uniplan.utils.ErrorConstants.ROOM_CATEGORY_NOT_FOUND;
 
 @Component
 @Slf4j
@@ -23,8 +21,7 @@ public class RoomCategoryWebFacade {
 
     private RoomCategory getRoomCategoryOrThrow(final RoomCategoryId id) {
         return roomCategoryService.getById(id)
-                             .orElseThrow(() -> new ResourceNotFoundException(ROOM_CATEGORY_NOT_FOUND.getMessage(
-                                 String.valueOf(id))));
+                             .orElseThrow(() -> new RoomCategoryNotFoundException(id));
     }
 
     @Transactional

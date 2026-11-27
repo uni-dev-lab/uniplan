@@ -6,11 +6,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.unilab.uniplan.department.dto.DepartmentRequestDto;
 import org.unilab.uniplan.department.dto.DepartmentResponseDto;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.DepartmentNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
-import static org.unilab.uniplan.utils.ErrorConstants.DEPARTMENT_NOT_FOUND;
 
 @Component
 @Slf4j
@@ -43,9 +42,7 @@ public class DepartmentWebFacade {
 
     private Department getDepartmentOrThrow(final UUID id){
         return departmentService.getById(id)
-                                .orElseThrow(()->new ResourceNotFoundException(
-                                    DEPARTMENT_NOT_FOUND.getMessage(String.valueOf(id))
-                                ));
+                                .orElseThrow(()-> new DepartmentNotFoundException(id));
     }
 
     @Transactional

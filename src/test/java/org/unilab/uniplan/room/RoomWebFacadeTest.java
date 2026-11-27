@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.RoomNotFoundException;
 import org.unilab.uniplan.faculty.Faculty;
 import org.unilab.uniplan.room.dto.RoomRequestDto;
 import org.unilab.uniplan.room.dto.RoomResponseDto;
@@ -16,13 +16,14 @@ import java.util.Optional;
 import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class RoomWebFacadeTest {
+class RoomWebFacadeTest {
+
+    private static final String ROOM_NOT_FOUND_KEY = "room_not_found";
 
     @Mock
     private RoomMapper roomMapper;
@@ -75,7 +76,7 @@ public class RoomWebFacadeTest {
 
         List<RoomResponseDto> results = roomWebFacade.getAllRooms();
 
-        assertEquals(rooms, results);
+        assertThat(results).isEqualTo(rooms);
         assertThat(results.getFirst().categoryId()).isEqualTo(categoryId);
         verify(roomService).getAllRoomResponses();
     }
@@ -86,7 +87,7 @@ public class RoomWebFacadeTest {
 
         RoomResponseDto result = roomWebFacade.getRoomById(id);
 
-        assertEquals(result, responseDto);
+        assertThat(result).isEqualTo(responseDto);
         verify(roomService).getRoomResponseById(id);
     }
 
@@ -100,12 +101,14 @@ public class RoomWebFacadeTest {
     }
 
     @Test
-    void deleteRoom_shouldThrowResourceNotFoundException_whenRoomNotFound() {
+    void deleteRoom_shouldThrowRoomNotFoundException_whenRoomNotFound() {
         when(roomService.getById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> roomWebFacade.deleteRoom(id))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(id.toString());
+            .isInstanceOfSatisfying(RoomNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo(ROOM_NOT_FOUND_KEY);
+                assertThat(ex.getArgs()).containsExactly(id);
+            });
     }
 
     @Test
@@ -119,11 +122,13 @@ public class RoomWebFacadeTest {
     }
 
     @Test
-    void updateRoom_shouldThrowResourceNotFoundException_whenRoomNotFound() {
+    void updateRoom_shouldThrowRoomNotFoundException_whenRoomNotFound() {
         when(roomService.getById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> roomWebFacade.updateRoom(id, requestDto))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(id.toString());
+            .isInstanceOfSatisfying(RoomNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo(ROOM_NOT_FOUND_KEY);
+                assertThat(ex.getArgs()).containsExactly(id);
+            });
     }
 }

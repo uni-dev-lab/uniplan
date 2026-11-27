@@ -23,9 +23,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
 import org.unilab.uniplan.lector.dto.LectorRequestDto;
 import org.unilab.uniplan.lector.dto.LectorResponseDto;
+import org.unilab.uniplan.exception.LectorNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class LectorWebFacadeTest {
+
+    private static final String LECTOR_NOT_FOUND_KEY = "lector_not_found";
 
     @Mock
     private LectorService lectorService;
@@ -101,12 +104,15 @@ class LectorWebFacadeTest {
     }
 
     @Test
-    void getLectorById_shouldThrowResourceNotFoundException_whenLectorDoesNotExist() {
+    void getLectorById_shouldThrowLectorNotFoundException_whenLectorDoesNotExist() {
         final UUID id = UUID.randomUUID();
+        when(lectorService.getById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> lectorWebFacade.getLectorById(id))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(id.toString());
+            .isInstanceOfSatisfying(LectorNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo(LECTOR_NOT_FOUND_KEY);
+                assertThat(ex.getArgs()).containsExactly(id);
+            });
 
         verify(lectorService).getById(id);
         verifyNoInteractions(lectorMapper);
@@ -148,13 +154,16 @@ class LectorWebFacadeTest {
     }
 
     @Test
-    void updateLector_shouldThrowResourceNotFoundException_whenLectorDoesNotExist() {
+    void updateLector_shouldThrowLectorNotFoundException_whenLectorDoesNotExist() {
         final UUID id = UUID.randomUUID();
         final LectorRequestDto request = createRequest();
+        when(lectorService.getById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> lectorWebFacade.updateLector(id, request))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(id.toString());
+            .isInstanceOfSatisfying(LectorNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo(LECTOR_NOT_FOUND_KEY);
+                assertThat(ex.getArgs()).containsExactly(id);
+            });
 
         verify(lectorValidator).validate(request);
         verify(lectorService).getById(id);
@@ -175,12 +184,15 @@ class LectorWebFacadeTest {
     }
 
     @Test
-    void deleteLectorById_shouldThrowResourceNotFoundException_whenLectorDoesNotExist() {
+    void deleteLectorById_shouldThrowLectorNotFoundException_whenLectorDoesNotExist() {
         final UUID id = UUID.randomUUID();
+        when(lectorService.getById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> lectorWebFacade.deleteLectorById(id))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(id.toString());
+            .isInstanceOfSatisfying(LectorNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo(LECTOR_NOT_FOUND_KEY);
+                assertThat(ex.getArgs()).containsExactly(id);
+            });
 
         verify(lectorService).getById(id);
         verify(lectorService, never()).delete(any());

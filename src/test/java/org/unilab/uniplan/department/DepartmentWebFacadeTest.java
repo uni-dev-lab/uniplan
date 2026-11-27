@@ -22,9 +22,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.unilab.uniplan.department.dto.DepartmentRequestDto;
 import org.unilab.uniplan.department.dto.DepartmentResponseDto;
 import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.DepartmentNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class DepartmentWebFacadeTest {
+
+    private static final String DEPARTMENT_NOT_FOUND_KEY = "department_not_found";
 
     @Mock
     private DepartmentService departmentService;
@@ -98,12 +101,14 @@ class DepartmentWebFacadeTest {
     }
 
     @Test
-    void getDepartmentById_shouldThrowResourceNotFoundException_whenDepartmentMissing() {
+    void getDepartmentById_shouldThrowDepartmentNotFoundException_whenDepartmentMissing() {
         when(departmentService.getById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> departmentWebFacade.getDepartmentById(id))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(String.valueOf(id));
+            .isInstanceOfSatisfying(DepartmentNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo(DEPARTMENT_NOT_FOUND_KEY);
+                assertThat(ex.getArgs()).containsExactly(id);
+            });
     }
 
     @Test
@@ -119,12 +124,14 @@ class DepartmentWebFacadeTest {
     }
 
     @Test
-    void updateDepartment_shouldThrowResourceNotFoundException_whenDepartmentMissing() {
+    void updateDepartment_shouldThrowDepartmentNotFoundException_whenDepartmentMissing() {
         when(departmentService.getById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> departmentWebFacade.updateDepartment(id, request))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(String.valueOf(id));
+            .isInstanceOfSatisfying(DepartmentNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo(DEPARTMENT_NOT_FOUND_KEY);
+                assertThat(ex.getArgs()).containsExactly(id);
+            });
 
         verify(departmentService, never()).save(any());
     }
@@ -139,12 +146,14 @@ class DepartmentWebFacadeTest {
     }
 
     @Test
-    void deleteDepartment_shouldThrowResourceNotFoundException_whenDepartmentMissing() {
+    void deleteDepartment_shouldThrowDepartmentNotFoundException_whenDepartmentMissing() {
         when(departmentService.getById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> departmentWebFacade.deleteDepartment(id))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(String.valueOf(id));
+            .isInstanceOfSatisfying(DepartmentNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo(DEPARTMENT_NOT_FOUND_KEY);
+                assertThat(ex.getArgs()).containsExactly(id);
+            });
 
         verify(departmentService, never()).delete(any());
     }

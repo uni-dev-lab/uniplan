@@ -18,11 +18,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.unilab.uniplan.course.CourseRepository;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.CourseNotFoundException;
+import org.unilab.uniplan.exception.ProgramNotFoundException;
 import org.unilab.uniplan.program.dto.ProgramRequestDto;
 
 @ExtendWith(MockitoExtension.class)
 class ProgramValidatorTest {
+
+    private static final String COURSE_NOT_FOUND_KEY = "course_not_found";
+    private static final String PROGRAM_NOT_FOUND_KEY = "program_not_found";
 
     @Mock
     private ProgramRepository programRepository;
@@ -53,10 +57,12 @@ class ProgramValidatorTest {
     }
 
     @Test
-    void validateForCreate_shouldThrowNotFound_whenCourseDoesNotExist() {
+    void validateForCreate_shouldThrowCourseNotFoundException_whenCourseDoesNotExist() {
         assertThatThrownBy(() -> programValidator.validateForCreate(request))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(courseId.toString());
+            .isInstanceOfSatisfying(CourseNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo(COURSE_NOT_FOUND_KEY);
+                assertThat(ex.getArgs()).containsExactly(courseId);
+            });
 
         verify(courseRepository).existsById(courseId);
         verify(programRepository, never()).existsByCourse_Id(any());
@@ -93,12 +99,15 @@ class ProgramValidatorTest {
     }
 
     @Test
-    void validateForUpdate_shouldThrowNotFound_whenProgramDoesNotExist() {
+    void validateForUpdate_shouldThrowProgramNotFoundException_whenProgramDoesNotExist() {
         final UUID programId = UUID.randomUUID();
 
         assertThatThrownBy(() -> programValidator.validateForUpdate(programId, request))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(programId.toString());
+            .isInstanceOfSatisfying(ProgramNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo(PROGRAM_NOT_FOUND_KEY);
+                assertThat(ex.getArgs()).containsExactly(programId);
+            });
+
 
         verify(programRepository).existsById(programId);
         verify(courseRepository, never()).existsById(any());
@@ -106,13 +115,16 @@ class ProgramValidatorTest {
     }
 
     @Test
-    void validateForUpdate_shouldThrowNotFound_whenCourseDoesNotExist() {
+    void validateForUpdate_shouldThrowCourseNotFoundException_whenCourseDoesNotExist() {
         final UUID programId = UUID.randomUUID();
         when(programRepository.existsById(programId)).thenReturn(true);
 
         assertThatThrownBy(() -> programValidator.validateForUpdate(programId, request))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(courseId.toString());
+            .isInstanceOfSatisfying(CourseNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo(COURSE_NOT_FOUND_KEY);
+                assertThat(ex.getArgs()).containsExactly(courseId);
+            });
+
 
         verify(programRepository).existsById(programId);
         verify(courseRepository).existsById(courseId);

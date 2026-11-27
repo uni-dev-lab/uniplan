@@ -1,15 +1,12 @@
 package org.unilab.uniplan.lector;
 
-
-import static org.unilab.uniplan.utils.ErrorConstants.LECTOR_NOT_FOUND;
-
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.LectorNotFoundException;
 import org.unilab.uniplan.lector.dto.LectorRequestDto;
 import org.unilab.uniplan.lector.dto.LectorResponseDto;
 
@@ -44,9 +41,7 @@ public class LectorWebFacade {
 
     private Lector getLectorOrThrow(final UUID id) {
         return lectorService.getById(id)
-                            .orElseThrow(() -> new ResourceNotFoundException(
-                                LECTOR_NOT_FOUND.getMessage(String.valueOf(id))
-                            ));
+                            .orElseThrow(() -> new LectorNotFoundException(id));
     }
 
     @Transactional

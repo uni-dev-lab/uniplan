@@ -15,12 +15,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.UniversityNotFoundException;
 import org.unilab.uniplan.university.dto.UniversityRequestDto;
 import org.unilab.uniplan.university.dto.UniversityResponseDto;
 
 @ExtendWith(MockitoExtension.class)
 class UniversityWebFacadeTest {
+
+    private static final String UNIVERSITY_NOT_FOUND_KEY = "university_not_found";
 
     @Mock
     private UniversityMapper universityMapper;
@@ -69,12 +71,14 @@ class UniversityWebFacadeTest {
     }
 
     @Test
-    void updateUniversity_shouldThrowResourceNotFoundException_whenUniversityNotFound() {
+    void updateUniversity_shouldThrowUniversityNotFoundException_whenUniversityNotFound() {
         when(universityService.getById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> universityWebFacade.updateUniversity(id, requestDto))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(id.toString());
+            .isInstanceOfSatisfying(UniversityNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo(UNIVERSITY_NOT_FOUND_KEY);
+                assertThat(ex.getArgs()).containsExactly(id);
+            });
     }
 
     @Test
@@ -99,12 +103,14 @@ class UniversityWebFacadeTest {
     }
 
     @Test
-    void getUniversityById_shouldThrowResourceNotFoundException_whenUniversityNotFound() {
+    void getUniversityById_shouldThrowUniversityNotFoundException_whenUniversityNotFound() {
         when(universityService.getById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> universityWebFacade.getUniversityById(id))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(id.toString());
+            .isInstanceOfSatisfying(UniversityNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo(UNIVERSITY_NOT_FOUND_KEY);
+                assertThat(ex.getArgs()).containsExactly(id);
+            });
     }
 
     @Test
@@ -117,11 +123,13 @@ class UniversityWebFacadeTest {
     }
 
     @Test
-    void deleteUniversity_shouldThrowResourceNotFoundException_whenUniversityNotFound() {
+    void deleteUniversity_shouldThrowUniversityNotFoundException_whenUniversityNotFound() {
         when(universityService.getById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> universityWebFacade.deleteUniversity(id))
-            .isInstanceOf(ResourceNotFoundException.class)
-            .hasMessageContaining(id.toString());
+            .isInstanceOfSatisfying(UniversityNotFoundException.class, ex -> {
+                assertThat(ex.getMessageKey()).isEqualTo(UNIVERSITY_NOT_FOUND_KEY);
+                assertThat(ex.getArgs()).containsExactly(id);
+            });
     }
 }

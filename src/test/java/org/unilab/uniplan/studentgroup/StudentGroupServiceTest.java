@@ -3,7 +3,6 @@ package org.unilab.uniplan.studentgroup;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
@@ -24,6 +23,8 @@ import org.unilab.uniplan.studentgroup.dto.StudentGroupDto;
 
 @ExtendWith(MockitoExtension.class)
 class StudentGroupServiceTest {
+
+    private static final String STUDENT_GROUP_NOT_FOUND_KEY = "student_group_not_found";
 
     @InjectMocks
     private StudentGroupService studentGroupService;
@@ -74,8 +75,8 @@ class StudentGroupServiceTest {
         when(studentGroupMapper.toDto(studentGroup)).thenReturn(studentGroupDTO);
 
         StudentGroupDto result = studentGroupService.updateStudentGroup(studentId,
-                                                                                  groupId,
-                                                                                  studentGroupDTO);
+                                                                        groupId,
+                                                                        studentGroupDTO);
 
         assertEquals(studentId, result.studentId());
         assertEquals(groupId, result.courseGroupId());
@@ -86,12 +87,11 @@ class StudentGroupServiceTest {
     void updateStudentGroupShouldReturnEmptyIfNotFound() {
         when(studentGroupRepository.findById(studentGroupId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
-                                                           () -> studentGroupService.updateStudentGroup(
-                                                               studentId,
-                                                               groupId,
-                                                               studentGroupDTO));
-        assertTrue(exception.getMessage().contains(String.valueOf(studentGroupId)));
+        ResourceNotFoundException exception = assertThrows(
+            ResourceNotFoundException.class,
+            () -> studentGroupService.updateStudentGroup(studentId, groupId, studentGroupDTO));
+
+        assertEquals(STUDENT_GROUP_NOT_FOUND_KEY, exception.getMessageKey());
         verify(studentGroupRepository, never()).save(any());
     }
 
@@ -111,7 +111,7 @@ class StudentGroupServiceTest {
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
             studentGroupService.deleteStudentGroup(studentId, groupId));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(studentGroupId)));
+        assertEquals(STUDENT_GROUP_NOT_FOUND_KEY, exception.getMessageKey());
         verify(studentGroupRepository, never()).delete(any());
     }
 
@@ -121,7 +121,7 @@ class StudentGroupServiceTest {
         when(studentGroupMapper.toDto(studentGroup)).thenReturn(studentGroupDTO);
 
         StudentGroupDto result = studentGroupService.findStudentGroupById(studentId,
-                                                                                    groupId);
+                                                                          groupId);
 
         assertEquals(studentId, result.studentId());
         assertEquals(groupId, result.courseGroupId());
@@ -131,12 +131,11 @@ class StudentGroupServiceTest {
     void findStudentGroupByIdShouldReturnEmptyIfNotFound() {
         when(studentGroupRepository.findById(studentGroupId)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
-                                                           () -> studentGroupService.findStudentGroupById(
-                                                               studentId,
-                                                               groupId));
+        ResourceNotFoundException exception = assertThrows(
+            ResourceNotFoundException.class,
+            () -> studentGroupService.findStudentGroupById(studentId, groupId));
 
-        assertTrue(exception.getMessage().contains(String.valueOf(studentGroupId)));
+        assertEquals(STUDENT_GROUP_NOT_FOUND_KEY, exception.getMessageKey());
     }
 
     @Test

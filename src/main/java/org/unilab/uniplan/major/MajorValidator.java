@@ -1,11 +1,9 @@
 package org.unilab.uniplan.major;
 
-import static org.unilab.uniplan.utils.ErrorConstants.FACULTY_NOT_FOUND;
-
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.FacultyNotFoundException;
 import org.unilab.uniplan.faculty.FacultyRepository;
 import org.unilab.uniplan.major.dto.MajorRequestDto;
 
@@ -21,9 +19,7 @@ public class MajorValidator {
 
     private void validateFacultyExists(final UUID facultyId) {
         if (!facultyRepository.existsById(facultyId)) {
-            throw new ResourceNotFoundException(
-                FACULTY_NOT_FOUND.getMessage(String.valueOf(facultyId))
-            );
+            throw new FacultyNotFoundException(facultyId);
         }
     }
 }

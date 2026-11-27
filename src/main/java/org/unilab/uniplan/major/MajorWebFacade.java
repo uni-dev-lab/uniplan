@@ -1,14 +1,12 @@
 package org.unilab.uniplan.major;
 
-import static org.unilab.uniplan.utils.ErrorConstants.MAJOR_NOT_FOUND;
-
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.unilab.uniplan.exception.ResourceNotFoundException;
+import org.unilab.uniplan.exception.MajorNotFoundException;
 import org.unilab.uniplan.major.dto.MajorCoursesResponseDto;
 import org.unilab.uniplan.major.dto.MajorRequestDto;
 import org.unilab.uniplan.major.dto.MajorResponseDto;
@@ -67,9 +65,7 @@ public class MajorWebFacade {
 
     private Major getMajorOrThrow(final UUID id) {
         return majorService.getById(id)
-                           .orElseThrow(() -> new ResourceNotFoundException(
-                               MAJOR_NOT_FOUND.getMessage(String.valueOf(id))
-                           ));
+                           .orElseThrow(() -> new MajorNotFoundException(id));
     }
 
     @Transactional(readOnly = true)

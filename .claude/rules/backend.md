@@ -1,8 +1,8 @@
-# Backend Rules — Spring Boot 3 / Java 21
+# Backend Rules — Spring Boot 4 / Java 25
 
 ## Stack
 
-Java 21, Spring Boot 3, Maven, Lombok, MapStruct, Spring Data JPA, Liquibase, PostgreSQL, H2 (test only), springdoc OpenAPI
+Java 25, Spring Boot 4, Maven, Lombok, MapStruct, Spring Data JPA, Liquibase, PostgreSQL, H2 (test only), springdoc OpenAPI
 
 ## Architecture Layers
 
@@ -10,7 +10,7 @@ Java 21, Spring Boot 3, Maven, Lombok, MapStruct, Spring Data JPA, Liquibase, Po
 Controller → Facade (WebFacade) → Service → Repository → Entity
 ```
 
-uniplan is migrating to a Facade architecture. **All new feature work must use the Facade layer.** Existing features (`major/`, `course/`, `student/`, etc.) where Controllers still call Services directly are pre-existing and will be migrated incrementally — do not refactor them as a side effect of unrelated work.
+uniplan is migrating to a Facade architecture. **All new feature work must use the Facade layer.** Existing features (currently `coursegroup/`, `studentgroup/`) where Controllers still call Services directly are pre-existing and will be migrated incrementally — do not refactor them as a side effect of unrelated work.
 
 ### Controller
 - Thin delegation layer — no business logic, no logging, no entity↔DTO conversion.
@@ -34,7 +34,8 @@ uniplan is migrating to a Facade architecture. **All new feature work must use t
 - Thin wrapper around the repository with focused domain logic.
 - **Receives already-validated, non-null data** from the Facade — no defensive null checks, no `@Valid`-style assertions.
 - **No `@Transactional`** — the Facade owns transactions.
-- Pure domain operations: `findById(id) -> Optional<Entity>`, `save(entity)`, `delete(entity)`, custom finders, calculations. Returns entities (or projections), not DTOs.
+- Implements `common.model.BaseService<Entity>` (`save`, `getAll`, `getById`, `delete`); add custom finders beyond that.
+- Pure domain operations: `getById(id) -> Optional<Entity>`, `save(entity)`, `delete(entity)`, custom finders, calculations. Returns entities (or projections), not DTOs.
 - Returns `Optional` for single-entity lookups so the Facade can decide whether absence is a 404, a fallback, or just expected.
 - Annotated: `@Service`, `@RequiredArgsConstructor`. Add `@Slf4j` only when actually logging WARN/ERROR for unexpected situations or DEBUG for troubleshooting.
 
@@ -49,8 +50,8 @@ uniplan is migrating to a Facade architecture. **All new feature work must use t
 ### Repository
 - Extends `JpaRepository<Entity, UUID>`.
 - Returns `Optional` for single-entity lookups.
-- JPQL with `@Query` and fetch joins to prevent N+1 when needed; `@Repository` annotation is fine.
-- `Pageable` / `Page<T>` for pagination.
+- JPQL with `@Query` and fetch joins to prevent N+1 when needed; `@Repository` is optional (Spring Data detects the interfaces).
+- Pagination: accept `Pageable` with a capped page size and an allow-list of sort properties; return a page response DTO, never `Page<Entity>`.
 
 ### Layer rules summary
 
@@ -79,7 +80,7 @@ Feature-based. Each domain module (`major/`, `course/`, `student/`, etc.) lives 
 - `<Feature>Controller.java` — calls the Facade only
 - `dto/` — request/response/internal DTOs
 
-**Existing features** still follow the older `Controller → Service → Repository` shape (no Facade, no Validator, `@Transactional` on the Service). They are pre-existing — see the migration guidance under "Architecture Layers" above.
+**Existing features** (currently `coursegroup/`, `studentgroup/`) still follow the older `Controller → Service → Repository` shape (no Facade, no Validator, `@Transactional` on the Service). They are pre-existing — see the migration guidance under "Architecture Layers" above.
 
 When adding a new feature, mirror the structure above. Do not copy an existing feature wholesale (it would propagate the old layering); instead, take its DTO/entity/mapper conventions and apply the new Facade pattern on top.
 
@@ -92,19 +93,20 @@ All entities extend `BaseEntity` (abstract `@MappedSuperclass`):
 
 For person-like entities (students, lecturers), extend `Person` instead — it adds `firstName` / `lastName` on top of `BaseEntity`.
 
+Exception: composite-key join entities extend `AuditableEntity` with an `@EmbeddedId <X>Id` (`@Embeddable`), and their repository is `JpaRepository<X, XId>`.
+
 ## DTOs
 
-Per feature, four DTO records:
+DTO records per feature:
 
-- `<Feature>RequestDto` — client → server, no `id`, validation annotations.
-- `<Feature>ResponseDto` — server → client.
-- `<Feature>Dto` — internal service-layer DTO, includes `id`.
-- Optionally `<Feature><Projection>Dto` / `<Feature><Projection>ResponseDto` for nested-projection endpoints (e.g. `MajorCoursesDto` includes the course list).
+- `<Feature>RequestDto` (required) — client → server, no `id`, validation annotations.
+- `<Feature>ResponseDto` (required) — server → client.
+- `<Feature>Dto` (internal) and `<Feature><Projection>Dto` / `<Feature><Projection>ResponseDto` (nested-projection endpoints, e.g. `MajorCoursesResponseDto`) — only when genuinely needed (see Appendix A § Mapper).
 
 Rules:
 - Records, not classes.
 - Never reuse a single DTO across request and response.
-- Validation annotations (`@NotNull`, `@Size`, etc.) on the request DTO and the internal DTO.
+- Validation annotations (`@NotNull`, `@Size`, etc.) on the request DTO.
 
 ## MapStruct
 
@@ -120,12 +122,13 @@ Rules:
 - `FetchType.LAZY` on every `@ManyToOne` / `@OneToMany` / `@ManyToMany`.
 - Money fields: `BigDecimal`.
 - **Collection encapsulation**: never expose internal collections directly. Suppress the setter (`@Setter(AccessLevel.NONE)`) and have the getter return `Collections.unmodifiableList(field)`. Reference pattern: `Major.courses`. If callers need to mutate the collection, expose `add*` / `remove*` methods on the entity.
+- `@SoftDelete` entities: never filter on or update `is_deleted` by hand; native queries must add `is_deleted = false`.
 
 ## Database & Migrations
 
 - **PostgreSQL** in production with `spring.jpa.hibernate.ddl-auto: validate` — Liquibase owns the schema, Hibernate never modifies it.
 - **H2 in-memory** for tests with `ddl-auto: create-drop`, Liquibase **disabled** (`src/test/resources/application.yaml`). Service unit tests are pure Mockito and don't boot Spring.
-- Liquibase changelogs live under `src/main/resources/db/changelog/`, currently organized by `YYYY/MM/NNNN-<slug>.yaml`.
+- Liquibase changelogs live flat under `src/main/resources/db/changelog/` as `<yyyyMMddHHmmss>-<kebab-slug>.yaml` (UTC timestamp, no subfolders).
 - Master changelog: `src/main/resources/db/changelog/db.changelog-master.yaml` — every new changelog must be added as an `include:` entry there.
 - Always set `objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS` on every `changeSet`.
 - New changelogs should declare a `rollback:` block (inverse operations) or `rollback: []` with a comment explaining why the change is irreversible.
@@ -206,7 +209,7 @@ public class ProgramController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProgramResponseDto> getProgramById(@PathVariable @NotNull final UUID id) {
-        return ResponseEntity.ok(programWebFacade.findProgramById(id));
+        return ResponseEntity.ok(programWebFacade.getProgramById(id));
     }
 
     @DeleteMapping("/{id}")
@@ -243,8 +246,8 @@ public class ProgramWebFacade {
     }
 
     @Transactional(readOnly = true)
-    public ProgramResponseDto findProgramById(final UUID id) {
-        final Program program = programService.findById(id)
+    public ProgramResponseDto getProgramById(final UUID id) {
+        final Program program = programService.getById(id)
             .orElseThrow(() -> new ResourceNotFoundException(
                 ErrorConstants.PROGRAM_NOT_FOUND.getMessage(String.valueOf(id))));
 
@@ -253,7 +256,7 @@ public class ProgramWebFacade {
 
     @Transactional
     public void deleteProgram(final UUID id) {
-        final Program program = programService.findById(id)
+        final Program program = programService.getById(id)
             .orElseThrow(() -> new ResourceNotFoundException(
                 ErrorConstants.PROGRAM_NOT_FOUND.getMessage(String.valueOf(id))));
 
@@ -306,18 +309,26 @@ The Validator is only created when at least one rule exists. When a feature has 
 ```java
 @Service
 @RequiredArgsConstructor
-public class ProgramService {
+public class ProgramService implements BaseService<Program> {
 
     private final ProgramRepository programRepository;
 
-    public Optional<Program> findById(final UUID id) {
-        return programRepository.findById(id);
-    }
-
+    @Override
     public Program save(final Program program) {
         return programRepository.save(program);
     }
 
+    @Override
+    public List<Program> getAll() {
+        return programRepository.findAll();
+    }
+
+    @Override
+    public Optional<Program> getById(final UUID id) {
+        return programRepository.findById(id);
+    }
+
+    @Override
     public void delete(final Program program) {
         programRepository.delete(program);
     }
@@ -357,7 +368,7 @@ For new Facade-pattern features, the internal `<Feature>Dto` record can be omitt
 
 ## Appendix B — Migration of pre-existing features
 
-Existing features (e.g. `major/`) follow the old layering. When migrating one to the Facade pattern, do it in one focused PR per feature:
+Existing features (e.g. `coursegroup/`) follow the old layering. When migrating one to the Facade pattern, do it in one focused PR per feature:
 
 1. Add `<Feature>WebFacade` and (if needed) `<Feature>Validator`. Move `@Transactional` from the Service to the Facade methods.
 2. Move the `ResourceNotFoundException` throw from the Service to the Facade. The Service now returns `Optional`.

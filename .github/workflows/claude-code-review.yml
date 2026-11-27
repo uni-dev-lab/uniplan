@@ -87,6 +87,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          ref: refs/pull/${{ inputs.pr_number }}/head
           fetch-depth: 0
 
       - name: Run Claude Code Review
@@ -105,10 +106,11 @@ jobs:
           # Headless runs are default-deny: every tool the prompt uses must be
           # allow-listed here, or the call is auto-denied (no interactive approver).
           # The prompt posts via `gh` and dispatches the uniplan-be-reviewer
-          # subagent (Task) + the /review-pr skill (Skill) — all must be granted.
+          # subagent (Task/Agent) + the /review-pr skill (Skill), and writes the
+          # review body scratch file (Write) — all must be granted.
           claude_args: >-
-            --model claude-opus-5
-            --allowedTools "Bash(gh pr review:*),Bash(gh api:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(git:*),Task,Read,Glob,Grep,Skill"
+            --model claude-sonnet-5-5
+            --allowedTools "Bash(gh pr review:*),Bash(gh api:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(git:*),Task,Agent,Read,Write,Glob,Grep,Skill"
           prompt: |
             You are orchestrating a code review of PR #${{ inputs.pr_number }} in ${{ github.repository }}.
 
@@ -121,7 +123,8 @@ jobs:
             treat the current directory as the worktree path. All other steps apply
             unchanged.
 
-            This run is review-only. Do not push commits, do not edit any files, and
+            This run is review-only. Do not push commits, do not edit any files
+            (except the `./.claude-review-body.md` scratch file described below), and
             do not open new PRs — the only write you make is the review comment
             described below.
 
@@ -137,10 +140,16 @@ jobs:
                output block.
 
             After the consolidated review block is produced, post it as a single
-            PR review comment using `gh pr review ${{ inputs.pr_number }} --comment --body-file <path>`
-            (write the body to a temp file first to preserve formatting). For
-            Critical and Important findings, also post inline review comments on
-            the affected lines using `gh api repos/${{ github.repository }}/pulls/${{ inputs.pr_number }}/comments`.
+            PR review comment. Use the Write tool to save the body to
+            `./.claude-review-body.md` in the checkout (this one scratch file is the
+            only file you may write; never commit it), then run
+            `gh pr review ${{ inputs.pr_number }} --comment --body-file .claude-review-body.md`.
+
+            For Critical/Important findings on lines inside the PR diff, post inline:
+            `gh api repos/${{ github.repository }}/pulls/${{ inputs.pr_number }}/comments -f commit_id=<headRefOid from gh pr view --json headRefOid> -f path=<path> -F line=<line> -f side=RIGHT -f body=<text>`.
+            If a finding's line is outside the diff, or the call fails, skip the
+            inline comment (it is already in the summary review). Do not re-post
+            inline comments for Still-open findings that already have one.
 
             Do NOT skip the subagent dispatch in favor of inlining the review.
             The whole point of this workflow is for the rules to live in the

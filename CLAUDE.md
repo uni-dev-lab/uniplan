@@ -10,7 +10,7 @@ The project uses the Maven wrapper. Use `./mvnw` (Linux/macOS) or `mvnw.cmd` (Wi
 - Run the app locally: `./mvnw spring-boot:run` — requires `POSTGRES_URL`, `POSTGRES_USERNAME`, `POSTGRES_PASSWORD` env vars (see `compose.yaml` / `application.yaml`).
 - Run all tests: `./mvnw test`
 - Run a single test class: `./mvnw test -Dtest=MajorServiceTest`
-- Run a single test method: `./mvnw test -Dtest=MajorServiceTest#createMajorShouldReturnAndSavedMajorDTO`
+- Run a single test method: `./mvnw test -Dtest=MajorServiceTest#saveShouldSaveMajor`
 - Run via Docker Compose (app + Postgres): `docker compose up --build` — requires `db/password.txt` and the `POSTGRES_*` env vars from `compose.yaml`.
 - Liquibase changeset operations go through the Maven plugin, e.g. `./mvnw liquibase:status` (driver/changeLogFile already configured in `pom.xml`).
 
@@ -26,19 +26,19 @@ CI (`.github/workflows/build.yml`) runs `mvn -B clean verify` on PRs against `ma
 
 ## Architecture
 
-Spring Boot 3.4 / Java 21 monolith. Code lives under `org.unilab.uniplan` (note: `unilab`, not `uniplan` as the README diagram suggests). The package layout is **feature-modular**: each domain entity gets its own top-level package and follows the same internal shape.
+Spring Boot 4 / Java 25 monolith. Code lives under `org.unilab.uniplan` (note: `unilab`, not `uniplan` as the README diagram suggests). The package layout is **feature-modular**: each domain entity gets its own top-level package and follows the same internal shape.
 
 ### The standard feature-package shape
 
-uniplan is migrating to a Facade-based layering: `Controller → Facade (WebFacade) → Service → Repository`. **All new features use this shape.** Existing features (`major/`, `course/`, `student/`, etc.) still use the older direct-Service shape and will be migrated incrementally — see `.claude/rules/backend.md` § Architecture Layers + Appendix B for full details.
+uniplan is migrating to a Facade-based layering: `Controller → Facade (WebFacade) → Service → Repository`. **All new features use this shape.** Existing features (currently `coursegroup/`, `studentgroup/`) still use the older direct-Service shape and will be migrated incrementally — see `.claude/rules/backend.md` § Architecture Layers + Appendix B for full details.
 
 #### New features (Facade pattern — required)
 
 For a feature `X`, the package contains:
 
-- `X.java` — JPA entity extending `common.model.BaseEntity` or `Person`.
+- `X.java` — JPA entity extending `common.model.BaseEntity` or `Person`. Exception: composite-key join entities extend `AuditableEntity` with an `@EmbeddedId <X>Id` (`@Embeddable`), and their repository is `JpaRepository<X, XId>`.
 - `XRepository.java` — `JpaRepository<X, UUID>` with custom finders.
-- `XService.java` — `@Service`, no `@Transactional`, returns `Optional<X>` / `X` / `List<X>` (entities, not DTOs). Does not throw `ResourceNotFoundException`.
+- `XService.java` — `@Service`, implements `common.model.BaseService<X>`, no `@Transactional`, returns `Optional<X>` / `X` / `List<X>` (entities, not DTOs). Does not throw `ResourceNotFoundException`.
 - `XWebFacade.java` — `@Component @Slf4j @RequiredArgsConstructor`, owns `@Transactional`, orchestrates Validator + Service + Mapper, unwraps `Optional` to throw `ResourceNotFoundException`, logs business operations at INFO.
 - `XValidator.java` — `@Component`, semantic/business validation only. Skip the file entirely if the feature has no rules beyond `@Valid` annotations.
 - `XMapper.java` — MapStruct interface; global compiler args (`defaultComponentModel=spring`, `defaultInjectionStrategy=constructor`) make it an auto-wired Spring bean. Composes peer mappers via `@Mapper(uses = {...})`.
@@ -53,7 +53,7 @@ A worked reference example lives in `.claude/rules/backend.md` § Appendix A. Us
 
 #### Existing features (Service-only — legacy, do not refactor opportunistically)
 
-Pre-migration features still look like:
+Pre-migration features (currently `coursegroup/`, `studentgroup/`) still look like:
 
 - `XService.java` — `@Service`, owns `@Transactional`, throws `ResourceNotFoundException`, returns DTOs.
 - `XController.java` — calls Service + Mapper directly.
@@ -92,7 +92,7 @@ No implementer subagent yet — implementations happen in the main session, wher
 ## Project Skills
 
 - `.claude/skills/review-pr/` — orchestrates a PR review: creates a worktree, classifies the diff, dispatches `uniplan-be-reviewer`, and merges findings.
-- `.claude/skills/liquibase-changelog/` — scaffolds a new Liquibase changelog under `src/main/resources/db/changelog/<YYYY>/<MM>/<NNNN>-<slug>.yaml` with the mandatory `objectQuotingStrategy` and a `rollback:` block, and registers the include in `db.changelog-master.yaml`.
+- `.claude/skills/liquibase-changelog/` — scaffolds a new Liquibase changelog flat under `src/main/resources/db/changelog/` as `<yyyyMMddHHmmss>-<kebab-slug>.yaml` (UTC timestamp) with the mandatory `objectQuotingStrategy` and a `rollback:` block, and registers the include in `db.changelog-master.yaml`.
 - `.claude/skills/create-worktree/` — creates (or reuses) a git worktree for a remote branch in a sibling `uniplan-worktree/` directory.
 
 ## Bash Usage for Agents

@@ -38,3 +38,6 @@ db/password.txt
 
 ### Claude Code ###
 .claude/settings.local.json
+
+*.log
+*.diff
